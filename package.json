@@ -1,0 +1,32 @@
+{
+   "name": "grocery-app-backend",
+   "version": "1.0.0",
+   "description": "",
+   "main": "index.ts",
+   "scripts": {
+      "watch": "tsc -w",
+      "start": "ts-node src/index.ts",
+      "dev": "nodemon dist/index.js"
+   },
+   "keywords": [],
+   "author": "",
+   "license": "ISC",
+   "devDependencies": {
+      "@types/node": "^8.0.29",
+      "@types/uuid": "^8.3.0",
+      "nodemon": "^2.0.6",
+      "ts-node": "3.3.0",
+      "typescript": "3.3.3333"
+   },
+   "dependencies": {
+      "apollo-server": "^2.19.0",
+      "apollo-server-express": "^2.19.0",
+      "cors": "^2.8.5",
+      "graphql": "^15.4.0",
+      "graphql-import": "^1.0.2",
+      "pg": "^8.5.1",
+      "reflect-metadata": "^0.1.13",
+      "typeorm": "0.2.29",
+      "uuid": "^8.3.1"
+   }
+}
