@@ -1,3 +1,4 @@
+import { Field } from 'type-graphql';
 import {
   Entity,
   Column,
@@ -11,19 +12,21 @@ import { UserToList } from './UserToList';
 
 @Entity('users')
 export class User extends BaseEntity {
+  @Field()
   @PrimaryColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column('text')
-  password: string;
+  password!: string;
 
+  @Field()
   @Column({ type: 'text', unique: true })
-  email: string;
+  email!: string;
 
   // still need to add OAuth
 
   @OneToMany(() => UserToList, (userToList) => userToList.user)
-  listConnection?: UserToList[];
+  listConnection: UserToList[];
 
   @BeforeInsert()
   addId() {

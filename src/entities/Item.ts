@@ -1,3 +1,4 @@
+import { Field } from 'type-graphql';
 import {
   Entity,
   Column,
@@ -10,22 +11,27 @@ import { List } from './List';
 @Entity('items')
 export class Item extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
+  @Field()
   @Column('text')
-  name: string;
+  name!: string;
 
+  @Field()
   @Column({ type: 'simple-array', nullable: true })
-  notes: string[];
+  notes: string[] | null;
 
+  @Field()
   @Column({ type: 'boolean', default: false })
-  strike: boolean;
+  strike!: boolean;
 
+  @Field()
   @Column({ type: 'boolean', default: false })
-  bold: boolean;
+  bold!: boolean;
 
+  @Field()
   @Column('smallint')
-  order: number;
+  order!: number;
 
   @ManyToOne(() => List, (list) => list.items)
   list: List;

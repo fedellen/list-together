@@ -8,23 +8,29 @@ import {
 import { Item } from './Item';
 import { UserToList } from './UserToList';
 import { ItemHistory } from './ItemHistory';
+import { Field, ObjectType } from 'type-graphql';
 
+@ObjectType()
 @Entity('lists')
 export class List extends BaseEntity {
+  @Field()
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
+  @Field()
   @Column('text')
-  title: string;
+  title!: string;
 
+  @Field()
   @OneToMany(() => Item, (item) => item.list, { cascade: true })
-  items?: Item[];
+  items: Item[];
 
+  @Field()
   @OneToMany(() => ItemHistory, (itemHistory) => itemHistory.list, {
     cascade: true
   })
-  itemHistory?: ItemHistory[];
+  itemHistory: ItemHistory[];
 
   @OneToMany(() => UserToList, (userToList) => userToList.list)
-  userConnection: UserToList[];
+  userConnection!: UserToList[];
 }
