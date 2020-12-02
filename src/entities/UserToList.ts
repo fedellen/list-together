@@ -23,10 +23,10 @@ export class UserToList extends BaseEntity {
   privileges: UserPrivileges[];
 
   @ManyToOne(() => List, (list) => list.userConnection, { primary: true })
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn(/*{ name: 'userId' }*/)
   list: List;
 
   @ManyToOne(() => User, (user) => user.listConnection, { primary: true })
-  @JoinColumn({ name: 'listId' })
+  @JoinColumn(/*{ name: 'listId' }*/)
   user: User;
 }

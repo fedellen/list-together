@@ -15,10 +15,13 @@ export class Item extends BaseEntity {
   @Column('text')
   name: string;
 
-  @Column('boolean')
+  @Column({ type: 'simple-array', nullable: true })
+  notes: string[];
+
+  @Column({ type: 'boolean', default: false })
   strike: boolean;
 
-  @Column('boolean')
+  @Column({ type: 'boolean', default: false })
   bold: boolean;
 
   @Column('smallint')

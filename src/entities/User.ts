@@ -17,8 +17,10 @@ export class User extends BaseEntity {
   @Column('text')
   password: string;
 
-  @Column('text')
+  @Column({ type: 'text', unique: true })
   email: string;
+
+  // still need to add OAuth
 
   @OneToMany(() => UserToList, (userToList) => userToList.user)
   listConnection?: UserToList[];

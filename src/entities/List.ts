@@ -17,10 +17,12 @@ export class List extends BaseEntity {
   @Column('text')
   title: string;
 
-  @OneToMany(() => Item, (item) => item.list)
+  @OneToMany(() => Item, (item) => item.list, { cascade: true })
   items?: Item[];
 
-  @OneToMany(() => ItemHistory, (itemHistory) => itemHistory.list)
+  @OneToMany(() => ItemHistory, (itemHistory) => itemHistory.list, {
+    cascade: true
+  })
   itemHistory?: ItemHistory[];
 
   @OneToMany(() => UserToList, (userToList) => userToList.list)
