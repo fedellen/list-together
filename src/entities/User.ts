@@ -21,7 +21,7 @@ export class User extends BaseEntity {
   email: string;
 
   @OneToMany(() => UserToList, (userToList) => userToList.user)
-  listConnection: UserToList[];
+  listConnection?: UserToList[];
 
   @BeforeInsert()
   addId() {

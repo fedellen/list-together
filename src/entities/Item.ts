@@ -1,36 +1,29 @@
 import {
   Entity,
   Column,
-  PrimaryColumn,
-  BeforeInsert,
+  PrimaryGeneratedColumn,
   BaseEntity,
   ManyToOne
 } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
 import { List } from './List';
 
 @Entity('items')
 export class Item extends BaseEntity {
-  @PrimaryColumn('uuid')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column('text')
   name: string;
 
-  @Column()
+  @Column('boolean')
   strike: boolean;
 
-  @Column()
+  @Column('boolean')
   bold: boolean;
 
-  @Column()
+  @Column('smallint')
   order: number;
 
   @ManyToOne(() => List, (list) => list.items)
   list: List;
-
-  @BeforeInsert()
-  addId() {
-    this.id = uuidv4();
-  }
 }

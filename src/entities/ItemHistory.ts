@@ -1,35 +1,28 @@
 import {
   Entity,
   Column,
-  PrimaryColumn,
-  BeforeInsert,
+  PrimaryGeneratedColumn,
   BaseEntity,
   ManyToOne
 } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
 import { List } from './List';
 
-@Entity('itemHistory')
+@Entity('item_history')
 export class ItemHistory extends BaseEntity {
-  @PrimaryColumn('uuid')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column('text')
   item: string;
 
   // number of times added to list for smarter auto-completion
-  @Column()
+  @Column({ type: 'integer', default: 1 })
   timesAdded: number;
 
   // Ranked Scale of 0-1000 based on each 'shopping trip'
-  @Column('simple-array')
-  removalOrder: number[];
+  @Column({ type: 'simple-array', nullable: true })
+  removalOrder?: number[];
 
   @ManyToOne(() => List, (list) => list.itemHistory)
   list: List;
-
-  @BeforeInsert()
-  addId() {
-    this.id = uuidv4();
-  }
 }
