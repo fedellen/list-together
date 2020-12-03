@@ -8,12 +8,12 @@ import {
 import { Item } from './Item';
 import { UserToList } from './UserToList';
 import { ItemHistory } from './ItemHistory';
-import { Field, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType } from 'type-graphql';
 
 @ObjectType()
 @Entity('lists')
 export class List extends BaseEntity {
-  @Field()
+  @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
