@@ -6,19 +6,15 @@ import { createConnection } from 'typeorm';
 
 // import { Resolvers } from './schema/resolvers';
 
-// Import postgres models --
-import { User /*List, UserToList, Item, ItemHistory*/ } from './entities/index';
-import { UserResolver } from './resolvers/user';
-import { HelloResolver } from './resolvers/hello';
-import { ListResolver } from './resolvers/list';
-import { ItemResolver } from './resolvers/item';
+import {
+  UserResolver,
+  HelloResolver,
+  ListResolver,
+  ItemResolver
+} from './resolvers';
 
 const main = async () => {
-  const connection = await createConnection();
-
-  console.log('Loading users from the database...');
-  const users = await connection.manager.find(User);
-  console.log('Loaded users: ', users);
+  await createConnection();
 
   const schema = await buildSchema({
     resolvers: [HelloResolver, UserResolver, ListResolver, ItemResolver],

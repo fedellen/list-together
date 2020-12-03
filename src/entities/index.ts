@@ -1,5 +1,4 @@
-// export all classes/types from index
-
+// export all classes/types from
 export * from './Item';
 export * from './ItemHistory';
 export * from './List';
