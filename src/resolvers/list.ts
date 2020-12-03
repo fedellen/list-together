@@ -4,7 +4,8 @@ import { getRepository } from 'typeorm';
 
 @Resolver()
 export class ListResolver {
-  // Retrieves ALL lists, refactor later to retrieve only user's list
+  // Retrieves ALL lists in the database
+  // Refactor later to retrieve only the current user's lists
   @Query(() => [List])
   getAllLists(): Promise<List[]> {
     const listRepository = getRepository(List);
