@@ -19,7 +19,7 @@ export class UserToList extends BaseEntity {
   @PrimaryColumn('uuid')
   listId: string;
 
-  @Column('simple-array')
+  @Column({ type: 'simple-array', default: ['owner'] })
   privileges: UserPrivileges[];
 
   @ManyToOne(() => List, (list) => list.userConnection, { primary: true })
