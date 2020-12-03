@@ -8,6 +8,10 @@ import {
 } from 'typeorm';
 import { List } from './List';
 
+export class Note {
+  text!: string;
+}
+
 @Entity('items')
 export class Item extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -17,9 +21,9 @@ export class Item extends BaseEntity {
   @Column('text')
   name!: string;
 
-  @Field()
+  @Field(() => [Note])
   @Column({ type: 'simple-array', nullable: true })
-  notes: string[] | null;
+  notes: Note[] | null;
 
   @Field()
   @Column({ type: 'boolean', default: false })

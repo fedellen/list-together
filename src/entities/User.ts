@@ -1,4 +1,4 @@
-import { Field } from 'type-graphql';
+import { Field, ID, ObjectType } from 'type-graphql';
 import {
   Entity,
   Column,
@@ -10,11 +10,16 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { UserToList } from './UserToList';
 
+@ObjectType()
 @Entity('users')
 export class User extends BaseEntity {
-  @Field()
+  @Field(() => ID)
   @PrimaryColumn('uuid')
   id!: string;
+
+  @Field()
+  @Column('text')
+  username!: string;
 
   @Column('text')
   password!: string;
