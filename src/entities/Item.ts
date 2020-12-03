@@ -1,4 +1,4 @@
-import { Field } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import {
   Entity,
   Column,
@@ -8,10 +8,7 @@ import {
 } from 'typeorm';
 import { List } from './List';
 
-export class Note {
-  text!: string;
-}
-
+@ObjectType()
 @Entity('items')
 export class Item extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -21,9 +18,9 @@ export class Item extends BaseEntity {
   @Column('text')
   name!: string;
 
-  @Field(() => [Note])
+  @Field(() => [String])
   @Column({ type: 'simple-array', nullable: true })
-  notes: Note[] | null;
+  notes: string[] | null;
 
   @Field()
   @Column({ type: 'boolean', default: false })

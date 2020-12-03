@@ -21,13 +21,14 @@ export class List extends BaseEntity {
   @Column('text')
   title!: string;
 
-  @Field(() => [Item])
-  @OneToMany(() => Item, (item) => item.list, { cascade: true })
-  items: Item[];
+  @Field(() => [Item], { nullable: true })
+  @OneToMany(() => Item, (item) => item.list, { cascade: true, nullable: true })
+  items: Item[] | null;
 
   @Field(() => [ItemHistory])
   @OneToMany(() => ItemHistory, (itemHistory) => itemHistory.list, {
-    cascade: true
+    cascade: true,
+    nullable: true
   })
   itemHistory: ItemHistory[];
 
