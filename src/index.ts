@@ -7,7 +7,7 @@ import { createConnection } from 'typeorm';
 // import { Resolvers } from './schema/resolvers';
 
 // Import postgres models --
-import { User, List, UserToList, Item, ItemHistory } from './entities/index';
+import { User /*List, UserToList, Item, ItemHistory*/ } from './entities/index';
 import { UserResolver } from './resolvers/user';
 import { HelloResolver } from './resolvers/hello';
 
