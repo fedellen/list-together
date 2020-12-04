@@ -1,5 +1,5 @@
 import { Item, List, ItemHistory } from '../entities';
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Mutation, Resolver } from 'type-graphql';
 import { getRepository } from 'typeorm';
 
 @Resolver()
@@ -22,7 +22,7 @@ export class ItemResolver {
     const newItem = Item.create({ name: nameInput, order: orderInput });
 
     if (list.items) {
-      // Handle this condition on the front end, this will be extra security
+      // Handle itemExists condition on the front end, this will provide extra security
       const itemExists = list.items.find(({ name }) => name === nameInput);
       if (itemExists) throw new Error('Item already exists on this list..');
 
@@ -51,4 +51,6 @@ export class ItemResolver {
     console.log(list);
     return newItem;
   }
+
+  // Delete item from list
 }
