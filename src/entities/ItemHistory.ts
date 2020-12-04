@@ -1,12 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  BaseEntity,
-  ManyToOne
-} from 'typeorm';
-import { List } from './List';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
 
 @ObjectType()
 @Entity('item_history')
@@ -27,7 +20,4 @@ export class ItemHistory extends BaseEntity {
   @Field(() => [Number], { nullable: true })
   @Column({ type: 'simple-array', nullable: true })
   removalOrder: number[] | null;
-
-  @ManyToOne(() => List, (list) => list.itemHistory)
-  list: List;
 }
