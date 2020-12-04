@@ -18,7 +18,7 @@ export class Item extends BaseEntity {
   @Column('text')
   name!: string;
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   @Column({ type: 'simple-array', nullable: true })
   notes: string[] | null;
 

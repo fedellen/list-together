@@ -24,7 +24,7 @@ export class ItemHistory extends BaseEntity {
   timesAdded!: number;
 
   // Ranked Scale of 0-1000 based on each 'shopping trip'
-  @Field(() => [Number])
+  @Field(() => [Number], { nullable: true })
   @Column({ type: 'simple-array', nullable: true })
   removalOrder: number[] | null;
 
