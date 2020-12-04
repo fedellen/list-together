@@ -30,10 +30,6 @@ export class Item extends BaseEntity {
   @Column({ type: 'boolean', default: false })
   bold!: boolean;
 
-  @Field()
-  @Column('smallint')
-  order!: number;
-
   @ManyToOne(() => List, (list) => list.items)
   list: List;
 }

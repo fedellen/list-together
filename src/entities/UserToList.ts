@@ -6,7 +6,7 @@ import {
   BaseEntity,
   ManyToOne,
   JoinColumn,
-  OneToOne
+  OneToMany
 } from 'typeorm';
 import { List } from './';
 import { User } from './';
@@ -31,9 +31,10 @@ export class UserToList extends BaseEntity {
   privileges: UserPrivileges[];
 
   @Field(() => [ItemHistory], { nullable: true })
-  @OneToOne(() => ItemHistory)
-  @JoinColumn()
-  itemHistory: ItemHistory[];
+  @OneToMany(() => ItemHistory, (itemHistory) => itemHistory.userToList, {
+    cascade: true
+  })
+  itemHistory: ItemHistory[] | null;
 
   @Field(() => [String], { nullable: true })
   mostCommonWords: string[] | null;
@@ -47,7 +48,10 @@ export class UserToList extends BaseEntity {
   sortedItems: string[] | null;
 
   @Field(() => List)
-  @ManyToOne(() => List, (list) => list.userConnection, { primary: true })
+  @ManyToOne(() => List, (list) => list.userConnection, {
+    primary: true,
+    cascade: true
+  })
   @JoinColumn()
   list: List;
 

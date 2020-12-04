@@ -7,6 +7,9 @@ export class ItemHistory extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
+  @Column('uuid')
+  userToList!: string;
+
   @Field()
   @Column('text')
   item!: string;
