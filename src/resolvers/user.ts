@@ -1,17 +1,17 @@
 import { List, User, UserToList } from '../entities';
 import { Arg, Mutation, Resolver } from 'type-graphql';
 import bcrypt from 'bcryptjs';
+import { RegisterInput } from './input/RegisterInput';
+import { getRepository } from 'typeorm';
 
-@Resolver(User)
+@Resolver()
 export class UserResolver {
   // Create a User
-  @Mutation(() => User)
+  @Mutation(() => [UserToList])
   async createUser(
     // Arguments
-    @Arg('username') username: string,
-    @Arg('email') email: string,
-    @Arg('password') password: string
-  ): Promise<UserToList> {
+    @Arg('data') { username, email, password }: RegisterInput
+  ): Promise<UserToList[]> {
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = await User.create({
       username,
@@ -27,6 +27,11 @@ export class UserResolver {
       userId: user.id
     }).save();
 
-    return initialUserToList;
+    console.log(initialUserToList);
+
+    return getRepository(UserToList).find({
+      where: { userId: user.id },
+      relations: ['list', 'list.items', 'itemHistory']
+    });
   }
 }
