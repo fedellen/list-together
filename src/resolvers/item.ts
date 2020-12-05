@@ -1,55 +1,59 @@
-import { Item, List, ItemHistory } from '../entities';
+import { Item, ItemHistory, UserToList } from '../entities';
 import { Arg, Mutation, Resolver } from 'type-graphql';
 import { getRepository } from 'typeorm';
 
 @Resolver()
 export class ItemResolver {
-  // Add item to list
-  @Mutation(() => Item)
+  // Send single item only when connection already exists from front
+  // Otherwise items will be sent in arrays to save on requests
+  @Mutation(() => UserToList)
   async addItem(
     @Arg('name') nameInput: string,
-    // Front end will determine the orderInput before sending request
-    @Arg('order') orderInput: number,
-    @Arg('listId') listId: string
-  ): Promise<Item> {
+    @Arg('listId') listId: string,
+    @Arg('userId') userId: string
+  ): Promise<UserToList> {
     // find the list
-    const list = await getRepository(List).findOne({
-      where: { id: listId },
-      relations: ['items', 'itemHistory']
+    const userToListTable = await getRepository(UserToList).findOne({
+      where: { listId: listId, userId: userId },
+      relations: ['list', 'list.items', 'itemHistory']
     });
-    if (!list) throw new Error('Invalid list id..');
+    if (!userToListTable)
+      throw new Error('Could not find that user to list connection..');
 
-    const newItem = Item.create({ name: nameInput, order: orderInput });
-
+    const list = userToListTable.list;
     if (list.items) {
-      // Handle itemExists condition on the front end, this will provide extra security
+      // Handle itemExists condition on the front end
+      // This provides security for synchronization conflicts
       const itemExists = list.items.find(({ name }) => name === nameInput);
       if (itemExists) throw new Error('Item already exists on this list..');
 
-      list.items = [...list.items, newItem];
+      list.items = [...list.items, Item.create({ name: nameInput })];
     } else {
-      list.items = [newItem];
+      // Initialize list if no items --
+      list.items = [Item.create({ name: nameInput })];
     }
 
-    const newItemInHistory = ItemHistory.create({ item: nameInput });
-
-    if (list.itemHistory) {
-      const existingItemInHistory = list.itemHistory.find(
+    // Add item to User's personal item history for auto-completion and smart-sort
+    if (userToListTable.itemHistory) {
+      const existingItemInHistory = userToListTable.itemHistory.find(
         ({ item }) => item === nameInput
       );
 
       if (existingItemInHistory) {
-        existingItemInHistory.timesAdded = existingItemInHistory.timesAdded + 1;
+        existingItemInHistory.timesAdded++;
       } else {
-        list.itemHistory = [...list.itemHistory, newItemInHistory];
+        userToListTable.itemHistory = [
+          ...userToListTable.itemHistory,
+          ItemHistory.create({ item: nameInput })
+        ];
       }
     } else {
-      list.itemHistory = [newItemInHistory];
+      // Initialize item history
+      userToListTable.itemHistory = [ItemHistory.create({ item: nameInput })];
     }
 
-    await list.save();
-    console.log(list);
-    return newItem;
+    await userToListTable.save();
+    return userToListTable;
   }
 
   // Delete item from list
