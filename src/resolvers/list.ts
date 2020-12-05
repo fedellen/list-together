@@ -1,24 +1,15 @@
 import { List, UserPrivileges, UserToList } from '../entities';
-import {
-  Arg,
-  FieldResolver,
-  Mutation,
-  Query,
-  Resolver,
-  Root
-} from 'type-graphql';
-import { getRepository } from 'typeorm';
+import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 
 @Resolver(UserToList)
 export class ListResolver {
   // Gets only the specified user's lists
   @Query(() => [UserToList])
   async getUsersLists(@Arg('userId') userId: string): Promise<UserToList[]> {
-    const usersListArray = await getRepository(UserToList).find({
+    const usersListArray = UserToList.find({
       where: { userId: userId },
       relations: ['list', 'list.items', 'itemHistory']
     });
-
     if (!usersListArray) throw new Error('No lists were found for that User..');
 
     return usersListArray;

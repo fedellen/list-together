@@ -1,6 +1,5 @@
 import { Item, ItemHistory, UserToList } from '../entities';
 import { Arg, Mutation, Resolver } from 'type-graphql';
-import { getRepository } from 'typeorm';
 
 @Resolver()
 export class ItemResolver {
@@ -13,7 +12,7 @@ export class ItemResolver {
     @Arg('userId') userId: string
   ): Promise<UserToList> {
     // find the list
-    const userToListTable = await getRepository(UserToList).findOne({
+    const userToListTable = await UserToList.findOne({
       where: { listId: listId, userId: userId },
       relations: ['list', 'list.items', 'itemHistory']
     });
