@@ -2,7 +2,7 @@ import { List, User, UserToList } from '../entities';
 import { Arg, Mutation, Resolver } from 'type-graphql';
 import bcrypt from 'bcryptjs';
 import { RegisterInput } from './input/RegisterInput';
-import { getRepository } from 'typeorm';
+// import { getRepository } from 'typeorm';
 
 @Resolver()
 export class UserResolver {
@@ -29,7 +29,7 @@ export class UserResolver {
 
     console.log(initialUserToList);
 
-    return getRepository(UserToList).find({
+    return UserToList.find({
       where: { userId: user.id },
       relations: ['list', 'list.items', 'itemHistory']
     });
