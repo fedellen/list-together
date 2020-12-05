@@ -23,6 +23,7 @@
    "dependencies": {
       "apollo-server-express": "^2.19.0",
       "bcryptjs": "^2.4.3",
+      "class-validator": "^0.12.2",
       "cors": "^2.8.5",
       "graphql": "^15.4.0",
       "pg": "^8.5.1",
