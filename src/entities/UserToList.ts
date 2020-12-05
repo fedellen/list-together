@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType, Root } from 'type-graphql';
 import {
   Entity,
   Column,
@@ -38,10 +38,21 @@ export class UserToList extends BaseEntity {
   itemHistory: ItemHistory[] | null;
 
   @Field(() => [String], { nullable: true })
-  mostCommonWords: string[] | null;
+  mostCommonWords(@Root() parent: UserToList): string[] | null {
+    if (!parent.itemHistory) return null;
+    const sortedHistory = parent.itemHistory.sort(
+      (a, b) => b.timesAdded - a.timesAdded
+    );
+    return sortedHistory.map((history) => history.item);
+  }
 
   @Field(() => [String], { nullable: true })
-  autoSortedList: string[] | null;
+  autoSortedList(@Root() parent: UserToList): string[] | null {
+    // Sorted list by `removalOrder`
+    // Rating based on shopping trip removal order
+    // Should Only store the information when items
+    return null;
+  }
 
   // Front-end will send a sorted string array to store
   @Field(() => [String], { nullable: true })

@@ -1,6 +1,6 @@
-import { User } from '../entities';
+import { List, User, UserToList } from '../entities';
 import { Arg, Mutation, Resolver } from 'type-graphql';
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 
 @Resolver(User)
 export class UserResolver {
@@ -11,7 +11,7 @@ export class UserResolver {
     @Arg('username') username: string,
     @Arg('email') email: string,
     @Arg('password') password: string
-  ): Promise<User> {
+  ): Promise<UserToList> {
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = await User.create({
       username,
@@ -19,6 +19,14 @@ export class UserResolver {
       password: hashedPassword
     }).save();
 
-    return user; // exposes email, username, and id to the GraphQL API
+    const list = await List.create({
+      title: 'my-list'
+    }).save();
+    const initialUserToList = await UserToList.create({
+      listId: list.id,
+      userId: user.id
+    }).save();
+
+    return initialUserToList;
   }
 }
