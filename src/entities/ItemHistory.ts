@@ -1,5 +1,12 @@
-import { Field, ObjectType } from 'type-graphql';
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
+import { Field, Int, ObjectType } from 'type-graphql';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BaseEntity,
+  ManyToOne
+} from 'typeorm';
+import { UserToList } from '.';
 
 @ObjectType()
 @Entity('item_history')
@@ -7,15 +14,15 @@ export class ItemHistory extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column('uuid')
-  userToList!: string;
+  @ManyToOne(() => UserToList, (userToList) => userToList.itemHistory)
+  userToList!: UserToList;
 
-  @Field()
+  @Field(() => String)
   @Column('text')
   item!: string;
 
   // number of times added to list for smarter auto-completion
-  @Field()
+  @Field(() => Int)
   @Column({ type: 'integer', default: 1 })
   timesAdded!: number;
 
