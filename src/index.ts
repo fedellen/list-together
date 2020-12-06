@@ -17,8 +17,7 @@ const main = async () => {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [HelloResolver, UserResolver, ListResolver, ItemResolver],
-    validate: false
+    resolvers: [HelloResolver, UserResolver, ListResolver, ItemResolver]
   });
 
   const apolloServer = new ApolloServer({ schema });
