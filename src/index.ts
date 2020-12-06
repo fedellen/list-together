@@ -3,8 +3,17 @@ import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
+import session from 'express-session';
+import connectRedis from 'connect-redis';
+import { redis } from './redis';
+import cors from 'cors';
 
-// import { Resolvers } from './schema/resolvers';
+// Temporarily fixes a type error from @types/express-session update
+declare module 'express-session' {
+  interface Session {
+    userId: string;
+  }
+}
 
 import {
   UserResolver,
@@ -20,8 +29,36 @@ const main = async () => {
     resolvers: [HelloResolver, UserResolver, ListResolver, ItemResolver]
   });
 
-  const apolloServer = new ApolloServer({ schema });
+  const apolloServer = new ApolloServer({
+    schema,
+    context: ({ req }: any) => ({ req })
+  });
   const app = express();
+
+  const RedisStore = connectRedis(session);
+  app.use(
+    cors({
+      credentials: true,
+      origin: 'http://localhost:3000'
+    })
+  );
+  app.use(
+    session({
+      store: new RedisStore({
+        client: redis
+      }),
+      name: 'oatmeal-raisen',
+      secret: 'pants-are-fire',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 1000 * 60 * 60 * 24 * 15 * 365 // 15 years
+      }
+    })
+  );
+
   apolloServer.applyMiddleware({ app });
   app.listen(5000, () =>
     console.log(

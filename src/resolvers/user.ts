@@ -1,7 +1,8 @@
 import { List, User, UserToList } from '../entities';
-import { Arg, Mutation, Resolver } from 'type-graphql';
+import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 import bcrypt from 'bcryptjs';
 import { CreateUserInput } from './createUser/CreateUserInput';
+import { MyContext } from '../types/MyContext';
 // import { getRepository } from 'typeorm';
 
 @Resolver()
@@ -33,5 +34,28 @@ export class UserResolver {
       where: { userId: user.id },
       relations: ['list', 'list.items', 'itemHistory']
     });
+  }
+
+  @Mutation(() => [UserToList])
+  async login(
+    @Arg('email') email: string,
+    @Arg('password') password: string,
+    @Ctx() ctx: MyContext
+  ): Promise<UserToList[] | null> {
+    const user = await User.findOne({ where: { email: email } });
+    if (!user) throw new Error('A user with that email does not exist..');
+
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) throw new Error('Password does not match..');
+
+    ctx.req.session.userId = user.id;
+
+    const usersLists = await UserToList.find({
+      where: { userId: user.id },
+      relations: ['list', 'list.items', 'itemHistory']
+    });
+
+    console.log(usersLists);
+    return usersLists;
   }
 }
