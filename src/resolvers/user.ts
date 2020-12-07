@@ -49,21 +49,24 @@ export class UserResolver {
     });
 
     // If no lists were found, create one upon login
-    if (!usersLists) {
+    if (!usersLists || !usersLists.length) {
       const list = await List.create({
         title: 'my-list'
       }).save();
-      const initialUserToList = await UserToList.create({
+      await UserToList.create({
         listId: list.id,
         userId: user.id
       }).save();
-      usersLists = [initialUserToList];
+      usersLists = await UserToList.find({
+        where: { userId: user.id },
+        relations: ['list', 'list.items', 'itemHistory']
+      });
     }
 
     return usersLists;
   }
 
-  // Confirm user
+  // Confirm user -- Change this to an express route?
   @Mutation(() => Boolean)
   async confirmUser(@Arg('token') token: string): Promise<boolean> {
     const userId = await redis.get(token);
