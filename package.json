@@ -30,6 +30,7 @@
     "class-validator": "^0.12.2",
     "connect-redis": "^5.0.0",
     "cors": "^2.8.5",
+    "dotenv-safe": "^8.2.0",
     "express-session": "^1.17.1",
     "graphql": "^15.4.0",
     "ioredis": "^4.19.2",
