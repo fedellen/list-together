@@ -17,27 +17,27 @@ export class IsEmailExistConstraint implements ValidatorConstraintInterface {
   }
 }
 
-@ValidatorConstraint({ async: true })
-export class IsUsernameExistConstraint implements ValidatorConstraintInterface {
-  validate(username: string) {
-    return User.findOne({ where: { username } }).then((user) => {
-      if (user) return false;
-      return true;
-    });
-  }
-}
+// @ValidatorConstraint({ async: true })
+// export class IsUsernameExistConstraint implements ValidatorConstraintInterface {
+//   validate(username: string) {
+//     return User.findOne({ where: { username } }).then((user) => {
+//       if (user) return false;
+//       return true;
+//     });
+//   }
+// }
 
-export function IsUserAlreadyExist(validationOptions?: ValidationOptions) {
-  return function (object: Object, propertyName: string) {
-    registerDecorator({
-      target: object.constructor,
-      propertyName: propertyName,
-      options: validationOptions,
-      constraints: [],
-      validator: IsUsernameExistConstraint
-    });
-  };
-}
+// export function IsUserAlreadyExist(validationOptions?: ValidationOptions) {
+//   return function (object: Object, propertyName: string) {
+//     registerDecorator({
+//       target: object.constructor,
+//       propertyName: propertyName,
+//       options: validationOptions,
+//       constraints: [],
+//       validator: IsUsernameExistConstraint
+//     });
+//   };
+// }
 
 export function IsEmailAlreadyExist(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
