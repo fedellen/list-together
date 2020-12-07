@@ -1,9 +1,19 @@
 import nodemailer from 'nodemailer';
+import 'dotenv-safe/config';
 
 export async function sendEmail(email: string, url: string) {
   const account = await nodemailer.createTestAccount();
 
   const transporter = nodemailer.createTransport({
+    // // production email via SMTP
+    // host: process.env.EMAIL_URL,
+    // secure: true, // true for 465, false for other ports
+    // auth: {
+    //   user: process.env.EMAIL_USERNAME,
+    //   pass: process.env.EMAIL_PASSWORD
+    // }
+
+    // test email
     host: 'smtp.ethereal.email',
     port: 587,
     secure: false, // true for 465, false for other ports

@@ -6,3 +6,4 @@ tmp/
 temp/
 dist/
 yarn-error.log
+.env
