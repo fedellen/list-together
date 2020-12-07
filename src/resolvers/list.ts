@@ -1,10 +1,12 @@
 import { List, UserPrivileges, UserToList } from '../entities';
-import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
+import { isAuth } from '../middleware/isAuth';
+import { logger } from '../middleware/logger';
 
 @Resolver(UserToList)
 export class ListResolver {
   // Gets only the specified user's lists
-  @Authorized()
+  @UseMiddleware(isAuth, logger)
   @Query(() => [UserToList])
   async getUsersLists(@Arg('userId') userId: string): Promise<UserToList[]> {
     const usersListArray = UserToList.find({
