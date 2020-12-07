@@ -47,7 +47,7 @@ export class UserToList extends BaseEntity {
   }
 
   @Field(() => [String], { nullable: true })
-  autoSortedList(@Root() parent: UserToList): string[] | null {
+  autoSortedList(/*@Root() parent: UserToList*/): string[] | null {
     // Sorted list by `removalOrder`
     // Rating based on shopping trip removal order
     // Should Only store the information when items
