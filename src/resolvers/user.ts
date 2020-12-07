@@ -3,16 +3,17 @@ import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 import bcrypt from 'bcryptjs';
 import { CreateUserInput } from './CreateUserInput/CreateUserInput';
 import { MyContext } from '../types/MyContext';
-// import { getRepository } from 'typeorm';
+import { sendEmail } from '../utils/sendEmail';
+import { createConfirmationUrl } from '../utils/confirmationUrl';
+import { redis } from '../redis';
 
 @Resolver()
 export class UserResolver {
   // Create a User
-  @Mutation(() => [UserToList])
+  @Mutation(() => User)
   async createUser(
-    // Arguments
     @Arg('data') { username, email, password }: CreateUserInput
-  ): Promise<UserToList[]> {
+  ): Promise<User> {
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = await User.create({
       username,
@@ -20,22 +21,12 @@ export class UserResolver {
       password: hashedPassword
     }).save();
 
-    const list = await List.create({
-      title: 'my-list'
-    }).save();
-    const initialUserToList = await UserToList.create({
-      listId: list.id,
-      userId: user.id
-    }).save();
+    await sendEmail(email, await createConfirmationUrl(user.id));
 
-    console.log(initialUserToList);
-
-    return UserToList.find({
-      where: { userId: user.id },
-      relations: ['list', 'list.items', 'itemHistory']
-    });
+    return user;
   }
 
+  // Login user, returns all user's lists from database
   @Mutation(() => [UserToList])
   async login(
     @Arg('email') email: string,
@@ -43,19 +34,47 @@ export class UserResolver {
     @Ctx() ctx: MyContext
   ): Promise<UserToList[] | null> {
     const user = await User.findOne({ where: { email: email } });
-    if (!user) throw new Error('A user with that email does not exist..');
+    if (!user) throw new Error('Login has failed..');
 
     const valid = await bcrypt.compare(password, user.password);
-    if (!valid) throw new Error('Password does not match..');
+    if (!valid) throw new Error('Login has failed...');
+
+    if (!user.confirmed) throw new Error('Email has not been confirmed..');
 
     ctx.req.session.userId = user.id;
 
-    const usersLists = await UserToList.find({
+    let usersLists = await UserToList.find({
       where: { userId: user.id },
       relations: ['list', 'list.items', 'itemHistory']
     });
 
-    console.log(usersLists);
+    // If no lists were found, create one upon login
+    if (!usersLists) {
+      const list = await List.create({
+        title: 'my-list'
+      }).save();
+      const initialUserToList = await UserToList.create({
+        listId: list.id,
+        userId: user.id
+      }).save();
+      usersLists = [initialUserToList];
+    }
+
     return usersLists;
+  }
+
+  // Confirm user
+  @Mutation(() => Boolean)
+  async confirmUser(@Arg('token') token: string): Promise<boolean> {
+    const userId = await redis.get(token);
+
+    if (!userId) {
+      return false;
+    }
+
+    await User.update({ id: userId }, { confirmed: true });
+    await redis.del(token);
+
+    return true;
   }
 }
