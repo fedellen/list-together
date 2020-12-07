@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import 'dotenv-safe/config';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import { buildSchema } from 'type-graphql';
@@ -50,8 +51,8 @@ const main = async () => {
       store: new RedisStore({
         client: redis
       }),
-      name: 'oatmeal-raisen',
-      secret: 'pants-are-fire',
+      name: process.env.COOKIE_NAME,
+      secret: process.env.SESSION_SECRET!,
       resave: false,
       saveUninitialized: false,
       cookie: {
