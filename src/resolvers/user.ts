@@ -1,7 +1,7 @@
 import { List, User, UserToList } from '../entities';
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 import bcrypt from 'bcryptjs';
-import { CreateUserInput } from './createUser/CreateUserInput';
+import { CreateUserInput } from './CreateUserInput/CreateUserInput';
 import { MyContext } from '../types/MyContext';
 // import { getRepository } from 'typeorm';
 
