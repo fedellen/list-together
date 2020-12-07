@@ -22,6 +22,7 @@ import {
   ListResolver,
   ItemResolver
 } from './resolvers';
+import { COOKIE_NAME } from './constants';
 
 const main = async () => {
   await createConnection();
@@ -35,7 +36,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema,
-    context: ({ req }: any) => ({ req })
+    context: ({ req, res }: any) => ({ req, res })
   });
   const app = express();
 
@@ -51,7 +52,7 @@ const main = async () => {
       store: new RedisStore({
         client: redis
       }),
-      name: process.env.COOKIE_NAME,
+      name: COOKIE_NAME,
       secret: process.env.SESSION_SECRET!,
       resave: false,
       saveUninitialized: false,

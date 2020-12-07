@@ -7,8 +7,13 @@ import { sendEmail } from '../utils/sendEmail';
 import { createConfirmationUrl } from '../utils/confirmationUrl';
 import { redis } from '../redis';
 import { v4 } from 'uuid';
-import { confirmUserPrefix, forgetPasswordPrefix } from '../constants';
+import {
+  confirmUserPrefix,
+  COOKIE_NAME,
+  forgetPasswordPrefix
+} from '../constants';
 import { ChangePasswordInput } from './input-types/ChangePasswordInput';
+import 'dotenv-safe';
 
 @Resolver()
 export class UserResolver {
@@ -125,6 +130,18 @@ export class UserResolver {
     });
   }
 
-  @Mutation()
-}
+  @Mutation(() => Boolean)
+  async logout(@Ctx() ctx: MyContext): Promise<Boolean> {
+    return new Promise((resolve) =>
+      ctx.req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+          return resolve(false);
+        }
 
+        ctx.res.clearCookie(COOKIE_NAME);
+        return resolve(true);
+      })
+    );
+  }
+}
