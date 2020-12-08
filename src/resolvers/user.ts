@@ -1,6 +1,6 @@
 import { List, User, UserToList } from '../entities';
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
-import bcrypt from 'bcryptjs';
+import argon2 from 'argon2';
 import { CreateUserInput } from './input-types/CreateUserInput';
 import { MyContext } from '../types/MyContext';
 import { sendEmail } from '../utils/sendEmail';
@@ -22,7 +22,7 @@ export class UserResolver {
   async createUser(
     @Arg('data') { username, email, password }: CreateUserInput
   ): Promise<User> {
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await argon2.hash(password);
     const user = await User.create({
       username,
       email,
@@ -44,7 +44,7 @@ export class UserResolver {
     const user = await User.findOne({ where: { email: email } });
     if (!user) throw new Error('Login has failed..');
 
-    const valid = await bcrypt.compare(password, user.password);
+    const valid = await argon2.verify(password, user.password);
     if (!valid) throw new Error('Login has failed...');
 
     if (!user.confirmed) throw new Error('Email has not been confirmed..');
@@ -119,7 +119,7 @@ export class UserResolver {
     if (!user) return null;
     await redis.del(forgetPasswordPrefix + token);
 
-    user.password = await bcrypt.hash(password, 12);
+    user.password = await argon2.hash(password);
     await user.save();
 
     ctx.req.session.userId = user.id;
