@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import 'dotenv-safe/config';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
-import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
@@ -16,23 +15,13 @@ declare module 'express-session' {
   }
 }
 
-import {
-  UserResolver,
-  HelloResolver,
-  ListResolver,
-  ItemResolver
-} from './resolvers';
 import { COOKIE_NAME } from './constants';
+import { createSchema } from './utils/createSchema';
 
 const main = async () => {
   await createConnection();
 
-  const schema = await buildSchema({
-    resolvers: [HelloResolver, UserResolver, ListResolver, ItemResolver],
-    authChecker: ({ context: { req } }) => {
-      return !!req.session.userId;
-    }
-  });
+  const schema = await createSchema();
 
   const apolloServer = new ApolloServer({
     schema,
