@@ -112,7 +112,7 @@ export class UserResolver {
   async changePassword(
     @Arg('data') { token, password }: ChangePasswordInput,
     @Ctx() ctx: MyContext
-  ): Promise<UserToList[] | null> {
+  ): Promise<User | null> {
     const userId = await redis.get(forgetPasswordPrefix + token);
     if (!userId) return null;
 
@@ -125,10 +125,7 @@ export class UserResolver {
 
     ctx.req.session.userId = user.id;
 
-    return UserToList.find({
-      where: { userId: user.id },
-      relations: ['list', 'list.items', 'itemHistory']
-    });
+    return user;
   }
 
   @Mutation(() => Boolean)
