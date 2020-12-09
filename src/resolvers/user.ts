@@ -1,5 +1,5 @@
 import { List, User, UserToList } from '../entities';
-import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
+import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 import argon2 from 'argon2';
 import { CreateUserInput } from './input-types/CreateUserInput';
 import { MyContext } from '../types/MyContext';
@@ -14,6 +14,8 @@ import {
 } from '../constants';
 import { ChangePasswordInput } from './input-types/ChangePasswordInput';
 import 'dotenv-safe';
+import { isAuth } from '../middleware/isAuth';
+import { logger } from '../middleware/logger';
 
 @Resolver()
 export class UserResolver {
@@ -34,7 +36,7 @@ export class UserResolver {
     return user;
   }
 
-  // Confirm user -- Change this to an express route?
+  // Confirm the user -- Probably refactor this to an express route
   @Mutation(() => Boolean)
   async confirmUser(@Arg('token') token: string): Promise<boolean> {
     const userId = await redis.get(confirmUserPrefix + token);
@@ -90,7 +92,7 @@ export class UserResolver {
     return usersLists;
   }
 
-  // Forgot password -- sendEmail
+  // Forgot password -- Probably refactor this to an express route from email
   @Mutation(() => Boolean)
   async forgotPassword(@Arg('email') email: string): Promise<Boolean> {
     const user = await User.findOne({ where: { email } });
@@ -108,6 +110,7 @@ export class UserResolver {
     return true;
   }
 
+  // Change password with token from email
   @Mutation(() => User, { nullable: true })
   async changePassword(
     @Arg('data') { token, password }: ChangePasswordInput,
@@ -128,7 +131,9 @@ export class UserResolver {
     return user;
   }
 
+  // Logout user
   @Mutation(() => Boolean)
+  @UseMiddleware(isAuth, logger)
   async logout(@Ctx() ctx: MyContext): Promise<Boolean> {
     return new Promise((resolve) =>
       ctx.req.session.destroy((err) => {
