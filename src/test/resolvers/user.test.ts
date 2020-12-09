@@ -96,6 +96,12 @@ mutation ChangePassword($data: ChangePasswordInput!) {
 }
 `;
 
+// const logoutMutation = `
+//   mutation {
+//     logout
+//   }
+// `;
+
 describe('createUser Mutation:', () => {
   it('can create a user with valid credentials', async () => {
     const user = {
@@ -373,3 +379,19 @@ describe('Change password mutation:', () => {
     });
   });
 });
+
+// // Logout is working via manual testing
+// // Can't seem to get ctx.req.session to run with Jest yet
+
+// describe('Logout mutation:', () => {
+//   it('Logged in user can log out', async () => {
+//     const user = await createUser();
+
+//     const response = await graphqlCall({
+//       source: logoutMutation,
+//       userId: user.id
+//     });
+
+//     console.log(response);
+//   });
+// });
