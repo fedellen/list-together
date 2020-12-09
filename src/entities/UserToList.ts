@@ -35,7 +35,7 @@ export class UserToList extends BaseEntity {
   listId: string;
 
   @Field(() => [String])
-  @Column({ type: 'simple-array', default: ['owner'] })
+  @Column({ type: 'simple-array' })
   privileges: UserPrivileges[];
 
   @Field(() => [ItemHistory], { nullable: true })
