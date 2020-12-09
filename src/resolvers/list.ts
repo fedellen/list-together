@@ -40,11 +40,9 @@ export class ListResolver {
       where: { userId: req.session.userId }
     });
     const userToListTablesAsOwner = userToListTableArray.filter(
-      (listConnection) => {
-        listConnection.privileges === ['owner'];
-        console.log(listConnection.privileges);
-      }
+      (listConnection) => listConnection.privileges.includes('owner')
     );
+
     if (userToListTablesAsOwner.length >= 25)
       throw new Error('User cannot create more than 25 lists..');
 
