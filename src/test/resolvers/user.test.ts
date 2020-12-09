@@ -8,6 +8,7 @@ import faker from 'faker';
 import { createConfirmationUrl } from '../../utils/confirmationUrl';
 import { createUser } from '../helpers/createUser';
 import { v4 } from 'uuid';
+import { forgetPasswordPrefix } from '../../constants';
 
 let conn: Connection;
 beforeAll(async () => {
@@ -79,6 +80,22 @@ mutation LoginUser($email: String!, $password: String!) {
 }
 `;
 
+const forgotPasswordMutation = `
+mutation ForgotPassword($email: String!) {
+  forgotPassword(email: $email)
+}
+`;
+
+const changePasswordMutation = `
+mutation ChangePassword($data: ChangePasswordInput!) {
+  changePassword(data: $data) {
+    id
+    username
+    email
+  }
+}
+`;
+
 describe('createUser Mutation:', () => {
   it('can create a user with valid credentials', async () => {
     const user = {
@@ -145,6 +162,7 @@ describe('createUser Mutation:', () => {
 describe('the confirmUser mutation:', () => {
   it('User can confirm account with the token created from the createConfirmationUrl function', async () => {
     const user = await createUser(false);
+    // createUser(false) returns unconfirmed user
     expect(user.confirmed).toBeFalsy();
     const url = await createConfirmationUrl(user.id);
     const token = url.substr(url.length - 36);
@@ -169,6 +187,7 @@ describe('the confirmUser mutation:', () => {
 
   it('User cannot confirm account with a fake uuid token', async () => {
     const user = await createUser(false);
+    // createUser(false) returns unconfirmed user
     expect(user.confirmed).toBeFalsy();
     await createConfirmationUrl(user.id);
     // Create fake `uuid v4` token
@@ -193,7 +212,7 @@ describe('the confirmUser mutation:', () => {
   });
 });
 
-describe('login mutation:', () => {
+describe('Login mutation:', () => {
   it('Confirmed user can login with the correct credentials, and receives fresh empty list upon first login', async () => {
     const user = await createUser();
 
@@ -244,6 +263,113 @@ describe('login mutation:', () => {
           message: 'Login has failed...'
         }
       ]
+    });
+  });
+
+  it('Unconfirmed user cannot login, response contains `Email has not been confirmed..`', async () => {
+    const user = await createUser(false);
+    // createUser(false) returns unconfirmed user
+    const response = await graphqlCall({
+      source: loginUserMutation,
+      variableValues: {
+        email: user.email,
+        password: user.password
+      }
+    });
+
+    // New UserToList connection has 'my-list'
+    expect(response).toMatchObject({
+      errors: [
+        {
+          message: 'Email has not been confirmed..'
+        }
+      ]
+    });
+  });
+});
+
+describe('Forgot password mutation:', () => {
+  it('Returns true when user is found, after sendEmail function has run', async () => {
+    const user = await createUser();
+
+    const response = await graphqlCall({
+      source: forgotPasswordMutation,
+      variableValues: {
+        email: user.email
+      }
+    });
+
+    expect(response).toMatchObject({
+      data: {
+        forgotPassword: true
+      }
+    });
+  });
+
+  it('Returns false when user is not found', async () => {
+    await createUser();
+
+    const response = await graphqlCall({
+      source: forgotPasswordMutation,
+      variableValues: {
+        email: 'notInTheDatabase@fake.net'
+      }
+    });
+
+    expect(response).toMatchObject({
+      data: {
+        forgotPassword: false
+      }
+    });
+  });
+});
+
+describe('Change password mutation:', () => {
+  it('User can change password with correct redis token; returns correct user credentials', async () => {
+    const user = await createUser();
+
+    // Create forgetPassword token and save to redis
+    const token = v4();
+    await redis.set(forgetPasswordPrefix + token, user.id, 'ex', 60 * 60 * 24);
+
+    const response = await graphqlCall({
+      source: changePasswordMutation,
+      variableValues: {
+        data: { token: token, password: faker.internet.password() }
+      }
+    });
+
+    expect(response).toMatchObject({
+      data: {
+        changePassword: {
+          id: user.id,
+          username: user.username,
+          email: user.email
+        }
+      }
+    });
+  });
+
+  it('User cannot change password with fake redis token; returns null', async () => {
+    const user = await createUser();
+
+    // Create forgetPassword token and save to redis
+    const token = v4();
+    await redis.set(forgetPasswordPrefix + token, user.id, 'ex', 60 * 60 * 24);
+
+    const fakeToken = v4();
+
+    const response = await graphqlCall({
+      source: changePasswordMutation,
+      variableValues: {
+        data: { token: fakeToken, password: faker.internet.password() }
+      }
+    });
+
+    expect(response).toMatchObject({
+      data: {
+        changePassword: null
+      }
     });
   });
 });
