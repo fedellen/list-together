@@ -29,7 +29,8 @@ export const userWithList = async (): Promise<User> => {
   }).save();
   await UserToList.create({
     listId: list.id,
-    userId: user.id
+    userId: user.id,
+    privileges: ['owner']
   }).save();
 
   return user;

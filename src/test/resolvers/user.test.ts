@@ -132,8 +132,6 @@ describe('createUser Mutation:', () => {
     expect(userInDatabase).toBeDefined();
     expect(userInDatabase!.confirmed).toBeFalsy();
     expect(userInDatabase!.email).toBe(user.email);
-
-    console.log(await redis.get(userInDatabase!.id));
   });
 
   it('returns validation error with invalid email credentials', async () => {

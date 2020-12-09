@@ -80,7 +80,8 @@ export class UserResolver {
       }).save();
       await UserToList.create({
         listId: list.id,
-        userId: user.id
+        userId: user.id,
+        privileges: ['owner'] // Only list creator has owner rights
       }).save();
       usersLists = await UserToList.find({
         where: { userId: user.id },

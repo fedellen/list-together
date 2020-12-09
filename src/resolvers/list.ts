@@ -18,7 +18,8 @@ export class ListResolver {
   @UseMiddleware(isAuth, logger)
   @Query(() => [UserToList])
   async getUsersLists(@Ctx() { req }: MyContext): Promise<UserToList[]> {
-    const usersListArray = UserToList.find({
+    // if (!req.session.userId) throw new Error('No user in context..');
+    const usersListArray = await UserToList.find({
       where: { userId: req.session.userId },
       relations: ['list', 'list.items', 'itemHistory']
     });
@@ -34,12 +35,27 @@ export class ListResolver {
     @Arg('title') title: string,
     @Ctx() { req }: MyContext
   ): Promise<List> {
+    // Check to see if user already owns 25 lists
+    const userToListTableArray = await UserToList.find({
+      where: { userId: req.session.userId }
+    });
+    const userToListTablesAsOwner = userToListTableArray.filter(
+      (listConnection) => {
+        listConnection.privileges === ['owner'];
+        console.log(listConnection.privileges);
+      }
+    );
+    if (userToListTablesAsOwner.length >= 25)
+      throw new Error('User cannot create more than 25 lists..');
+
+    // Make the list 👌
     const list = await List.create({
       title
     }).save();
     await UserToList.create({
       listId: list.id,
-      userId: req.session.userId
+      userId: req.session.userId,
+      privileges: ['owner']
     }).save();
     return list;
   }
