@@ -7,12 +7,5 @@
   "database": "grocery-db",
   "synchronize": true,
   "logging": true,
-  "entities": ["dist/entities/**/*.js"],
-  "migrations": ["src/migration/**/*.ts"],
-  "subscribers": ["src/subscriber/**/*.ts"],
-  "cli": {
-    "entitiesDir": "src/entity",
-    "migrationsDir": "src/migration",
-    "subscribersDir": "src/subscriber"
-  }
+  "entities": ["dist/entities/**/*.js"]
 }
