@@ -14,6 +14,13 @@ import { ItemHistory } from './';
 
 export type UserPrivileges = 'add' | 'strike' | 'sort' | 'delete' | 'owner';
 
+// export enum UserPrivileges {
+//   add = 'add',
+//   strike = 'strike',
+//   delete = 'delete',
+//   owner = 'owner'
+// }
+
 // This is a Many to Many join table connecting a User to a List
 // It is also the main point of entry for GraphQL List information
 @ObjectType()

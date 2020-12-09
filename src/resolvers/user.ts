@@ -34,6 +34,21 @@ export class UserResolver {
     return user;
   }
 
+  // Confirm user -- Change this to an express route?
+  @Mutation(() => Boolean)
+  async confirmUser(@Arg('token') token: string): Promise<boolean> {
+    const userId = await redis.get(confirmUserPrefix + token);
+
+    if (!userId) {
+      return false;
+    }
+
+    await User.update({ id: userId }, { confirmed: true });
+    await redis.del(confirmUserPrefix + token);
+
+    return true;
+  }
+
   // Login user, returns all user's lists from database
   @Mutation(() => [UserToList])
   async login(
@@ -44,7 +59,7 @@ export class UserResolver {
     const user = await User.findOne({ where: { email: email } });
     if (!user) throw new Error('Login has failed..');
 
-    const valid = await argon2.verify(password, user.password);
+    const valid = await argon2.verify(user.password, password);
     if (!valid) throw new Error('Login has failed...');
 
     if (!user.confirmed) throw new Error('Email has not been confirmed..');
@@ -71,22 +86,8 @@ export class UserResolver {
       });
     }
 
+    // Return all lists to initialize List App
     return usersLists;
-  }
-
-  // Confirm user -- Change this to an express route?
-  @Mutation(() => Boolean)
-  async confirmUser(@Arg('token') token: string): Promise<boolean> {
-    const userId = await redis.get(confirmUserPrefix + token);
-
-    if (!userId) {
-      return false;
-    }
-
-    await User.update({ id: userId }, { confirmed: true });
-    await redis.del(confirmUserPrefix + token);
-
-    return true;
   }
 
   // Forgot password -- sendEmail

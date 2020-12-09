@@ -1,5 +1,5 @@
 // import 'reflect-metadata';
-import { Item, ItemHistory, List, User, UserToList } from '../entities';
+import { Item, ItemHistory, List, User, UserToList } from '../../entities';
 import { createConnection } from 'typeorm';
 
 export const testConn = () => {

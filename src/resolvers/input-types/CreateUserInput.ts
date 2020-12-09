@@ -9,7 +9,6 @@ import {
 export class CreateUserInput {
   @Field()
   @Length(1, 255)
-  // @IsUserAlreadyExist({ message: 'username is already in use' })
   username: string;
 
   @Field()
