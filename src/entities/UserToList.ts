@@ -12,7 +12,7 @@ import { List } from './';
 import { User } from './';
 import { ItemHistory } from './';
 
-export type UserPrivileges = 'add' | 'strike' | 'sort' | 'delete' | 'owner';
+export type UserPrivileges = 'add' | 'strike' | 'delete' | 'owner';
 
 // export enum UserPrivileges {
 //   add = 'add',
