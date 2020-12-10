@@ -22,16 +22,18 @@ export const createUser = async (confirmed: boolean = true): Promise<User> => {
   return savedUser;
 };
 
-export const userWithList = async (): Promise<User> => {
+export const userWithList = async (lists: number = 1): Promise<User> => {
   const user = await createUser();
-  const list = await List.create({
-    title: 'my-test-list'
-  }).save();
-  await UserToList.create({
-    listId: list.id,
-    userId: user.id,
-    privileges: ['owner']
-  }).save();
+  for (let i = 0; i < lists; i++) {
+    const list = await List.create({
+      title: `my-test-list-${i}`
+    }).save();
+    await UserToList.create({
+      listId: list.id,
+      userId: user.id,
+      privileges: ['owner']
+    }).save();
+  }
 
   return user;
 };
