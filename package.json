@@ -9,8 +9,7 @@
     "start": "node dist/index.js",
     "dev": "nodemon dist/index.js",
     "db:setup": "ts-node ./src/test/jest-setup.*",
-    "test": "jest",
-    "test-all": "jest --runInBand"
+    "test": "jest --runInBand"
   },
   "keywords": [],
   "author": "fedellen",
