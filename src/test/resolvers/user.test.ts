@@ -1,35 +1,12 @@
-import 'reflect-metadata';
 import { User, UserToList } from '../../entities';
-import { Connection } from 'typeorm';
 import { graphqlCall } from '../helpers/graphqlCall';
-import { testConn } from '../helpers/testConn';
 import { redis } from '../../redis';
 import faker from 'faker';
 import { createConfirmationUrl } from '../../utils/confirmationUrl';
 import { createUser } from '../helpers/createUser';
 import { v4 } from 'uuid';
 import { forgetPasswordPrefix } from '../../constants';
-
-let conn: Connection;
-beforeAll(async () => {
-  // Create connections before all
-  conn = await testConn();
-  if (redis.status === 'end') await redis.connect();
-});
-
-beforeEach(async () => {
-  // Clear DB before each test
-  conn.entityMetadatas.forEach(async (entity) => {
-    const repository = conn.getRepository(entity.name);
-    await repository.query(`DELETE FROM ${entity.tableName}`);
-  });
-});
-
-afterAll(async () => {
-  // Close connections
-  await conn.close();
-  redis.disconnect();
-});
+import { userListFragment } from '../helpers/userListFragment';
 
 const createUserMutation = `
 mutation CreateUser($data: CreateUserInput!) {
@@ -56,27 +33,7 @@ mutation LoginUser($email: String!, $password: String!) {
   login(
     email: $email
     password: $password
-  ) {
-    userId
-    listId
-    privileges
-    mostCommonWords
-    autoSortedList
-    itemHistory {
-      item
-      timesAdded
-      removalOrder
-    }
-    list {
-      title
-      items {
-        name
-        notes
-        strike
-        bold
-      }
-    }
-  }
+  ) ${userListFragment}
 }
 `;
 

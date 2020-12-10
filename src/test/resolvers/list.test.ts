@@ -1,60 +1,13 @@
-import 'reflect-metadata';
-import { Connection } from 'typeorm';
 import { graphqlCall } from '../helpers/graphqlCall';
-import { testConn } from '../helpers/testConn';
-import { redis } from '../../redis';
 import faker from 'faker';
-// import { createConfirmationUrl } from '../../utils/confirmationUrl';
 import { createUser, userWithList } from '../helpers/createUser';
 import { UserToList } from '../../entities';
-// import { v4 } from 'uuid';
-// import { forgetPasswordPrefix } from '../../constants';
-
-let conn: Connection;
-beforeAll(async () => {
-  // Create connections before all
-  conn = await testConn();
-  if (redis.status === 'end') await redis.connect();
-});
-
-beforeEach(async () => {
-  // Clear DB before each test
-  conn.entityMetadatas.forEach(async (entity) => {
-    const repository = conn.getRepository(entity.name);
-    await repository.query(`DELETE FROM ${entity.tableName}`);
-  });
-});
-
-afterAll(async () => {
-  // Close connections
-  await conn.close();
-  redis.disconnect();
-});
+import { userListFragment } from '../helpers/userListFragment';
 
 const getUsersListsQuery = `
 query GetUsersLists {
   getUsersLists
-  {
-    userId
-    listId
-    privileges
-    mostCommonWords
-    autoSortedList
-    itemHistory {
-      item
-      timesAdded
-      removalOrder
-    }
-    list {
-      title
-      items {
-        name
-        notes
-        strike
-        bold
-      }
-    }
-  }
+  ${userListFragment}
 }
 `;
 
