@@ -33,6 +33,10 @@ export class User extends BaseEntity {
 
   // still need to add OAuth
 
+  @Field(() => [String], { nullable: true })
+  @Column({ type: 'simple-array', nullable: true })
+  sortedListsArray: string[] | null;
+
   @OneToMany(() => UserToList, (userToList) => userToList.user)
   listConnection: UserToList[];
 
