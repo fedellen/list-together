@@ -1,7 +1,11 @@
 import { graphqlCall } from '../helpers/graphqlCall';
 import faker from 'faker';
-import { createUser, userWithList } from '../helpers/createUser';
-import { UserToList } from '../../entities';
+import {
+  createUser,
+  createUserWithSharedPriv,
+  userWithList
+} from '../helpers/createUser';
+import { List, UserToList } from '../../entities';
 import { userListFragment } from '../helpers/userListFragment';
 
 const getUsersListsQuery = `
@@ -18,6 +22,18 @@ mutation CreateList($title: String!) {
     id
   }
 }
+`;
+
+const shareListMutation = `
+  mutation ShareList($data: ShareListInput!) {
+    shareList (data: $data)
+  }
+`;
+
+const deleteListMutation = `
+  mutation DeleteList($listId: String!) {
+    deleteList(listId: $listId)
+  }
 `;
 
 describe('Get users lists query:', () => {
@@ -126,17 +142,163 @@ describe('Create list mutation:', () => {
   });
 });
 
-// describe('Share list mutation:', () => {
-//   it('Owner of the list can share the list', () => {});
+describe('Share list mutation:', () => {
+  it('Owner of the list can share the list', async () => {
+    const user = await userWithList();
+    const userToShare = await createUser();
+    const userToListTable = await UserToList.findOne({
+      where: { userId: user.id }
+    });
 
-//   it('Non-owners cannot share the list', () => {});
-// });
+    const shareListInput = {
+      email: userToShare.email,
+      listId: userToListTable!.listId,
+      privileges: ['add', 'strike']
+    };
 
-// describe('Delete list mutation:', () => {
-//   it('Owner of the list can delete the list', () => {});
+    const response = await graphqlCall({
+      source: shareListMutation,
+      variableValues: { data: shareListInput },
+      userId: user.id
+    });
 
-//   it('Non-owners cannot delete the list', () => {});
-// });
+    expect(response).toMatchObject({
+      data: {
+        shareList: true
+      }
+    });
+  });
+
+  it('Non-owners cannot share the list', async () => {
+    const listOwner = await userWithList();
+    const userToListTable = await UserToList.findOne({
+      where: { userId: listOwner.id }
+    });
+    const sharedUser = await createUserWithSharedPriv(userToListTable!.listId, [
+      'add',
+      'strike'
+    ]);
+    const userToShare = await createUser();
+
+    const shareListInput = {
+      email: userToShare.email,
+      listId: userToListTable!.listId,
+      privileges: ['delete']
+    };
+
+    const response = await graphqlCall({
+      source: shareListMutation,
+      variableValues: { data: shareListInput },
+      userId: sharedUser.id
+    });
+
+    expect(response).toMatchObject({
+      errors: [
+        {
+          message: 'You do not have owner privileges to that list..'
+        }
+      ]
+    });
+
+    // New connection in database should not exist 👎
+    const userToShareListConnection = await UserToList.findOne({
+      where: { userId: userToShare.id }
+    });
+    expect(userToShareListConnection).toBeUndefined();
+  });
+});
+
+describe('Delete list mutation:', () => {
+  it('User can delete their UserToList connection, list is deleted when no other connections exist', async () => {
+    const user = await userWithList();
+    const userToListTable = await UserToList.findOne({
+      where: { userId: user.id }
+    });
+
+    const response = await graphqlCall({
+      source: deleteListMutation,
+      variableValues: { listId: userToListTable!.listId },
+      userId: user.id
+    });
+
+    expect(response).toMatchObject({
+      data: {
+        deleteList: true
+      }
+    });
+
+    const userToListTableAfter = await UserToList.findOne({
+      where: { userId: user.id }
+    });
+    expect(userToListTableAfter).toBeUndefined();
+
+    // List no longer exists
+    const listInDatabaseAfter = await List.findOne(userToListTable!.listId);
+    expect(listInDatabaseAfter).toBeUndefined();
+  });
+
+  it('List infers a new owner when owner of list deletes connection and list has existing connections', async () => {
+    const listOwner = await userWithList();
+    const ownersUserToListTable = await UserToList.findOne({
+      where: { userId: listOwner.id }
+    });
+    const listId = ownersUserToListTable!.listId;
+    const sharedUser = await createUserWithSharedPriv(listId, [
+      'add',
+      'strike',
+      'delete'
+    ]);
+
+    const response = await graphqlCall({
+      source: deleteListMutation,
+      variableValues: { listId: listId },
+      userId: listOwner.id
+    });
+
+    expect(response).toMatchObject({
+      data: {
+        deleteList: true
+      }
+    });
+
+    const sharedUserToListTableAfter = await UserToList.findOne({
+      where: { userId: sharedUser.id }
+    });
+
+    // List has new owner
+    expect(sharedUserToListTableAfter).toMatchObject({
+      privileges: ['owner']
+    });
+  });
+
+  it('Delete list cannot be used by unauthenticated requests', async () => {
+    // User must have authenticated context to target a list connection
+    const user = await userWithList();
+    const userToListTable = await UserToList.findOne({
+      where: { userId: user.id }
+    });
+    const listId = userToListTable!.listId;
+
+    const response = await graphqlCall({
+      source: deleteListMutation,
+      variableValues: { listId: listId },
+      userId: undefined
+    });
+
+    expect(response).toMatchObject({
+      errors: [
+        {
+          message: 'Not authenticated..'
+        }
+      ]
+    });
+
+    const userToListTableAfter = await UserToList.findOne({
+      where: { userId: user.id }
+    });
+    expect(userToListTableAfter).toBeDefined();
+  });
+});
 
 // describe('Rename list mutation:', () => {
 //   it('Owner of list can rename the list', () => {});
