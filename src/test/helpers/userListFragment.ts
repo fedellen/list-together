@@ -8,7 +8,7 @@ export const userListFragment = `
   itemHistory {
     item
     timesAdded
-    removalOrder
+    removalRating
   }
   list {
     title

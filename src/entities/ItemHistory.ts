@@ -31,5 +31,5 @@ export class ItemHistory extends BaseEntity {
   // Ranked Scale of 0-1000 based on each 'shopping trip'
   @Field(() => [Number], { nullable: true })
   @Column({ type: 'simple-array', nullable: true })
-  removalOrder: number[] | null;
+  removalRating: number[] | null;
 }
