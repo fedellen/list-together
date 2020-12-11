@@ -3,9 +3,10 @@ import faker from 'faker';
 import {
   createUser,
   createUserWithSharedPriv,
-  userWithList
+  userWithList,
+  userWithListAndItems
 } from '../helpers/createUser';
-import { List, UserToList } from '../../entities';
+import { List, User, UserToList } from '../../entities';
 import { userListFragment } from '../helpers/userListFragment';
 
 const getUsersListsQuery = `
@@ -33,6 +34,30 @@ const shareListMutation = `
 const deleteListMutation = `
   mutation DeleteList($listId: String!) {
     deleteList(listId: $listId)
+  }
+`;
+
+const renameListMutation = `
+  mutation RenameList($name: String!, $listId: String!) {
+    renameList(name: $name, listId: $listId) {
+      title
+    }
+  }
+`;
+
+const sortListsMutation = `
+  mutation RenameList($data: StringArrayInput!) {
+    sortLists(data: $data) {
+      sortedListsArray
+    }
+  }
+`;
+
+const sortItemsMutation = `
+  mutation RenameList($data: StringArrayInput!, $listId: String!) {
+    sortItems(data: $data, listId: $listId) {
+      sortedItems
+    }
   }
 `;
 
@@ -300,22 +325,132 @@ describe('Delete list mutation:', () => {
   });
 });
 
-// describe('Rename list mutation:', () => {
-//   it('Owner of list can rename the list', () => {});
+describe('Rename list mutation:', () => {
+  it('Owner of list can rename the list', async () => {
+    const listOwner = await userWithList();
+    const ownersUserToListTable = await UserToList.findOne({
+      where: { userId: listOwner.id }
+    });
+    const listId = ownersUserToListTable!.listId;
+    const newListName = faker.name.jobArea();
 
-//   it('Non-owners cannot rename the list', () => {});
-// });
+    const response = await graphqlCall({
+      source: renameListMutation,
+      variableValues: { name: newListName, listId: listId },
+      userId: listOwner.id
+    });
 
-// describe('Sort list mutation:', () => {
-//   it('User can sort the order of in which their lists are displayed', () => {});
+    expect(response).toMatchObject({
+      data: {
+        renameList: {
+          title: newListName
+        }
+      }
+    });
 
-//   it('Non-owners cannot rename the list', () => {});
-// });
+    // New list name is saved to database
+    const listInDatabaseAfter = await List.findOne(listId);
+    expect(listInDatabaseAfter!.title).toBe(newListName);
+  });
 
-// describe('Re-order list mutation:', () => {
-//   it('User can submit a re-ordered list', () => {});
+  it('Non-owners cannot rename the list', async () => {
+    const listOwner = await userWithList();
+    const ownersUserToListTable = await UserToList.findOne({
+      where: { userId: listOwner.id }
+    });
+    const listId = ownersUserToListTable!.listId;
+    const newListName = faker.name.jobArea();
 
-//   it('User can automatically re-order the list', () => {});
+    const sharedUser = await createUserWithSharedPriv(listId, [
+      'add',
+      'delete'
+    ]);
 
-//   it('When user recieves a list with new items, the new items are presented at the top of their Sorted List', () => {});
-// });
+    const response = await graphqlCall({
+      source: renameListMutation,
+      variableValues: { name: newListName, listId: listId },
+      userId: sharedUser.id
+    });
+
+    expect(response).toMatchObject({
+      errors: [
+        {
+          message: 'User does not have privileges to rename that list..'
+        }
+      ]
+    });
+
+    // New list name is NOT saved to database
+    const listInDatabaseAfter = await List.findOne(listId);
+    expect(listInDatabaseAfter!.title).toBe('my-test-list-0');
+  });
+});
+
+describe('Sort list mutation:', () => {
+  it('User can sort the order of in which their lists are displayed', async () => {
+    const user = await userWithList(4);
+    const userToListTableArray = await UserToList.find({
+      where: { userId: user.id }
+    });
+    const listIdArray = userToListTableArray.map((table) => table.listId);
+
+    const userBefore = await User.findOne(user.id);
+    expect(userBefore!.sortedListsArray).toBeNull();
+
+    const reversedListIdArray = listIdArray.reverse();
+
+    const response = await graphqlCall({
+      source: sortListsMutation,
+      variableValues: { data: { sortedListsArray: reversedListIdArray } },
+      userId: user.id
+    });
+
+    expect(response).toMatchObject({
+      data: {
+        sortLists: {
+          sortedListsArray: reversedListIdArray
+        }
+      }
+    });
+
+    const userAfter = await User.findOne(user.id);
+    expect(userAfter!.sortedListsArray).toMatchObject(reversedListIdArray);
+  });
+});
+
+describe('Re-order list mutation:', () => {
+  it('User can submit their re-ordered list', async () => {
+    const user = await userWithListAndItems();
+    const userToListTable = await UserToList.findOne({
+      where: { userId: user.id },
+      relations: ['list', 'list.items']
+    });
+    expect(userToListTable!.sortedItems).toBeNull();
+
+    const itemNameArray = userToListTable!.list.items?.map((item) => item.name);
+    expect(itemNameArray).toHaveLength(5);
+    const reversedItemArray = itemNameArray!.reverse();
+
+    const response = await graphqlCall({
+      source: sortItemsMutation,
+      variableValues: {
+        data: { sortedListsArray: reversedItemArray },
+        listId: userToListTable?.listId
+      },
+      userId: user.id
+    });
+
+    expect(response).toMatchObject({
+      data: {
+        sortItems: {
+          sortedItems: reversedItemArray
+        }
+      }
+    });
+
+    const userToListTableAfter = await UserToList.findOne({
+      where: { userId: user.id }
+    });
+    expect(userToListTableAfter!.sortedItems).toMatchObject(reversedItemArray);
+  });
+});

@@ -1,4 +1,4 @@
-import { List, User, UserPrivileges, UserToList } from '../../entities';
+import { Item, List, User, UserPrivileges, UserToList } from '../../entities';
 import faker from 'faker';
 import argon2 from 'argon2';
 
@@ -35,6 +35,29 @@ export const userWithList = async (lists: number = 1): Promise<User> => {
     }).save();
   }
 
+  return user;
+};
+
+export const userWithListAndItems = async (
+  items: number = 5
+): Promise<User> => {
+  const user = await userWithList();
+  const userToListTable = await UserToList.findOne({
+    where: { userId: user.id },
+    relations: ['list', 'list.items']
+  });
+
+  for (let i = 0; i < items; i++) {
+    const newItem = Item.create({
+      name: faker.name.jobDescriptor()
+    });
+    if (userToListTable!.list.items) {
+      userToListTable!.list.items = [...userToListTable!.list.items, newItem];
+    } else {
+      userToListTable!.list.items = [newItem];
+    }
+  }
+  await userToListTable!.save();
   return user;
 };
 
