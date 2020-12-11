@@ -11,7 +11,7 @@ import { isAuth } from '../middleware/isAuth';
 import { logger } from '../middleware/logger';
 import { ShareListInput } from './input-types/ShareListInput';
 import { MyContext } from '../types/MyContext';
-import { StringArrayInput } from './input-types/SortListsInput';
+import { StringArrayInput } from './input-types/StringArrayInput';
 
 @Resolver()
 export class ListResolver {
@@ -138,12 +138,12 @@ export class ListResolver {
 
   // Rename List
   @UseMiddleware(isAuth, logger)
-  @Mutation(() => UserToList)
-  async rename(
+  @Mutation(() => List)
+  async renameList(
     @Arg('name') name: string,
     @Arg('listId') listId: string,
     @Ctx() { req }: MyContext
-  ): Promise<UserToList> {
+  ): Promise<List> {
     const userId = req.session.userId;
     const userToListTable = await UserToList.findOne({
       where: { userId: userId, listId: listId },
@@ -159,16 +159,20 @@ export class ListResolver {
     await userToListTable.save();
 
     // Server saves and returns array
-    return userToListTable;
+    return userToListTable.list;
   }
+
+  // Authenticated users can save the following arrays regardless of their accuracy
+  // Accuracy/synchronization conflicts will be handled on the front-end
+  // Sorted arrays are never used in the back-end for any purpose, only storage
 
   // Sorted Lists -- the order that the lists are displayed
   @UseMiddleware(isAuth, logger)
-  @Mutation(() => [String])
+  @Mutation(() => User)
   async sortLists(
-    @Arg('sortedListArray') sortedlistsInput: StringArrayInput,
+    @Arg('data') sortedlistsInput: StringArrayInput,
     @Ctx() { req }: MyContext
-  ): Promise<string[]> {
+  ): Promise<User> {
     // Authorized user sends array of listIds
     const userId = req.session.userId;
     const user = await User.findOne(userId);
@@ -179,22 +183,22 @@ export class ListResolver {
     await user.save();
 
     // Server saves and returns array
-    return sortedListsArray;
+    return user;
   }
 
   // Re-order list -- save the user's order of the items on a list
+  // User will also submit their `autoSortedList` through this mutation
   @UseMiddleware(isAuth, logger)
-  @Mutation(() => [String])
+  @Mutation(() => UserToList)
   async sortItems(
-    @Arg('sortedItemsArray') sortedItemsInput: StringArrayInput,
+    @Arg('data') sortedItemsInput: StringArrayInput,
     @Arg('listId') listId: string,
     @Ctx() { req }: MyContext
-  ): Promise<string[]> {
-    // Authorized user sends array of listIds
+  ): Promise<UserToList> {
+    // Authorized user sends array of item names, and the listId
     const userId = req.session.userId;
     const userToListTable = await UserToList.findOne({
-      where: { listId: listId, userId: userId },
-      relations: ['list.items']
+      where: { listId: listId, userId: userId }
     });
     if (!userToListTable)
       throw new Error('User to list connection does not exist..');
@@ -204,6 +208,6 @@ export class ListResolver {
     await userToListTable.save();
 
     // Server saves and returns array
-    return sortedItemsArray;
+    return userToListTable;
   }
 }
