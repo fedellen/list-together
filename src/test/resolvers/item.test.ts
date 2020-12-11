@@ -56,15 +56,20 @@ describe('Add item mutation:', () => {
         notes: null
       }
     ]);
+
+    // Item history correctly records the new item
+    expect(listConnectionInDatabase!.itemHistory).toMatchObject([
+      {
+        item: itemName,
+        timesAdded: 1,
+        removalOrder: null
+      }
+    ]);
   });
 
-  // it('User with add privileges can add item', () => {});
+  // it('User who has shared `add` privilege can add item', () => {});
 
-  // it('User without add privileges cannot add item', () => {});
-
-  // it('Item history correctly records a new item', () => {});
-
-  // it('Item history correctly records a new item', () => {});
+  // it('User with list access without `add` privileges cannot add item', () => {});
 
   it('Add Item gives unauthorized response with no userId in context', async () => {
     await userWithList().catch((err) =>
