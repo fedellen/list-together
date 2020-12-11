@@ -10,7 +10,8 @@ import {
 import { isAuth } from '../middleware/isAuth';
 import { logger } from '../middleware/logger';
 import { ShareListInput } from './input-types/ShareListInput';
-import { MyContext } from 'src/types/MyContext';
+import { MyContext } from '../types/MyContext';
+import { StringArrayInput } from './input-types/SortListsInput';
 
 @Resolver()
 export class ListResolver {
@@ -66,27 +67,143 @@ export class ListResolver {
     @Ctx() { req }: MyContext
   ): Promise<Boolean> {
     const userId = req.session.userId;
-    const userOwnerOfList = await UserToList.findOne({
+    const userToListTable = await UserToList.findOne({
       where: { listId: listId, userId: userId }
     });
 
-    if (!userOwnerOfList)
-      throw new Error('You do not have access to that list..');
-    if (userOwnerOfList.privileges !== ['owner'])
+    if (!userToListTable) {
+      throw new Error('Cannot find that list connection..');
+    } else if (!userToListTable.privileges.includes('owner')) {
       throw new Error('You do not have owner privileges to that list..');
-
-    const user = await User.findOne({ where: { email } });
-    if (!user) {
-      throw new Error(
-        'A user with that email address does not exist in the database..'
-      );
     }
-    const userToListTable = await UserToList.create({
+
+    const userToShare = await User.findOne({ where: { email } });
+    if (!userToShare) {
+      throw new Error('A user with that email address does not exist..');
+    }
+
+    await UserToList.create({
       listId,
       privileges,
-      userId: user.id
+      userId: userToShare.id
     }).save();
-    console.log(userToListTable);
     return true;
+  }
+
+  @UseMiddleware(isAuth, logger)
+  @Mutation(() => Boolean)
+  async deleteList(
+    @Arg('listId') listId: string,
+    @Ctx() { req }: MyContext
+  ): Promise<Boolean> {
+    const userId = req.session.userId;
+
+    const userToListTable = await UserToList.findOne({
+      where: { listId: listId, userId: userId }
+    });
+
+    if (!userToListTable) {
+      throw new Error('Cannot find that list connection..');
+    }
+
+    await userToListTable.remove();
+
+    const listInDatabase = await List.findOne(listId, {
+      relations: ['userConnection']
+    });
+
+    if (listInDatabase) {
+      if (listInDatabase.userConnection.length === 0) {
+        // Remove list from database if no User Connections
+        await listInDatabase.remove();
+      } else {
+        const remainingUsersArray = listInDatabase.userConnection;
+        const isOwnerExist = remainingUsersArray.filter((userToList) =>
+          userToList.privileges.includes('owner')
+        );
+
+        if (isOwnerExist.length === 0) {
+          // If no owner of list exists, give owner privileges to next user
+          const newOwnerUserToListTable = await UserToList.findOne({
+            where: { userId: remainingUsersArray[0].userId, listId: listId }
+          });
+          newOwnerUserToListTable!.privileges = ['owner'];
+          await newOwnerUserToListTable!.save();
+        }
+      }
+    }
+
+    return true;
+  }
+
+  // Rename List
+  @UseMiddleware(isAuth, logger)
+  @Mutation(() => UserToList)
+  async rename(
+    @Arg('name') name: string,
+    @Arg('listId') listId: string,
+    @Ctx() { req }: MyContext
+  ): Promise<UserToList> {
+    const userId = req.session.userId;
+    const userToListTable = await UserToList.findOne({
+      where: { userId: userId, listId: listId },
+      relations: ['list']
+    });
+
+    if (!userToListTable)
+      throw new Error('User to list connection does not exist..');
+    else if (!userToListTable.privileges.includes('owner'))
+      throw new Error('User does not have privileges to rename that list..');
+
+    userToListTable.list.title = name;
+    await userToListTable.save();
+
+    // Server saves and returns array
+    return userToListTable;
+  }
+
+  // Sorted Lists -- the order that the lists are displayed
+  @UseMiddleware(isAuth, logger)
+  @Mutation(() => [String])
+  async sortLists(
+    @Arg('sortedListArray') sortedlistsInput: StringArrayInput,
+    @Ctx() { req }: MyContext
+  ): Promise<string[]> {
+    // Authorized user sends array of listIds
+    const userId = req.session.userId;
+    const user = await User.findOne(userId);
+    if (!user) throw new Error('User does not exist..');
+
+    const sortedListsArray = sortedlistsInput.sortedListsArray;
+    user.sortedListsArray = sortedListsArray;
+    await user.save();
+
+    // Server saves and returns array
+    return sortedListsArray;
+  }
+
+  // Re-order list -- save the user's order of the items on a list
+  @UseMiddleware(isAuth, logger)
+  @Mutation(() => [String])
+  async sortItems(
+    @Arg('sortedItemsArray') sortedItemsInput: StringArrayInput,
+    @Arg('listId') listId: string,
+    @Ctx() { req }: MyContext
+  ): Promise<string[]> {
+    // Authorized user sends array of listIds
+    const userId = req.session.userId;
+    const userToListTable = await UserToList.findOne({
+      where: { listId: listId, userId: userId },
+      relations: ['list.items']
+    });
+    if (!userToListTable)
+      throw new Error('User to list connection does not exist..');
+
+    const sortedItemsArray = sortedItemsInput.sortedListsArray;
+    userToListTable.sortedItems = sortedItemsArray;
+    await userToListTable.save();
+
+    // Server saves and returns array
+    return sortedItemsArray;
   }
 }
