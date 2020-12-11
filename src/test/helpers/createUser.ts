@@ -1,4 +1,4 @@
-import { List, User, UserToList } from '../../entities';
+import { List, User, UserPrivileges, UserToList } from '../../entities';
 import faker from 'faker';
 import argon2 from 'argon2';
 
@@ -37,3 +37,21 @@ export const userWithList = async (lists: number = 1): Promise<User> => {
 
   return user;
 };
+
+export const createUserWithSharedPriv = async (
+  listId: string,
+  privileges: UserPrivileges[]
+): Promise<User> => {
+  const user = await createUser();
+  await UserToList.create({
+    listId: listId,
+    userId: user.id,
+    privileges: privileges
+  }).save();
+
+  return user;
+};
+
+// export const userWithoutOwnerAccess = async (): Promise<User> => {
+//   const user = await createUser
+// }

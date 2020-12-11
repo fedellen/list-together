@@ -30,10 +30,10 @@ export const graphqlCall = async ({
         session: {
           userId
         }
-      },
-      res: {
-        clearCookie: jest.fn()
       }
+      // res: {
+      //   clearCookie: jest.fn()
+      // }
     }
   });
 };
