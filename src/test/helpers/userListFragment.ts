@@ -4,7 +4,6 @@ export const userListFragment = `
   listId
   privileges
   mostCommonWords
-  autoSortedList
   itemHistory {
     item
     timesAdded

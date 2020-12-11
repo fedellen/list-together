@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType, Root } from 'type-graphql';
 import {
   Entity,
   Column,
@@ -28,8 +28,17 @@ export class ItemHistory extends BaseEntity {
   @Column({ type: 'integer', default: 1 })
   timesAdded!: number;
 
+  @Field(() => Int, { nullable: true })
+  removalRating(@Root() parent: ItemHistory): number {
+    const removalRatingArray = parent.removalRatingArray;
+    if (!removalRatingArray) return 500; // 500 is `middle` of list
+    return (
+      removalRatingArray.reduce((a, b) => a + b) / removalRatingArray.length
+    );
+  }
+
   // Ranked Scale of 0-1000 based on each 'shopping trip'
-  @Field(() => [Number], { nullable: true })
+  // @Field(() => [Number], { nullable: true })
   @Column({ type: 'simple-array', nullable: true })
-  removalRating: number[] | null;
+  removalRatingArray: number[] | null;
 }

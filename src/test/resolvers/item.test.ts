@@ -62,7 +62,7 @@ describe('Add item mutation:', () => {
       {
         item: itemName,
         timesAdded: 1,
-        removalRating: null
+        removalRatingArray: null
       }
     ]);
   });
