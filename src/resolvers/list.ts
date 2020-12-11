@@ -12,6 +12,7 @@ import { logger } from '../middleware/logger';
 import { ShareListInput } from './input-types/ShareListInput';
 import { MyContext } from '../types/MyContext';
 import { StringArrayInput } from './input-types/StringArrayInput';
+import { RemovalOrderInput } from './input-types/RemovalOrderInput';
 
 @Resolver()
 export class ListResolver {
@@ -205,9 +206,58 @@ export class ListResolver {
 
     const sortedItemsArray = sortedItemsInput.sortedListsArray;
     userToListTable.sortedItems = sortedItemsArray;
-    await userToListTable.save();
 
-    // Server saves and returns array
-    return userToListTable;
+    return userToListTable.save();
+  }
+
+  // Submit and merge removalOrder results for Auto-Sort feature
+  @UseMiddleware(isAuth, logger)
+  @Mutation(() => UserToList)
+  async submitRemovalOrder(
+    @Arg('data') { removedItemArray, listId }: RemovalOrderInput,
+    @Ctx() { req }: MyContext
+  ): Promise<UserToList> {
+    // Authorized user sends array of item names, and the listId
+    const userId = req.session.userId;
+    const userToListTable = await UserToList.findOne({
+      where: { listId: listId, userId: userId },
+      relations: ['itemHistory']
+    });
+
+    if (!userToListTable)
+      throw new Error('User to list connection does not exist..');
+
+    const itemHistory = userToListTable.itemHistory;
+    if (!itemHistory) throw new Error('User has no item history..');
+
+    const arrayLengthRating = Math.round(1000 / removedItemArray.length);
+    removedItemArray.forEach((item) => {
+      const itemInHistory = itemHistory.find((i) => i.item === item);
+      if (!itemInHistory) throw new Error('Item has no history..');
+
+      let existingRemovalRatings = itemInHistory.removalRatingArray;
+      const newRemovalRating = Math.round(
+        removedItemArray.indexOf(item) * arrayLengthRating
+      );
+
+      if (!existingRemovalRatings) {
+        itemInHistory.removalRatingArray = [newRemovalRating];
+      } else {
+        // Only store last 10 ratings for `recent` shopping results
+        // And to prevent an infinitely scaling array of data to store 👍
+
+        console.log('before shift:', existingRemovalRatings);
+        if (existingRemovalRatings.length === 10)
+          existingRemovalRatings.shift();
+        console.log('after shift:', existingRemovalRatings);
+
+        itemInHistory.removalRatingArray = [
+          ...existingRemovalRatings,
+          newRemovalRating
+        ];
+      }
+    });
+    await userToListTable.save();
+    return userToListTable.save();
   }
 }
