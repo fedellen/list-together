@@ -14,7 +14,9 @@ export class ItemHistory extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @ManyToOne(() => UserToList, (userToList) => userToList.itemHistory)
+  @ManyToOne(() => UserToList, (userToList) => userToList.itemHistory, {
+    onDelete: 'CASCADE'
+  })
   userToList!: UserToList;
 
   @Field(() => String)
