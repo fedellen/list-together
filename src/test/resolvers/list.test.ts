@@ -3,6 +3,7 @@ import faker from 'faker';
 import {
   createUser,
   createUserWithSharedPriv,
+  userWithItemHistory,
   userWithList,
   userWithListAndItems
 } from '../helpers/createUser';
@@ -57,6 +58,17 @@ const sortItemsMutation = `
   mutation RenameList($data: StringArrayInput!, $listId: String!) {
     sortItems(data: $data, listId: $listId) {
       sortedItems
+    }
+  }
+`;
+
+export const submitRemovalOrderMutation = `
+  mutation SubmitRemovalOrder($data: RemovalOrderInput!) {
+    submitRemovalOrder(data: $data) {
+      itemHistory {
+        item
+        removalRating
+      }
     }
   }
 `;
@@ -427,7 +439,7 @@ describe('Re-order list mutation:', () => {
     });
     expect(userToListTable!.sortedItems).toBeNull();
 
-    const itemNameArray = userToListTable!.list.items?.map((item) => item.name);
+    const itemNameArray = userToListTable!.list.items!.map((item) => item.name);
     expect(itemNameArray).toHaveLength(5);
     const reversedItemArray = itemNameArray!.reverse();
 
@@ -435,7 +447,7 @@ describe('Re-order list mutation:', () => {
       source: sortItemsMutation,
       variableValues: {
         data: { sortedListsArray: reversedItemArray },
-        listId: userToListTable?.listId
+        listId: userToListTable!.listId
       },
       userId: user.id
     });
@@ -452,5 +464,133 @@ describe('Re-order list mutation:', () => {
       where: { userId: user.id }
     });
     expect(userToListTableAfter!.sortedItems).toMatchObject(reversedItemArray);
+  });
+});
+
+// Submit and merge removalOrder results for Auto-Sort feature
+describe('Submit removal order mutation:', () => {
+  it('User can save an array of items removed into a removalRatingArray, api returns average rating for each item', async () => {
+    const user = await userWithItemHistory();
+    const userToListTable = await UserToList.findOne({
+      where: { userId: user.id },
+      relations: ['list', 'list.items', 'itemHistory']
+    });
+    expect(userToListTable!.itemHistory![0].removalRatingArray).toBeNull;
+    // expect(userToListTable!.itemHistory![0].removalRating).toBe(500);
+
+    const itemNameArray = userToListTable!.list.items!.map((item) => item.name);
+    expect(itemNameArray).toHaveLength(10);
+
+    const response = await graphqlCall({
+      source: submitRemovalOrderMutation,
+      variableValues: {
+        data: {
+          removedItemArray: itemNameArray,
+          listId: userToListTable!.listId
+        }
+      },
+      userId: user.id
+    });
+
+    expect(response).toMatchObject({
+      data: {
+        submitRemovalOrder: {
+          itemHistory: [
+            {
+              item: itemNameArray[0],
+              removalRating: 0
+            },
+            {
+              item: itemNameArray[1],
+              removalRating: 100
+            },
+            {
+              item: itemNameArray[2],
+              removalRating: 200
+            },
+            {
+              item: itemNameArray[3],
+              removalRating: 300
+            },
+            {
+              item: itemNameArray[4],
+              removalRating: 400
+            },
+            {
+              item: itemNameArray[5],
+              removalRating: 500
+            },
+            {
+              item: itemNameArray[6],
+              removalRating: 600
+            },
+            {
+              item: itemNameArray[7],
+              removalRating: 700
+            },
+            {
+              item: itemNameArray[8],
+              removalRating: 800
+            },
+            {
+              item: itemNameArray[9],
+              removalRating: 900
+            }
+          ]
+        }
+      }
+    });
+
+    const userToListTableAfter = await UserToList.findOne({
+      where: { userId: user.id },
+      relations: ['itemHistory']
+    });
+    expect(
+      userToListTableAfter!.itemHistory![0].removalRatingArray
+    ).toHaveLength(1);
+    expect(
+      userToListTableAfter!.itemHistory![0].removalRatingArray
+    ).toStrictEqual(['0']);
+    expect(
+      userToListTableAfter!.itemHistory![1].removalRatingArray
+    ).toStrictEqual(['100']);
+    expect(
+      userToListTableAfter!.itemHistory![9].removalRatingArray
+    ).toStrictEqual(['900']);
+  });
+
+  it('Pushes item in index 0 off the list to store only recent ratings', async () => {
+    const user = await userWithItemHistory(true);
+    // Returns user with unique rating at index 0
+    const userToListTable = await UserToList.findOne({
+      where: { userId: user.id },
+      relations: ['list', 'list.items', 'itemHistory']
+    });
+    const itemNameArray = userToListTable!.list
+      .items!.map((item) => item.name)
+      .reverse(); // reverse to submit in correct order
+    const removalRatingAtIndexZero = userToListTable!.itemHistory![0]
+      .removalRatingArray![0];
+
+    await graphqlCall({
+      source: submitRemovalOrderMutation,
+      variableValues: {
+        data: {
+          removedItemArray: itemNameArray,
+          listId: userToListTable!.listId
+        }
+      },
+      userId: user.id
+    });
+
+    const userToListTableAfter = await UserToList.findOne({
+      where: { userId: user.id },
+      relations: ['itemHistory']
+    });
+    const isRatingOnList = userToListTableAfter!.itemHistory![0].removalRatingArray!.find(
+      (rating) => rating === removalRatingAtIndexZero
+    );
+
+    expect(isRatingOnList).toBeUndefined();
   });
 });
