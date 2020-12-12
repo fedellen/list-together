@@ -4,7 +4,7 @@ import { UserToList } from '../../entities';
 import faker from 'faker';
 import { userListFragment } from '../helpers/userListFragment';
 
-const addItemMutation = `
+export const addItemMutation = `
 mutation AddItem($listId: String!, $name: String!) {
   addItem(listId: $listId, name: $name) ${userListFragment}
 }

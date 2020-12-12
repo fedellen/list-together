@@ -1,6 +1,9 @@
 import { Item, List, User, UserPrivileges, UserToList } from '../../entities';
 import faker from 'faker';
 import argon2 from 'argon2';
+import { graphqlCall } from './graphqlCall';
+import { submitRemovalOrderMutation } from '../resolvers/list.test';
+import { addItemMutation } from '../resolvers/item.test';
 
 export const createUser = async (confirmed: boolean = true): Promise<User> => {
   const user = {
@@ -49,7 +52,7 @@ export const userWithListAndItems = async (
 
   for (let i = 0; i < items; i++) {
     const newItem = Item.create({
-      name: faker.name.jobDescriptor()
+      name: faker.name.firstName()
     });
     if (userToListTable!.list.items) {
       userToListTable!.list.items = [...userToListTable!.list.items, newItem];
@@ -71,6 +74,64 @@ export const createUserWithSharedPriv = async (
     userId: user.id,
     privileges: privileges
   }).save();
+
+  return user;
+};
+
+export const userWithItemHistory = async (
+  full: boolean = false
+): Promise<User> => {
+  const user = await userWithList();
+  const userToListTable = await UserToList.findOne({
+    where: { userId: user.id }
+  });
+  const listId = userToListTable!.listId;
+
+  // Add 10 items
+  for (let i = 0; i < 10; i++) {
+    const newItem = faker.name.firstName();
+    await graphqlCall({
+      source: addItemMutation,
+      variableValues: { listId: listId, name: newItem },
+      userId: user.id
+    });
+  }
+
+  if (full) {
+    // Add orginal array to removalOrder
+    const newUserToListTable = await UserToList.findOne({
+      where: { userId: user.id },
+      relations: ['list', 'list.items']
+    });
+    const itemNameArray = newUserToListTable!.list.items!.map(
+      (item) => item.name
+    );
+    await graphqlCall({
+      source: submitRemovalOrderMutation,
+      variableValues: {
+        data: {
+          removedItemArray: itemNameArray,
+          listId: listId
+        }
+      },
+      userId: user.id
+    });
+
+    // Add reversed order 9 times
+    const reversedItemNameArray = itemNameArray.reverse();
+    for (let i = 0; i < 9; i++) {
+      await graphqlCall({
+        source: submitRemovalOrderMutation,
+        variableValues: {
+          data: {
+            removedItemArray: reversedItemNameArray,
+            listId: listId
+          }
+        },
+        userId: user.id
+      });
+    }
+  }
 
   return user;
 };
