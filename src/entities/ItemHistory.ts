@@ -23,22 +23,25 @@ export class ItemHistory extends BaseEntity {
   @Column('text')
   item!: string;
 
-  // number of times added to list for smarter auto-completion
-  @Field(() => Int)
   @Column({ type: 'integer', default: 1 })
-  timesAdded!: number;
+  timesAdded!: number; // Times added for smarter auto-completion
 
   @Field(() => Int, { nullable: true })
   removalRating(@Root() parent: ItemHistory): number {
     const removalRatingArray = parent.removalRatingArray;
-    if (!removalRatingArray) return 500; // 500 is `middle` of list
-    return (
-      removalRatingArray.reduce((a, b) => a + b) / removalRatingArray.length
-    );
+    // If item has no removalRatings -- send 500, which is `center` of list
+    if (!removalRatingArray) return 500;
+
+    // Postgres will not save number array, convert to number array for calculation/graphql
+    const removalRatingNumberArray = removalRatingArray.map((a) => parseInt(a));
+
+    const removalRating =
+      removalRatingNumberArray.reduce((a, b) => a + b) /
+      removalRatingArray.length;
+    return Math.round(removalRating);
   }
 
   // Ranked Scale of 0-1000 based on each 'shopping trip'
-  // @Field(() => [Number], { nullable: true })
   @Column({ type: 'simple-array', nullable: true })
-  removalRatingArray: number[] | null;
+  removalRatingArray: string[] | null;
 }

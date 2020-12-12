@@ -6,7 +6,6 @@ export const userListFragment = `
   mostCommonWords
   itemHistory {
     item
-    timesAdded
     removalRating
   }
   list {

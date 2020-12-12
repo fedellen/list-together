@@ -231,33 +231,30 @@ export class ListResolver {
     if (!itemHistory) throw new Error('User has no item history..');
 
     const arrayLengthRating = Math.round(1000 / removedItemArray.length);
+
     removedItemArray.forEach((item) => {
       const itemInHistory = itemHistory.find((i) => i.item === item);
       if (!itemInHistory) throw new Error('Item has no history..');
 
-      let existingRemovalRatings = itemInHistory.removalRatingArray;
       const newRemovalRating = Math.round(
         removedItemArray.indexOf(item) * arrayLengthRating
-      );
+      ).toString(); // Save number as a string in Postgres
+
+      let existingRemovalRatings = itemInHistory.removalRatingArray;
 
       if (!existingRemovalRatings) {
         itemInHistory.removalRatingArray = [newRemovalRating];
       } else {
         // Only store last 10 ratings for `recent` shopping results
         // And to prevent an infinitely scaling array of data to store 👍
-
-        console.log('before shift:', existingRemovalRatings);
         if (existingRemovalRatings.length === 10)
           existingRemovalRatings.shift();
-        console.log('after shift:', existingRemovalRatings);
 
-        itemInHistory.removalRatingArray = [
-          ...existingRemovalRatings,
-          newRemovalRating
-        ];
+        itemInHistory.removalRatingArray!.push(newRemovalRating);
       }
     });
+
     await userToListTable.save();
-    return userToListTable.save();
+    return userToListTable;
   }
 }
