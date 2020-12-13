@@ -53,34 +53,6 @@ export class UserToList extends BaseEntity {
     return sortedHistory.map((history) => history.item);
   }
 
-  // Refactoring to front-end
-  // Situation includes too much math to use on every addItem
-  //
-  // @Field(() => [String], { nullable: true })
-  // autoSortedList(@Root() parent: UserToList): string[] | null {
-  //   // Sorted list by `removalOrder`
-  //   // Rating based on shopping trip removal order
-  //   // Should Only store the information when items
-
-  //   if (!parent.list.items) return null;
-  //   if (!parent.itemHistory) return null;
-
-  //   // let listArray = []
-  //   // parent.list.items.forEach(item => {
-  //   //   const itemInHistory = parent.itemHistory!.find(i => i.item === item.name)
-  //   //   if (itemInHistory) {
-  //   //     listArray = [ ...listArray, item ]
-  //   //   }
-  //   // });
-
-  //   const sortedListArray = parent.list.items.sort((a, b) => {
-  //     if ()
-  //   }
-  //   )
-
-  //   return null;
-  // }
-
   // Front-end will send a sorted string array to store
   @Field(() => [String], { nullable: true })
   @Column({ type: 'simple-array', nullable: true })

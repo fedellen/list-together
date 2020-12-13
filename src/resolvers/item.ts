@@ -35,11 +35,10 @@ export class ItemResolver {
 
     const list = userToListTable.list;
     if (list.items) {
-      // Handle itemExists condition on the front end
-      // This provides security for synchronization conflicts
       if (list.items.length >= 300)
         throw new Error('Lists cannot have more than 300 items..');
 
+      // Handle itemExists condition on the front end
       const itemExists = list.items.find(({ name }) => name === nameInput);
       if (itemExists) throw new Error('Item already exists on this list..');
 
