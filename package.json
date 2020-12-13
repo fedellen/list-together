@@ -13,7 +13,7 @@
   },
   "keywords": [],
   "author": "fedellen",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
     "@types/connect-redis": "^0.0.15",
@@ -28,7 +28,7 @@
     "faker": "^5.1.0",
     "jest": "^26.6.3",
     "nodemon": "^2.0.6",
-    "prettier": "2.2.1",
+    "prettier": "^2.2.1",
     "ts-jest": "^26.4.4",
     "ts-node": "^9.1.1",
     "typescript": "4.1.2"

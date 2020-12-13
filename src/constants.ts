@@ -1,3 +1,3 @@
-export const confirmUserPrefix = 'user-confirmation:';
-export const forgetPasswordPrefix = 'forget-password:';
-export const COOKIE_NAME = 'oatmeal-raisen';
+export const confirmUserPrefix = 'user-confirmation:'; // Redis key prefix
+export const forgetPasswordPrefix = 'forget-password:'; // Redis key prefix
+export const COOKIE_NAME = 'omr';

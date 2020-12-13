@@ -179,7 +179,7 @@ export class ListResolver {
     const user = await User.findOne(userId);
     if (!user) throw new Error('User does not exist..');
 
-    const sortedListsArray = sortedlistsInput.sortedListsArray;
+    const sortedListsArray = sortedlistsInput.stringArray;
     user.sortedListsArray = sortedListsArray;
     await user.save();
 
@@ -204,7 +204,7 @@ export class ListResolver {
     if (!userToListTable)
       throw new Error('User to list connection does not exist..');
 
-    const sortedItemsArray = sortedItemsInput.sortedListsArray;
+    const sortedItemsArray = sortedItemsInput.stringArray;
     userToListTable.sortedItems = sortedItemsArray;
 
     return userToListTable.save();
