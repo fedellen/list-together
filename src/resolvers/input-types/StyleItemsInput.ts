@@ -1,11 +1,23 @@
+import { IsUUID } from 'class-validator';
 import { Field, InputType } from 'type-graphql';
-// import { PasswordInput } from "../../shared/PasswordInput";
+
+enum styles {
+  bold = 'bold',
+  strike = 'strike'
+}
 
 @InputType()
-export class StyleItemsInput {
+export class StyleItemInput {
+  @IsUUID(4)
   @Field()
   listId: string;
 
-  @Field(() => [Object])
-  itemIdStyle: { itemId: string; style: string }[];
+  @Field()
+  itemName: string;
+
+  @Field()
+  style: styles;
+
+  @Field()
+  isStyled: boolean;
 }

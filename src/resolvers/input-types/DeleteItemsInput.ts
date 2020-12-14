@@ -2,9 +2,9 @@ import { IsUUID } from 'class-validator';
 import { Field, InputType } from 'type-graphql';
 
 @InputType()
-export class RemovalOrderInput {
+export class DeleteItemsInput {
   @Field(() => [String])
-  removedItemArray: string[];
+  itemNameArray: string[];
 
   @IsUUID(4)
   @Field()
