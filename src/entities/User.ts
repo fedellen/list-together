@@ -7,7 +7,7 @@ import {
   BaseEntity,
   OneToMany
 } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 } from 'uuid';
 import { UserToList } from './UserToList';
 
 @ObjectType()
@@ -42,6 +42,6 @@ export class User extends BaseEntity {
 
   @BeforeInsert()
   addId() {
-    this.id = uuidv4();
+    this.id = v4();
   }
 }

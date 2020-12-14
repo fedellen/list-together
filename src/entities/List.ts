@@ -3,10 +3,12 @@ import {
   Column,
   PrimaryGeneratedColumn,
   BaseEntity,
-  OneToMany
+  OneToMany,
+  BeforeInsert
 } from 'typeorm';
 import { Item } from './Item';
 import { UserToList } from './UserToList';
+import { v4 } from 'uuid';
 import { Field, ID, ObjectType } from 'type-graphql';
 
 @ObjectType()
@@ -26,4 +28,9 @@ export class List extends BaseEntity {
 
   @OneToMany(() => UserToList, (userToList) => userToList.list)
   userConnection!: UserToList[];
+
+  @BeforeInsert()
+  addId() {
+    this.id = v4();
+  }
 }
