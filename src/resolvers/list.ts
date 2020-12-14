@@ -8,7 +8,6 @@ import {
   UseMiddleware
 } from 'type-graphql';
 import { isAuth } from '../middleware/isAuth';
-import { logger } from '../middleware/logger';
 import { ShareListInput } from './input-types/ShareListInput';
 import { MyContext } from '../types/MyContext';
 import { StringArrayInput } from './input-types/StringArrayInput';
@@ -17,7 +16,7 @@ import { RemovalOrderInput } from './input-types/RemovalOrderInput';
 @Resolver()
 export class ListResolver {
   // Gets only the specified user's lists
-  @UseMiddleware(isAuth, logger)
+  @UseMiddleware(isAuth)
   @Query(() => [UserToList])
   async getUsersLists(@Ctx() { req }: MyContext): Promise<UserToList[]> {
     // if (!req.session.userId) throw new Error('No user in context..');
@@ -31,7 +30,7 @@ export class ListResolver {
   }
 
   // Create a list
-  @UseMiddleware(isAuth, logger)
+  @UseMiddleware(isAuth)
   @Mutation(() => List)
   async createList(
     @Arg('title') title: string,
@@ -61,7 +60,7 @@ export class ListResolver {
   }
 
   // Share a list
-  @UseMiddleware(isAuth, logger)
+  @UseMiddleware(isAuth)
   @Mutation(() => Boolean)
   async shareList(
     @Arg('data') { email, listId, privileges }: ShareListInput,
@@ -91,7 +90,7 @@ export class ListResolver {
     return true;
   }
 
-  @UseMiddleware(isAuth, logger)
+  @UseMiddleware(isAuth)
   @Mutation(() => Boolean)
   async deleteList(
     @Arg('listId') listId: string,
@@ -138,7 +137,7 @@ export class ListResolver {
   }
 
   // Rename List
-  @UseMiddleware(isAuth, logger)
+  @UseMiddleware(isAuth)
   @Mutation(() => List)
   async renameList(
     @Arg('name') name: string,
@@ -168,7 +167,7 @@ export class ListResolver {
   // Sorted arrays are never used in the back-end for any purpose, only storage
 
   // Sorted Lists -- the order that the lists are displayed
-  @UseMiddleware(isAuth, logger)
+  @UseMiddleware(isAuth)
   @Mutation(() => User)
   async sortLists(
     @Arg('data') sortedlistsInput: StringArrayInput,
@@ -177,19 +176,18 @@ export class ListResolver {
     // Authorized user sends array of listIds
     const userId = req.session.userId;
     const user = await User.findOne(userId);
+
     if (!user) throw new Error('User does not exist..');
 
     const sortedListsArray = sortedlistsInput.stringArray;
     user.sortedListsArray = sortedListsArray;
-    await user.save();
 
-    // Server saves and returns array
-    return user;
+    return user.save();
   }
 
   // Re-order list -- save the user's order of the items on a list
   // User will also submit their `autoSortedList` through this mutation
-  @UseMiddleware(isAuth, logger)
+  @UseMiddleware(isAuth)
   @Mutation(() => UserToList)
   async sortItems(
     @Arg('data') sortedItemsInput: StringArrayInput,
@@ -211,7 +209,7 @@ export class ListResolver {
   }
 
   // Submit and merge removalOrder results for Auto-Sort feature
-  @UseMiddleware(isAuth, logger)
+  @UseMiddleware(isAuth)
   @Mutation(() => UserToList)
   async submitRemovalOrder(
     @Arg('data') { removedItemArray, listId }: RemovalOrderInput,
@@ -254,7 +252,6 @@ export class ListResolver {
       }
     });
 
-    await userToListTable.save();
-    return userToListTable;
+    return userToListTable.save();
   }
 }

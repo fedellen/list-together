@@ -15,7 +15,6 @@ import {
 import { ChangePasswordInput } from './input-types/ChangePasswordInput';
 import 'dotenv-safe';
 import { isAuth } from '../middleware/isAuth';
-import { logger } from '../middleware/logger';
 
 @Resolver()
 export class UserResolver {
@@ -134,7 +133,7 @@ export class UserResolver {
 
   // Logout user
   @Mutation(() => Boolean)
-  @UseMiddleware(isAuth, logger)
+  @UseMiddleware(isAuth)
   async logout(@Ctx() ctx: MyContext): Promise<Boolean> {
     return new Promise((resolve) =>
       ctx.req.session.destroy((err) => {
