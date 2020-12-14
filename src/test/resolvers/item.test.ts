@@ -5,8 +5,8 @@ import faker from 'faker';
 import { userListFragment } from '../helpers/userListFragment';
 
 export const addItemMutation = `
-mutation AddItem($listId: String!, $name: String!) {
-  addItem(listId: $listId, name: $name) ${userListFragment}
+mutation AddItem($data: AddItemInput!) {
+  addItem(data: $data) ${userListFragment}
 }
 `;
 
@@ -21,8 +21,10 @@ describe('Add item mutation:', () => {
     const response = await graphqlCall({
       source: addItemMutation,
       variableValues: {
-        listId: userToListTable!.listId,
-        name: itemName
+        data: {
+          listId: userToListTable!.listId,
+          nameInput: itemName
+        }
       },
       userId: user.id
     });
@@ -84,8 +86,10 @@ describe('Add item mutation:', () => {
     const response = await graphqlCall({
       source: addItemMutation,
       variableValues: {
-        listId: allUserLists[0].listId,
-        name: itemName
+        data: {
+          listId: allUserLists[0].listId,
+          nameInput: itemName
+        }
       },
       userId: undefined
     }).catch((err) => console.log('this one is an error:', err));

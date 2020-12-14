@@ -1,9 +1,13 @@
-import { Item, List, User, UserPrivileges, UserToList } from '../../entities';
+import {
+  Item,
+  ItemHistory,
+  List,
+  User,
+  UserPrivileges,
+  UserToList
+} from '../../entities';
 import faker from 'faker';
 import argon2 from 'argon2';
-import { graphqlCall } from './graphqlCall';
-import { submitRemovalOrderMutation } from '../resolvers/list.test';
-import { addItemMutation } from '../resolvers/item.test';
 
 export const createUser = async (confirmed: boolean = true): Promise<User> => {
   const user = {
@@ -83,56 +87,110 @@ export const userWithItemHistory = async (
 ): Promise<User> => {
   const user = await userWithList();
   const userToListTable = await UserToList.findOne({
-    where: { userId: user.id }
+    where: { userId: user.id },
+    relations: ['list', 'list.items', 'itemHistory']
   });
-  const listId = userToListTable!.listId;
+  // const listId = userToListTable!.listId;
+
+  if (!userToListTable) throw new Error('Big error here in createUser.ts..');
 
   // Add 10 items
   for (let i = 0; i < 10; i++) {
     const newItem = faker.name.firstName();
-    await graphqlCall({
-      source: addItemMutation,
-      variableValues: { listId: listId, name: newItem },
-      userId: user.id
-    });
+    if (userToListTable!.list.items) {
+      userToListTable.list.items = [
+        ...userToListTable.list.items,
+        Item.create({ name: newItem })
+      ];
+    } else {
+      userToListTable.list.items = [Item.create({ name: newItem })];
+    }
+
+    if (userToListTable.itemHistory) {
+      const existingItemInHistory = userToListTable.itemHistory.find(
+        ({ item }) => item === newItem
+      );
+
+      if (existingItemInHistory) {
+        existingItemInHistory.timesAdded++;
+      } else {
+        userToListTable.itemHistory = [
+          ...userToListTable.itemHistory,
+          ItemHistory.create({ item: newItem })
+        ];
+      }
+    } else {
+      // Initialize item history
+      userToListTable.itemHistory = [ItemHistory.create({ item: newItem })];
+    }
   }
 
   if (full) {
     // Add orginal array to removalOrder
-    const newUserToListTable = await UserToList.findOne({
-      where: { userId: user.id },
-      relations: ['list', 'list.items']
-    });
-    const itemNameArray = newUserToListTable!.list.items!.map(
-      (item) => item.name
-    );
-    await graphqlCall({
-      source: submitRemovalOrderMutation,
-      variableValues: {
-        data: {
-          removedItemArray: itemNameArray,
-          listId: listId
-        }
-      },
-      userId: user.id
+
+    if (!userToListTable.list.items || !userToListTable.itemHistory) {
+      throw new Error('Another big error here in createUser.ts..');
+    }
+
+    const itemNameArray = userToListTable.list.items.map((item) => item.name);
+
+    const arrayLengthRating = Math.round(1000 / itemNameArray.length);
+
+    // Add orginal order 1 time
+    itemNameArray.forEach((item) => {
+      const itemInHistory = userToListTable.itemHistory!.find(
+        (i) => i.item === item
+      );
+      if (!itemInHistory) throw new Error('Item has no history..');
+
+      const newRemovalRating = Math.round(
+        itemNameArray.indexOf(item) * arrayLengthRating
+      ).toString(); // Save number as a string in Postgres
+
+      let existingRemovalRatings = itemInHistory.removalRatingArray;
+
+      if (!existingRemovalRatings) {
+        itemInHistory.removalRatingArray = [newRemovalRating];
+      } else {
+        // Only store last 10 ratings for `recent` shopping results
+        // And to prevent an infinitely scaling array of data to store 👍
+        if (existingRemovalRatings.length === 10)
+          existingRemovalRatings.shift();
+
+        itemInHistory.removalRatingArray!.push(newRemovalRating);
+      }
     });
 
     // Add reversed order 9 times
     const reversedItemNameArray = itemNameArray.reverse();
     for (let i = 0; i < 9; i++) {
-      await graphqlCall({
-        source: submitRemovalOrderMutation,
-        variableValues: {
-          data: {
-            removedItemArray: reversedItemNameArray,
-            listId: listId
-          }
-        },
-        userId: user.id
+      reversedItemNameArray.forEach((item) => {
+        const itemInHistory = userToListTable.itemHistory!.find(
+          (i) => i.item === item
+        );
+        if (!itemInHistory) throw new Error('Item has no history..');
+
+        const newRemovalRating = Math.round(
+          itemNameArray.indexOf(item) * arrayLengthRating
+        ).toString(); // Save number as a string in Postgres
+
+        let existingRemovalRatings = itemInHistory.removalRatingArray;
+
+        if (!existingRemovalRatings) {
+          itemInHistory.removalRatingArray = [newRemovalRating];
+        } else {
+          // Only store last 10 ratings for `recent` shopping results
+          // And to prevent an infinitely scaling array of data to store 👍
+          if (existingRemovalRatings.length === 10)
+            existingRemovalRatings.shift();
+
+          itemInHistory.removalRatingArray!.push(newRemovalRating);
+        }
       });
     }
   }
 
+  await userToListTable.save();
   return user;
 };
 

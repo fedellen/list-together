@@ -2,8 +2,6 @@ import { ExecutionResult, graphql, GraphQLSchema } from 'graphql';
 import { createSchema } from '../../utils/createSchema';
 import { Maybe } from 'type-graphql';
 
-// import { createSchema } from "../utils/createSchema";
-
 interface Options {
   source: string;
   variableValues?: Maybe<{

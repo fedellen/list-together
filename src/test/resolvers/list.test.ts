@@ -413,7 +413,7 @@ describe('Sort list mutation:', () => {
 
     const response = await graphqlCall({
       source: sortListsMutation,
-      variableValues: { data: { sortedListsArray: reversedListIdArray } },
+      variableValues: { data: { stringArray: reversedListIdArray } },
       userId: user.id
     });
 
@@ -446,7 +446,7 @@ describe('Re-order list mutation:', () => {
     const response = await graphqlCall({
       source: sortItemsMutation,
       variableValues: {
-        data: { sortedListsArray: reversedItemArray },
+        data: { stringArray: reversedItemArray },
         listId: userToListTable!.listId
       },
       userId: user.id
@@ -476,7 +476,6 @@ describe('Submit removal order mutation:', () => {
       relations: ['list', 'list.items', 'itemHistory']
     });
     expect(userToListTable!.itemHistory![0].removalRatingArray).toBeNull;
-    // expect(userToListTable!.itemHistory![0].removalRating).toBe(500);
 
     const itemNameArray = userToListTable!.list.items!.map((item) => item.name);
     expect(itemNameArray).toHaveLength(10);
