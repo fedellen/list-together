@@ -80,11 +80,11 @@ export class ItemResolver {
   // Delete array of items from list
   // Items will usually be deleted in batches from front-end `deleteStrikes`
   @UseMiddleware(isAuth)
-  @Mutation(() => UserToList)
+  @Mutation(() => Boolean)
   async deleteItems(
     @Arg('data') { itemNameArray, listId }: DeleteItemsInput,
     @Ctx() { req }: MyContext
-  ): Promise<UserToList> {
+  ): Promise<boolean> {
     const userId = req.session.userId;
     const userToListTable = await UserToList.findOne({
       where: { listId: listId, userId: userId },
@@ -104,31 +104,32 @@ export class ItemResolver {
       throw new Error('List has no items to delete..');
     }
 
-    itemNameArray.forEach((itemId) => {
+    itemNameArray.forEach((itemName) => {
       const itemExists = userToListTable.list.items!.find(
-        ({ id }) => id === itemId
+        ({ name }) => name === itemName
       );
       if (!itemExists) throw new Error('Item does not exists on this list..');
 
       if (userToListTable.sortedItems) {
         // Remove the deleted items from user's sorted list
-        console.log('before filter');
-        userToListTable.sortedItems.filter((item) => item !== itemExists.name);
-        console.log('after filter');
+        userToListTable.sortedItems = userToListTable.sortedItems.filter(
+          (item) => item !== itemExists.name
+        );
       }
       itemExists.remove();
     });
 
-    return userToListTable.save();
+    await userToListTable.save();
+    return true;
   }
 
   // Style items on list
   @UseMiddleware(isAuth)
-  @Mutation(() => UserToList)
+  @Mutation(() => Item)
   async styleItem(
     @Arg('data') { listId, style, isStyled, itemName }: StyleItemInput,
     @Ctx() { req }: MyContext
-  ): Promise<UserToList> {
+  ): Promise<Item> {
     const userId = req.session.userId;
     const userToListTable = await UserToList.findOne({
       where: { listId: listId, userId: userId },
@@ -163,7 +164,8 @@ export class ItemResolver {
       item.strike = isStyled;
     }
 
-    return userToListTable.save();
+    await userToListTable.save();
+    return item;
   }
 
   // Add note to item on list
@@ -234,7 +236,7 @@ export class ItemResolver {
       !userToListTable.privileges.includes('add')
     ) {
       throw new Error(
-        'User does not have privileges to add notes to items on that list..'
+        'User does not have privileges to rename items on that list..'
       );
     }
 
