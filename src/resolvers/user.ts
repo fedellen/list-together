@@ -7,11 +7,7 @@ import { sendEmail } from '../utils/sendEmail';
 import { createConfirmationUrl } from '../utils/confirmationUrl';
 import { redis } from '../redis';
 import { v4 } from 'uuid';
-import {
-  confirmUserPrefix,
-  COOKIE_NAME,
-  forgetPasswordPrefix
-} from '../constants';
+import { confirmUserPrefix, forgetPasswordPrefix } from '../constants';
 import { ChangePasswordInput } from './input-types/ChangePasswordInput';
 import 'dotenv-safe';
 import { isAuth } from '../middleware/isAuth';
@@ -142,7 +138,7 @@ export class UserResolver {
           return resolve(false);
         }
 
-        ctx.res.clearCookie(COOKIE_NAME);
+        ctx.res.clearCookie(process.env.COOKIE_NAME);
         return resolve(true);
       })
     );

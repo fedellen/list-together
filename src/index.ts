@@ -5,8 +5,9 @@ import express from 'express';
 import { createConnection } from 'typeorm';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
-import { redis } from './redis';
 import cors from 'cors';
+import { createSchema } from './utils/createSchema';
+import { redis } from './redis';
 
 // Temporarily fixes a type error from @types/express-session update
 declare module 'express-session' {
@@ -15,11 +16,13 @@ declare module 'express-session' {
   }
 }
 
-import { COOKIE_NAME } from './constants';
-import { createSchema } from './utils/createSchema';
-
 const main = async () => {
-  await createConnection();
+  await createConnection({
+    type: 'postgres',
+    url: process.env.DATABASE_URL,
+    migrations: ['dist/migration/*.js'],
+    entities: ['dist/entities/**/*.js']
+  });
 
   const schema = await createSchema();
 
@@ -36,8 +39,8 @@ const main = async () => {
       store: new RedisStore({
         client: redis
       }),
-      name: COOKIE_NAME,
-      secret: process.env.SESSION_SECRET!,
+      name: process.env.COOKIE_NAME,
+      secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -49,9 +52,9 @@ const main = async () => {
   );
 
   apolloServer.applyMiddleware({ app });
-  app.listen(5000, () =>
+  app.listen(parseInt(process.env.PORT), () =>
     console.log(
-      `Server started on http://localhost:5000${apolloServer.graphqlPath}`
+      `Server started on http://localhost:${process.env.PORT}${apolloServer.graphqlPath}`
     )
   );
 };

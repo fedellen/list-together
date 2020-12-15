@@ -2635,6 +2635,13 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
+gen-env-types@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/gen-env-types/-/gen-env-types-1.0.4.tgz#a8f635790ea6f0cc35953f58d5013580dd08f0f4"
+  integrity sha512-cYxgeOcMm/46pA28j2ga0GSNVgT+HLRjFoqRiYPkL/HyAcma/V6Er3EzLBihnrtCN9Fm0iC7UgZit9l9yQtKiA==
+  dependencies:
+    chalk "^4.0.0"
+
 gensync@^1.0.0-beta.1:
   version "1.0.0-beta.2"
   resolved "https://registry.yarnpkg.com/gensync/-/gensync-1.0.0-beta.2.tgz#32a6ee76c3d7f52d46b2b1ae5d93fea8580a25e0"
