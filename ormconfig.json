@@ -6,6 +6,6 @@
   "password": "postgres",
   "database": "grocery-db",
   "synchronize": true,
-  "logging": true,
+  "logging": false,
   "entities": ["dist/entities/**/*.js"]
 }
