@@ -47,7 +47,7 @@ const renameListMutation = `
 `;
 
 const sortListsMutation = `
-  mutation RenameList($data: StringArrayInput!) {
+  mutation SortLists($data: StringArrayInput!) {
     sortLists(data: $data) {
       sortedListsArray
     }
@@ -55,7 +55,7 @@ const sortListsMutation = `
 `;
 
 const sortItemsMutation = `
-  mutation RenameList($data: StringArrayInput!, $listId: String!) {
+  mutation SortItems($data: StringArrayInput!, $listId: String!) {
     sortItems(data: $data, listId: $listId) {
       sortedItems
     }
