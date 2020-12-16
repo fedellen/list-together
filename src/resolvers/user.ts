@@ -1,5 +1,12 @@
 import { List, User, UserToList } from '../entities';
-import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware
+} from 'type-graphql';
 import argon2 from 'argon2';
 import { CreateUserInput } from './input-types/CreateUserInput';
 import { MyContext } from '../types/MyContext';
@@ -14,6 +21,23 @@ import { isAuth } from '../middleware/isAuth';
 
 @Resolver()
 export class UserResolver {
+  @Query(() => User)
+  @UseMiddleware(isAuth)
+  async getUser(@Ctx() { req }: MyContext): Promise<User> {
+    const user = await User.findOne({
+      where: { id: req.session.userId },
+      relations: [
+        'listConnection',
+        'listConnection.list',
+        'listConnection.list.items',
+        'listConnection.itemHistory'
+      ]
+    });
+    if (!user) throw new Error('User could not be found');
+
+    return user;
+  }
+
   // Create a User
   @Mutation(() => User)
   async createUser(
@@ -47,13 +71,21 @@ export class UserResolver {
   }
 
   // Login user, returns all user's lists from database
-  @Mutation(() => [UserToList])
+  @Mutation(() => User)
   async login(
     @Arg('email') email: string,
     @Arg('password') password: string,
     @Ctx() ctx: MyContext
-  ): Promise<UserToList[] | null> {
-    const user = await User.findOne({ where: { email: email } });
+  ): Promise<User | null> {
+    let user = await User.findOne({
+      where: { email: email },
+      relations: [
+        'listConnection',
+        'listConnection.list',
+        'listConnection.list.items',
+        'listConnection.itemHistory'
+      ]
+    });
     if (!user) throw new Error('Login has failed..');
 
     const valid = await argon2.verify(user.password, password);
@@ -63,13 +95,13 @@ export class UserResolver {
 
     ctx.req.session.userId = user.id;
 
-    let usersLists = await UserToList.find({
-      where: { userId: user.id },
-      relations: ['list', 'list.items', 'itemHistory']
-    });
+    // let usersLists = await UserToList.find({
+    //   where: { userId: user.id },
+    //   relations: ['list', 'list.items', 'itemHistory']
+    // });
 
     // If no lists were found, create one upon standard login
-    if (!usersLists || !usersLists.length) {
+    if (!user.listConnection || !user.listConnection.length) {
       const list = await List.create({
         title: 'my-list'
       }).save();
@@ -78,14 +110,21 @@ export class UserResolver {
         userId: user.id,
         privileges: ['owner'] // Only list creator has owner rights
       }).save();
-      usersLists = await UserToList.find({
-        where: { userId: user.id },
-        relations: ['list', 'list.items', 'itemHistory']
+      user = await User.findOne({
+        where: { email: email },
+        relations: [
+          'listConnection',
+          'listConnection.list',
+          'listConnection.list.items',
+          'listConnection.itemHistory'
+        ]
       });
+      if (!user)
+        throw new Error('An error has occured on initial list creation..');
     }
 
     // Return all lists to initialize List App
-    return usersLists;
+    return user;
   }
 
   // Forgot password -- Probably refactor this to an express route from email

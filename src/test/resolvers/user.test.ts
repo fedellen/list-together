@@ -33,8 +33,11 @@ mutation LoginUser($email: String!, $password: String!) {
   login(
     email: $email
     password: $password
-  ) ${userListFragment}
-}
+  ) { 
+    listConnection 
+      ${userListFragment}
+    } 
+  }
 `;
 
 const forgotPasswordMutation = `
@@ -193,16 +196,20 @@ describe('Login mutation:', () => {
       }
     });
 
+    console.log(JSON.stringify(response, null, 4));
+
     // New UserToList connection has 'my-list'
     expect(response).toMatchObject({
       data: {
-        login: [
-          {
-            list: {
-              title: 'my-list'
+        login: {
+          listConnection: [
+            {
+              list: {
+                title: 'my-list'
+              }
             }
-          }
-        ]
+          ]
+        }
       }
     });
   });
@@ -217,7 +224,6 @@ describe('Login mutation:', () => {
       }
     });
 
-    // New UserToList connection has 'my-list'
     expect(response).toMatchObject({
       errors: [
         {

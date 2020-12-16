@@ -37,6 +37,7 @@ export class User extends BaseEntity {
   @Column({ type: 'simple-array', nullable: true })
   sortedListsArray: string[] | null;
 
+  @Field(() => [UserToList])
   @OneToMany(() => UserToList, (userToList) => userToList.user)
   listConnection: UserToList[];
 
