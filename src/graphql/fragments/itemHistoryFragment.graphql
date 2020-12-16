@@ -1,0 +1,4 @@
+fragment itemHistoryFragment on ItemHistory {
+  item
+  removalRating
+}

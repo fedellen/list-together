@@ -4,12 +4,7 @@
     "outDir": "build/dist",
     "module": "esnext",
     "target": "es5",
-    "allowSyntheticDefaultImports": true,
-    "lib": [
-      "es6",
-      "dom",
-      "esnext.asynciterable"
-    ],
+    "lib": ["es6", "dom", "esnext.asynciterable"],
     "sourceMap": true,
     "allowJs": true,
     "jsx": "react-jsx",
@@ -28,7 +23,8 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    "allowSyntheticDefaultImports": true
   },
   "exclude": [
     "node_modules",
@@ -37,9 +33,8 @@
     "acceptance-tests",
     "webpack",
     "jest",
-    "src/setupTests.ts"
+    "src/setupTests.ts",
+    "src/generated/graphql.tsx"
   ],
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

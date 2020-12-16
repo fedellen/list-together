@@ -1,9 +1,7 @@
-// import React from 'react';
-
 export function App() {
   return (
-    <div>
-      <p>Hello World!</p>
+    <div className='bg-blue-400'>
+      <p>Hello World!!!</p>
     </div>
   );
 }

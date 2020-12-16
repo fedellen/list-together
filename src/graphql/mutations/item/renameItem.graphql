@@ -1,0 +1,5 @@
+mutation RenameItem($data: RenameItemInput!) {
+  renameItem(data: $data) {
+    ...itemFragment
+  }
+}

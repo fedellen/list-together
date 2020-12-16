@@ -1,0 +1,5 @@
+mutation RenameList($name: String!, $listId: String!) {
+  renameList(name: $name, listId: $listId) {
+    ...listFragment
+  }
+}

@@ -1,0 +1,3 @@
+mutation ShareList($data: ShareListInput!) {
+  shareList(data: $data)
+}

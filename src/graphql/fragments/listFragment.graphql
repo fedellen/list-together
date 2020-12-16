@@ -1,0 +1,7 @@
+fragment listFragment on List {
+  id
+  title
+  items {
+    ...itemFragment
+  }
+}

@@ -1,0 +1,5 @@
+mutation SortLists($data: StringArrayInput!) {
+  sortLists(data: $data) {
+    ...userFragment
+  }
+}
