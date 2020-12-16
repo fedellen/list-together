@@ -5,7 +5,6 @@ import express from 'express';
 import { createConnection } from 'typeorm';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
-import cors from 'cors';
 import { createSchema } from './utils/createSchema';
 import { redis } from './redis';
 
@@ -33,7 +32,6 @@ const main = async () => {
   const app = express();
 
   const RedisStore = connectRedis(session);
-  app.use(cors<express.Request>());
   app.use(
     session({
       store: new RedisStore({
@@ -51,7 +49,13 @@ const main = async () => {
     })
   );
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({
+    app,
+    cors: {
+      origin: 'http://localhost:3000',
+      credentials: true
+    }
+  });
   app.listen(parseInt(process.env.PORT), () =>
     console.log(
       `Server started on http://localhost:${process.env.PORT}${apolloServer.graphqlPath}`
