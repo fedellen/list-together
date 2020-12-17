@@ -1,12 +1,29 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import {
+  ApolloClient,
+  ApolloProvider,
+  // createHttpLink,
+  InMemoryCache
+} from '@apollo/client';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { App } from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import './style/tailwind.css';
 
+// const link = createHttpLink({
+//   uri: 'http://localhost:4000/graphql',
+//   credentials: 'include'
+// });
+
 const apolloClient = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
+  credentials: 'include',
+  // headers: {
+  //   cookie: (typeof window === "undefined"
+  //     ? ctx
+  //     :
+  //   )
+  // },
   cache: new InMemoryCache()
 });
 
