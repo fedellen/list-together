@@ -18,19 +18,20 @@ import { confirmUserPrefix, forgetPasswordPrefix } from '../constants';
 import { ChangePasswordInput } from './input-types/ChangePasswordInput';
 import 'dotenv-safe';
 import { isAuth } from '../middleware/isAuth';
+import { logger } from '../middleware/logger';
 
 @Resolver()
 export class UserResolver {
   @Query(() => User)
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, logger)
   async getUser(@Ctx() { req }: MyContext): Promise<User> {
     const user = await User.findOne({
       where: { id: req.session.userId },
       relations: [
-        'listConnection',
-        'listConnection.list',
-        'listConnection.list.items',
-        'listConnection.itemHistory'
+        'listConnection'
+        // 'listConnection.list',
+        // 'listConnection.list.items',
+        // 'listConnection.itemHistory'
       ]
     });
     if (!user) throw new Error('User could not be found');
@@ -39,6 +40,7 @@ export class UserResolver {
   }
 
   // Create a User
+  @UseMiddleware(logger)
   @Mutation(() => User)
   async createUser(
     @Arg('data') { username, email, password }: CreateUserInput
@@ -56,6 +58,7 @@ export class UserResolver {
   }
 
   // Confirm the user -- Probably refactor this to an express route
+  @UseMiddleware(logger)
   @Mutation(() => Boolean)
   async confirmUser(@Arg('token') token: string): Promise<boolean> {
     const userId = await redis.get(confirmUserPrefix + token);
@@ -71,20 +74,16 @@ export class UserResolver {
   }
 
   // Login user, returns all user's lists from database
+  @UseMiddleware(logger)
   @Mutation(() => User)
   async login(
     @Arg('email') email: string,
     @Arg('password') password: string,
     @Ctx() ctx: MyContext
   ): Promise<User | null> {
-    let user = await User.findOne({
+    const user = await User.findOne({
       where: { email: email },
-      relations: [
-        'listConnection',
-        'listConnection.list',
-        'listConnection.list.items',
-        'listConnection.itemHistory'
-      ]
+      relations: ['listConnection']
     });
     if (!user) throw new Error('Login has failed..');
 
@@ -110,24 +109,13 @@ export class UserResolver {
         userId: user.id,
         privileges: ['owner'] // Only list creator has owner rights
       }).save();
-      user = await User.findOne({
-        where: { email: email },
-        relations: [
-          'listConnection',
-          'listConnection.list',
-          'listConnection.list.items',
-          'listConnection.itemHistory'
-        ]
-      });
-      if (!user)
-        throw new Error('An error has occured on initial list creation..');
     }
 
-    // Return all lists to initialize List App
     return user;
   }
 
   // Forgot password -- Probably refactor this to an express route from email
+  @UseMiddleware(logger)
   @Mutation(() => Boolean)
   async forgotPassword(@Arg('email') email: string): Promise<Boolean> {
     const user = await User.findOne({ where: { email } });
@@ -146,6 +134,7 @@ export class UserResolver {
   }
 
   // Change password with token from email
+  @UseMiddleware(logger)
   @Mutation(() => User, { nullable: true })
   async changePassword(
     @Arg('data') { token, password }: ChangePasswordInput,
@@ -167,8 +156,8 @@ export class UserResolver {
   }
 
   // Logout user
+  @UseMiddleware(isAuth, logger)
   @Mutation(() => Boolean)
-  @UseMiddleware(isAuth)
   async logout(@Ctx() ctx: MyContext): Promise<Boolean> {
     return new Promise((resolve) =>
       ctx.req.session.destroy((err) => {

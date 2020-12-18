@@ -7,12 +7,13 @@ import { AddNoteInput } from './input-types/AddNoteInput';
 import { AddItemInput } from './input-types/AddItemInput';
 import { DeleteItemsInput } from './input-types/DeleteItemsInput';
 import { RenameItemInput } from './input-types/RenameItemInput';
+import { logger } from 'src/middleware/logger';
 
 @Resolver()
 export class ItemResolver {
   // Send single item only when connection already exists from front
   // Otherwise action list state should be sent as one object?
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, logger)
   @Mutation(() => UserToList)
   async addItem(
     @Arg('data') { nameInput, listId }: AddItemInput,
@@ -79,7 +80,7 @@ export class ItemResolver {
 
   // Delete array of items from list
   // Items will usually be deleted in batches from front-end `deleteStrikes`
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, logger)
   @Mutation(() => Boolean)
   async deleteItems(
     @Arg('data') { itemNameArray, listId }: DeleteItemsInput,
@@ -124,7 +125,7 @@ export class ItemResolver {
   }
 
   // Style items on list
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, logger)
   @Mutation(() => Item)
   async styleItem(
     @Arg('data') { listId, style, isStyled, itemName }: StyleItemInput,
@@ -169,7 +170,7 @@ export class ItemResolver {
   }
 
   // Add note to item on list
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, logger)
   @Mutation(() => Item)
   async addNote(
     @Arg('data') { listId, note, itemName }: AddNoteInput,
@@ -215,7 +216,7 @@ export class ItemResolver {
   }
 
   // Rename item on list
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, logger)
   @Mutation(() => Item)
   async renameItem(
     @Arg('data') { listId, newName, itemName }: RenameItemInput,

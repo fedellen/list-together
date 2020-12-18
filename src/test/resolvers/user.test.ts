@@ -6,7 +6,7 @@ import { createConfirmationUrl } from '../../utils/confirmationUrl';
 import { createUser } from '../helpers/createUser';
 import { v4 } from 'uuid';
 import { forgetPasswordPrefix } from '../../constants';
-import { userListFragment } from '../helpers/userListFragment';
+// import { userListFragment } from '../helpers/userListFragment';
 
 const createUserMutation = `
 mutation CreateUser($data: CreateUserInput!) {
@@ -34,10 +34,12 @@ mutation LoginUser($email: String!, $password: String!) {
     email: $email
     password: $password
   ) { 
-    listConnection 
-      ${userListFragment}
-    } 
+    id
+    username
+    sortedListsArray
+    email
   }
+}
 `;
 
 const forgotPasswordMutation = `
@@ -180,13 +182,13 @@ describe('Login mutation:', () => {
   it('Confirmed user can login with the correct credentials, and receives fresh empty list upon first login', async () => {
     const user = await createUser();
 
-    const usersLists = await UserToList.find({
+    const userToListTables = await UserToList.find({
       where: { userId: user.id },
       relations: ['list', 'list.items', 'itemHistory']
     });
 
     // No list connections on fresh user
-    expect(usersLists).toHaveLength(0);
+    expect(userToListTables).toHaveLength(0);
 
     const response = await graphqlCall({
       source: loginUserMutation,
@@ -198,20 +200,23 @@ describe('Login mutation:', () => {
 
     console.log(JSON.stringify(response, null, 4));
 
-    // New UserToList connection has 'my-list'
     expect(response).toMatchObject({
       data: {
         login: {
-          listConnection: [
-            {
-              list: {
-                title: 'my-list'
-              }
-            }
-          ]
+          username: user.username
         }
       }
     });
+    // New UserToList connection has 'my-list'
+    const userToListTablesAfter = await UserToList.find({
+      where: { userId: user.id },
+      relations: ['list', 'list.items', 'itemHistory']
+    });
+
+    expect(userToListTablesAfter).toHaveLength(1);
+    expect(
+      userToListTablesAfter.map((table) => table.list.title).includes('my-list')
+    ).toBeTruthy();
   });
 
   it('Confirmed user cannot login with incorrect credentials', async () => {

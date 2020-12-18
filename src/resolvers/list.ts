@@ -12,11 +12,12 @@ import { ShareListInput } from './input-types/ShareListInput';
 import { MyContext } from '../types/MyContext';
 import { StringArrayInput } from './input-types/StringArrayInput';
 import { RemovalOrderInput } from './input-types/RemovalOrderInput';
+import { logger } from 'src/middleware/logger';
 
 @Resolver()
 export class ListResolver {
   // Gets only the specified user's lists
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, logger)
   @Query(() => [UserToList])
   async getUsersLists(@Ctx() { req }: MyContext): Promise<UserToList[]> {
     // if (!req.session.userId) throw new Error('No user in context..');
@@ -30,7 +31,7 @@ export class ListResolver {
   }
 
   // Create a list
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, logger)
   @Mutation(() => List)
   async createList(
     @Arg('title') title: string,
@@ -60,7 +61,7 @@ export class ListResolver {
   }
 
   // Share a list
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, logger)
   @Mutation(() => Boolean)
   async shareList(
     @Arg('data') { email, listId, privileges }: ShareListInput,
@@ -90,7 +91,7 @@ export class ListResolver {
     return true;
   }
 
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, logger)
   @Mutation(() => Boolean)
   async deleteList(
     @Arg('listId') listId: string,
@@ -137,7 +138,7 @@ export class ListResolver {
   }
 
   // Rename List
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, logger)
   @Mutation(() => List)
   async renameList(
     @Arg('name') name: string,
@@ -167,7 +168,7 @@ export class ListResolver {
   // Sorted arrays are never used in the back-end for any purpose, only storage
 
   // Sorted Lists -- the order that the lists are displayed
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, logger)
   @Mutation(() => User)
   async sortLists(
     @Arg('data') sortedlistsInput: StringArrayInput,
@@ -187,7 +188,7 @@ export class ListResolver {
 
   // Re-order list -- save the user's order of the items on a list
   // User will also submit their `autoSortedList` through this mutation
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, logger)
   @Mutation(() => UserToList)
   async sortItems(
     @Arg('data') sortedItemsInput: StringArrayInput,
@@ -209,7 +210,7 @@ export class ListResolver {
   }
 
   // Submit and merge removalOrder results for Auto-Sort feature
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth, logger)
   @Mutation(() => UserToList)
   async submitRemovalOrder(
     @Arg('data') { removedItemArray, listId }: RemovalOrderInput,
