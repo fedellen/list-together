@@ -12,7 +12,7 @@ import { ShareListInput } from './input-types/ShareListInput';
 import { MyContext } from '../types/MyContext';
 import { StringArrayInput } from './input-types/StringArrayInput';
 import { RemovalOrderInput } from './input-types/RemovalOrderInput';
-import { logger } from 'src/middleware/logger';
+import { logger } from '../middleware/logger';
 
 @Resolver()
 export class ListResolver {

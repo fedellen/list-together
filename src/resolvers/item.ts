@@ -7,7 +7,7 @@ import { AddNoteInput } from './input-types/AddNoteInput';
 import { AddItemInput } from './input-types/AddItemInput';
 import { DeleteItemsInput } from './input-types/DeleteItemsInput';
 import { RenameItemInput } from './input-types/RenameItemInput';
-import { logger } from 'src/middleware/logger';
+import { logger } from '../middleware/logger';
 
 @Resolver()
 export class ItemResolver {
