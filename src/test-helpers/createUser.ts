@@ -5,7 +5,7 @@ import {
   User,
   UserPrivileges,
   UserToList
-} from '../../entities';
+} from '../entities';
 import faker from 'faker';
 import argon2 from 'argon2';
 

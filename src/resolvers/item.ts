@@ -1,12 +1,12 @@
 import { Item, ItemHistory, UserToList } from '../entities';
 import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 import { isAuth } from '../middleware/isAuth';
-import { MyContext } from '../types/MyContext';
-import { StyleItemInput } from './input-types/StyleItemsInput';
-import { AddNoteInput } from './input-types/AddNoteInput';
-import { AddItemInput } from './input-types/AddItemInput';
-import { DeleteItemsInput } from './input-types/DeleteItemsInput';
-import { RenameItemInput } from './input-types/RenameItemInput';
+import { MyContext } from '../MyContext';
+import { StyleItemInput } from './types/input/StyleItemsInput';
+import { AddNoteInput } from './types/input/AddNoteInput';
+import { AddItemInput } from './types/input/AddItemInput';
+import { DeleteItemsInput } from './types/input/DeleteItemsInput';
+import { RenameItemInput } from './types/input/RenameItemInput';
 import { logger } from '../middleware/logger';
 
 @Resolver()

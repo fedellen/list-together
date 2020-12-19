@@ -1,4 +1,4 @@
-import { graphqlCall } from '../helpers/graphqlCall';
+import { graphqlCall } from '../test-helpers/graphqlCall';
 import faker from 'faker';
 import {
   createUser,
@@ -6,9 +6,9 @@ import {
   userWithItemHistory,
   userWithList,
   userWithListAndItems
-} from '../helpers/createUser';
-import { List, User, UserToList } from '../../entities';
-import { userListFragment } from '../helpers/userListFragment';
+} from '../test-helpers/createUser';
+import { List, User, UserToList } from '../entities';
+import { userListFragment } from '../test-helpers/userListFragment';
 
 const getUsersListsQuery = `
 query GetUsersLists {

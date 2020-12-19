@@ -8,33 +8,29 @@ import {
   UseMiddleware
 } from 'type-graphql';
 import argon2 from 'argon2';
-import { CreateUserInput } from './input-types/CreateUserInput';
-import { MyContext } from '../types/MyContext';
+import { CreateUserInput } from './types/input/CreateUserInput';
+import { MyContext } from '../MyContext';
 import { sendEmail } from '../utils/sendEmail';
 import { createConfirmationUrl } from '../utils/confirmationUrl';
 import { redis } from '../redis';
 import { v4 } from 'uuid';
 import { confirmUserPrefix, forgetPasswordPrefix } from '../constants';
-import { ChangePasswordInput } from './input-types/ChangePasswordInput';
+import { ChangePasswordInput } from './types/input/ChangePasswordInput';
 import 'dotenv-safe';
-import { isAuth } from '../middleware/isAuth';
+// import { isAuth } from '../middleware/isAuth';
 import { logger } from '../middleware/logger';
 
 @Resolver()
 export class UserResolver {
-  @Query(() => User)
-  @UseMiddleware(isAuth, logger)
-  async getUser(@Ctx() { req }: MyContext): Promise<User> {
-    const user = await User.findOne({
-      where: { id: req.session.userId },
-      relations: [
-        'listConnection'
-        // 'listConnection.list',
-        // 'listConnection.list.items',
-        // 'listConnection.itemHistory'
-      ]
-    });
-    if (!user) throw new Error('User could not be found');
+  @Query(() => User, { nullable: true })
+  @UseMiddleware(logger)
+  async getUser(@Ctx() { req }: MyContext): Promise<User | null> {
+    // Not logged in
+    if (!req.session.userId) return null;
+
+    const user = await User.findOne(req.session.userId);
+    // User not found..
+    if (!user) return null;
 
     return user;
   }
@@ -156,7 +152,7 @@ export class UserResolver {
   }
 
   // Logout user
-  @UseMiddleware(isAuth, logger)
+  @UseMiddleware(/*isAuth,*/ logger) // Auth errors on logout
   @Mutation(() => Boolean)
   async logout(@Ctx() ctx: MyContext): Promise<Boolean> {
     return new Promise((resolve) =>

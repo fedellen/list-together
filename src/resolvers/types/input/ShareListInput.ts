@@ -1,4 +1,4 @@
-import { UserPrivileges } from '../../entities';
+import { UserPrivileges } from '../../../entities';
 import { Field, InputType } from 'type-graphql';
 import { IsEmail, IsUUID } from 'class-validator';
 

@@ -8,10 +8,10 @@ import {
   UseMiddleware
 } from 'type-graphql';
 import { isAuth } from '../middleware/isAuth';
-import { ShareListInput } from './input-types/ShareListInput';
-import { MyContext } from '../types/MyContext';
-import { StringArrayInput } from './input-types/StringArrayInput';
-import { RemovalOrderInput } from './input-types/RemovalOrderInput';
+import { ShareListInput } from './types/input/ShareListInput';
+import { MyContext } from '../MyContext';
+import { StringArrayInput } from './types/input/StringArrayInput';
+import { RemovalOrderInput } from './types/input/RemovalOrderInput';
 import { logger } from '../middleware/logger';
 
 @Resolver()

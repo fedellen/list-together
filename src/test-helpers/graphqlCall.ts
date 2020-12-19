@@ -1,5 +1,5 @@
 import { ExecutionResult, graphql, GraphQLSchema } from 'graphql';
-import { createSchema } from '../../utils/createSchema';
+import { createSchema } from '../utils/createSchema';
 import { Maybe } from 'type-graphql';
 
 interface Options {

@@ -1,12 +1,12 @@
-import { graphqlCall } from '../helpers/graphqlCall';
+import { graphqlCall } from '../test-helpers/graphqlCall';
 import {
   createUserWithSharedPriv,
   userWithList,
   userWithListAndItems
-} from '../helpers/createUser';
-import { UserToList } from '../../entities';
+} from '../test-helpers/createUser';
+import { UserToList } from '../entities';
 import faker from 'faker';
-import { userListFragment } from '../helpers/userListFragment';
+import { userListFragment } from '../test-helpers/userListFragment';
 
 const addItemMutation = `
 mutation AddItem($data: AddItemInput!) {

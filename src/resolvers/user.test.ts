@@ -1,11 +1,11 @@
-import { User, UserToList } from '../../entities';
-import { graphqlCall } from '../helpers/graphqlCall';
-import { redis } from '../../redis';
+import { User, UserToList } from '../entities';
+import { graphqlCall } from '../test-helpers/graphqlCall';
+import { redis } from '../redis';
 import faker from 'faker';
-import { createConfirmationUrl } from '../../utils/confirmationUrl';
-import { createUser } from '../helpers/createUser';
+import { createConfirmationUrl } from '../utils/confirmationUrl';
+import { createUser } from '../test-helpers/createUser';
 import { v4 } from 'uuid';
-import { forgetPasswordPrefix } from '../../constants';
+import { forgetPasswordPrefix } from '../constants';
 // import { userListFragment } from '../helpers/userListFragment';
 
 const createUserMutation = `
