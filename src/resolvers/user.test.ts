@@ -6,17 +6,13 @@ import { createConfirmationUrl } from '../utils/confirmationUrl';
 import { createUser } from '../test-helpers/createUser';
 import { v4 } from 'uuid';
 import { forgetPasswordPrefix } from '../constants';
-// import { userListFragment } from '../helpers/userListFragment';
+import { userFragment } from '../test-helpers/fragments/userFragment';
 
 const createUserMutation = `
 mutation CreateUser($data: CreateUserInput!) {
   createUser(
     data: $data
-  ) {
-    id
-    username
-    email
-  }
+  ) ${userFragment}
 }
 `;
 
@@ -29,16 +25,10 @@ mutation ConfirmUser($token: String!) {
 `;
 
 const loginUserMutation = `
-mutation LoginUser($email: String!, $password: String!) {
+mutation LoginUser($data: LoginUserInput!) {
   login(
-    email: $email
-    password: $password
-  ) { 
-    id
-    username
-    sortedListsArray
-    email
-  }
+    data: $data
+  ) ${userFragment}
 }
 `;
 
@@ -50,11 +40,7 @@ mutation ForgotPassword($email: String!) {
 
 const changePasswordMutation = `
 mutation ChangePassword($data: ChangePasswordInput!) {
-  changePassword(data: $data) {
-    id
-    username
-    email
-  }
+  changePassword(data: $data) ${userFragment}
 }
 `;
 
@@ -75,19 +61,19 @@ describe('createUser Mutation:', () => {
     const response = await graphqlCall({
       source: createUserMutation,
       variableValues: {
-        data: user
+        data: {
+          username: user.username,
+          email: user.email,
+          password: user.password
+        }
       }
     });
 
     // Check response format
-    expect(response).toMatchObject({
-      data: {
-        createUser: {
-          username: user.username,
-          email: user.email
-        }
-      }
-    });
+    console.log(JSON.stringify(response, null, 4));
+    expect(response.data?.createUser.user.username).toBe(user.username);
+    expect(response.data?.createUser.user.email).toBe(user.email);
+    expect(response.errors).toBeUndefined();
 
     // Check database entry
     const userInDatabase = await User.findOne({ where: { email: user.email } });
@@ -112,11 +98,16 @@ describe('createUser Mutation:', () => {
 
     // Check response format
     expect(response).toMatchObject({
-      errors: [
-        {
-          message: 'Argument Validation Error'
+      data: {
+        createUser: {
+          errors: [
+            {
+              field: 'email',
+              message: 'Invalid email..'
+            }
+          ]
         }
-      ]
+      }
     });
 
     // Check for database entry
@@ -193,20 +184,15 @@ describe('Login mutation:', () => {
     const response = await graphqlCall({
       source: loginUserMutation,
       variableValues: {
-        email: user.email,
-        password: user.password
-      }
-    });
-
-    console.log(JSON.stringify(response, null, 4));
-
-    expect(response).toMatchObject({
-      data: {
-        login: {
-          username: user.username
+        data: {
+          email: user.email,
+          password: user.password
         }
       }
     });
+
+    expect(response.data?.login.user.username).toBe(user.username);
+    expect(response.errors).toBeUndefined();
     // New UserToList connection has 'my-list'
     const userToListTablesAfter = await UserToList.find({
       where: { userId: user.id },
@@ -224,17 +210,24 @@ describe('Login mutation:', () => {
     const response = await graphqlCall({
       source: loginUserMutation,
       variableValues: {
-        email: user.email,
-        password: 'wrongPassword'
+        data: {
+          email: user.email,
+          password: 'wrongPassword'
+        }
       }
     });
 
     expect(response).toMatchObject({
-      errors: [
-        {
-          message: 'Login has failed...'
+      data: {
+        login: {
+          errors: [
+            {
+              field: 'password',
+              message: 'Password is incorrect..'
+            }
+          ]
         }
-      ]
+      }
     });
   });
 
@@ -244,18 +237,25 @@ describe('Login mutation:', () => {
     const response = await graphqlCall({
       source: loginUserMutation,
       variableValues: {
-        email: user.email,
-        password: user.password
+        data: {
+          email: user.email,
+          password: user.password
+        }
       }
     });
 
     // New UserToList connection has 'my-list'
     expect(response).toMatchObject({
-      errors: [
-        {
-          message: 'Email has not been confirmed..'
+      data: {
+        login: {
+          errors: [
+            {
+              field: 'email',
+              message: 'Email address has not been confirmed..'
+            }
+          ]
         }
-      ]
+      }
     });
   });
 });
@@ -270,6 +270,7 @@ describe('Forgot password mutation:', () => {
         email: user.email
       }
     });
+    console.log(JSON.stringify(response, null, 4));
 
     expect(response).toMatchObject({
       data: {
@@ -314,9 +315,11 @@ describe('Change password mutation:', () => {
     expect(response).toMatchObject({
       data: {
         changePassword: {
-          id: user.id,
-          username: user.username,
-          email: user.email
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email
+          }
         }
       }
     });
@@ -340,7 +343,14 @@ describe('Change password mutation:', () => {
 
     expect(response).toMatchObject({
       data: {
-        changePassword: null
+        changePassword: {
+          errors: [
+            {
+              field: 'token',
+              message: 'No token was found..'
+            }
+          ]
+        }
       }
     });
   });

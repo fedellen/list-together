@@ -20,7 +20,8 @@ export async function sendEmail(email: string, url: string) {
     auth: {
       user: account.user, // generated ethereal user
       pass: account.pass // generated ethereal password
-    }
+    },
+    tls: { rejectUnauthorized: false }
   });
 
   const mailOptions = {
