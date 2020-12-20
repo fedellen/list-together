@@ -1,4 +1,4 @@
-import { IsUUID } from 'class-validator';
+// import { IsUUID } from 'class-validator';
 import { Field, InputType } from 'type-graphql';
 
 enum styles {
@@ -8,7 +8,6 @@ enum styles {
 
 @InputType()
 export class StyleItemInput {
-  @IsUUID(4)
   @Field()
   listId: string;
 
