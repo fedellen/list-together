@@ -1,4 +1,3 @@
-import { List, User, UserToList } from '../entities';
 import {
   Arg,
   Ctx,
@@ -7,18 +6,27 @@ import {
   Resolver,
   UseMiddleware
 } from 'type-graphql';
+
+import { redis } from '../redis';
+import { confirmUserPrefix, forgetPasswordPrefix } from '../constants';
+
+import { v4 } from 'uuid';
 import argon2 from 'argon2';
-import { CreateUserInput } from './types/input/CreateUserInput';
-import { MyContext } from '../MyContext';
+
+import { logger } from '../middleware/logger';
 import { sendEmail } from '../utils/sendEmail';
 import { createConfirmationUrl } from '../utils/confirmationUrl';
-import { redis } from '../redis';
-import { v4 } from 'uuid';
-import { confirmUserPrefix, forgetPasswordPrefix } from '../constants';
+
+import { validateCreateUser } from './types/validators/validateCreateUser';
+import { validateLogin } from './types/validators/validateLogin';
+
+import { CreateUserInput } from './types/input/CreateUserInput';
+import { LoginUserInput } from './types/input/LoginUserInput';
 import { ChangePasswordInput } from './types/input/ChangePasswordInput';
-import 'dotenv-safe';
-// import { isAuth } from '../middleware/isAuth';
-import { logger } from '../middleware/logger';
+
+import { List, User, UserToList } from '../entities';
+import { UserResponse } from './types/response/UserResponse';
+import { MyContext } from '../MyContext';
 
 @Resolver()
 export class UserResolver {
@@ -37,20 +45,25 @@ export class UserResolver {
 
   // Create a User
   @UseMiddleware(logger)
-  @Mutation(() => User)
-  async createUser(
-    @Arg('data') { username, email, password }: CreateUserInput
-  ): Promise<User> {
-    const hashedPassword = await argon2.hash(password);
+  @Mutation(() => UserResponse)
+  async createUser(@Arg('data') data: CreateUserInput): Promise<UserResponse> {
+    const errors = await validateCreateUser(data);
+    if (errors) return { errors };
+
+    const hashedPassword = await argon2.hash(data.password);
     const user = await User.create({
-      username,
-      email,
+      username: data.username,
+      email: data.email,
       password: hashedPassword
     }).save();
 
-    await sendEmail(email, await createConfirmationUrl(user.id));
+    console.log('we are here in donde');
 
-    return user;
+    await sendEmail(user.email, await createConfirmationUrl(user.id));
+
+    console.log('we are here after donde');
+
+    return { user };
   }
 
   // Confirm the user -- Probably refactor this to an express route
@@ -69,45 +82,36 @@ export class UserResolver {
     return true;
   }
 
-  // Login user, returns all user's lists from database
   @UseMiddleware(logger)
-  @Mutation(() => User)
+  @Mutation(() => UserResponse)
   async login(
-    @Arg('email') email: string,
-    @Arg('password') password: string,
+    @Arg('data') data: LoginUserInput,
     @Ctx() ctx: MyContext
-  ): Promise<User | null> {
+  ): Promise<UserResponse> {
     const user = await User.findOne({
-      where: { email: email },
+      where: { email: data.email },
       relations: ['listConnection']
     });
-    if (!user) throw new Error('Login has failed..');
 
-    const valid = await argon2.verify(user.password, password);
-    if (!valid) throw new Error('Login has failed...');
+    const errors = await validateLogin(data, user);
+    if (errors) return { errors };
+    // User will exist if no errors from validation
 
-    if (!user.confirmed) throw new Error('Email has not been confirmed..');
+    ctx.req.session.userId = user!.id;
 
-    ctx.req.session.userId = user.id;
-
-    // let usersLists = await UserToList.find({
-    //   where: { userId: user.id },
-    //   relations: ['list', 'list.items', 'itemHistory']
-    // });
-
-    // If no lists were found, create one upon standard login
-    if (!user.listConnection || !user.listConnection.length) {
+    // Initialize a new list if user contains no lists
+    if (!user!.listConnection || !user!.listConnection.length) {
       const list = await List.create({
         title: 'my-list'
       }).save();
       await UserToList.create({
         listId: list.id,
-        userId: user.id,
+        userId: user!.id,
         privileges: ['owner'] // Only list creator has owner rights
       }).save();
     }
 
-    return user;
+    return { user };
   }
 
   // Forgot password -- Probably refactor this to an express route from email
@@ -118,11 +122,12 @@ export class UserResolver {
 
     if (!user) return false;
 
-    const token = v4();
+    const token = v4(); // Token to send
     await redis.set(forgetPasswordPrefix + token, user.id, 'ex', 60 * 60 * 24); // 1 day expiration
 
     await sendEmail(
       email,
+      // Hard coded value -- change later
       `http://localhost:3000/user/change-password/${token}`
     );
 
@@ -131,16 +136,34 @@ export class UserResolver {
 
   // Change password with token from email
   @UseMiddleware(logger)
-  @Mutation(() => User, { nullable: true })
+  @Mutation(() => UserResponse, { nullable: true })
   async changePassword(
     @Arg('data') { token, password }: ChangePasswordInput,
     @Ctx() ctx: MyContext
-  ): Promise<User | null> {
+  ): Promise<UserResponse> {
     const userId = await redis.get(forgetPasswordPrefix + token);
-    if (!userId) return null;
+    if (!userId) {
+      return {
+        errors: [
+          {
+            field: 'token',
+            message: 'No token was found..'
+          }
+        ]
+      };
+    }
 
     const user = await User.findOne(userId);
-    if (!user) return null;
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: 'token',
+            message: 'No user was found..'
+          }
+        ]
+      };
+    }
     await redis.del(forgetPasswordPrefix + token);
 
     user.password = await argon2.hash(password);
@@ -148,7 +171,7 @@ export class UserResolver {
 
     ctx.req.session.userId = user.id;
 
-    return user;
+    return { user };
   }
 
   // Logout user

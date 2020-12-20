@@ -1,11 +1,12 @@
 import { User } from '../../../entities';
 import { LoginUserInput } from '../input/LoginUserInput';
 import argon2 from 'argon2';
+import { FieldError } from '../response/FieldError';
 
 export const validateLogin = async (
   options: LoginUserInput,
   user: User | undefined
-) => {
+): Promise<FieldError[] | null> => {
   if (!user) {
     return [
       {

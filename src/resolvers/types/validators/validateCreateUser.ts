@@ -11,6 +11,15 @@ export const validateCreateUser = async (options: CreateUserInput) => {
     ];
   }
 
+  if (!options.email.includes('.')) {
+    return [
+      {
+        field: 'email',
+        message: 'Invalid email..'
+      }
+    ];
+  }
+
   if (options.email.length <= 5) {
     return [
       {
