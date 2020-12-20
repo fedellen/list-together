@@ -1,12 +1,11 @@
-import { User } from '../../../entities';
 import { ObjectType, Field } from 'type-graphql';
 import { FieldError } from './FieldError';
 
 @ObjectType()
-export class UserResponse {
+export class BooleanResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];
 
-  @Field(() => User, { nullable: true })
-  user?: User;
+  @Field(() => Boolean, { nullable: true })
+  boolean?: boolean;
 }
