@@ -1,4 +1,3 @@
-import { List, User, UserToList } from '../entities';
 import {
   Arg,
   Ctx,
@@ -7,46 +6,79 @@ import {
   Resolver,
   UseMiddleware
 } from 'type-graphql';
-import { isAuth } from '../middleware/isAuth';
-import { ShareListInput } from './types/input/ShareListInput';
+
+import { logger } from '../middleware/logger';
+
 import { MyContext } from '../MyContext';
+import { validateContext } from './types/validators/validateContext';
+
+import { List, User, UserToList } from '../entities';
+
+import { ShareListInput } from './types/input/ShareListInput';
 import { StringArrayInput } from './types/input/StringArrayInput';
 import { RemovalOrderInput } from './types/input/RemovalOrderInput';
-import { logger } from '../middleware/logger';
+
+import { UserToListResponse } from './types/response/UserToListResponse';
+import { ListResponse } from './types/response/ListResponse';
+import { BooleanResponse } from './types/response/BooleanResponse';
+import { UserResponse } from './types/response/UserResponse';
 
 @Resolver()
 export class ListResolver {
   // Gets only the specified user's lists
-  @UseMiddleware(isAuth, logger)
-  @Query(() => [UserToList])
-  async getUsersLists(@Ctx() { req }: MyContext): Promise<UserToList[]> {
-    // if (!req.session.userId) throw new Error('No user in context..');
-    const usersListArray = await UserToList.find({
-      where: { userId: req.session.userId },
+  @UseMiddleware(logger)
+  @Query(() => UserToListResponse)
+  async getUsersLists(@Ctx() context: MyContext): Promise<UserToListResponse> {
+    const errors = validateContext(context);
+    if (errors) return { errors };
+
+    const userToList = await UserToList.find({
+      where: { userId: context.req.session.userId },
       relations: ['list', 'list.items', 'itemHistory']
     });
-    if (!usersListArray) throw new Error('No lists were found for that User..');
 
-    return usersListArray;
+    if (!userToList) {
+      return {
+        errors: [
+          {
+            field: 'userId',
+            message: 'Could not find any lists for that userId..'
+          }
+        ]
+      };
+    }
+
+    return { userToList };
   }
 
   // Create a list
-  @UseMiddleware(isAuth, logger)
-  @Mutation(() => List)
+  @UseMiddleware(logger)
+  @Mutation(() => ListResponse)
   async createList(
     @Arg('title') title: string,
-    @Ctx() { req }: MyContext
-  ): Promise<List> {
+    @Ctx() context: MyContext
+  ): Promise<ListResponse> {
+    const errors = validateContext(context);
+    if (errors) return { errors };
+
     // Check to see if user already owns 25 lists
     const userToListTableArray = await UserToList.find({
-      where: { userId: req.session.userId }
+      where: { userId: context.req.session.userId }
     });
     const userToListTablesAsOwner = userToListTableArray.filter(
       (listConnection) => listConnection.privileges.includes('owner')
     );
 
-    if (userToListTablesAsOwner.length >= 25)
-      throw new Error('User cannot create more than 25 lists..');
+    if (userToListTablesAsOwner.length >= 25) {
+      return {
+        errors: [
+          {
+            field: 'lists',
+            message: 'User cannot create more than 25 lists..'
+          }
+        ]
+      };
+    }
 
     // Make the list 👌
     const list = await List.create({
@@ -54,57 +86,92 @@ export class ListResolver {
     }).save();
     await UserToList.create({
       listId: list.id,
-      userId: req.session.userId,
+      userId: context.req.session.userId,
       privileges: ['owner']
     }).save();
-    return list;
+    return { list };
   }
 
   // Share a list
-  @UseMiddleware(isAuth, logger)
-  @Mutation(() => Boolean)
+  @UseMiddleware(logger)
+  @Mutation(() => BooleanResponse)
   async shareList(
-    @Arg('data') { email, listId, privileges }: ShareListInput,
-    @Ctx() { req }: MyContext
-  ): Promise<Boolean> {
-    const userId = req.session.userId;
+    @Arg('data') data: ShareListInput,
+    @Ctx() context: MyContext
+  ): Promise<BooleanResponse> {
+    const contextError = validateContext(context);
+    if (contextError) return { errors: contextError };
+
+    const userId = context.req.session.userId;
     const userToListTable = await UserToList.findOne({
-      where: { listId: listId, userId: userId }
+      where: { listId: data.listId, userId: userId }
     });
 
     if (!userToListTable) {
-      throw new Error('Cannot find that list connection..');
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'User to list connection does not exist..'
+          }
+        ]
+      };
     } else if (!userToListTable.privileges.includes('owner')) {
-      throw new Error('You do not have owner privileges to that list..');
+      return {
+        errors: [
+          {
+            field: 'userToList',
+            message: 'User does not have rights to share that list..'
+          }
+        ]
+      };
     }
 
-    const userToShare = await User.findOne({ where: { email } });
+    const userToShare = await User.findOne({ where: { email: data.email } });
     if (!userToShare) {
-      throw new Error('A user with that email address does not exist..');
+      return {
+        errors: [
+          {
+            field: 'email',
+            message: 'A user with that email address does not exist..'
+          }
+        ]
+      };
     }
 
     await UserToList.create({
-      listId,
-      privileges,
+      listId: data.listId,
+      privileges: data.privileges,
       userId: userToShare.id
     }).save();
-    return true;
+
+    return { boolean: true };
   }
 
-  @UseMiddleware(isAuth, logger)
-  @Mutation(() => Boolean)
+  @UseMiddleware(logger)
+  @Mutation(() => BooleanResponse)
   async deleteList(
     @Arg('listId') listId: string,
-    @Ctx() { req }: MyContext
-  ): Promise<Boolean> {
-    const userId = req.session.userId;
+    @Ctx() context: MyContext
+  ): Promise<BooleanResponse> {
+    const contextError = validateContext(context);
+    if (contextError) return { errors: contextError };
+
+    const userId = context.req.session.userId;
 
     const userToListTable = await UserToList.findOne({
       where: { listId: listId, userId: userId }
     });
 
     if (!userToListTable) {
-      throw new Error('Cannot find that list connection..');
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'User to list connection does not exist..'
+          }
+        ]
+      };
     }
 
     await userToListTable.remove();
@@ -134,100 +201,163 @@ export class ListResolver {
       }
     }
 
-    return true;
+    return { boolean: true };
   }
 
   // Rename List
-  @UseMiddleware(isAuth, logger)
-  @Mutation(() => List)
+  @UseMiddleware(logger)
+  @Mutation(() => ListResponse)
   async renameList(
     @Arg('name') name: string,
     @Arg('listId') listId: string,
-    @Ctx() { req }: MyContext
-  ): Promise<List> {
-    const userId = req.session.userId;
+    @Ctx() context: MyContext
+  ): Promise<ListResponse> {
+    const contextError = validateContext(context);
+    if (contextError) return { errors: contextError };
+
+    const userId = context.req.session.userId;
     const userToListTable = await UserToList.findOne({
       where: { userId: userId, listId: listId },
       relations: ['list']
     });
 
-    if (!userToListTable)
-      throw new Error('User to list connection does not exist..');
-    else if (!userToListTable.privileges.includes('owner'))
-      throw new Error('User does not have privileges to rename that list..');
+    if (!userToListTable) {
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'User to list connection does not exist..'
+          }
+        ]
+      };
+    } else if (!userToListTable.privileges.includes('owner')) {
+      return {
+        errors: [
+          {
+            field: 'userToList',
+            message: 'User does not have rights to rename that list..'
+          }
+        ]
+      };
+    }
 
     userToListTable.list.title = name;
     await userToListTable.save();
 
     // Server saves and returns array
-    return userToListTable.list;
+    return { list: userToListTable.list };
   }
 
   // Authenticated users can save the following arrays regardless of their accuracy
   // Accuracy/synchronization conflicts will be handled on the front-end
-  // Sorted arrays are never used in the back-end for any purpose, only storage
+  // Sorted list/item arrays are never used in the back-end for any purpose
+  // Only storage of user's preferences
 
   // Sorted Lists -- the order that the lists are displayed
-  @UseMiddleware(isAuth, logger)
-  @Mutation(() => User)
+  @UseMiddleware(logger)
+  @Mutation(() => UserResponse)
   async sortLists(
     @Arg('data') sortedlistsInput: StringArrayInput,
-    @Ctx() { req }: MyContext
-  ): Promise<User> {
+    @Ctx() context: MyContext
+  ): Promise<UserResponse> {
+    const contextError = validateContext(context);
+    if (contextError) return { errors: contextError };
+
     // Authorized user sends array of listIds
-    const userId = req.session.userId;
+    const userId = context.req.session.userId;
     const user = await User.findOne(userId);
 
-    if (!user) throw new Error('User does not exist..');
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'User does not exist..'
+          }
+        ]
+      };
+    }
 
     const sortedListsArray = sortedlistsInput.stringArray;
     user.sortedListsArray = sortedListsArray;
 
-    return user.save();
+    await user.save();
+    return { user };
   }
 
   // Re-order list -- save the user's order of the items on a list
   // User will also submit their `autoSortedList` through this mutation
-  @UseMiddleware(isAuth, logger)
-  @Mutation(() => UserToList)
+  @UseMiddleware(logger)
+  @Mutation(() => UserToListResponse)
   async sortItems(
     @Arg('data') sortedItemsInput: StringArrayInput,
     @Arg('listId') listId: string,
-    @Ctx() { req }: MyContext
-  ): Promise<UserToList> {
+    @Ctx() context: MyContext
+  ): Promise<UserToListResponse> {
+    const contextError = validateContext(context);
+    if (contextError) return { errors: contextError };
     // Authorized user sends array of item names, and the listId
-    const userId = req.session.userId;
-    const userToListTable = await UserToList.findOne({
+    const userId = context.req.session.userId;
+    const userToList = await UserToList.findOne({
       where: { listId: listId, userId: userId }
     });
-    if (!userToListTable)
-      throw new Error('User to list connection does not exist..');
+    if (!userToList) {
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'User to list connection does not exist..'
+          }
+        ]
+      };
+    }
 
     const sortedItemsArray = sortedItemsInput.stringArray;
-    userToListTable.sortedItems = sortedItemsArray;
+    userToList.sortedItems = sortedItemsArray;
 
-    return userToListTable.save();
+    await userToList.save();
+    return { userToList: [userToList] };
   }
 
   // Submit and merge removalOrder results for Auto-Sort feature
-  @UseMiddleware(isAuth, logger)
-  @Mutation(() => UserToList)
+  @UseMiddleware(logger)
+  @Mutation(() => UserToListResponse)
   async submitRemovalOrder(
     @Arg('data') { removedItemArray, listId }: RemovalOrderInput,
-    @Ctx() { req }: MyContext
-  ): Promise<UserToList> {
+    @Ctx() context: MyContext
+  ): Promise<UserToListResponse> {
+    const contextError = validateContext(context);
+    if (contextError) return { errors: contextError };
+
     // Authorized user sends array of item names, and the listId
-    const userId = req.session.userId;
-    const userToListTable = await UserToList.findOne({
+    const userId = context.req.session.userId;
+    const userToList = await UserToList.findOne({
       where: { listId: listId, userId: userId },
       relations: ['itemHistory']
     });
 
-    if (!userToListTable)
-      throw new Error('User to list connection does not exist..');
+    if (!userToList) {
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'User to list connection does not exist..'
+          }
+        ]
+      };
+    }
 
-    const itemHistory = userToListTable.itemHistory;
-    if (!itemHistory) throw new Error('User has no item history..');
+    const itemHistory = userToList.itemHistory;
+    if (!itemHistory) {
+      return {
+        errors: [
+          {
+            field: 'itemHistory',
+            message: 'User has no item history..'
+          }
+        ]
+      };
+    }
 
     const arrayLengthRating = Math.round(1000 / removedItemArray.length);
 
@@ -253,6 +383,7 @@ export class ListResolver {
       }
     });
 
-    return userToListTable.save();
+    await userToList.save();
+    return { userToList: [userToList] };
   }
 }
