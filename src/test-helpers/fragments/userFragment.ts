@@ -6,6 +6,7 @@ export const userFragment = `
     id
     username
     email
+    sortedListsArray
   }
   ${fieldErrorFragment}
 }

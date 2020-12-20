@@ -8,56 +8,71 @@ import {
   userWithListAndItems
 } from '../test-helpers/createUser';
 import { List, User, UserToList } from '../entities';
-import { userListFragment } from '../test-helpers/userListFragment';
+import { userListFragment } from '../test-helpers/fragments/userListFragment';
+import { userListPartial } from '../test-helpers/fragments/userListPartial';
+import { fieldErrorFragment } from '../test-helpers/fragments/fieldErrorFragment';
+import { listFragment } from '../test-helpers/fragments/listFragment';
+import { userFragment } from '../test-helpers/fragments/userFragment';
+import { userListItemHistoryPartial } from '../test-helpers/fragments/userListItemHistoryPartial';
 
 const getUsersListsQuery = `
 query GetUsersLists {
-  getUsersLists
-  ${userListFragment}
+  getUsersLists {
+    ${userListFragment}
+    ${fieldErrorFragment}
+  }
 }
 `;
 
 const createListMutation = `
 mutation CreateList($title: String!) {
   createList (title: $title) {
-    title
-    id
+    ${listFragment}
+    ${fieldErrorFragment}
   }
 }
 `;
 
 const shareListMutation = `
   mutation ShareList($data: ShareListInput!) {
-    shareList (data: $data)
+    shareList (data: $data) {
+      boolean
+      ${fieldErrorFragment}
+    }
   }
 `;
 
 const deleteListMutation = `
   mutation DeleteList($listId: String!) {
-    deleteList(listId: $listId)
+    deleteList(listId: $listId) {
+      boolean
+      ${fieldErrorFragment}
+    }
   }
 `;
 
 const renameListMutation = `
   mutation RenameList($name: String!, $listId: String!) {
     renameList(name: $name, listId: $listId) {
-      title
+      ${listFragment}
+      ${fieldErrorFragment}
     }
   }
 `;
 
 const sortListsMutation = `
   mutation SortLists($data: StringArrayInput!) {
-    sortLists(data: $data) {
-      sortedListsArray
-    }
+    sortLists(data: $data) 
+      ${userFragment}
+    
   }
 `;
 
 const sortItemsMutation = `
   mutation SortItems($data: StringArrayInput!, $listId: String!) {
     sortItems(data: $data, listId: $listId) {
-      sortedItems
+      ${userListPartial}
+      ${fieldErrorFragment}
     }
   }
 `;
@@ -65,10 +80,8 @@ const sortItemsMutation = `
 export const submitRemovalOrderMutation = `
   mutation SubmitRemovalOrder($data: RemovalOrderInput!) {
     submitRemovalOrder(data: $data) {
-      itemHistory {
-        item
-        removalRating
-      }
+      ${userListItemHistoryPartial}
+      ${fieldErrorFragment}
     }
   }
 `;
@@ -84,13 +97,15 @@ describe('Get users lists query:', () => {
 
     expect(response).toMatchObject({
       data: {
-        getUsersLists: [
-          {
-            list: {
-              title: 'my-test-list-0'
+        getUsersLists: {
+          userToList: [
+            {
+              list: {
+                title: 'my-test-list-0'
+              }
             }
-          }
-        ]
+          ]
+        }
       }
     });
   });
@@ -101,11 +116,16 @@ describe('Get users lists query:', () => {
     });
 
     expect(response).toMatchObject({
-      errors: [
-        {
-          message: 'Not authenticated..'
+      data: {
+        getUsersLists: {
+          errors: [
+            {
+              field: 'context',
+              message: 'Context contains no userId..'
+            }
+          ]
         }
-      ]
+      }
     });
   });
 });
@@ -124,7 +144,9 @@ describe('Create list mutation:', () => {
     expect(response).toMatchObject({
       data: {
         createList: {
-          title: title
+          list: {
+            title: title
+          }
         }
       }
     });
@@ -149,11 +171,16 @@ describe('Create list mutation:', () => {
     });
 
     expect(response).toMatchObject({
-      errors: [
-        {
-          message: 'User cannot create more than 25 lists..'
+      data: {
+        createList: {
+          errors: [
+            {
+              field: 'lists',
+              message: 'User cannot create more than 25 lists..'
+            }
+          ]
         }
-      ]
+      }
     });
 
     const listConnectionsInDatabase = await UserToList.find({
@@ -170,11 +197,16 @@ describe('Create list mutation:', () => {
     });
 
     expect(response).toMatchObject({
-      errors: [
-        {
-          message: 'Not authenticated..'
+      data: {
+        createList: {
+          errors: [
+            {
+              field: 'context',
+              message: 'Context contains no userId..'
+            }
+          ]
         }
-      ]
+      }
     });
   });
 });
@@ -201,7 +233,9 @@ describe('Share list mutation:', () => {
 
     expect(response).toMatchObject({
       data: {
-        shareList: true
+        shareList: {
+          boolean: true
+        }
       }
     });
   });
@@ -230,11 +264,15 @@ describe('Share list mutation:', () => {
     });
 
     expect(response).toMatchObject({
-      errors: [
-        {
-          message: 'You do not have owner privileges to that list..'
+      data: {
+        shareList: {
+          errors: [
+            {
+              message: 'User does not have rights to share that list..'
+            }
+          ]
         }
-      ]
+      }
     });
 
     // New connection in database should not exist 👎
@@ -260,7 +298,9 @@ describe('Delete list mutation:', () => {
 
     expect(response).toMatchObject({
       data: {
-        deleteList: true
+        deleteList: {
+          boolean: true
+        }
       }
     });
 
@@ -294,7 +334,9 @@ describe('Delete list mutation:', () => {
 
     expect(response).toMatchObject({
       data: {
-        deleteList: true
+        deleteList: {
+          boolean: true
+        }
       }
     });
 
@@ -323,11 +365,16 @@ describe('Delete list mutation:', () => {
     });
 
     expect(response).toMatchObject({
-      errors: [
-        {
-          message: 'Not authenticated..'
+      data: {
+        deleteList: {
+          errors: [
+            {
+              field: 'context',
+              message: 'Context contains no userId..'
+            }
+          ]
         }
-      ]
+      }
     });
 
     const userToListTableAfter = await UserToList.findOne({
@@ -355,7 +402,9 @@ describe('Rename list mutation:', () => {
     expect(response).toMatchObject({
       data: {
         renameList: {
-          title: newListName
+          list: {
+            title: newListName
+          }
         }
       }
     });
@@ -385,11 +434,16 @@ describe('Rename list mutation:', () => {
     });
 
     expect(response).toMatchObject({
-      errors: [
-        {
-          message: 'User does not have privileges to rename that list..'
+      data: {
+        renameList: {
+          errors: [
+            {
+              field: 'userToList',
+              message: 'User does not have rights to rename that list..'
+            }
+          ]
         }
-      ]
+      }
     });
 
     // New list name is NOT saved to database
@@ -420,7 +474,12 @@ describe('Sort list mutation:', () => {
     expect(response).toMatchObject({
       data: {
         sortLists: {
-          sortedListsArray: reversedListIdArray
+          user: {
+            sortedListsArray: reversedListIdArray,
+            email: user.email,
+            id: user.id,
+            username: user.username
+          }
         }
       }
     });
@@ -455,7 +514,11 @@ describe('Re-order list mutation:', () => {
     expect(response).toMatchObject({
       data: {
         sortItems: {
-          sortedItems: reversedItemArray
+          userToList: [
+            {
+              sortedItems: reversedItemArray
+            }
+          ]
         }
       }
     });
@@ -494,46 +557,50 @@ describe('Submit removal order mutation:', () => {
     expect(response).toMatchObject({
       data: {
         submitRemovalOrder: {
-          itemHistory: [
+          userToList: [
             {
-              item: itemNameArray[0],
-              removalRating: 0
-            },
-            {
-              item: itemNameArray[1],
-              removalRating: 100
-            },
-            {
-              item: itemNameArray[2],
-              removalRating: 200
-            },
-            {
-              item: itemNameArray[3],
-              removalRating: 300
-            },
-            {
-              item: itemNameArray[4],
-              removalRating: 400
-            },
-            {
-              item: itemNameArray[5],
-              removalRating: 500
-            },
-            {
-              item: itemNameArray[6],
-              removalRating: 600
-            },
-            {
-              item: itemNameArray[7],
-              removalRating: 700
-            },
-            {
-              item: itemNameArray[8],
-              removalRating: 800
-            },
-            {
-              item: itemNameArray[9],
-              removalRating: 900
+              itemHistory: [
+                {
+                  item: itemNameArray[0],
+                  removalRating: 0
+                },
+                {
+                  item: itemNameArray[1],
+                  removalRating: 100
+                },
+                {
+                  item: itemNameArray[2],
+                  removalRating: 200
+                },
+                {
+                  item: itemNameArray[3],
+                  removalRating: 300
+                },
+                {
+                  item: itemNameArray[4],
+                  removalRating: 400
+                },
+                {
+                  item: itemNameArray[5],
+                  removalRating: 500
+                },
+                {
+                  item: itemNameArray[6],
+                  removalRating: 600
+                },
+                {
+                  item: itemNameArray[7],
+                  removalRating: 700
+                },
+                {
+                  item: itemNameArray[8],
+                  removalRating: 800
+                },
+                {
+                  item: itemNameArray[9],
+                  removalRating: 900
+                }
+              ]
             }
           ]
         }

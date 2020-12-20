@@ -1,4 +1,4 @@
-export const userListFragment = `
+export const userListItemHistoryPartial = `
   userToList {
     userId
     listId
@@ -8,15 +8,6 @@ export const userListFragment = `
     itemHistory {
       item
       removalRating
-    }
-    list {
-      title
-      items {
-        name
-        notes
-        strike
-        bold
-      }
     }
   }
 `;
