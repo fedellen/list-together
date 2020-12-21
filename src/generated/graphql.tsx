@@ -15,7 +15,28 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  getUsersLists: Array<UserToList>;
+  getUser?: Maybe<User>;
+  getUsersLists: UserToListResponse;
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID'];
+  username: Scalars['String'];
+  email: Scalars['String'];
+  sortedListsArray?: Maybe<Array<Scalars['String']>>;
+};
+
+export type UserToListResponse = {
+  __typename?: 'UserToListResponse';
+  errors?: Maybe<Array<FieldError>>;
+  userToList?: Maybe<Array<UserToList>>;
+};
+
+export type FieldError = {
+  __typename?: 'FieldError';
+  field: Scalars['String'];
+  message: Scalars['String'];
 };
 
 export type UserToList = {
@@ -52,24 +73,24 @@ export type Item = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addItem: UserToList;
-  deleteItems: Scalars['Boolean'];
-  styleItem: Item;
-  addNote: Item;
-  renameItem: Item;
-  createUser: User;
+  addItem: UserToListResponse;
+  deleteItems: ListResponse;
+  styleItem: ItemResponse;
+  addNote: ItemResponse;
+  renameItem: ItemResponse;
+  createUser: UserResponse;
   confirmUser: Scalars['Boolean'];
-  login: Array<UserToList>;
+  login: UserResponse;
   forgotPassword: Scalars['Boolean'];
-  changePassword?: Maybe<User>;
+  changePassword?: Maybe<UserResponse>;
   logout: Scalars['Boolean'];
-  createList: List;
-  shareList: Scalars['Boolean'];
-  deleteList: Scalars['Boolean'];
-  renameList: List;
-  sortLists: User;
-  sortItems: UserToList;
-  submitRemovalOrder: UserToList;
+  createList: ListResponse;
+  shareList: BooleanResponse;
+  deleteList: BooleanResponse;
+  renameList: ListResponse;
+  sortLists: UserResponse;
+  sortItems: UserToListResponse;
+  submitRemovalOrder: UserToListResponse;
 };
 
 
@@ -109,8 +130,7 @@ export type MutationConfirmUserArgs = {
 
 
 export type MutationLoginArgs = {
-  password: Scalars['String'];
-  email: Scalars['String'];
+  data: LoginUserInput;
 };
 
 
@@ -165,9 +185,21 @@ export type AddItemInput = {
   nameInput: Scalars['String'];
 };
 
+export type ListResponse = {
+  __typename?: 'ListResponse';
+  errors?: Maybe<Array<FieldError>>;
+  list?: Maybe<List>;
+};
+
 export type DeleteItemsInput = {
   itemNameArray: Array<Scalars['String']>;
   listId: Scalars['String'];
+};
+
+export type ItemResponse = {
+  __typename?: 'ItemResponse';
+  errors?: Maybe<Array<FieldError>>;
+  item?: Maybe<Item>;
 };
 
 export type StyleItemInput = {
@@ -189,12 +221,10 @@ export type RenameItemInput = {
   itemName: Scalars['String'];
 };
 
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID'];
-  username: Scalars['String'];
-  email: Scalars['String'];
-  sortedListsArray?: Maybe<Array<Scalars['String']>>;
+export type UserResponse = {
+  __typename?: 'UserResponse';
+  errors?: Maybe<Array<FieldError>>;
+  user?: Maybe<User>;
 };
 
 export type CreateUserInput = {
@@ -203,9 +233,20 @@ export type CreateUserInput = {
   password: Scalars['String'];
 };
 
+export type LoginUserInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
 export type ChangePasswordInput = {
   token: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type BooleanResponse = {
+  __typename?: 'BooleanResponse';
+  errors?: Maybe<Array<FieldError>>;
+  boolean?: Maybe<Scalars['Boolean']>;
 };
 
 export type ShareListInput = {
@@ -222,6 +263,11 @@ export type RemovalOrderInput = {
   removedItemArray: Array<Scalars['String']>;
   listId: Scalars['String'];
 };
+
+export type FieldErrorFragment = (
+  { __typename?: 'FieldError' }
+  & Pick<FieldError, 'field' | 'message'>
+);
 
 export type ItemFragmentFragment = (
   { __typename?: 'Item' }
@@ -242,6 +288,11 @@ export type ListFragmentFragment = (
   )>> }
 );
 
+export type ListPartialFragment = (
+  { __typename?: 'List' }
+  & Pick<List, 'id' | 'title'>
+);
+
 export type UserFragmentFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'username' | 'email' | 'sortedListsArray'>
@@ -259,6 +310,20 @@ export type UserListFragmentFragment = (
   ) }
 );
 
+export type UserListPartialFragment = (
+  { __typename?: 'UserToList' }
+  & Pick<UserToList, 'userId' | 'listId' | 'privileges' | 'mostCommonWords' | 'sortedItems'>
+);
+
+export type UserListWithHistoryFragment = (
+  { __typename?: 'UserToList' }
+  & Pick<UserToList, 'userId' | 'listId' | 'privileges' | 'mostCommonWords' | 'sortedItems'>
+  & { itemHistory?: Maybe<Array<(
+    { __typename?: 'ItemHistory' }
+    & ItemHistoryFragmentFragment
+  )>> }
+);
+
 export type AddItemMutationVariables = Exact<{
   data: AddItemInput;
 }>;
@@ -267,8 +332,8 @@ export type AddItemMutationVariables = Exact<{
 export type AddItemMutation = (
   { __typename?: 'Mutation' }
   & { addItem: (
-    { __typename?: 'UserToList' }
-    & UserListFragmentFragment
+    { __typename?: 'UserToListResponse' }
+    & UserListResponseFragment
   ) }
 );
 
@@ -280,8 +345,8 @@ export type AddNoteMutationVariables = Exact<{
 export type AddNoteMutation = (
   { __typename?: 'Mutation' }
   & { addNote: (
-    { __typename?: 'Item' }
-    & ItemFragmentFragment
+    { __typename?: 'ItemResponse' }
+    & ItemResponseFragment
   ) }
 );
 
@@ -292,7 +357,10 @@ export type DeleteItemsMutationVariables = Exact<{
 
 export type DeleteItemsMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'deleteItems'>
+  & { deleteItems: (
+    { __typename?: 'ListResponse' }
+    & ListResponseFragment
+  ) }
 );
 
 export type RenameItemMutationVariables = Exact<{
@@ -303,8 +371,8 @@ export type RenameItemMutationVariables = Exact<{
 export type RenameItemMutation = (
   { __typename?: 'Mutation' }
   & { renameItem: (
-    { __typename?: 'Item' }
-    & ItemFragmentFragment
+    { __typename?: 'ItemResponse' }
+    & ItemResponseFragment
   ) }
 );
 
@@ -316,8 +384,8 @@ export type StyleItemMutationVariables = Exact<{
 export type StyleItemMutation = (
   { __typename?: 'Mutation' }
   & { styleItem: (
-    { __typename?: 'Item' }
-    & ItemFragmentFragment
+    { __typename?: 'ItemResponse' }
+    & ItemResponseFragment
   ) }
 );
 
@@ -329,8 +397,8 @@ export type CreateListMutationVariables = Exact<{
 export type CreateListMutation = (
   { __typename?: 'Mutation' }
   & { createList: (
-    { __typename?: 'List' }
-    & ListFragmentFragment
+    { __typename?: 'ListResponse' }
+    & ListResponseFragment
   ) }
 );
 
@@ -341,7 +409,10 @@ export type DeleteListMutationVariables = Exact<{
 
 export type DeleteListMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'deleteList'>
+  & { deleteList: (
+    { __typename?: 'BooleanResponse' }
+    & BooleanResponseFragment
+  ) }
 );
 
 export type RenameListMutationVariables = Exact<{
@@ -353,8 +424,8 @@ export type RenameListMutationVariables = Exact<{
 export type RenameListMutation = (
   { __typename?: 'Mutation' }
   & { renameList: (
-    { __typename?: 'List' }
-    & ListFragmentFragment
+    { __typename?: 'ListResponse' }
+    & ListResponseFragment
   ) }
 );
 
@@ -365,7 +436,10 @@ export type ShareListMutationVariables = Exact<{
 
 export type ShareListMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'shareList'>
+  & { shareList: (
+    { __typename?: 'BooleanResponse' }
+    & BooleanResponseFragment
+  ) }
 );
 
 export type SortItemsMutationVariables = Exact<{
@@ -377,8 +451,14 @@ export type SortItemsMutationVariables = Exact<{
 export type SortItemsMutation = (
   { __typename?: 'Mutation' }
   & { sortItems: (
-    { __typename?: 'UserToList' }
-    & UserListFragmentFragment
+    { __typename?: 'UserToListResponse' }
+    & { userToList?: Maybe<Array<(
+      { __typename?: 'UserToList' }
+      & UserListPartialFragment
+    )>>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & FieldErrorFragment
+    )>> }
   ) }
 );
 
@@ -390,8 +470,8 @@ export type SortListsMutationVariables = Exact<{
 export type SortListsMutation = (
   { __typename?: 'Mutation' }
   & { sortLists: (
-    { __typename?: 'User' }
-    & UserFragmentFragment
+    { __typename?: 'UserResponse' }
+    & UserResponseFragment
   ) }
 );
 
@@ -403,10 +483,13 @@ export type SubmitRemovalOrderMutationVariables = Exact<{
 export type SubmitRemovalOrderMutation = (
   { __typename?: 'Mutation' }
   & { submitRemovalOrder: (
-    { __typename?: 'UserToList' }
-    & { itemHistory?: Maybe<Array<(
-      { __typename?: 'ItemHistory' }
-      & ItemHistoryFragmentFragment
+    { __typename?: 'UserToListResponse' }
+    & { userToList?: Maybe<Array<(
+      { __typename?: 'UserToList' }
+      & UserListWithHistoryFragment
+    )>>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & FieldErrorFragment
     )>> }
   ) }
 );
@@ -419,8 +502,8 @@ export type ChangePasswordMutationVariables = Exact<{
 export type ChangePasswordMutation = (
   { __typename?: 'Mutation' }
   & { changePassword?: Maybe<(
-    { __typename?: 'User' }
-    & UserFragmentFragment
+    { __typename?: 'UserResponse' }
+    & UserResponseFragment
   )> }
 );
 
@@ -442,8 +525,8 @@ export type CreateUserMutationVariables = Exact<{
 export type CreateUserMutation = (
   { __typename?: 'Mutation' }
   & { createUser: (
-    { __typename?: 'User' }
-    & UserFragmentFragment
+    { __typename?: 'UserResponse' }
+    & UserResponseFragment
   ) }
 );
 
@@ -458,33 +541,114 @@ export type ForgotPasswordMutation = (
 );
 
 export type LoginUserMutationVariables = Exact<{
-  email: Scalars['String'];
-  password: Scalars['String'];
+  data: LoginUserInput;
 }>;
 
 
 export type LoginUserMutation = (
   { __typename?: 'Mutation' }
-  & { login: Array<(
-    { __typename?: 'UserToList' }
-    & UserListFragmentFragment
-  )> }
+  & { login: (
+    { __typename?: 'UserResponse' }
+    & UserResponseFragment
+  ) }
 );
 
-export type Unnamed_1_MutationVariables = Exact<{ [key: string]: never; }>;
+export type LogoutUserMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type Unnamed_1_Mutation = (
+export type LogoutUserMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'logout'>
 );
 
-export const UserFragmentFragmentDoc = gql`
-    fragment userFragment on User {
+export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserQuery = (
+  { __typename?: 'Query' }
+  & { getUser?: Maybe<(
+    { __typename?: 'User' }
+    & UserFragmentFragment
+  )> }
+);
+
+export type GetUsersListsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUsersListsQuery = (
+  { __typename?: 'Query' }
+  & { getUsersLists: (
+    { __typename?: 'UserToListResponse' }
+    & UserListResponseFragment
+  ) }
+);
+
+export type BooleanResponseFragment = (
+  { __typename?: 'BooleanResponse' }
+  & Pick<BooleanResponse, 'boolean'>
+  & { errors?: Maybe<Array<(
+    { __typename?: 'FieldError' }
+    & FieldErrorFragment
+  )>> }
+);
+
+export type ItemResponseFragment = (
+  { __typename?: 'ItemResponse' }
+  & { item?: Maybe<(
+    { __typename?: 'Item' }
+    & ItemFragmentFragment
+  )>, errors?: Maybe<Array<(
+    { __typename?: 'FieldError' }
+    & FieldErrorFragment
+  )>> }
+);
+
+export type ListResponseFragment = (
+  { __typename?: 'ListResponse' }
+  & { list?: Maybe<(
+    { __typename?: 'List' }
+    & ListFragmentFragment
+  )>, errors?: Maybe<Array<(
+    { __typename?: 'FieldError' }
+    & FieldErrorFragment
+  )>> }
+);
+
+export type UserListResponseFragment = (
+  { __typename?: 'UserToListResponse' }
+  & { userToList?: Maybe<Array<(
+    { __typename?: 'UserToList' }
+    & UserListFragmentFragment
+  )>>, errors?: Maybe<Array<(
+    { __typename?: 'FieldError' }
+    & FieldErrorFragment
+  )>> }
+);
+
+export type UserResponseFragment = (
+  { __typename?: 'UserResponse' }
+  & { user?: Maybe<(
+    { __typename?: 'User' }
+    & UserFragmentFragment
+  )>, errors?: Maybe<Array<(
+    { __typename?: 'FieldError' }
+    & FieldErrorFragment
+  )>> }
+);
+
+export const ListPartialFragmentDoc = gql`
+    fragment listPartial on List {
   id
-  username
-  email
-  sortedListsArray
+  title
+}
+    `;
+export const UserListPartialFragmentDoc = gql`
+    fragment userListPartial on UserToList {
+  userId
+  listId
+  privileges
+  mostCommonWords
+  sortedItems
 }
     `;
 export const ItemHistoryFragmentFragmentDoc = gql`
@@ -493,6 +657,32 @@ export const ItemHistoryFragmentFragmentDoc = gql`
   removalRating
 }
     `;
+export const UserListWithHistoryFragmentDoc = gql`
+    fragment userListWithHistory on UserToList {
+  userId
+  listId
+  privileges
+  mostCommonWords
+  sortedItems
+  itemHistory {
+    ...itemHistoryFragment
+  }
+}
+    ${ItemHistoryFragmentFragmentDoc}`;
+export const FieldErrorFragmentDoc = gql`
+    fragment fieldError on FieldError {
+  field
+  message
+}
+    `;
+export const BooleanResponseFragmentDoc = gql`
+    fragment booleanResponse on BooleanResponse {
+  boolean
+  errors {
+    ...fieldError
+  }
+}
+    ${FieldErrorFragmentDoc}`;
 export const ItemFragmentFragmentDoc = gql`
     fragment itemFragment on Item {
   name
@@ -501,6 +691,17 @@ export const ItemFragmentFragmentDoc = gql`
   bold
 }
     `;
+export const ItemResponseFragmentDoc = gql`
+    fragment itemResponse on ItemResponse {
+  item {
+    ...itemFragment
+  }
+  errors {
+    ...fieldError
+  }
+}
+    ${ItemFragmentFragmentDoc}
+${FieldErrorFragmentDoc}`;
 export const ListFragmentFragmentDoc = gql`
     fragment listFragment on List {
   id
@@ -510,6 +711,17 @@ export const ListFragmentFragmentDoc = gql`
   }
 }
     ${ItemFragmentFragmentDoc}`;
+export const ListResponseFragmentDoc = gql`
+    fragment listResponse on ListResponse {
+  list {
+    ...listFragment
+  }
+  errors {
+    ...fieldError
+  }
+}
+    ${ListFragmentFragmentDoc}
+${FieldErrorFragmentDoc}`;
 export const UserListFragmentFragmentDoc = gql`
     fragment userListFragment on UserToList {
   userId
@@ -526,13 +738,43 @@ export const UserListFragmentFragmentDoc = gql`
 }
     ${ItemHistoryFragmentFragmentDoc}
 ${ListFragmentFragmentDoc}`;
+export const UserListResponseFragmentDoc = gql`
+    fragment userListResponse on UserToListResponse {
+  userToList {
+    ...userListFragment
+  }
+  errors {
+    ...fieldError
+  }
+}
+    ${UserListFragmentFragmentDoc}
+${FieldErrorFragmentDoc}`;
+export const UserFragmentFragmentDoc = gql`
+    fragment userFragment on User {
+  id
+  username
+  email
+  sortedListsArray
+}
+    `;
+export const UserResponseFragmentDoc = gql`
+    fragment userResponse on UserResponse {
+  user {
+    ...userFragment
+  }
+  errors {
+    ...fieldError
+  }
+}
+    ${UserFragmentFragmentDoc}
+${FieldErrorFragmentDoc}`;
 export const AddItemDocument = gql`
     mutation AddItem($data: AddItemInput!) {
   addItem(data: $data) {
-    ...userListFragment
+    ...userListResponse
   }
 }
-    ${UserListFragmentFragmentDoc}`;
+    ${UserListResponseFragmentDoc}`;
 export type AddItemMutationFn = Apollo.MutationFunction<AddItemMutation, AddItemMutationVariables>;
 
 /**
@@ -561,10 +803,10 @@ export type AddItemMutationOptions = Apollo.BaseMutationOptions<AddItemMutation,
 export const AddNoteDocument = gql`
     mutation AddNote($data: AddNoteInput!) {
   addNote(data: $data) {
-    ...itemFragment
+    ...itemResponse
   }
 }
-    ${ItemFragmentFragmentDoc}`;
+    ${ItemResponseFragmentDoc}`;
 export type AddNoteMutationFn = Apollo.MutationFunction<AddNoteMutation, AddNoteMutationVariables>;
 
 /**
@@ -592,9 +834,11 @@ export type AddNoteMutationResult = Apollo.MutationResult<AddNoteMutation>;
 export type AddNoteMutationOptions = Apollo.BaseMutationOptions<AddNoteMutation, AddNoteMutationVariables>;
 export const DeleteItemsDocument = gql`
     mutation DeleteItems($data: DeleteItemsInput!) {
-  deleteItems(data: $data)
+  deleteItems(data: $data) {
+    ...listResponse
+  }
 }
-    `;
+    ${ListResponseFragmentDoc}`;
 export type DeleteItemsMutationFn = Apollo.MutationFunction<DeleteItemsMutation, DeleteItemsMutationVariables>;
 
 /**
@@ -623,10 +867,10 @@ export type DeleteItemsMutationOptions = Apollo.BaseMutationOptions<DeleteItemsM
 export const RenameItemDocument = gql`
     mutation RenameItem($data: RenameItemInput!) {
   renameItem(data: $data) {
-    ...itemFragment
+    ...itemResponse
   }
 }
-    ${ItemFragmentFragmentDoc}`;
+    ${ItemResponseFragmentDoc}`;
 export type RenameItemMutationFn = Apollo.MutationFunction<RenameItemMutation, RenameItemMutationVariables>;
 
 /**
@@ -655,10 +899,10 @@ export type RenameItemMutationOptions = Apollo.BaseMutationOptions<RenameItemMut
 export const StyleItemDocument = gql`
     mutation StyleItem($data: StyleItemInput!) {
   styleItem(data: $data) {
-    ...itemFragment
+    ...itemResponse
   }
 }
-    ${ItemFragmentFragmentDoc}`;
+    ${ItemResponseFragmentDoc}`;
 export type StyleItemMutationFn = Apollo.MutationFunction<StyleItemMutation, StyleItemMutationVariables>;
 
 /**
@@ -687,10 +931,10 @@ export type StyleItemMutationOptions = Apollo.BaseMutationOptions<StyleItemMutat
 export const CreateListDocument = gql`
     mutation CreateList($title: String!) {
   createList(title: $title) {
-    ...listFragment
+    ...listResponse
   }
 }
-    ${ListFragmentFragmentDoc}`;
+    ${ListResponseFragmentDoc}`;
 export type CreateListMutationFn = Apollo.MutationFunction<CreateListMutation, CreateListMutationVariables>;
 
 /**
@@ -718,9 +962,11 @@ export type CreateListMutationResult = Apollo.MutationResult<CreateListMutation>
 export type CreateListMutationOptions = Apollo.BaseMutationOptions<CreateListMutation, CreateListMutationVariables>;
 export const DeleteListDocument = gql`
     mutation DeleteList($listId: String!) {
-  deleteList(listId: $listId)
+  deleteList(listId: $listId) {
+    ...booleanResponse
+  }
 }
-    `;
+    ${BooleanResponseFragmentDoc}`;
 export type DeleteListMutationFn = Apollo.MutationFunction<DeleteListMutation, DeleteListMutationVariables>;
 
 /**
@@ -749,10 +995,10 @@ export type DeleteListMutationOptions = Apollo.BaseMutationOptions<DeleteListMut
 export const RenameListDocument = gql`
     mutation RenameList($name: String!, $listId: String!) {
   renameList(name: $name, listId: $listId) {
-    ...listFragment
+    ...listResponse
   }
 }
-    ${ListFragmentFragmentDoc}`;
+    ${ListResponseFragmentDoc}`;
 export type RenameListMutationFn = Apollo.MutationFunction<RenameListMutation, RenameListMutationVariables>;
 
 /**
@@ -781,9 +1027,11 @@ export type RenameListMutationResult = Apollo.MutationResult<RenameListMutation>
 export type RenameListMutationOptions = Apollo.BaseMutationOptions<RenameListMutation, RenameListMutationVariables>;
 export const ShareListDocument = gql`
     mutation ShareList($data: ShareListInput!) {
-  shareList(data: $data)
+  shareList(data: $data) {
+    ...booleanResponse
+  }
 }
-    `;
+    ${BooleanResponseFragmentDoc}`;
 export type ShareListMutationFn = Apollo.MutationFunction<ShareListMutation, ShareListMutationVariables>;
 
 /**
@@ -812,10 +1060,16 @@ export type ShareListMutationOptions = Apollo.BaseMutationOptions<ShareListMutat
 export const SortItemsDocument = gql`
     mutation SortItems($data: StringArrayInput!, $listId: String!) {
   sortItems(data: $data, listId: $listId) {
-    ...userListFragment
+    userToList {
+      ...userListPartial
+    }
+    errors {
+      ...fieldError
+    }
   }
 }
-    ${UserListFragmentFragmentDoc}`;
+    ${UserListPartialFragmentDoc}
+${FieldErrorFragmentDoc}`;
 export type SortItemsMutationFn = Apollo.MutationFunction<SortItemsMutation, SortItemsMutationVariables>;
 
 /**
@@ -845,10 +1099,10 @@ export type SortItemsMutationOptions = Apollo.BaseMutationOptions<SortItemsMutat
 export const SortListsDocument = gql`
     mutation SortLists($data: StringArrayInput!) {
   sortLists(data: $data) {
-    ...userFragment
+    ...userResponse
   }
 }
-    ${UserFragmentFragmentDoc}`;
+    ${UserResponseFragmentDoc}`;
 export type SortListsMutationFn = Apollo.MutationFunction<SortListsMutation, SortListsMutationVariables>;
 
 /**
@@ -877,12 +1131,16 @@ export type SortListsMutationOptions = Apollo.BaseMutationOptions<SortListsMutat
 export const SubmitRemovalOrderDocument = gql`
     mutation SubmitRemovalOrder($data: RemovalOrderInput!) {
   submitRemovalOrder(data: $data) {
-    itemHistory {
-      ...itemHistoryFragment
+    userToList {
+      ...userListWithHistory
+    }
+    errors {
+      ...fieldError
     }
   }
 }
-    ${ItemHistoryFragmentFragmentDoc}`;
+    ${UserListWithHistoryFragmentDoc}
+${FieldErrorFragmentDoc}`;
 export type SubmitRemovalOrderMutationFn = Apollo.MutationFunction<SubmitRemovalOrderMutation, SubmitRemovalOrderMutationVariables>;
 
 /**
@@ -911,10 +1169,10 @@ export type SubmitRemovalOrderMutationOptions = Apollo.BaseMutationOptions<Submi
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($data: ChangePasswordInput!) {
   changePassword(data: $data) {
-    ...userFragment
+    ...userResponse
   }
 }
-    ${UserFragmentFragmentDoc}`;
+    ${UserResponseFragmentDoc}`;
 export type ChangePasswordMutationFn = Apollo.MutationFunction<ChangePasswordMutation, ChangePasswordMutationVariables>;
 
 /**
@@ -973,10 +1231,10 @@ export type ConfirmUserMutationOptions = Apollo.BaseMutationOptions<ConfirmUserM
 export const CreateUserDocument = gql`
     mutation CreateUser($data: CreateUserInput!) {
   createUser(data: $data) {
-    ...userFragment
+    ...userResponse
   }
 }
-    ${UserFragmentFragmentDoc}`;
+    ${UserResponseFragmentDoc}`;
 export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
 
 /**
@@ -1033,12 +1291,12 @@ export type ForgotPasswordMutationHookResult = ReturnType<typeof useForgotPasswo
 export type ForgotPasswordMutationResult = Apollo.MutationResult<ForgotPasswordMutation>;
 export type ForgotPasswordMutationOptions = Apollo.BaseMutationOptions<ForgotPasswordMutation, ForgotPasswordMutationVariables>;
 export const LoginUserDocument = gql`
-    mutation LoginUser($email: String!, $password: String!) {
-  login(email: $email, password: $password) {
-    ...userListFragment
+    mutation LoginUser($data: LoginUserInput!) {
+  login(data: $data) {
+    ...userResponse
   }
 }
-    ${UserListFragmentFragmentDoc}`;
+    ${UserResponseFragmentDoc}`;
 export type LoginUserMutationFn = Apollo.MutationFunction<LoginUserMutation, LoginUserMutationVariables>;
 
 /**
@@ -1054,8 +1312,7 @@ export type LoginUserMutationFn = Apollo.MutationFunction<LoginUserMutation, Log
  * @example
  * const [loginUserMutation, { data, loading, error }] = useLoginUserMutation({
  *   variables: {
- *      email: // value for 'email'
- *      password: // value for 'password'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -1065,32 +1322,96 @@ export function useLoginUserMutation(baseOptions?: Apollo.MutationHookOptions<Lo
 export type LoginUserMutationHookResult = ReturnType<typeof useLoginUserMutation>;
 export type LoginUserMutationResult = Apollo.MutationResult<LoginUserMutation>;
 export type LoginUserMutationOptions = Apollo.BaseMutationOptions<LoginUserMutation, LoginUserMutationVariables>;
-export const Document = gql`
-    mutation {
+export const LogoutUserDocument = gql`
+    mutation LogoutUser {
   logout
 }
     `;
-export type MutationFn = Apollo.MutationFunction<Mutation, MutationVariables>;
+export type LogoutUserMutationFn = Apollo.MutationFunction<LogoutUserMutation, LogoutUserMutationVariables>;
 
 /**
- * __useMutation__
+ * __useLogoutUserMutation__
  *
- * To run a mutation, you first call `useMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useLogoutUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutUserMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [mutation, { data, loading, error }] = useMutation({
+ * const [logoutUserMutation, { data, loading, error }] = useLogoutUserMutation({
  *   variables: {
  *   },
  * });
  */
-export function useMutation(baseOptions?: Apollo.MutationHookOptions<Mutation, MutationVariables>) {
-        return Apollo.useMutation<Mutation, MutationVariables>(Document, baseOptions);
+export function useLogoutUserMutation(baseOptions?: Apollo.MutationHookOptions<LogoutUserMutation, LogoutUserMutationVariables>) {
+        return Apollo.useMutation<LogoutUserMutation, LogoutUserMutationVariables>(LogoutUserDocument, baseOptions);
       }
-export type MutationHookResult = ReturnType<typeof useMutation>;
-export type MutationResult = Apollo.MutationResult<Mutation>;
-export type MutationOptions = Apollo.BaseMutationOptions<Mutation, MutationVariables>;
+export type LogoutUserMutationHookResult = ReturnType<typeof useLogoutUserMutation>;
+export type LogoutUserMutationResult = Apollo.MutationResult<LogoutUserMutation>;
+export type LogoutUserMutationOptions = Apollo.BaseMutationOptions<LogoutUserMutation, LogoutUserMutationVariables>;
+export const GetUserDocument = gql`
+    query GetUser {
+  getUser {
+    ...userFragment
+  }
+}
+    ${UserFragmentFragmentDoc}`;
+
+/**
+ * __useGetUserQuery__
+ *
+ * To run a query within a React component, call `useGetUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUserQuery(baseOptions?: Apollo.QueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+        return Apollo.useQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, baseOptions);
+      }
+export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+          return Apollo.useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, baseOptions);
+        }
+export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
+export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
+export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
+export const GetUsersListsDocument = gql`
+    query GetUsersLists {
+  getUsersLists {
+    ...userListResponse
+  }
+}
+    ${UserListResponseFragmentDoc}`;
+
+/**
+ * __useGetUsersListsQuery__
+ *
+ * To run a query within a React component, call `useGetUsersListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersListsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUsersListsQuery(baseOptions?: Apollo.QueryHookOptions<GetUsersListsQuery, GetUsersListsQueryVariables>) {
+        return Apollo.useQuery<GetUsersListsQuery, GetUsersListsQueryVariables>(GetUsersListsDocument, baseOptions);
+      }
+export function useGetUsersListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersListsQuery, GetUsersListsQueryVariables>) {
+          return Apollo.useLazyQuery<GetUsersListsQuery, GetUsersListsQueryVariables>(GetUsersListsDocument, baseOptions);
+        }
+export type GetUsersListsQueryHookResult = ReturnType<typeof useGetUsersListsQuery>;
+export type GetUsersListsLazyQueryHookResult = ReturnType<typeof useGetUsersListsLazyQuery>;
+export type GetUsersListsQueryResult = Apollo.QueryResult<GetUsersListsQuery, GetUsersListsQueryVariables>;

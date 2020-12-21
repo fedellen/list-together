@@ -6,12 +6,17 @@ import {
   useLoginUserMutation
   // UserFragmentFragmentDoc
 } from '../generated/graphql';
+import { Button } from './Button';
 
-export function Login() {
-  const [login] = useLoginUserMutation();
+type LoginProps = {
+  setUser: Function;
+};
+
+export function Login({ setUser }: LoginProps) {
+  const [login, { loading }] = useLoginUserMutation();
 
   return (
-    <div>
+    <div className='h-56'>
       <h1>Login</h1>
       <Formik
         initialValues={{
@@ -22,21 +27,26 @@ export function Login() {
           try {
             actions.setSubmitting(true);
             const { data } = await login({
-              variables: values,
+              variables: {
+                data: {
+                  email: values.email,
+                  password: values.password
+                }
+              },
               // Add cache update when we have data
               update: (cache, { data }) => {
                 cache.writeQuery({
                   query: GetUserDocument,
                   data: {
                     __typename: 'Query',
-                    getUser: data?.login
+                    getUser: data?.login.user
                   }
                 });
               }
             });
             if (data) {
               console.log(JSON.stringify({ data }, null, 4));
-              actions.resetForm();
+              setUser(data.login.user?.username);
             }
           } catch (err) {
             console.error('Error on login submission: ', err);
@@ -57,7 +67,7 @@ export function Login() {
               type='password'
               placeholder='password'
             />
-            <button type='submit'>Login</button>
+            <Button type='submit' text='Login' isLoading={loading} />
           </Form>
         )}
       </Formik>
