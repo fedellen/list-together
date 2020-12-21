@@ -57,11 +57,7 @@ export class UserResolver {
       password: hashedPassword
     }).save();
 
-    console.log('we are here in donde');
-
     await sendEmail(user.email, await createConfirmationUrl(user.id));
-
-    console.log('we are here after donde');
 
     return { user };
   }
