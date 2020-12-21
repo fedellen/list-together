@@ -70,7 +70,6 @@ describe('createUser Mutation:', () => {
     });
 
     // Check response format
-    console.log(JSON.stringify(response, null, 4));
     expect(response.data?.createUser.user.username).toBe(user.username);
     expect(response.data?.createUser.user.email).toBe(user.email);
     expect(response.errors).toBeUndefined();
@@ -270,7 +269,6 @@ describe('Forgot password mutation:', () => {
         email: user.email
       }
     });
-    console.log(JSON.stringify(response, null, 4));
 
     expect(response).toMatchObject({
       data: {

@@ -11,7 +11,7 @@ import { List, User, UserToList } from '../entities';
 import { userListFragment } from '../test-helpers/fragments/userListFragment';
 import { userListPartial } from '../test-helpers/fragments/userListPartial';
 import { fieldErrorFragment } from '../test-helpers/fragments/fieldErrorFragment';
-import { listFragment } from '../test-helpers/fragments/listFragment';
+import { listPartial } from '../test-helpers/fragments/listPartial';
 import { userFragment } from '../test-helpers/fragments/userFragment';
 import { userListItemHistoryPartial } from '../test-helpers/fragments/userListItemHistoryPartial';
 
@@ -27,7 +27,7 @@ query GetUsersLists {
 const createListMutation = `
 mutation CreateList($title: String!) {
   createList (title: $title) {
-    ${listFragment}
+    ${listPartial}
     ${fieldErrorFragment}
   }
 }
@@ -54,7 +54,7 @@ const deleteListMutation = `
 const renameListMutation = `
   mutation RenameList($name: String!, $listId: String!) {
     renameList(name: $name, listId: $listId) {
-      ${listFragment}
+      ${listPartial}
       ${fieldErrorFragment}
     }
   }

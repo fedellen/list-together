@@ -6,25 +6,37 @@ import {
 } from '../test-helpers/createUser';
 import { UserToList } from '../entities';
 import faker from 'faker';
-import { userListFragment } from '../test-helpers/userListFragment';
+import { userListFragment } from '../test-helpers/fragments/userListFragment';
+import { fieldErrorFragment } from '../test-helpers/fragments/fieldErrorFragment';
+// import { listPartial } from '../test-helpers/fragments/listPartial';
+import { listFragment } from '../test-helpers/fragments/listFragment';
+import { itemFragment } from '../test-helpers/fragments/itemFragment';
 
 const addItemMutation = `
 mutation AddItem($data: AddItemInput!) {
-  addItem(data: $data) ${userListFragment}
+  addItem(data: $data) {
+    ${userListFragment} 
+    ${fieldErrorFragment}
+  }
 }
 `;
 
 const deleteItemsMutation = `
 mutation DeleteItems($data: DeleteItemsInput!) {
-  deleteItems(data: $data)
+  deleteItems(data: $data) {
+    ${listFragment} 
+    ${fieldErrorFragment}
+  }
 }
 `;
 
 const styleItemMutation = `
 mutation StyleItem($data: StyleItemInput!) {
   styleItem(data: $data) {
-    bold
-    strike
+    item {
+      ${itemFragment}
+    }
+    ${fieldErrorFragment}
   }
 }
 `;
@@ -32,7 +44,10 @@ mutation StyleItem($data: StyleItemInput!) {
 const renameItemMutation = `
 mutation RenameItem($data: RenameItemInput!) {
   renameItem(data: $data) {
-    name
+    item {
+      ${itemFragment}
+    }
+    ${fieldErrorFragment}
   }
 }
 `;
@@ -40,7 +55,10 @@ mutation RenameItem($data: RenameItemInput!) {
 const addNoteMutation = `
 mutation AddNote($data: AddNoteInput!) {
   addNote(data: $data) {
-    notes
+    item {
+      ${itemFragment}
+    } 
+    ${fieldErrorFragment}
   }
 }
 `;
@@ -68,13 +86,17 @@ describe('Add item mutation:', () => {
     expect(response).toMatchObject({
       data: {
         addItem: {
-          list: {
-            items: [
-              {
-                name: itemName
+          userToList: [
+            {
+              list: {
+                items: [
+                  {
+                    name: itemName
+                  }
+                ]
               }
-            ]
-          }
+            }
+          ]
         }
       }
     });
@@ -128,11 +150,16 @@ describe('Add item mutation:', () => {
     });
 
     expect(response).toMatchObject({
-      errors: [
-        {
-          message: 'Not authenticated..'
+      data: {
+        addItem: {
+          errors: [
+            {
+              field: 'context',
+              message: 'Context contains no userId..'
+            }
+          ]
         }
-      ]
+      }
     });
   });
 });
@@ -162,10 +189,24 @@ describe('Delete items mutation:', () => {
       userId: user.id
     });
 
-    // Check response format, has item name
     expect(response).toMatchObject({
       data: {
-        deleteItems: true
+        deleteItems: {
+          errors: null,
+          list: {
+            items: [
+              {
+                name: itemNameArray[2]
+              },
+              {
+                name: itemNameArray[3]
+              },
+              {
+                name: itemNameArray[4]
+              }
+            ]
+          }
+        }
       }
     });
 
@@ -189,6 +230,73 @@ describe('Delete items mutation:', () => {
     expect(listConnectionInDatabase!.sortedItems![0]).toBe(itemNameArray[2]);
     expect(listConnectionInDatabase!.sortedItems![1]).toBe(itemNameArray[3]);
     expect(listConnectionInDatabase!.sortedItems![2]).toBe(itemNameArray[4]);
+  });
+
+  it('Non-existing item conflicts are handled in backend, still deletes remaining items from request', async () => {
+    const user = await userWithListAndItems();
+    const userToListTable = await UserToList.findOne({
+      where: { userId: user.id },
+      relations: ['list', 'list.items']
+    });
+
+    const itemNameArray = userToListTable!.list.items!.map((i) => i.name);
+
+    // Set sorted items array for testing
+    userToListTable!.sortedItems = itemNameArray;
+    await userToListTable!.save();
+
+    const response = await graphqlCall({
+      source: deleteItemsMutation,
+      variableValues: {
+        data: {
+          listId: userToListTable!.listId,
+          itemNameArray: ['fakeItemName', itemNameArray[0], itemNameArray[1]]
+        }
+      },
+      userId: user.id
+    });
+
+    expect(response).toMatchObject({
+      data: {
+        deleteItems: {
+          errors: [
+            {
+              field: 'itemName',
+              message: 'Item "fakeItemName" was not found on the list..'
+            }
+          ],
+          list: {
+            items: [
+              {
+                name: itemNameArray[2]
+              },
+              {
+                name: itemNameArray[3]
+              },
+              {
+                name: itemNameArray[4]
+              }
+            ]
+          }
+        }
+      }
+    });
+
+    const listConnectionInDatabase = await UserToList.findOne({
+      where: { userId: user.id },
+      relations: ['list', 'list.items']
+    });
+
+    // List array without [0] and [1]
+    expect(listConnectionInDatabase!.list.items![0].name).toBe(
+      itemNameArray[2]
+    );
+    expect(listConnectionInDatabase!.list.items![1].name).toBe(
+      itemNameArray[3]
+    );
+    expect(listConnectionInDatabase!.list.items![2].name).toBe(
+      itemNameArray[4]
+    );
   });
 
   it('User with shared `delete` privileges can delete items from list', async () => {
@@ -220,7 +328,19 @@ describe('Delete items mutation:', () => {
     // Check response format, has item name
     expect(response).toMatchObject({
       data: {
-        deleteItems: true
+        deleteItems: {
+          errors: null,
+          list: {
+            items: [
+              {
+                name: itemNameArray[0]
+              },
+              {
+                name: itemNameArray[1]
+              }
+            ]
+          }
+        }
       }
     });
 
@@ -265,12 +385,17 @@ describe('Delete items mutation:', () => {
 
     // Check response format, has item name
     expect(response).toMatchObject({
-      errors: [
-        {
-          message:
-            'User does not have privileges to delete items from that list..'
+      data: {
+        deleteItems: {
+          errors: [
+            {
+              field: 'userId',
+              message:
+                'User does not have privileges to delete items from that list..'
+            }
+          ]
         }
-      ]
+      }
     });
 
     const listConnectionInDatabase = await UserToList.findOne({
@@ -324,7 +449,9 @@ describe('Style item mutation:', () => {
     expect(responseBold).toMatchObject({
       data: {
         styleItem: {
-          bold: true
+          item: {
+            bold: true
+          }
         }
       }
     });
@@ -346,7 +473,9 @@ describe('Style item mutation:', () => {
     expect(responseStrike).toMatchObject({
       data: {
         styleItem: {
-          strike: true
+          item: {
+            strike: true
+          }
         }
       }
     });
@@ -400,7 +529,9 @@ describe('Style item mutation:', () => {
     expect(response).toMatchObject({
       data: {
         styleItem: {
-          bold: true
+          item: {
+            bold: true
+          }
         }
       }
     });
@@ -445,11 +576,13 @@ describe('Style item mutation:', () => {
       userId: sharedUser.id
     });
 
-    // Check response format, has bold
+    // Check response format
     expect(response).toMatchObject({
       data: {
         styleItem: {
-          strike: true
+          item: {
+            strike: true
+          }
         }
       }
     });
@@ -496,12 +629,17 @@ describe('Style item mutation:', () => {
 
     // Check response format, has bold
     expect(response).toMatchObject({
-      errors: [
-        {
-          message:
-            'User does not have privileges to strike items from that list..'
+      data: {
+        styleItem: {
+          errors: [
+            {
+              field: 'userId',
+              message:
+                'User does not have privileges to strike items from that list..'
+            }
+          ]
         }
-      ]
+      }
     });
 
     const listConnectionInDatabase = await UserToList.findOne({
@@ -544,7 +682,9 @@ describe('Add note mutation:', () => {
     expect(response).toMatchObject({
       data: {
         addNote: {
-          notes: [noteToAdd]
+          item: {
+            notes: [noteToAdd]
+          }
         }
       }
     });
@@ -593,7 +733,9 @@ describe('Add note mutation:', () => {
     expect(response).toMatchObject({
       data: {
         addNote: {
-          notes: [noteToAdd]
+          item: {
+            notes: [noteToAdd]
+          }
         }
       }
     });
@@ -640,12 +782,16 @@ describe('Add note mutation:', () => {
 
     // Check response format, has bold
     expect(response).toMatchObject({
-      errors: [
-        {
-          message:
-            'User does not have privileges to add notes to items on that list..'
+      data: {
+        addNote: {
+          errors: [
+            {
+              message:
+                'User does not have privileges to add notes to items on that list..'
+            }
+          ]
         }
-      ]
+      }
     });
 
     const listConnectionInDatabase = await UserToList.findOne({
@@ -688,7 +834,9 @@ describe('Rename item mutation:', () => {
     expect(response).toMatchObject({
       data: {
         renameItem: {
-          name: newItemName
+          item: {
+            name: newItemName
+          }
         }
       }
     });
@@ -737,7 +885,9 @@ describe('Rename item mutation:', () => {
     expect(response).toMatchObject({
       data: {
         renameItem: {
-          name: newItemName
+          item: {
+            name: newItemName
+          }
         }
       }
     });
@@ -784,12 +934,16 @@ describe('Rename item mutation:', () => {
 
     // Check response format, has bold
     expect(response).toMatchObject({
-      errors: [
-        {
-          message:
-            'User does not have privileges to rename items on that list..'
+      data: {
+        renameItem: {
+          errors: [
+            {
+              message:
+                'User does not have privileges to rename items on that list..'
+            }
+          ]
         }
-      ]
+      }
     });
 
     const listConnectionInDatabase = await UserToList.findOne({
