@@ -1,3 +1,5 @@
 mutation ShareList($data: ShareListInput!) {
-  shareList(data: $data)
+  shareList(data: $data) {
+    ...booleanResponse
+  }
 }

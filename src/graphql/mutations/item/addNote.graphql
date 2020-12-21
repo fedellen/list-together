@@ -1,5 +1,5 @@
 mutation AddNote($data: AddNoteInput!) {
   addNote(data: $data) {
-    ...itemFragment
+    ...itemResponse
   }
 }

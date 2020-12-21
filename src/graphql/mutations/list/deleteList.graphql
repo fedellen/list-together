@@ -1,3 +1,5 @@
 mutation DeleteList($listId: String!) {
-  deleteList(listId: $listId)
+  deleteList(listId: $listId) {
+    ...booleanResponse
+  }
 }

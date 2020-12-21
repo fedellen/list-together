@@ -1,0 +1,8 @@
+fragment itemResponse on ItemResponse {
+  item {
+    ...itemFragment
+  }
+  errors {
+    ...fieldError
+  }
+}

@@ -1,5 +1,10 @@
 mutation SortItems($data: StringArrayInput!, $listId: String!) {
   sortItems(data: $data, listId: $listId) {
-    ...userListFragment
+    userToList {
+      ...userListPartial
+    }
+    errors {
+      ...fieldError
+    }
   }
 }

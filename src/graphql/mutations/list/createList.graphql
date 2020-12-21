@@ -1,5 +1,5 @@
 mutation CreateList($title: String!) {
   createList(title: $title) {
-    ...listFragment
+    ...listResponse
   }
 }

@@ -1,5 +1,5 @@
-mutation LoginUser($email: String!, $password: String!) {
-  login(email: $email, password: $password) {
-    ...userFragment
+mutation LoginUser($data: LoginUserInput!) {
+  login(data: $data) {
+    ...userResponse
   }
 }

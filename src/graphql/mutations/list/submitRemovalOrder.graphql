@@ -1,7 +1,10 @@
 mutation SubmitRemovalOrder($data: RemovalOrderInput!) {
   submitRemovalOrder(data: $data) {
-    itemHistory {
-      ...itemHistoryFragment
+    userToList {
+      ...userListWithHistory
+    }
+    errors {
+      ...fieldError
     }
   }
 }

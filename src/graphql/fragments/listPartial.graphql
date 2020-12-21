@@ -1,0 +1,4 @@
+fragment listPartial on List {
+  id
+  title
+}

@@ -1,5 +1,5 @@
 query GetUsersLists {
   getUsersLists {
-    ...userListFragment
+    ...userListResponse
   }
 }

@@ -1,0 +1,6 @@
+fragment booleanResponse on BooleanResponse {
+  boolean
+  errors {
+    ...fieldError
+  }
+}

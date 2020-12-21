@@ -1,5 +1,5 @@
 mutation AddItem($data: AddItemInput!) {
   addItem(data: $data) {
-    ...userListFragment
+    ...userListResponse
   }
 }

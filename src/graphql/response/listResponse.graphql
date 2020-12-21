@@ -1,0 +1,8 @@
+fragment listResponse on ListResponse {
+  list {
+    ...listFragment
+  }
+  errors {
+    ...fieldError
+  }
+}
