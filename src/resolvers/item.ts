@@ -1,49 +1,89 @@
-import { Item, ItemHistory, UserToList } from '../entities';
 import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
-import { isAuth } from '../middleware/isAuth';
+import { logger } from '../middleware/logger';
 import { MyContext } from '../MyContext';
+
+import { Item, ItemHistory, UserToList } from '../entities';
+
 import { StyleItemInput } from './types/input/StyleItemsInput';
 import { AddNoteInput } from './types/input/AddNoteInput';
 import { AddItemInput } from './types/input/AddItemInput';
 import { DeleteItemsInput } from './types/input/DeleteItemsInput';
 import { RenameItemInput } from './types/input/RenameItemInput';
-import { logger } from '../middleware/logger';
+
+import { UserToListResponse } from './types/response/UserToListResponse';
+import { ItemResponse } from './types/response/ItemResponse';
+
+import { FieldError } from './types/response/FieldError';
+import { validateContext } from './types/validators/validateContext';
+import { ListResponse } from './types/response/ListResponse';
 
 @Resolver()
 export class ItemResolver {
   // Send single item only when connection already exists from front
   // Otherwise action list state should be sent as one object?
-  @UseMiddleware(isAuth, logger)
-  @Mutation(() => UserToList)
+  @UseMiddleware(logger)
+  @Mutation(() => UserToListResponse)
   async addItem(
     @Arg('data') { nameInput, listId }: AddItemInput,
-    @Ctx() { req }: MyContext
-  ): Promise<UserToList> {
-    const userId = req.session.userId;
+    @Ctx() context: MyContext
+  ): Promise<UserToListResponse> {
+    const errors = validateContext(context);
+    if (errors) return { errors };
+
+    const userId = context.req.session.userId;
     const userToListTable = await UserToList.findOne({
       where: { listId: listId, userId: userId },
       relations: ['list', 'list.items', 'itemHistory']
     });
 
     if (!userToListTable) {
-      throw new Error('Could not find that user to list connection..');
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'Could not find that user to list connection..'
+          }
+        ]
+      };
     } else if (
       !userToListTable.privileges.includes('owner') &&
       !userToListTable.privileges.includes('add')
     ) {
-      throw new Error(
-        'User does not have privileges to add items to that list..'
-      );
+      return {
+        errors: [
+          {
+            field: 'userId',
+            message: 'User does not have privileges to add items to that list..'
+          }
+        ]
+      };
     }
 
     const list = userToListTable.list;
     if (list.items) {
-      if (list.items.length >= 300)
-        throw new Error('Lists cannot have more than 300 items..');
+      if (list.items.length >= 300) {
+        return {
+          errors: [
+            {
+              field: 'listId',
+              message: 'Lists cannot have more than 300 items..'
+            }
+          ]
+        };
+      }
 
       // Handle itemExists condition on the front end
       const itemExists = list.items.find(({ name }) => name === nameInput);
-      if (itemExists) throw new Error('Item already exists on this list..');
+      if (itemExists) {
+        return {
+          errors: [
+            {
+              field: 'name',
+              message: 'Item already exists on this list..'
+            }
+          ]
+        };
+      }
 
       list.items = [...list.items, Item.create({ name: nameInput })];
     } else {
@@ -75,41 +115,79 @@ export class ItemResolver {
       userToListTable.sortedItems = [nameInput, ...userToListTable.sortedItems];
     }
 
-    return userToListTable.save();
+    await userToListTable.save();
+    return { userToList: [userToListTable] };
   }
 
   // Delete array of items from list
   // Items will usually be deleted in batches from front-end `deleteStrikes`
-  @UseMiddleware(isAuth, logger)
-  @Mutation(() => Boolean)
+  @UseMiddleware(logger)
+  @Mutation(() => ListResponse)
   async deleteItems(
     @Arg('data') { itemNameArray, listId }: DeleteItemsInput,
-    @Ctx() { req }: MyContext
-  ): Promise<boolean> {
-    const userId = req.session.userId;
+    @Ctx() context: MyContext
+  ): Promise<ListResponse> {
+    const errors = validateContext(context);
+    if (errors) return { errors };
+
+    const userId = context.req.session.userId;
     const userToListTable = await UserToList.findOne({
       where: { listId: listId, userId: userId },
       relations: ['list', 'list.items']
     });
 
     if (!userToListTable) {
-      throw new Error('Could not find that user to list connection..');
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'Could not find that user to list connection..'
+          }
+        ]
+      };
     } else if (
       !userToListTable.privileges.includes('owner') &&
       !userToListTable.privileges.includes('delete')
     ) {
-      throw new Error(
-        'User does not have privileges to delete items from that list..'
-      );
+      return {
+        errors: [
+          {
+            field: 'userId',
+            message:
+              'User does not have privileges to delete items from that list..'
+          }
+        ]
+      };
     } else if (!userToListTable.list.items) {
-      throw new Error('List has no items to delete..');
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'List has no items to delete..'
+          }
+        ]
+      };
     }
 
-    itemNameArray.forEach((itemName) => {
+    // Store each error, continue deleting items in case of conflicts
+    let deleteErrors: FieldError[] | undefined = undefined;
+    itemNameArray.forEach(async (itemName) => {
       const itemExists = userToListTable.list.items!.find(
         ({ name }) => name === itemName
       );
-      if (!itemExists) throw new Error('Item does not exists on this list..');
+      if (!itemExists) {
+        const error = {
+          field: 'itemName',
+          message: `Item "${itemName}" was not found on the list..`
+        };
+
+        if (!deleteErrors) {
+          deleteErrors = [error];
+        } else {
+          deleteErrors = [...deleteErrors, error];
+        }
+        return;
+      }
 
       if (userToListTable.sortedItems) {
         // Remove the deleted items from user's sorted list
@@ -117,45 +195,77 @@ export class ItemResolver {
           (item) => item !== itemExists.name
         );
       }
-      itemExists.remove();
+      userToListTable.list.items! = userToListTable.list.items!.filter(
+        (item) => item.name !== itemExists.name
+      );
     });
 
     await userToListTable.save();
-    return true;
+    return { list: userToListTable.list, errors: deleteErrors };
   }
 
   // Style items on list
-  @UseMiddleware(isAuth, logger)
-  @Mutation(() => Item)
+  @UseMiddleware(logger)
+  @Mutation(() => ItemResponse)
   async styleItem(
     @Arg('data') { listId, style, isStyled, itemName }: StyleItemInput,
-    @Ctx() { req }: MyContext
-  ): Promise<Item> {
-    const userId = req.session.userId;
+    @Ctx() context: MyContext
+  ): Promise<ItemResponse> {
+    const errors = validateContext(context);
+    if (errors) return { errors };
+
+    const userId = context.req.session.userId;
     const userToListTable = await UserToList.findOne({
       where: { listId: listId, userId: userId },
       relations: ['list', 'list.items']
     });
 
     if (!userToListTable) {
-      throw new Error('Could not find that user to list connection..');
-    } else if (!userToListTable.list.items) {
-      throw new Error('List does not have items to style..');
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'Could not find that user to list connection..'
+          }
+        ]
+      };
     } else if (
       !userToListTable.privileges.includes('owner') &&
       !userToListTable.privileges.includes('strike') &&
       style === 'strike'
     ) {
-      throw new Error(
-        'User does not have privileges to strike items from that list..'
-      );
+      return {
+        errors: [
+          {
+            field: 'userId',
+            message:
+              'User does not have privileges to strike items from that list..'
+          }
+        ]
+      };
+    } else if (!userToListTable.list.items) {
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'List has no items to style..'
+          }
+        ]
+      };
     }
 
     const item = userToListTable.list.items.find(
       ({ name }) => name === itemName
     );
     if (!item) {
-      throw new Error('Item does not exist on list..');
+      return {
+        errors: [
+          {
+            field: 'name',
+            message: 'Item does not exist on list..'
+          }
+        ]
+      };
     }
 
     // Style the item
@@ -166,40 +276,70 @@ export class ItemResolver {
     }
 
     await userToListTable.save();
-    return item;
+    return { item };
   }
 
   // Add note to item on list
-  @UseMiddleware(isAuth, logger)
-  @Mutation(() => Item)
+  @UseMiddleware(logger)
+  @Mutation(() => ItemResponse)
   async addNote(
     @Arg('data') { listId, note, itemName }: AddNoteInput,
-    @Ctx() { req }: MyContext
-  ): Promise<Item> {
-    const userId = req.session.userId;
+    @Ctx() context: MyContext
+  ): Promise<ItemResponse> {
+    const errors = validateContext(context);
+    if (errors) return { errors };
+
+    const userId = context.req.session.userId;
     const userToListTable = await UserToList.findOne({
       where: { listId: listId, userId: userId },
       relations: ['list', 'list.items']
     });
 
     if (!userToListTable) {
-      throw new Error('Could not find that user to list connection..');
-    } else if (!userToListTable.list.items) {
-      throw new Error('List does not have items to add notes to..');
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'Could not find that user to list connection..'
+          }
+        ]
+      };
     } else if (
       !userToListTable.privileges.includes('owner') &&
       !userToListTable.privileges.includes('add')
     ) {
-      throw new Error(
-        'User does not have privileges to add notes to items on that list..'
-      );
+      return {
+        errors: [
+          {
+            field: 'userId',
+            message:
+              'User does not have privileges to add notes to items on that list..'
+          }
+        ]
+      };
+    } else if (!userToListTable.list.items) {
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'List has no items to add notes to..'
+          }
+        ]
+      };
     }
 
     const item = userToListTable.list.items.find(
       ({ name }) => name === itemName
     );
     if (!item) {
-      throw new Error('Item does not exist on list..');
+      return {
+        errors: [
+          {
+            field: 'name',
+            message: 'Item does not exist on list..'
+          }
+        ]
+      };
     }
 
     if (!item.notes) {
@@ -207,49 +347,88 @@ export class ItemResolver {
       item.notes = [note];
     } else {
       if (item.notes.length >= 10) {
-        throw new Error('Items cannot have more than 10 notes..');
+        return {
+          errors: [
+            {
+              field: 'name',
+              message: 'Items cannot have more than 10 notes..'
+            }
+          ]
+        };
       }
       item.notes = [...item.notes, note];
     }
 
-    return item.save();
+    await item.save();
+    return { item };
   }
 
   // Rename item on list
-  @UseMiddleware(isAuth, logger)
-  @Mutation(() => Item)
+  @UseMiddleware(logger)
+  @Mutation(() => ItemResponse)
   async renameItem(
     @Arg('data') { listId, newName, itemName }: RenameItemInput,
-    @Ctx() { req }: MyContext
-  ): Promise<Item> {
-    const userId = req.session.userId;
+    @Ctx() context: MyContext
+  ): Promise<ItemResponse> {
+    const errors = validateContext(context);
+    if (errors) return { errors };
+
+    const userId = context.req.session.userId;
     const userToListTable = await UserToList.findOne({
       where: { listId: listId, userId: userId },
       relations: ['list', 'list.items']
     });
 
     if (!userToListTable) {
-      throw new Error('Could not find that user to list connection..');
-    } else if (!userToListTable.list.items) {
-      throw new Error('List does not have items to add notes to..');
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'Could not find that user to list connection..'
+          }
+        ]
+      };
     } else if (
       !userToListTable.privileges.includes('owner') &&
       !userToListTable.privileges.includes('add')
     ) {
-      throw new Error(
-        'User does not have privileges to rename items on that list..'
-      );
+      return {
+        errors: [
+          {
+            field: 'userId',
+            message:
+              'User does not have privileges to rename items on that list..'
+          }
+        ]
+      };
+    } else if (!userToListTable.list.items) {
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'List has no items rename..'
+          }
+        ]
+      };
     }
 
     const item = userToListTable.list.items.find(
       ({ name }) => name === itemName
     );
     if (!item) {
-      throw new Error('Item does not exist on list..');
+      return {
+        errors: [
+          {
+            field: 'name',
+            message: 'Item does not exist on list..'
+          }
+        ]
+      };
     }
 
     item.name = newName;
 
-    return item.save();
+    await item.save();
+    return { item };
   }
 }
