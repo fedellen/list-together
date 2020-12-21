@@ -9,7 +9,7 @@ export const logger: MiddlewareFn<MyContext> = async (
   if (process.env.NODE_ENV !== 'test') {
     console.log(
       `🔥 New GraphQL Request! 🔥 
-    Arguments: ${JSON.stringify(args)},
+    Arguments: ${JSON.stringify(args, null, 4)},
     UserId: ${context.req.session.userId},
     ResolverType: ${info.fieldName}`
     );
