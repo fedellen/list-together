@@ -59,12 +59,14 @@ export function Login({ setUser }: LoginProps) {
               id='email'
               name='email'
               type='email'
+              label='email'
               placeholder='email address'
             />
             <Field
               id='password'
               name='password'
               type='password'
+              label='password'
               placeholder='password'
             />
             <Button type='submit' text='Login' isLoading={loading} />

@@ -14,21 +14,20 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/jest": "^26.0.15",
-    "@types/js-cookie": "^2.2.6",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
     "autoprefixer": "^9",
+    "http-server": "^0.12.3",
     "postcss": "^7",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "typescript": "^4.0.3"
   },
   "dependencies": {
     "@apollo/client": "^3.3.6",
-    "apollo-cache-persist": "^0.1.1",
+    "apollo3-cache-persist": "^0.9.1",
     "formik": "^2.2.6",
     "graphql": "^15.4.0",
-    "js-cookie": "^2.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1",
@@ -49,6 +48,7 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
+    "local:prod": "http-server build --cors -a 'localhost'",
     "eject": "react-scripts eject",
     "watch:css": "postcss ./src/style/tailwind.css -o ./src/style/main.css",
     "codegen": "graphql-codegen --config codegen.yml"
@@ -65,6 +65,7 @@
       "not dead",
       "not op_mini all"
     ],
+    "homepage": ".",
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
