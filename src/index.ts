@@ -50,10 +50,16 @@ const main = async () => {
     })
   );
 
+  // app.set('trust proxy', 1);
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: 'http://localhost:3000',
+      origin: [
+        'http://127.0.0.1:8080',
+        'http://localhost:8080',
+        'http://localhost:3000',
+        'http://192.168.86.136:8080'
+      ],
       credentials: true
     }
   });
