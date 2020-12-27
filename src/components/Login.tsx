@@ -9,14 +9,14 @@ import {
 import { Button } from './Button';
 
 type LoginProps = {
-  setUser: Function;
+  setUser: (arg: string) => void;
 };
 
 export function Login({ setUser }: LoginProps) {
   const [login, { loading }] = useLoginUserMutation();
 
   return (
-    <div className='h-56'>
+    <div className="h-56">
       <h1>Login</h1>
       <Formik
         initialValues={{
@@ -45,8 +45,7 @@ export function Login({ setUser }: LoginProps) {
               }
             });
             if (data) {
-              console.log(JSON.stringify({ data }, null, 4));
-              setUser(data.login.user?.username);
+              if (data.login.user) setUser(data.login.user?.username);
             }
           } catch (err) {
             console.error('Error on login submission: ', err);
@@ -56,20 +55,20 @@ export function Login({ setUser }: LoginProps) {
         {({ handleSubmit }) => (
           <Form onSubmit={handleSubmit}>
             <Field
-              id='email'
-              name='email'
-              type='email'
-              label='email'
-              placeholder='email address'
+              id="email"
+              name="email"
+              type="email"
+              label="email"
+              placeholder="email address"
             />
             <Field
-              id='password'
-              name='password'
-              type='password'
-              label='password'
-              placeholder='password'
+              id="password"
+              name="password"
+              type="password"
+              label="password"
+              placeholder="password"
             />
-            <Button type='submit' text='Login' isLoading={loading} />
+            <Button type="submit" text="Login" isLoading={loading} />
           </Form>
         )}
       </Formik>
