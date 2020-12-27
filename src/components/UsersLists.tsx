@@ -43,14 +43,13 @@ export function UsersLists({ sortedListArray }: UsersListProps) {
   }
 
   if (currentListId === '') {
-    console.log('hello inside?');
     const initialListId = sortedLists.map((list) => list.listId)[0];
     setCurrentListId(initialListId);
   }
-  console.log(currentListId, sortedLists.map((list) => list.listId)[0]);
+
   return (
     <>
-      <div className="flex flex-row ">
+      <div className="flex flex-row overflow-x-auto">
         {sortedLists.map((userList) => (
           <div className="p-6 text-1xl font-semibold " key={userList.listId}>
             {userList.list.title}

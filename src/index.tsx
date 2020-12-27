@@ -8,7 +8,7 @@ import {
 } from '@apollo/client';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { App } from './App';
+import { App } from './components/App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import './style/tailwind.css';
 import { LocalStorageWrapper, persistCache } from 'apollo3-cache-persist';

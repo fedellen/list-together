@@ -1,12 +1,5 @@
 import { Field, Form, Formik } from 'formik';
-// import { useEffect } from "react";
-import {
-  GetUserDocument,
-  // GetUserQuery,
-  useLoginUserMutation
-  // UserFragmentFragmentDoc
-} from '../generated/graphql';
-import { Button } from './Button';
+import { GetUserDocument, useLoginUserMutation } from '../generated/graphql';
 
 type LoginProps = {
   setUser: (arg: string) => void;
@@ -16,8 +9,8 @@ export function Login({ setUser }: LoginProps) {
   const [login, { loading }] = useLoginUserMutation();
 
   return (
-    <div className="h-56">
-      <h1>Login</h1>
+    <div className="p-2 justify-center items-center flex flex-col">
+      <h1 className="text-3xl font-semibold p-4">Login</h1>
       <Formik
         initialValues={{
           email: '',
@@ -45,7 +38,7 @@ export function Login({ setUser }: LoginProps) {
               }
             });
             if (data) {
-              if (data.login.user) setUser(data.login.user?.username);
+              if (data.login.user) setUser(data.login.user.username);
             }
           } catch (err) {
             console.error('Error on login submission: ', err);
@@ -53,7 +46,10 @@ export function Login({ setUser }: LoginProps) {
         }}
       >
         {({ handleSubmit }) => (
-          <Form onSubmit={handleSubmit}>
+          <Form
+            onSubmit={handleSubmit}
+            className="flex flex-col justify-center items-center p-2 gap-2 w-3/4"
+          >
             <Field
               id="email"
               name="email"
@@ -68,7 +64,12 @@ export function Login({ setUser }: LoginProps) {
               label="password"
               placeholder="password"
             />
-            <Button type="submit" text="Login" isLoading={loading} />
+            <button
+              type="submit"
+              className=" bg-darker px-6 py-4 my-2 border-4 border-medium border-solid  rounded-3xl hover:bg-medium hover:border-darker"
+            >
+              {loading ? 'Logging in...' : 'Login'}
+            </button>
           </Form>
         )}
       </Formik>
