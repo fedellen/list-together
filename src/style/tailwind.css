@@ -2,3 +2,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  a:hover {
+    @apply text-medium;
+  }
+  input {
+    @apply px-4 m-2 text-xl bg-medium border-solid border-4 border-medium rounded-3xl;
+  }
+  button {
+    @apply bg-medium px-6 py-4 my-5 border-4 border-medium border-solid  rounded-3xl;
+  }
+  button:hover {
+    @apply bg-medium text-medium;
+  }
+}

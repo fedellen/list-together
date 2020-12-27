@@ -21,12 +21,10 @@ export function App() {
   const [logout, { loading: logoutLoading }] = useLogoutUserMutation();
   const apolloClient = useApolloClient();
 
-  const { data, loading, error } = useGetUserQuery({});
+  const { data, loading, error } = useGetUserQuery({
+    fetchPolicy: 'cache-and-network'
+  });
   const { refetch } = useGetUsersListsQuery({ skip: true });
-
-  // if (user && !listData?.getUsersLists.userToList && !listLoading) {
-  //   getLists();
-  // }
 
   if (loading) {
     return <div>Loading user data...</div>;
@@ -37,30 +35,38 @@ export function App() {
     }
     return <div>Major Error: {JSON.stringify(error)}</div>;
   } else if (!data?.getUser && user) {
+    console.log('there is no data');
     // Invalid user data, null user field -- re-render
     setUser('');
-  } else if (data?.getUser && !user) {
+  } else if (data?.getUser && !user && !logoutLoading) {
     // User is logged in, set user field -- re-render
-    refetch();
+    refetch(); // Refetch list query during login
     setUser(data.getUser.username);
   }
 
   const handleLogout = async () => {
+    setUser('');
     await logout();
-    apolloClient.resetStore();
+    apolloClient.clearStore();
   };
 
   return (
     <>
-      <Header />
-      <div className='bg-blue-600 container mx-auto px-8 py-2'>
+      <Header user={user} />
+      <div className="bg-blue-600 container mx-auto px-10 py-2">
         {user ? (
           <>
             <p>Hello {user}!</p>
             {!logoutLoading && (
               <button onClick={() => handleLogout()}>Logout</button>
             )}
-            <UsersLists />
+            <UsersLists
+              sortedListArray={
+                data?.getUser?.sortedListsArray
+                  ? data.getUser.sortedListsArray
+                  : null
+              }
+            />
           </>
         ) : (
           <Login setUser={setUser} />

@@ -6,11 +6,11 @@ type props = {
 };
 
 export function ItemList({ list }: props) {
-  if (!list) return null;
-  if (!list.items) return null;
+  if (!list) return <div></div>;
+  if (!list.items) return <div></div>;
 
   return (
-    <div className='w-11/12 align-middle'>
+    <div className="w-11/12 align-middle">
       {list.items &&
         list.items.map((i) => <SingleItem item={i} key={i.name} />)}
     </div>
