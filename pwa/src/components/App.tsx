@@ -1,74 +1,46 @@
-import { useApolloClient } from '@apollo/client';
-import { useState } from 'react';
-// import { Button } from './components/Button';
+// import { useState } from 'react';
 import { Footer } from './Footer';
 import { Header } from './Header';
-// import { ItemList } from './components/ItemList';
 import { Login } from './Login';
 import { UsersLists } from './UsersLists';
 import {
-  // useGetUserLazyQuery,
-  useGetUserQuery,
-  // useGetUsersListsLazyQuery,
-  useGetUsersListsQuery,
-  // UserToList,
-  useLogoutUserMutation
+  useGetUserQuery /*useGetUsersListsQuery*/
 } from '../generated/graphql';
-import { Menu } from './Menu';
-// import Cookies from 'js-cookie';
 
 export function App() {
-  const [user, setUser] = useState('');
-  const [showMenu, setShowMenu] = useState(false);
-  const [logout, { loading: logoutLoading }] = useLogoutUserMutation();
-  const apolloClient = useApolloClient();
+  // const [user, setUser] = useState('');
 
   const { data, loading, error } = useGetUserQuery({
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true
   });
-  const { refetch } = useGetUsersListsQuery({ skip: true });
+  // const { refetch } = useGetUsersListsQuery({ skip: true });
 
   if (loading) {
     return <div>Loading user data...</div>;
   } else if (error) {
     console.log("we've got a new error: ", error);
-    if (user) {
-      setUser('');
-    }
+    // if (user) {
+    //   setUser('');
+    // }
     return <div>Major Error: {JSON.stringify(error)}</div>;
-  } else if (!data?.getUser && user) {
-    console.log('there is no data');
-    // Invalid user data, null user field -- re-render
-    setUser('');
-  } else if (data?.getUser && !user && !logoutLoading) {
-    // User is logged in, set user field -- re-render
-    refetch(); // Refetch list query during login
-    setUser(data.getUser.username);
   }
-
-  const handleLogout = async () => {
-    setUser('');
-    await logout();
-    apolloClient.clearStore();
-  };
-
-  const handleShowMenu = () => {
-    setShowMenu(!showMenu);
-  };
+  // else if (!data?.getUser && user) {
+  //   // Invalid user data, null user field
+  //   setUser('');
+  // } else if (data?.getUser && !user) {
+  //   // User is logged in, set user field
+  //   refetch(); // Refetch list query during login
+  //   setUser(data.getUser.username);
+  // }
 
   return (
-    <div className="">
-      <Header user={user} handleShowMenu={handleShowMenu} />
-      {showMenu && (
-        <Menu handleShowMenu={handleShowMenu} handleLogout={handleLogout} />
-      )}
-      <div className="container mx-auto px-10 py-2">
-        {user ? (
+    <div className="bg-dark">
+      <Header /*user={user}*/ />
+
+      <div className="container mx-auto px-10 pb-8">
+        {data?.getUser ? (
           <>
-            {/* <p>Hello {user}!</p>
-            {!logoutLoading && (
-              <button onClick={() => handleLogout()}>Logout</button>
-            )} */}
             <UsersLists
               sortedListArray={
                 data?.getUser?.sortedListsArray
@@ -78,10 +50,8 @@ export function App() {
             />
           </>
         ) : (
-          <Login setUser={setUser} />
+          <Login /*setUser={setUser}*/ />
         )}
-
-        {/* {lists && <ItemList list={lists[0].list} />} */}
       </div>
       <Footer />
     </div>
