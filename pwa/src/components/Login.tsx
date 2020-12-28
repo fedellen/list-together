@@ -1,11 +1,11 @@
 import { Field, Form, Formik } from 'formik';
 import { GetUserDocument, useLoginUserMutation } from '../generated/graphql';
 
-type LoginProps = {
-  setUser: (arg: string) => void;
-};
+// type LoginProps = {
+//   // setUser: (arg: string) => void;
+// };
 
-export function Login({ setUser }: LoginProps) {
+export function Login(/*{}: setUser LoginProps*/) {
   const [login, { loading }] = useLoginUserMutation();
 
   return (
@@ -19,7 +19,9 @@ export function Login({ setUser }: LoginProps) {
         onSubmit={async (values, actions) => {
           try {
             actions.setSubmitting(true);
-            const { data } = await login({
+            const {
+              /*data*/
+            } = await login({
               variables: {
                 data: {
                   email: values.email,
@@ -37,9 +39,6 @@ export function Login({ setUser }: LoginProps) {
                 });
               }
             });
-            if (data) {
-              if (data.login.user) setUser(data.login.user.username);
-            }
           } catch (err) {
             console.error('Error on login submission: ', err);
           }
