@@ -1,28 +1,23 @@
-type HeaderProps = {
-  user: string;
-  handleShowMenu: () => void;
-};
+import { useState } from 'react';
+import { useGetUserQuery } from 'src/generated/graphql';
+import { Menu } from './Menu';
+import { MenuIcon } from './svg/MenuIcon';
 
-export function Header({ user, handleShowMenu }: HeaderProps) {
+export function Header({}) {
+  const [showMenu, setShowMenu] = useState(false);
+  const { data } = useGetUserQuery({
+    notifyOnNetworkStatusChange: true
+  });
+  const handleShowMenu = () => setShowMenu(!showMenu);
+
   return (
-    <div className="h-28 p-4 bg-darker grid grid-cols-3 gap-2 justify-items-center items-center">
+    <div className="h-28 p-4 bg-darker grid grid-cols-3 gap-2 justify-items-center items-center border-light border-b-4">
       <div className="text-4xl font-extrabold">Its on the List</div>
-      <div className="">{user ? `Hello ${user}!` : 'Not logged in'}</div>
-      <button className="w-12" onClick={handleShowMenu}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 6h16M4 12h16M4 18h16"
-          />
-        </svg>
-      </button>
+      <div className="">
+        {data?.getUser ? `Hello ${data?.getUser.username}!` : 'Not logged in'}
+      </div>
+      <MenuIcon handleShowMenu={handleShowMenu} />
+      {showMenu && <Menu handleShowMenu={handleShowMenu} />}
     </div>
   );
 }
