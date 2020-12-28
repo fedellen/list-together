@@ -1,0 +1,10 @@
+fragment userListWithHistory on UserToList {
+  userId
+  listId
+  privileges
+  mostCommonWords
+  sortedItems
+  itemHistory {
+    ...itemHistoryFragment
+  }
+}

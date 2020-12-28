@@ -1,0 +1,7 @@
+fragment userListPartial on UserToList {
+  userId
+  listId
+  privileges
+  mostCommonWords
+  sortedItems
+}

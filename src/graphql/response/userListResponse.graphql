@@ -1,0 +1,8 @@
+fragment userListResponse on UserToListResponse {
+  userToList {
+    ...userListFragment
+  }
+  errors {
+    ...fieldError
+  }
+}

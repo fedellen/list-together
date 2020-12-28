@@ -1,0 +1,5 @@
+query GetUsersLists {
+  getUsersLists {
+    ...userListResponse
+  }
+}

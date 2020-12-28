@@ -1,0 +1,13 @@
+fragment userListFragment on UserToList {
+  userId
+  listId
+  privileges
+  mostCommonWords
+  sortedItems
+  itemHistory {
+    ...itemHistoryFragment
+  }
+  list {
+    ...listFragment
+  }
+}

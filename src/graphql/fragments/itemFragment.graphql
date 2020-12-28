@@ -1,0 +1,6 @@
+fragment itemFragment on Item {
+  name
+  notes
+  strike
+  bold
+}
