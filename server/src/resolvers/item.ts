@@ -85,7 +85,7 @@ export class ItemResolver {
         };
       }
 
-      list.items = [...list.items, Item.create({ name: nameInput })];
+      list.items = [Item.create({ name: nameInput }), ...list.items];
     } else {
       // Initialize list if no items --
       list.items = [Item.create({ name: nameInput })];
