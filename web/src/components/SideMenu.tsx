@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAddItemMutation } from 'src/generated/graphql';
+import { Modal } from './Modal';
 import { SingleInput } from './SingleInput';
 import { AddItemIcon } from './svg/AddItemIcon';
 import { SideMenuStates } from './UsersLists';
@@ -12,12 +13,12 @@ type SideMenuProps = {
 
 export function SideMenu({ state, setState, currentListId }: SideMenuProps) {
   const [addItem, { loading }] = useAddItemMutation();
-  const [toggleInput, setToggleInput] = useState(false);
+  const [toggleAddItem, setToggleAddItem] = useState(false);
 
   const handleAddItem = async (item: string) => {
     if (!loading) {
       if (state !== 'add') setState('add');
-      setToggleInput(!toggleInput);
+      setToggleAddItem(!toggleAddItem);
       try {
         await addItem({
           variables: {
@@ -34,15 +35,22 @@ export function SideMenu({ state, setState, currentListId }: SideMenuProps) {
   };
 
   return (
-    <div className="fixed right-6 bottom-6">
-      {toggleInput && (
-        <SingleInput
-          purpose="addItem"
-          handleAdd={handleAddItem}
-          handleExit={() => setToggleInput(!toggleInput)}
+    <>
+      <div className="fixed right-6 bottom-6">
+        <AddItemIcon toggleAddItem={() => setToggleAddItem(!toggleAddItem)} />
+      </div>
+      {toggleAddItem && (
+        <Modal
+          exit={() => setToggleAddItem(!toggleAddItem)}
+          title="Add Item"
+          component={
+            <SingleInput
+              handleAdd={handleAddItem}
+              placeholderText="Enter item name"
+            />
+          }
         />
       )}
-      <AddItemIcon toggleAddItem={() => setToggleInput(!toggleInput)} />
-    </div>
+    </>
   );
 }
