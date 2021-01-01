@@ -6,15 +6,15 @@ import { useGetUserQuery } from '../generated/graphql';
 
 export function App() {
   const { data, loading, error } = useGetUserQuery({
-    fetchPolicy: 'cache-and-network',
-    notifyOnNetworkStatusChange: true
+    fetchPolicy: 'cache-and-network'
+    // notifyOnNetworkStatusChange: true
   });
 
   if (loading) {
     return <div>Loading user data...</div>;
-  } else if (error) {
+  } else if (error && !data) {
     console.log("we've got a new error: ", error);
-    return <div>Major Error: {JSON.stringify(error)}</div>;
+    return <div>Major error in App component: {JSON.stringify(error)}</div>;
   }
 
   return (

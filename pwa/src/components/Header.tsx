@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useGetUserQuery } from 'src/generated/graphql';
 import { Menu } from './Menu';
+import { Modal } from './Modal';
 import { MenuIcon } from './svg/MenuIcon';
 
 export function Header({}) {
@@ -17,7 +18,13 @@ export function Header({}) {
         {data?.getUser ? `Hello ${data?.getUser.username}!` : 'Not logged in'}
       </div>
       <MenuIcon handleShowMenu={handleShowMenu} />
-      {showMenu && <Menu handleShowMenu={handleShowMenu} />}
+      {showMenu && (
+        <Modal
+          exit={handleShowMenu}
+          title="Menu"
+          component={<Menu handleShowMenu={handleShowMenu} />}
+        />
+      )}
     </div>
   );
 }
