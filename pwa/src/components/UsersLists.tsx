@@ -17,8 +17,8 @@ export function UsersLists({ sortedListArray }: UsersListProps) {
   const [sideMenuState, setSideMenuState] = useState<SideMenuStates>('add');
 
   const { data, loading, error } = useGetUsersListsQuery({
-    fetchPolicy: 'cache-and-network',
-    notifyOnNetworkStatusChange: true
+    // fetchPolicy: 'cache-and-network'
+    // notifyOnNetworkStatusChange: true
   });
   console.log('enter the list');
 

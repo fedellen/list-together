@@ -5,5 +5,5 @@ type props = {
 };
 
 export function SingleItem({ item }: props) {
-  return <div className="bg-red-400 text-2xl font-bold">{item.name}</div>;
+  return <div className="bg-red-400 text-2xl font-bold py-1">{item.name}</div>;
 }

@@ -26,11 +26,6 @@ export function SideMenu({ state, setState, currentListId }: SideMenuProps) {
               listId: currentListId
             }
           }
-          // update: (cache, {data}) => {
-          //   cache.writeQuery({
-          //     query: getUs
-          //   })
-          // }
         });
       } catch (err) {
         console.error('Error on Add Item mutation: ', err);
@@ -38,10 +33,8 @@ export function SideMenu({ state, setState, currentListId }: SideMenuProps) {
     }
   };
 
-  // const toggleAddItemInput =
-
   return (
-    <div className="absolute right-6 bottom-6">
+    <div className="fixed right-6 bottom-6">
       {toggleInput && (
         <SingleInput
           purpose="addItem"
