@@ -1,11 +1,10 @@
-import { Field, Form, Formik } from 'formik';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { toErrorMap } from 'src/utils/toErrorMap';
 import { GetUserDocument, useLoginUserMutation } from '../generated/graphql';
+import Button from './Button';
+import FormError from './FormError';
 
-// type LoginProps = {
-//   // setUser: (arg: string) => void;
-// };
-
-export function Login(/*{}: setUser LoginProps*/) {
+export default function Login() {
   const [login, { loading }] = useLoginUserMutation();
 
   return (
@@ -16,19 +15,16 @@ export function Login(/*{}: setUser LoginProps*/) {
           email: '',
           password: ''
         }}
-        onSubmit={async (values, actions) => {
+        onSubmit={async (values, { setErrors }) => {
           try {
-            actions.setSubmitting(true);
-            const {
-              /*data*/
-            } = await login({
+            const response = await login({
               variables: {
                 data: {
                   email: values.email,
                   password: values.password
                 }
               },
-              // Add cache update when we have data
+              /** Update cache when we have data */
               update: (cache, { data }) => {
                 cache.writeQuery({
                   query: GetUserDocument,
@@ -39,6 +35,10 @@ export function Login(/*{}: setUser LoginProps*/) {
                 });
               }
             });
+            /** Display any errors from server resolvers */
+            if (response.data?.login.errors) {
+              setErrors(toErrorMap(response.data.login.errors));
+            }
           } catch (err) {
             console.error('Error on login submission: ', err);
           }
@@ -56,6 +56,10 @@ export function Login(/*{}: setUser LoginProps*/) {
               label="email"
               placeholder="email address"
             />
+            <ErrorMessage
+              name="email"
+              render={(msg) => <FormError errorMessage={msg} />}
+            />
             <Field
               id="password"
               name="password"
@@ -63,12 +67,12 @@ export function Login(/*{}: setUser LoginProps*/) {
               label="password"
               placeholder="password"
             />
-            <button
-              type="submit"
-              className=" bg-darker px-6 py-4 my-2 border-4 border-medium border-solid  rounded-3xl hover:bg-medium hover:border-darker"
-            >
-              {loading ? 'Logging in...' : 'Login'}
-            </button>
+            <ErrorMessage
+              name="password"
+              render={(msg) => <FormError errorMessage={msg} />}
+            />
+
+            <Button type="submit" text="Login" isLoading={loading} />
           </Form>
         )}
       </Formik>
