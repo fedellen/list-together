@@ -1,17 +1,21 @@
 import { useState } from 'react';
-import { useAddItemMutation } from 'src/generated/graphql';
+import { useAddItemMutation } from '../generated/graphql';
+import { SideMenuState } from '../types';
 import { Modal } from './Modal';
 import { SingleInput } from './SingleInput';
 import { AddItemIcon } from './svg/AddItemIcon';
-import { SideMenuStates } from './UsersLists';
 
 type SideMenuProps = {
-  state: SideMenuStates;
-  setState: (arg: SideMenuStates) => void;
+  sideMenuState: SideMenuState;
+  setSideMenuState: (arg: SideMenuState) => void;
   currentListId: string;
 };
 
-export function SideMenu({ state, setState, currentListId }: SideMenuProps) {
+export default function SideMenu({
+  sideMenuState: state,
+  setSideMenuState: setState,
+  currentListId
+}: SideMenuProps) {
   const [addItem, { loading }] = useAddItemMutation();
   const [toggleAddItem, setToggleAddItem] = useState(false);
 
