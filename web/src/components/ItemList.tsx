@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   List,
+  ListFragmentFragmentDoc,
   useAddNoteMutation,
   useDeleteItemsMutation
 } from 'src/generated/graphql';
@@ -140,10 +141,19 @@ export default function ItemList({
                           itemNameArray: [toggleItemState.itemName],
                           listId: list.id
                         }
+                      },
+                      update: (cache, { data }) => {
+                        if (data?.deleteItems.list) {
+                          cache.writeFragment({
+                            fragment: ListFragmentFragmentDoc,
+                            data: data.deleteItems.list,
+                            fragmentName: 'listFragment'
+                          });
+                        }
                       }
                     });
                   } catch (err) {
-                    console.error(`Error on Add Note mutation: ${err}`);
+                    console.error(`Error on Delete Item mutation: ${err}`);
                   }
                 }}
               />
