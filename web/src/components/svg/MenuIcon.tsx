@@ -2,7 +2,7 @@ type MenuIconProps = {
   handleShowMenu: () => void;
 };
 
-export function MenuIcon({ handleShowMenu }: MenuIconProps) {
+export default function MenuIcon({ handleShowMenu }: MenuIconProps) {
   return (
     <button className="w-12" onClick={handleShowMenu}>
       <svg

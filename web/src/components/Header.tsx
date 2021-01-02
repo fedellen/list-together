@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useGetUserQuery } from 'src/generated/graphql';
-import { Menu } from './Menu';
-import { Modal } from './Modal';
-import { MenuIcon } from './svg/MenuIcon';
+import Menu from './Menu';
+import Modal from './Modal';
+import MenuIcon from './svg/MenuIcon';
 
-export function Header({}) {
+export default function Header({}) {
   const [showMenu, setShowMenu] = useState(false);
   const { data } = useGetUserQuery({
     notifyOnNetworkStatusChange: true

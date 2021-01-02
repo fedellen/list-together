@@ -1,10 +1,10 @@
-import { Footer } from './Footer';
-import { Header } from './Header';
+import Footer from './Footer';
+import Header from './Header';
 import Login from './Login';
-import { UsersLists } from './UsersLists';
+import UsersLists from './UsersLists';
 import { useGetUserQuery } from '../generated/graphql';
 
-export function App() {
+export default function App() {
   const { data, loading, error } = useGetUserQuery({
     fetchPolicy: 'cache-and-network'
     // notifyOnNetworkStatusChange: true

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useAddItemMutation } from '../generated/graphql';
 import { SideMenuState } from '../types';
-import { Modal } from './Modal';
-import { SingleInput } from './SingleInput';
-import { AddItemIcon } from './svg/AddItemIcon';
+import Modal from './Modal';
+import SingleInput from './SingleInput';
+import AddItemIcon from './svg/AddItemIcon';
 
 type SideMenuProps = {
   sideMenuState: SideMenuState;

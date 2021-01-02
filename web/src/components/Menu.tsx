@@ -5,7 +5,7 @@ type MenuProps = {
   handleShowMenu: () => void;
 };
 
-export function Menu({ handleShowMenu }: MenuProps) {
+export default function Menu({ handleShowMenu }: MenuProps) {
   const [logout /*, { loading: logoutLoading }*/] = useLogoutUserMutation();
   const { data } = useGetUserQuery();
 

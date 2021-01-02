@@ -10,7 +10,10 @@ type SingleInputProps = {
   placeholderText: string;
 };
 
-export function SingleInput({ handleAdd, placeholderText }: SingleInputProps) {
+export default function SingleInput({
+  handleAdd,
+  placeholderText
+}: SingleInputProps) {
   return (
     <Formik
       initialValues={{

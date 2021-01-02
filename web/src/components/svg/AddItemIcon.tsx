@@ -2,7 +2,7 @@ type AddItemIconProps = {
   toggleAddItem: () => void;
 };
 
-export function AddItemIcon({ toggleAddItem }: AddItemIconProps) {
+export default function AddItemIcon({ toggleAddItem }: AddItemIconProps) {
   return (
     <button
       className="w-24 rounded-full bg-dark text-lighter border-light border-4 p-1"
