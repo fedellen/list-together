@@ -1,11 +1,12 @@
-import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { toErrorMap } from 'src/utils/toErrorMap';
+import { Field, Form, Formik } from 'formik';
+import { useStateValue } from 'src/state/state';
+import { errorNotifaction } from 'src/utils/errorNotification';
 import { GetUserDocument, useLoginUserMutation } from '../generated/graphql';
 import Button from './Button';
-import FormError from './FormError';
 
 export default function Login() {
   const [login, { loading }] = useLoginUserMutation();
+  const [, dispatch] = useStateValue();
 
   return (
     <div className="p-2 justify-center items-center flex flex-col">
@@ -15,7 +16,7 @@ export default function Login() {
           email: '',
           password: ''
         }}
-        onSubmit={async (values, { setErrors }) => {
+        onSubmit={async (values) => {
           try {
             const response = await login({
               variables: {
@@ -37,7 +38,7 @@ export default function Login() {
             });
             /** Display any errors from server resolvers */
             if (response.data?.login.errors) {
-              setErrors(toErrorMap(response.data.login.errors));
+              errorNotifaction(response.data.login.errors, dispatch);
             }
           } catch (err) {
             console.error('Error on login submission: ', err);
@@ -56,20 +57,13 @@ export default function Login() {
               label="email"
               placeholder="email address"
             />
-            <ErrorMessage
-              name="email"
-              render={(msg) => <FormError errorMessage={msg} />}
-            />
+
             <Field
               id="password"
               name="password"
               type="password"
               label="password"
               placeholder="password"
-            />
-            <ErrorMessage
-              name="password"
-              render={(msg) => <FormError errorMessage={msg} />}
             />
 
             <Button type="submit" text="Login" isLoading={loading} />
