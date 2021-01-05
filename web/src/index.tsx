@@ -3,6 +3,8 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import App from './components/App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { reducer } from './state/reducer';
+import StateProvider from './state/state';
 import './style/tailwind.css';
 import { getApolloClient } from './utils/getApolloClient';
 
@@ -10,9 +12,11 @@ async function Main() {
   const client = await getApolloClient();
 
   ReactDOM.render(
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>,
+    <StateProvider reducer={reducer}>
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>
+    </StateProvider>,
 
     document.getElementById('root')
   );

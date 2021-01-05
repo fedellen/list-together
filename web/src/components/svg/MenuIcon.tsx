@@ -1,10 +1,17 @@
-type MenuIconProps = {
-  handleShowMenu: () => void;
-};
+import { useStateValue } from 'src/state/state';
 
-export default function MenuIcon({ handleShowMenu }: MenuIconProps) {
+export default function MenuIcon() {
+  const [, dispatch] = useStateValue();
   return (
-    <button className="w-12" onClick={handleShowMenu}>
+    <button
+      className="w-12"
+      onClick={() =>
+        dispatch({
+          type: 'TOGGLE_MODAL',
+          payload: { active: true, type: 'menu' }
+        })
+      }
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"

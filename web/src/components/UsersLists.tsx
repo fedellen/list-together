@@ -1,8 +1,11 @@
-import { useState } from 'react';
-import { SideMenuState, UserPrivileges } from '../types';
+// import { useState } from 'react';
+// import { SideMenuState, UserPrivileges } from '../types';
 import { useGetUsersListsQuery } from '../generated/graphql';
 import ItemList from './ItemList';
 import SideMenu from './SideMenu';
+import { useStateValue } from 'src/state/state';
+import { UserPrivileges } from 'src/types';
+import { useEffect } from 'react';
 
 type UsersListProps = {
   /** Sorted array to display lists in the user's preferred order */
@@ -11,12 +14,24 @@ type UsersListProps = {
 
 export default function UsersLists({ sortedListArray }: UsersListProps) {
   /** Set the current list ID */
-  const [currentListId, setCurrentListId] = useState(
-    sortedListArray ? sortedListArray[0] : ''
-  );
+  // const [currentListId, setCurrentListId] = useState(
+  //   sortedListArray ? sortedListArray[0] : ''
+  // );
 
-  /** Side menu states determine what happens when clicking on items */
-  const [sideMenuState, setSideMenuState] = useState<SideMenuState>('add');
+  const [{ currentListId }, dispatch] = useStateValue();
+
+  useEffect(() => {
+    console.log('Call initialize list');
+    if (currentListId === '') {
+      const initialListId = sortedLists[0].listId;
+      const initialPrivileges = sortedLists[0].privileges as UserPrivileges[];
+      /** Database only stores `UserPrivileges` type */
+      dispatch({
+        type: 'SET_LIST',
+        payload: { listId: initialListId, privileges: initialPrivileges }
+      });
+    }
+  }, []);
 
   const { data, loading, error } = useGetUsersListsQuery({});
 
@@ -44,11 +59,6 @@ export default function UsersLists({ sortedListArray }: UsersListProps) {
     });
   }
 
-  if (currentListId === '') {
-    const initialListId = sortedLists.map((list) => list.listId)[0];
-    setCurrentListId(initialListId);
-  }
-
   const currentList = sortedLists.find((list) => list.listId === currentListId);
 
   return (
@@ -58,24 +68,22 @@ export default function UsersLists({ sortedListArray }: UsersListProps) {
           <button
             className="p-6 text-2xl font-semibold border-light border-b-4 mb-6"
             key={userList.listId}
-            onClick={() => setCurrentListId(userList.listId)}
+            onClick={() =>
+              dispatch({
+                type: 'SET_LIST',
+                payload: {
+                  listId: userList.listId,
+                  privileges: userList.privileges as UserPrivileges[]
+                }
+              })
+            }
           >
             {userList.list.title}
           </button>
         ))}
       </div>
-      {currentList && (
-        <ItemList
-          list={currentList.list}
-          sideMenuState={sideMenuState}
-          userPrivileges={currentList.privileges as UserPrivileges[]} // Database only stores `privilege` types
-        />
-      )}
-      <SideMenu
-        sideMenuState={sideMenuState}
-        setSideMenuState={setSideMenuState}
-        currentListId={currentListId}
-      />
+      {currentList && <ItemList list={currentList.list} />}
+      <SideMenu />
     </>
   );
 }

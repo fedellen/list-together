@@ -1,12 +1,16 @@
-type AddItemIconProps = {
-  toggleAddItem: () => void;
-};
+import { useStateValue } from 'src/state/state';
 
-export default function AddItemIcon({ toggleAddItem }: AddItemIconProps) {
+export default function AddItemIcon() {
+  const [, dispatch] = useStateValue();
   return (
     <button
       className="w-24 rounded-full bg-dark text-lighter border-light border-4 p-1"
-      onClick={toggleAddItem}
+      onClick={() =>
+        dispatch({
+          type: 'TOGGLE_MODAL',
+          payload: { active: true, type: 'addItem' }
+        })
+      }
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
