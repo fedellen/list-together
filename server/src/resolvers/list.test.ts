@@ -27,7 +27,7 @@ query GetUsersLists {
 const createListMutation = `
 mutation CreateList($title: String!) {
   createList (title: $title) {
-    ${listPartial}
+    ${userListFragment}
     ${fieldErrorFragment}
   }
 }
@@ -131,7 +131,7 @@ describe('Get users lists query:', () => {
 });
 
 describe('Create list mutation:', () => {
-  it('User with authenticated userId context can create a list', async () => {
+  it.only('User with authenticated userId context can create a list', async () => {
     const userId = (await createUser()).id; // Creates user with no lists
     const title = faker.name.title();
 
@@ -141,12 +141,18 @@ describe('Create list mutation:', () => {
       userId: userId
     });
 
+    console.log(JSON.stringify(response));
+
     expect(response).toMatchObject({
       data: {
         createList: {
-          list: {
-            title: title
-          }
+          userToList: [
+            {
+              list: {
+                title: title
+              }
+            }
+          ]
         }
       }
     });

@@ -53,11 +53,11 @@ export class ListResolver {
 
   // Create a list
   @UseMiddleware(logger)
-  @Mutation(() => ListResponse)
+  @Mutation(() => UserToListResponse)
   async createList(
     @Arg('title') title: string,
     @Ctx() context: MyContext
-  ): Promise<ListResponse> {
+  ): Promise<UserToListResponse> {
     const errors = validateContext(context);
     if (errors) return { errors };
 
@@ -84,12 +84,13 @@ export class ListResolver {
     const list = await List.create({
       title
     }).save();
-    await UserToList.create({
+    const userToList = await UserToList.create({
       listId: list.id,
       userId: context.req.session.userId,
-      privileges: ['owner']
+      privileges: ['owner'],
+      list: list
     }).save();
-    return { list };
+    return { userToList: [userToList] };
   }
 
   // Share a list
