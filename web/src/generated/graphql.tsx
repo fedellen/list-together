@@ -84,7 +84,7 @@ export type Mutation = {
   forgotPassword: Scalars['Boolean'];
   changePassword?: Maybe<UserResponse>;
   logout: Scalars['Boolean'];
-  createList: ListResponse;
+  createList: UserToListResponse;
   shareList: BooleanResponse;
   deleteList: BooleanResponse;
   renameList: ListResponse;
@@ -397,8 +397,8 @@ export type CreateListMutationVariables = Exact<{
 export type CreateListMutation = (
   { __typename?: 'Mutation' }
   & { createList: (
-    { __typename?: 'ListResponse' }
-    & ListResponseFragment
+    { __typename?: 'UserToListResponse' }
+    & UserListResponseFragment
   ) }
 );
 
@@ -931,10 +931,10 @@ export type StyleItemMutationOptions = Apollo.BaseMutationOptions<StyleItemMutat
 export const CreateListDocument = gql`
     mutation CreateList($title: String!) {
   createList(title: $title) {
-    ...listResponse
+    ...userListResponse
   }
 }
-    ${ListResponseFragmentDoc}`;
+    ${UserListResponseFragmentDoc}`;
 export type CreateListMutationFn = Apollo.MutationFunction<CreateListMutation, CreateListMutationVariables>;
 
 /**
