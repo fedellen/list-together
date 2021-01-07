@@ -9,7 +9,7 @@ import faker from 'faker';
 import { userListFragment } from '../test-helpers/fragments/userListFragment';
 import { fieldErrorFragment } from '../test-helpers/fragments/fieldErrorFragment';
 // import { listPartial } from '../test-helpers/fragments/listPartial';
-import { listFragment } from '../test-helpers/fragments/listFragment';
+import { booleanFragment } from '../test-helpers/fragments/booleanFragment';
 import { itemFragment } from '../test-helpers/fragments/itemFragment';
 
 const addItemMutation = `
@@ -23,10 +23,7 @@ mutation AddItem($data: AddItemInput!) {
 
 const deleteItemsMutation = `
 mutation DeleteItems($data: DeleteItemsInput!) {
-  deleteItems(data: $data) {
-    ${listFragment} 
-    ${fieldErrorFragment}
-  }
+  deleteItems(data: $data) ${booleanFragment}
 }
 `;
 
@@ -193,19 +190,20 @@ describe('Delete items mutation:', () => {
       data: {
         deleteItems: {
           errors: null,
-          list: {
-            items: [
-              {
-                name: itemNameArray[2]
-              },
-              {
-                name: itemNameArray[3]
-              },
-              {
-                name: itemNameArray[4]
-              }
-            ]
-          }
+          boolean: true
+          // list: {
+          //   items: [
+          //     {
+          //       name: itemNameArray[2]
+          //     },
+          //     {
+          //       name: itemNameArray[3]
+          //     },
+          //     {
+          //       name: itemNameArray[4]
+          //     }
+          //   ]
+          // }
         }
       }
     });
@@ -265,19 +263,20 @@ describe('Delete items mutation:', () => {
               message: 'Item "fakeItemName" was not found on the list..'
             }
           ],
-          list: {
-            items: [
-              {
-                name: itemNameArray[2]
-              },
-              {
-                name: itemNameArray[3]
-              },
-              {
-                name: itemNameArray[4]
-              }
-            ]
-          }
+          boolean: true
+          // list: {
+          //   items: [
+          //     {
+          //       name: itemNameArray[2]
+          //     },
+          //     {
+          //       name: itemNameArray[3]
+          //     },
+          //     {
+          //       name: itemNameArray[4]
+          //     }
+          //   ]
+          // }
         }
       }
     });
@@ -330,16 +329,17 @@ describe('Delete items mutation:', () => {
       data: {
         deleteItems: {
           errors: null,
-          list: {
-            items: [
-              {
-                name: itemNameArray[0]
-              },
-              {
-                name: itemNameArray[1]
-              }
-            ]
-          }
+          boolean: true
+          // list: {
+          //   items: [
+          //     {
+          //       name: itemNameArray[0]
+          //     },
+          //     {
+          //       name: itemNameArray[1]
+          //     }
+          //   ]
+          // }
         }
       }
     });

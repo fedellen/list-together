@@ -131,7 +131,7 @@ describe('Get users lists query:', () => {
 });
 
 describe('Create list mutation:', () => {
-  it.only('User with authenticated userId context can create a list', async () => {
+  it('User with authenticated userId context can create a list', async () => {
     const userId = (await createUser()).id; // Creates user with no lists
     const title = faker.name.title();
 

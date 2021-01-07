@@ -16,6 +16,7 @@ import { ItemResponse } from './types/response/ItemResponse';
 import { FieldError } from './types/response/FieldError';
 import { validateContext } from './types/validators/validateContext';
 import { ListResponse } from './types/response/ListResponse';
+import { BooleanResponse } from './types/response/BooleanResponse';
 
 @Resolver()
 export class ItemResolver {
@@ -122,11 +123,11 @@ export class ItemResolver {
   // Delete array of items from list
   // Items will usually be deleted in batches from front-end `deleteStrikes`
   @UseMiddleware(logger)
-  @Mutation(() => ListResponse)
+  @Mutation(() => BooleanResponse)
   async deleteItems(
     @Arg('data') { itemNameArray, listId }: DeleteItemsInput,
     @Ctx() context: MyContext
-  ): Promise<ListResponse> {
+  ): Promise<BooleanResponse> {
     const errors = validateContext(context);
     if (errors) return { errors };
 
@@ -201,7 +202,7 @@ export class ItemResolver {
     });
 
     await userToListTable.save();
-    return { list: userToListTable.list, errors: deleteErrors };
+    return { boolean: true, errors: deleteErrors };
   }
 
   // Style items on list
