@@ -291,7 +291,7 @@ describe('Share list mutation:', () => {
 
 describe('Delete list mutation:', () => {
   it('User can delete their UserToList connection, list is deleted when no other connections exist', async () => {
-    const user = await userWithList();
+    const user = await userWithListAndItems();
     const userToListTable = await UserToList.findOne({
       where: { userId: user.id }
     });
