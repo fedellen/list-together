@@ -30,6 +30,6 @@ export class Item extends BaseEntity {
   @Column({ type: 'boolean', default: false })
   bold!: boolean;
 
-  @ManyToOne(() => List, (list) => list.items)
+  @ManyToOne(() => List, (list) => list.items, { onDelete: 'CASCADE' })
   list: List;
 }

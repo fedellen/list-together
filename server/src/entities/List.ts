@@ -23,7 +23,10 @@ export class List extends BaseEntity {
   title!: string;
 
   @Field(() => [Item], { nullable: true })
-  @OneToMany(() => Item, (item) => item.list, { cascade: true, nullable: true })
+  @OneToMany(() => Item, (item) => item.list, {
+    cascade: true,
+    nullable: true
+  })
   items: Item[] | null;
 
   @OneToMany(() => UserToList, (userToList) => userToList.list)

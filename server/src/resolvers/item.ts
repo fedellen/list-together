@@ -15,7 +15,7 @@ import { ItemResponse } from './types/response/ItemResponse';
 
 import { FieldError } from './types/response/FieldError';
 import { validateContext } from './types/validators/validateContext';
-import { ListResponse } from './types/response/ListResponse';
+// import { ListResponse } from './types/response/ListResponse';
 import { BooleanResponse } from './types/response/BooleanResponse';
 
 @Resolver()

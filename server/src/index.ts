@@ -19,6 +19,8 @@ const main = async () => {
   await createConnection({
     type: 'postgres',
     url: process.env.DATABASE_URL,
+    // dropSchema: true,
+    // synchronize: true,
     migrations: ['dist/migration/*.js'],
     entities: ['dist/entities/**/*.js']
   });
