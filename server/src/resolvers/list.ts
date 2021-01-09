@@ -4,6 +4,8 @@ import {
   Mutation,
   Query,
   Resolver,
+  Root,
+  Subscription,
   UseMiddleware
 } from 'type-graphql';
 
@@ -26,6 +28,34 @@ import { UserResponse } from './types/response/UserResponse';
 @Resolver()
 export class ListResolver {
   // Gets only the specified user's lists
+
+  // @UseMiddleware(logger)
+  @Subscription(() => UserToListResponse, {
+    topics: 'updateList',
+    filter: ({ payload, args }) => args.listIdArray.includes(payload.id)
+  })
+  async subscribeToListUpdates(
+    @Root() updatedList: List,
+    @Arg('data') _listIdArray: StringArrayInput,
+    @Ctx() context: MyContext
+  ): Promise<UserToListResponse> {
+    const usersList = await UserToList.findOne({
+      where: { userId: context.req.session.userId, listId: updatedList.id }
+    });
+    if (!usersList) {
+      return {
+        errors: [
+          {
+            field: 'listId',
+            message: 'Could not find that list connection..'
+          }
+        ]
+      };
+    }
+
+    return { userToList: [usersList] };
+  }
+
   @UseMiddleware(logger)
   @Query(() => UserToListResponse)
   async getUsersLists(@Ctx() context: MyContext): Promise<UserToListResponse> {
