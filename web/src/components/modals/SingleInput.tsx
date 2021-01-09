@@ -1,5 +1,8 @@
 import { Formik, Form, Field } from 'formik';
 import {
+  GetUsersListsDocument,
+  GetUsersListsQuery,
+  // GetUsersListsQueryResult,
   useAddItemMutation,
   useAddNoteMutation,
   useCreateListMutation,
@@ -14,11 +17,13 @@ import Button from '../Button';
 
 export default function SingleInput({}) {
   const [{ modalState, currentListId }, dispatch] = useStateValue();
-  const { data } = useGetUsersListsQuery({});
+  const { data /*, refetch*/ } = useGetUsersListsQuery({ skip: true });
 
   const [addItem, { loading: addItemLoading }] = useAddItemMutation();
   const [addNote, { loading: addNoteLoading }] = useAddNoteMutation();
-  const [createList, { loading: createListLoading }] = useCreateListMutation();
+  const [createList, { loading: createListLoading }] = useCreateListMutation({
+    // onCompleted: () => refetch()
+  });
 
   const closeModal = () => {
     dispatch({
@@ -35,8 +40,6 @@ export default function SingleInput({}) {
       (userList) => userList.listId === currentListId
     );
     const itemsOnList = userList?.list.items?.map((item) => item.name);
-    console.log(itemsOnList);
-    console.log(text);
     if (itemsOnList?.includes(text)) {
       errorNotifaction(
         [{ field: 'name', message: 'Item exists on this list already..' }],
@@ -101,6 +104,29 @@ export default function SingleInput({}) {
         const { data } = await createList({
           variables: {
             title: text
+          },
+          update: (cache, { data }) => {
+            if (data?.createList.userToList) {
+              const currentLists = cache.readQuery<GetUsersListsQuery>({
+                query: GetUsersListsDocument
+              });
+              console.log(currentLists);
+              let updatedLists;
+              if (currentLists?.getUsersLists.userToList) {
+                updatedLists = {
+                  ...currentLists.getUsersLists,
+                  userToList: [
+                    ...currentLists.getUsersLists.userToList,
+                    data.createList.userToList[0]
+                  ]
+                };
+                console.log(updatedLists);
+                cache.writeQuery({
+                  query: GetUsersListsDocument,
+                  data: { getUsersLists: updatedLists }
+                });
+              }
+            }
           }
         });
         if (data?.createList.errors) {
