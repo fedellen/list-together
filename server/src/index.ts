@@ -7,6 +7,7 @@ import session from 'express-session';
 import connectRedis from 'connect-redis';
 import { createSchema } from './utils/createSchema';
 import { redis } from './redis';
+import http from 'http';
 
 // Temporarily fixes a type error from @types/express-session update
 declare module 'express-session' {
@@ -65,11 +66,25 @@ const main = async () => {
       credentials: true
     }
   });
-  app.listen(parseInt(process.env.PORT), () =>
-    console.log(
-      `Server started on http://localhost:${process.env.PORT}${apolloServer.graphqlPath}`
-    )
-  );
-};
 
+  const httpServer = http.createServer(app);
+  apolloServer.installSubscriptionHandlers(httpServer);
+  // ⚠️ Pay attention to the fact that we are calling `listen` on the http server variable, and not on `app`.
+  httpServer.listen(parseInt(process.env.PORT), () => {
+    console.log(
+      `🚀 Server ready at http://localhost:${process.env.PORT}${apolloServer.graphqlPath}`
+    );
+    console.log(
+      `🚀 Subscriptions ready at ws://localhost:${process.env.PORT}${apolloServer.subscriptionsPath}`
+    );
+  });
+
+  //   // apolloServer.subscriptionsPath
+  //   app.listen(parseInt(process.env.PORT), () =>
+  //     console.log(
+  //       `Server started on http://localhost:${process.env.PORT}${apolloServer.graphqlPath}`
+  //     )
+  //   );
+  // };
+};
 main().catch((err) => console.log(err));
