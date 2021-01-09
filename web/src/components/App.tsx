@@ -5,6 +5,7 @@ import UsersLists from './UsersLists';
 import { useGetUserQuery } from '../generated/graphql';
 import CurrentModal from './modals/CurrentModal';
 import ErrorNotification from './ErrorNotification';
+import SideMenu from './SideMenu';
 
 export default function App() {
   const { data, loading, error } = useGetUserQuery({
@@ -22,24 +23,23 @@ export default function App() {
     <div className="">
       <CurrentModal />
       <ErrorNotification />
+      <SideMenu />
+
       <div className="bg-dark">
         <Header />
 
-        <div className="container mx-auto px-10 pb-8">
-          {data?.getUser ? (
-            <>
-              <UsersLists
-                sortedListArray={
-                  data?.getUser?.sortedListsArray
-                    ? data.getUser.sortedListsArray
-                    : null
-                }
-              />
-            </>
-          ) : (
-            <Login />
-          )}
-        </div>
+        {/* <div className="container mx-auto px-10 pb-8"> */}
+        {data?.getUser ? (
+          <UsersLists
+            sortedListArray={
+              data?.getUser?.sortedListsArray
+                ? data.getUser.sortedListsArray
+                : null
+            }
+          />
+        ) : (
+          <Login />
+        )}
         <Footer />
       </div>
     </div>
