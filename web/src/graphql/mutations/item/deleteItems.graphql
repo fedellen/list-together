@@ -1,5 +1,5 @@
 mutation DeleteItems($data: DeleteItemsInput!) {
   deleteItems(data: $data) {
-    ...listResponse
+    ...booleanResponse
   }
 }

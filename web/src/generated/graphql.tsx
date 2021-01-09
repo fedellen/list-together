@@ -74,7 +74,7 @@ export type Item = {
 export type Mutation = {
   __typename?: 'Mutation';
   addItem: UserToListResponse;
-  deleteItems: ListResponse;
+  deleteItems: BooleanResponse;
   styleItem: ItemResponse;
   addNote: ItemResponse;
   renameItem: ItemResponse;
@@ -185,10 +185,10 @@ export type AddItemInput = {
   nameInput: Scalars['String'];
 };
 
-export type ListResponse = {
-  __typename?: 'ListResponse';
+export type BooleanResponse = {
+  __typename?: 'BooleanResponse';
   errors?: Maybe<Array<FieldError>>;
-  list?: Maybe<List>;
+  boolean?: Maybe<Scalars['Boolean']>;
 };
 
 export type DeleteItemsInput = {
@@ -243,16 +243,16 @@ export type ChangePasswordInput = {
   password: Scalars['String'];
 };
 
-export type BooleanResponse = {
-  __typename?: 'BooleanResponse';
-  errors?: Maybe<Array<FieldError>>;
-  boolean?: Maybe<Scalars['Boolean']>;
-};
-
 export type ShareListInput = {
   listId: Scalars['String'];
   email: Scalars['String'];
   privileges: Array<Scalars['String']>;
+};
+
+export type ListResponse = {
+  __typename?: 'ListResponse';
+  errors?: Maybe<Array<FieldError>>;
+  list?: Maybe<List>;
 };
 
 export type StringArrayInput = {
@@ -358,8 +358,8 @@ export type DeleteItemsMutationVariables = Exact<{
 export type DeleteItemsMutation = (
   { __typename?: 'Mutation' }
   & { deleteItems: (
-    { __typename?: 'ListResponse' }
-    & ListResponseFragment
+    { __typename?: 'BooleanResponse' }
+    & BooleanResponseFragment
   ) }
 );
 
@@ -835,10 +835,10 @@ export type AddNoteMutationOptions = Apollo.BaseMutationOptions<AddNoteMutation,
 export const DeleteItemsDocument = gql`
     mutation DeleteItems($data: DeleteItemsInput!) {
   deleteItems(data: $data) {
-    ...listResponse
+    ...booleanResponse
   }
 }
-    ${ListResponseFragmentDoc}`;
+    ${BooleanResponseFragmentDoc}`;
 export type DeleteItemsMutationFn = Apollo.MutationFunction<DeleteItemsMutation, DeleteItemsMutationVariables>;
 
 /**
