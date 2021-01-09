@@ -1,13 +1,19 @@
 import {
-  ListFragmentFragmentDoc,
-  useDeleteItemsMutation
+  // GetUsersListsDocument,
+  // GetUsersListsQuery,
+  // ListFragmentFragmentDoc,
+  useDeleteItemsMutation,
+  useGetUsersListsQuery
 } from 'src/generated/graphql';
 import { useStateValue } from '../../state/state';
 import Button from '../Button';
 import { OptionAction } from '../../types';
+import { errorNotifaction } from 'src/utils/errorNotification';
+import { closeModal } from 'src/utils/closeModal';
 
 export const ItemOptions = () => {
   const [{ currentListId, modalState, privileges }, dispatch] = useStateValue();
+  const { refetch } = useGetUsersListsQuery({ skip: true });
   const [deleteItems] = useDeleteItemsMutation();
 
   const handleOptionAction = async (optionAction: OptionAction) => {
@@ -21,27 +27,20 @@ export const ItemOptions = () => {
         if (!modalState.itemName) {
           console.error('No item in context for deleteItem..');
         } else {
-          dispatch({
-            type: 'TOGGLE_MODAL',
-            payload: { active: false }
-          });
-          await deleteItems({
+          const { data } = await deleteItems({
             variables: {
               data: {
                 itemNameArray: [modalState.itemName],
                 listId: currentListId
               }
             },
-            update: (cache, { data }) => {
-              if (data?.deleteItems.list) {
-                cache.writeFragment({
-                  fragment: ListFragmentFragmentDoc,
-                  data: data.deleteItems.list,
-                  fragmentName: 'listFragment'
-                });
-              }
-            }
+            update: async () => await refetch()
           });
+          if (data?.deleteItems.errors) {
+            errorNotifaction(data.deleteItems.errors, dispatch);
+          } else {
+            closeModal(dispatch);
+          }
         }
       } catch (err) {
         console.error(`Error on Delete Item mutation: ${err}`);

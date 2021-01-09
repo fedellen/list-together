@@ -2,6 +2,7 @@ import { useStateValue } from 'src/state/state';
 import { ItemOptions } from './ItemOptions';
 import { Menu } from './Menu';
 import Modal from './Modal';
+import RemoveList from './RemoveList';
 import SingleInput from './SingleInput';
 
 /** Handles logic for displaying current modal */
@@ -27,6 +28,9 @@ export default function CurrentModal() {
   } else if (modalState.type === 'menu') {
     modalTitle = 'Menu';
     component = <Menu />;
+  } else if (modalState.type === 'removeList') {
+    modalTitle = 'Remove current list?';
+    component = <RemoveList />;
   } // else 'addItem'
 
   return <Modal modalTitle={modalTitle} component={component} />;
