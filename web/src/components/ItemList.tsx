@@ -27,7 +27,7 @@ export default function ItemList({ list }: ItemListProps) {
   return (
     <>
       {/* {toggledModal()} */}
-      <div className="pl-10">
+      <div className="pl-20">
         {list.items &&
           list.items.map((i) => (
             <SingleItem
