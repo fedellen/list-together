@@ -25,7 +25,8 @@ type ModalTypes =
   | 'createList'
   | 'itemOptions'
   | 'addNote'
-  | 'shareList';
+  | 'shareList'
+  | 'removeList';
 
 /** Currently displayed modal */
 export type ModalState = {

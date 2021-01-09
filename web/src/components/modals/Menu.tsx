@@ -28,7 +28,7 @@ export const Menu = () => {
   const toggleCreateList = () => {
     dispatch({
       type: 'TOGGLE_MODAL',
-      payload: { active: false, type: 'createList' }
+      payload: { active: true, type: 'createList' }
     });
   };
 
@@ -39,12 +39,20 @@ export const Menu = () => {
     });
   };
 
+  const toggleRemoveList = () => {
+    dispatch({
+      type: 'TOGGLE_MODAL',
+      payload: { active: true, type: 'removeList' }
+    });
+  };
+
   return (
     <>
       {/*Menu options*/}
 
       <Button text="New List" onClick={toggleCreateList} />
       <Button text="Share List" onClick={toggleShareList} />
+      <Button text="Remove List" onClick={toggleRemoveList} />
       <Button text="Logout" onClick={handleLogout} />
     </>
   );
