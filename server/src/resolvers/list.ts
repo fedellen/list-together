@@ -2,6 +2,8 @@ import {
   Arg,
   Ctx,
   Mutation,
+  Publisher,
+  PubSub,
   Query,
   Resolver,
   Root,
@@ -32,15 +34,36 @@ export class ListResolver {
   // @UseMiddleware(logger)
   @Subscription(() => UserToListResponse, {
     topics: 'updateList',
-    filter: ({ payload, args }) => args.listIdArray.includes(payload.id)
+    filter: ({ payload, args }) => {
+      return args.data.stringArray.includes(payload);
+    }
   })
   async subscribeToListUpdates(
-    @Root() updatedList: List,
+    @Root() updatedList: string,
     @Arg('data') _listIdArray: StringArrayInput,
     @Ctx() context: MyContext
   ): Promise<UserToListResponse> {
+    console.log(
+      `my subscription context: ${context.connection.context.req.session.userId}`
+    );
+    const userId: string = context.connection.context.req.session.userId;
+    if (!userId) {
+      return {
+        errors: [
+          {
+            field: 'context',
+            message: 'Context contains no userId..'
+          }
+        ]
+      };
+    }
+
     const usersList = await UserToList.findOne({
-      where: { userId: context.req.session.userId, listId: updatedList.id }
+      where: {
+        userId: userId,
+        listId: updatedList
+      },
+      relations: ['list', 'list.items', 'itemHistory']
     });
     if (!usersList) {
       return {
@@ -241,7 +264,8 @@ export class ListResolver {
   async renameList(
     @Arg('name') name: string,
     @Arg('listId') listId: string,
-    @Ctx() context: MyContext
+    @Ctx() context: MyContext,
+    @PubSub('updateList') publish: Publisher<string>
   ): Promise<ListResponse> {
     const contextError = validateContext(context);
     if (contextError) return { errors: contextError };
@@ -274,6 +298,7 @@ export class ListResolver {
 
     userToListTable.list.title = name;
     await userToListTable.save();
+    await publish(listId);
 
     // Server saves and returns array
     return { list: userToListTable.list };

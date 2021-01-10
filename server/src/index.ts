@@ -30,28 +30,38 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema,
-    context: ({ req, res }: any) => ({ req, res })
+    context: ({ req, res, connection }: any) => ({ req, res, connection }),
+    subscriptions: {
+      onConnect: (_, ws: any) => {
+        return new Promise((res) =>
+          sessionMiddleware(ws.upgradeReq, {} as any, () => {
+            res({ req: ws.upgradeReq });
+          })
+        );
+      }
+    }
   });
   const app = express();
 
   const RedisStore = connectRedis(session);
-  app.use(
-    session({
-      store: new RedisStore({
-        client: redis
-      }),
-      name: process.env.COOKIE_NAME,
-      secret: process.env.SESSION_SECRET,
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 1000 * 60 * 60 * 24 * 15 * 365, // 15 years
-        sameSite: 'strict'
-      }
-    })
-  );
+
+  const sessionMiddleware = session({
+    store: new RedisStore({
+      client: redis
+    }),
+    name: process.env.COOKIE_NAME,
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 60 * 24 * 15 * 365, // 15 years
+      sameSite: 'strict'
+    }
+  });
+
+  app.use(sessionMiddleware);
 
   // app.set('trust proxy', 1);
   apolloServer.applyMiddleware({
