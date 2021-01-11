@@ -1,4 +1,12 @@
-import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Publisher,
+  PubSub,
+  Resolver,
+  UseMiddleware
+} from 'type-graphql';
 import { logger } from '../middleware/logger';
 import { MyContext } from '../MyContext';
 
@@ -17,6 +25,8 @@ import { FieldError } from './types/response/FieldError';
 import { validateContext } from './types/validators/validateContext';
 // import { ListResponse } from './types/response/ListResponse';
 import { BooleanResponse } from './types/response/BooleanResponse';
+import { SubscriptionPayload } from './types/subscription/SubscriptionPayload';
+import { Topic } from './types/subscription/SubscriptionTopics';
 
 @Resolver()
 export class ItemResolver {
@@ -26,7 +36,8 @@ export class ItemResolver {
   @Mutation(() => UserToListResponse)
   async addItem(
     @Arg('data') { nameInput, listId }: AddItemInput,
-    @Ctx() context: MyContext
+    @Ctx() context: MyContext,
+    @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<UserToListResponse> {
     const errors = validateContext(context);
     if (errors) return { errors };
@@ -117,6 +128,10 @@ export class ItemResolver {
     }
 
     await userToListTable.save();
+    await publish({
+      updatedListId: listId,
+      notification: `${nameInput} was added to ${list.title}`
+    });
     return { userToList: [userToListTable] };
   }
 
@@ -126,6 +141,7 @@ export class ItemResolver {
   @Mutation(() => BooleanResponse)
   async deleteItems(
     @Arg('data') { itemNameArray, listId }: DeleteItemsInput,
+    @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>,
     @Ctx() context: MyContext
   ): Promise<BooleanResponse> {
     const errors = validateContext(context);
@@ -202,6 +218,7 @@ export class ItemResolver {
     });
 
     await userToListTable.save();
+    await publish({ updatedListId: listId });
     return { boolean: true, errors: deleteErrors };
   }
 
@@ -210,7 +227,8 @@ export class ItemResolver {
   @Mutation(() => ItemResponse)
   async styleItem(
     @Arg('data') { listId, style, isStyled, itemName }: StyleItemInput,
-    @Ctx() context: MyContext
+    @Ctx() context: MyContext,
+    @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<ItemResponse> {
     const errors = validateContext(context);
     if (errors) return { errors };
@@ -277,6 +295,7 @@ export class ItemResolver {
     }
 
     await userToListTable.save();
+    await publish({ updatedListId: listId });
     return { item };
   }
 
@@ -285,7 +304,8 @@ export class ItemResolver {
   @Mutation(() => ItemResponse)
   async addNote(
     @Arg('data') { listId, note, itemName }: AddNoteInput,
-    @Ctx() context: MyContext
+    @Ctx() context: MyContext,
+    @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<ItemResponse> {
     const errors = validateContext(context);
     if (errors) return { errors };
@@ -361,6 +381,7 @@ export class ItemResolver {
     }
 
     await item.save();
+    await publish({ updatedListId: listId });
     return { item };
   }
 

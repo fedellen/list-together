@@ -1,11 +1,13 @@
 import {
   Arg,
+  Args,
   Ctx,
   Mutation,
   Publisher,
   PubSub,
   Query,
   Resolver,
+  ResolverFilterData,
   Root,
   Subscription,
   UseMiddleware
@@ -26,27 +28,31 @@ import { UserToListResponse } from './types/response/UserToListResponse';
 import { ListResponse } from './types/response/ListResponse';
 import { BooleanResponse } from './types/response/BooleanResponse';
 import { UserResponse } from './types/response/UserResponse';
+import { SubscriptionPayload } from './types/subscription/SubscriptionPayload';
+import { SubscriptionArgs } from './types/subscription/SubscriptionArgs';
+import { Topic } from './types/subscription/SubscriptionTopics';
 
 @Resolver()
 export class ListResolver {
-  // Gets only the specified user's lists
-
   // @UseMiddleware(logger)
   @Subscription(() => UserToListResponse, {
     topics: 'updateList',
-    filter: ({ payload, args }) => {
-      return args.data.stringArray.includes(payload);
+    filter: ({
+      payload,
+      args
+    }: ResolverFilterData<SubscriptionPayload, SubscriptionArgs>) => {
+      return args.listIdArray.includes(payload.updatedListId);
     }
   })
   async subscribeToListUpdates(
-    @Root() updatedList: string,
-    @Arg('data') _listIdArray: StringArrayInput,
-    @Ctx() context: MyContext
+    @Root() { updatedListId, userIdToShare, notification }: SubscriptionPayload,
+    /** Frontend sends array of their ListIds to subscribe to */
+    @Args() {}: SubscriptionArgs,
+    @Ctx() { connection }: MyContext
   ): Promise<UserToListResponse> {
-    console.log(
-      `my subscription context: ${context.connection.context.req.session.userId}`
-    );
-    const userId: string = context.connection.context.req.session.userId;
+    const userId: string = userIdToShare
+      ? userIdToShare /** Newly shared list for the user */
+      : connection.context.req.session.userId;
     if (!userId) {
       return {
         errors: [
@@ -61,7 +67,7 @@ export class ListResolver {
     const usersList = await UserToList.findOne({
       where: {
         userId: userId,
-        listId: updatedList
+        listId: updatedListId
       },
       relations: ['list', 'list.items', 'itemHistory']
     });
@@ -76,12 +82,16 @@ export class ListResolver {
       };
     }
 
-    return { userToList: [usersList] };
+    return {
+      userToList: [usersList],
+      notifications: notification ? [notification] : []
+    };
   }
 
   @UseMiddleware(logger)
   @Query(() => UserToListResponse)
   async getUsersLists(@Ctx() context: MyContext): Promise<UserToListResponse> {
+    // Gets only the specified user's lists
     const errors = validateContext(context);
     if (errors) return { errors };
 
@@ -206,7 +216,8 @@ export class ListResolver {
   @Mutation(() => BooleanResponse)
   async deleteList(
     @Arg('listId') listId: string,
-    @Ctx() context: MyContext
+    @Ctx() context: MyContext,
+    @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<BooleanResponse> {
     const contextError = validateContext(context);
     if (contextError) return { errors: contextError };
@@ -247,10 +258,16 @@ export class ListResolver {
         if (isOwnerExist.length === 0) {
           // If no owner of list exists, give owner privileges to next user
           const newOwnerUserToListTable = await UserToList.findOne({
-            where: { userId: remainingUsersArray[0].userId, listId: listId }
+            where: { userId: remainingUsersArray[0].userId, listId: listId },
+            relations: ['list']
           });
           newOwnerUserToListTable!.privileges = ['owner'];
           await newOwnerUserToListTable!.save();
+          await publish({
+            updatedListId: listId,
+            userIdToShare: newOwnerUserToListTable!.userId,
+            notification: `You are now the owner of list: "${newOwnerUserToListTable?.list.title}"`
+          });
         }
       }
     }
@@ -265,7 +282,7 @@ export class ListResolver {
     @Arg('name') name: string,
     @Arg('listId') listId: string,
     @Ctx() context: MyContext,
-    @PubSub('updateList') publish: Publisher<string>
+    @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<ListResponse> {
     const contextError = validateContext(context);
     if (contextError) return { errors: contextError };
@@ -298,7 +315,7 @@ export class ListResolver {
 
     userToListTable.list.title = name;
     await userToListTable.save();
-    await publish(listId);
+    await publish({ updatedListId: listId });
 
     // Server saves and returns array
     return { list: userToListTable.list };

@@ -9,4 +9,7 @@ export class UserToListResponse {
 
   @Field(() => [UserToList], { nullable: true })
   userToList?: UserToList[];
+
+  @Field(() => [String], { nullable: true })
+  notifications?: string[];
 }
