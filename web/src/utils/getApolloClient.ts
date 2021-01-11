@@ -1,9 +1,12 @@
 import {
   HttpLink,
-  ApolloLink,
+  // ApolloLink,
+  split,
   InMemoryCache,
   ApolloClient
 } from '@apollo/client';
+import { getMainDefinition } from '@apollo/client/utilities';
+import { WebSocketLink } from '@apollo/client/link/ws';
 // import { persistCache, LocalStorageWrapper } from 'apollo3-cache-persist';
 
 /** Schema constants */
@@ -15,7 +18,25 @@ export const getApolloClient = async () => {
     credentials: 'include'
   });
 
-  const link = ApolloLink.from([http]);
+  const webSocket = new WebSocketLink({
+    uri: `ws://localhost:4000/`,
+    options: {
+      reconnect: true,
+      credentials: 'include'
+    }
+  });
+
+  const link = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query);
+      return (
+        definition.kind === 'OperationDefinition' &&
+        definition.operation === 'subscription'
+      );
+    },
+    webSocket,
+    http
+  );
 
   const cache = new InMemoryCache();
 

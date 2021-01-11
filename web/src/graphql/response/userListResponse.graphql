@@ -5,4 +5,5 @@ fragment userListResponse on UserToListResponse {
   errors {
     ...fieldError
   }
+  notifications
 }

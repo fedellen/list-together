@@ -31,6 +31,7 @@ export type UserToListResponse = {
   __typename?: 'UserToListResponse';
   errors?: Maybe<Array<FieldError>>;
   userToList?: Maybe<Array<UserToList>>;
+  notifications?: Maybe<Array<Scalars['String']>>;
 };
 
 export type FieldError = {
@@ -262,6 +263,16 @@ export type StringArrayInput = {
 export type RemovalOrderInput = {
   removedItemArray: Array<Scalars['String']>;
   listId: Scalars['String'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  subscribeToListUpdates: UserToListResponse;
+};
+
+
+export type SubscriptionSubscribeToListUpdatesArgs = {
+  listIdArray: Array<Scalars['ID']>;
 };
 
 export type FieldErrorFragment = (
@@ -616,6 +627,7 @@ export type ListResponseFragment = (
 
 export type UserListResponseFragment = (
   { __typename?: 'UserToListResponse' }
+  & Pick<UserToListResponse, 'notifications'>
   & { userToList?: Maybe<Array<(
     { __typename?: 'UserToList' }
     & UserListFragmentFragment
@@ -634,6 +646,19 @@ export type UserResponseFragment = (
     { __typename?: 'FieldError' }
     & FieldErrorFragment
   )>> }
+);
+
+export type UpdateListSubscriptionVariables = Exact<{
+  listIdArray: Array<Scalars['ID']> | Scalars['ID'];
+}>;
+
+
+export type UpdateListSubscription = (
+  { __typename?: 'Subscription' }
+  & { subscribeToListUpdates: (
+    { __typename?: 'UserToListResponse' }
+    & UserListResponseFragment
+  ) }
 );
 
 export const ListPartialFragmentDoc = gql`
@@ -746,6 +771,7 @@ export const UserListResponseFragmentDoc = gql`
   errors {
     ...fieldError
   }
+  notifications
 }
     ${UserListFragmentFragmentDoc}
 ${FieldErrorFragmentDoc}`;
@@ -1415,3 +1441,32 @@ export function useGetUsersListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetUsersListsQueryHookResult = ReturnType<typeof useGetUsersListsQuery>;
 export type GetUsersListsLazyQueryHookResult = ReturnType<typeof useGetUsersListsLazyQuery>;
 export type GetUsersListsQueryResult = Apollo.QueryResult<GetUsersListsQuery, GetUsersListsQueryVariables>;
+export const UpdateListDocument = gql`
+    subscription updateList($listIdArray: [ID!]!) {
+  subscribeToListUpdates(listIdArray: $listIdArray) {
+    ...userListResponse
+  }
+}
+    ${UserListResponseFragmentDoc}`;
+
+/**
+ * __useUpdateListSubscription__
+ *
+ * To run a query within a React component, call `useUpdateListSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useUpdateListSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUpdateListSubscription({
+ *   variables: {
+ *      listIdArray: // value for 'listIdArray'
+ *   },
+ * });
+ */
+export function useUpdateListSubscription(baseOptions: Apollo.SubscriptionHookOptions<UpdateListSubscription, UpdateListSubscriptionVariables>) {
+        return Apollo.useSubscription<UpdateListSubscription, UpdateListSubscriptionVariables>(UpdateListDocument, baseOptions);
+      }
+export type UpdateListSubscriptionHookResult = ReturnType<typeof useUpdateListSubscription>;
+export type UpdateListSubscriptionResult = Apollo.SubscriptionResult<UpdateListSubscription>;
