@@ -19,10 +19,10 @@ export const getApolloClient = async () => {
   });
 
   const webSocket = new WebSocketLink({
-    uri: `ws://localhost:4000/`,
+    uri: `ws://localhost:4000/graphql`,
     options: {
-      reconnect: true,
-      credentials: 'include'
+      reconnect: true
+      // credentials: 'include'
     }
   });
 
