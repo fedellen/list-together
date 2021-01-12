@@ -141,8 +141,6 @@ describe('Create list mutation:', () => {
       userId: userId
     });
 
-    console.log(JSON.stringify(response));
-
     expect(response).toMatchObject({
       data: {
         createList: {

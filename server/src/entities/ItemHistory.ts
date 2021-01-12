@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType, Root } from 'type-graphql';
+import { Field, Int, ObjectType, Root, ID } from 'type-graphql';
 import {
   Entity,
   Column,
@@ -11,6 +11,7 @@ import { UserToList } from '.';
 @ObjectType()
 @Entity('item_history')
 export class ItemHistory extends BaseEntity {
+  @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
