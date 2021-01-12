@@ -53,6 +53,7 @@ export type UserToList = {
 
 export type ItemHistory = {
   __typename?: 'ItemHistory';
+  id: Scalars['ID'];
   item: Scalars['String'];
   removalRating?: Maybe<Scalars['Int']>;
 };
@@ -66,6 +67,7 @@ export type List = {
 
 export type Item = {
   __typename?: 'Item';
+  id: Scalars['ID'];
   name: Scalars['String'];
   notes?: Maybe<Array<Scalars['String']>>;
   strike: Scalars['Boolean'];
@@ -282,12 +284,12 @@ export type FieldErrorFragment = (
 
 export type ItemFragmentFragment = (
   { __typename?: 'Item' }
-  & Pick<Item, 'name' | 'notes' | 'strike' | 'bold'>
+  & Pick<Item, 'id' | 'name' | 'notes' | 'strike' | 'bold'>
 );
 
 export type ItemHistoryFragmentFragment = (
   { __typename?: 'ItemHistory' }
-  & Pick<ItemHistory, 'item' | 'removalRating'>
+  & Pick<ItemHistory, 'id' | 'item' | 'removalRating'>
 );
 
 export type ListFragmentFragment = (
@@ -678,6 +680,7 @@ export const UserListPartialFragmentDoc = gql`
     `;
 export const ItemHistoryFragmentFragmentDoc = gql`
     fragment itemHistoryFragment on ItemHistory {
+  id
   item
   removalRating
 }
@@ -710,6 +713,7 @@ export const BooleanResponseFragmentDoc = gql`
     ${FieldErrorFragmentDoc}`;
 export const ItemFragmentFragmentDoc = gql`
     fragment itemFragment on Item {
+  id
   name
   notes
   strike

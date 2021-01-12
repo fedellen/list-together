@@ -1,4 +1,5 @@
 fragment itemFragment on Item {
+  id
   name
   notes
   strike

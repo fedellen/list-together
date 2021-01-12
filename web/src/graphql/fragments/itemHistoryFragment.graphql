@@ -1,4 +1,5 @@
 fragment itemHistoryFragment on ItemHistory {
+  id
   item
   removalRating
 }
