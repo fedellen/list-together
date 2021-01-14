@@ -1,4 +1,4 @@
-import { UserToList } from 'src/generated/graphql';
+import { UserToList, useUpdateListSubscription } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { UserPrivileges } from 'src/types';
 import ArrowLeftIcon from './svg/ArrowLeftIcon';
@@ -10,6 +10,13 @@ type ScrollingListsProps = {
 
 export default function ScrollingLists({ lists }: ScrollingListsProps) {
   const [, dispatch] = useStateValue();
+  /** Component renders when we have the lists, use subscription */
+  const { data, loading } = useUpdateListSubscription({});
+
+  if (data && !loading) {
+    console.log('Our updated list from subscription: ', data);
+  }
+
   return (
     <>
       <div className="flex items-center py-4">

@@ -1,10 +1,4 @@
-import {
-  // GetUsersListsDocument,
-  // GetUsersListsQuery,
-  // ListFragmentFragmentDoc,
-  useDeleteItemsMutation,
-  useGetUsersListsQuery
-} from 'src/generated/graphql';
+import { useDeleteItemsMutation } from 'src/generated/graphql';
 import { useStateValue } from '../../state/state';
 import Button from '../Button';
 import { OptionAction } from '../../types';
@@ -13,7 +7,6 @@ import { closeModal } from 'src/utils/closeModal';
 
 export const ItemOptions = () => {
   const [{ currentListId, modalState, privileges }, dispatch] = useStateValue();
-  const { refetch } = useGetUsersListsQuery({ skip: true });
   const [deleteItems] = useDeleteItemsMutation();
 
   const handleOptionAction = async (optionAction: OptionAction) => {
@@ -33,8 +26,7 @@ export const ItemOptions = () => {
                 itemNameArray: [modalState.itemName],
                 listId: currentListId
               }
-            },
-            update: async () => await refetch()
+            }
           });
           if (data?.deleteItems.errors) {
             errorNotifaction(data.deleteItems.errors, dispatch);
