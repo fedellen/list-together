@@ -1,4 +1,3 @@
-// import { Dispatch } from 'react';
 import { Action } from 'src/state/reducer';
 import { FieldError } from '../generated/graphql';
 
@@ -7,7 +6,6 @@ export const errorNotifaction = (
   errors: FieldError[],
   dispatch: (value: Action) => void
 ) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const time = 5000; // 5 seconds
   clearTimeout(timeoutId); // Clear previous timer
 
