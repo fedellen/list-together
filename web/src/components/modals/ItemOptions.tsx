@@ -5,10 +5,12 @@ import { OptionAction } from '../../types';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import { closeModal } from 'src/utils/closeModal';
 
+/** Modal displaying user's item options */
 export const ItemOptions = () => {
   const [{ currentListId, modalState, privileges }, dispatch] = useStateValue();
   const [deleteItems] = useDeleteItemsMutation();
 
+  /** When button is pushed */
   const handleOptionAction = async (optionAction: OptionAction) => {
     if (optionAction === 'addNote') {
       dispatch({

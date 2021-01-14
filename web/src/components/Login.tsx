@@ -50,6 +50,8 @@ export default function Login() {
             /** Display any errors from server resolvers as global errors */
             if (response.data?.login.errors) {
               errorNotifaction(response.data.login.errors, dispatch);
+            } else {
+              dispatch({ type: 'SET_APP_STATE', payload: 'list' });
             }
           } catch (err) {
             console.error('Error on login submission: ', err);

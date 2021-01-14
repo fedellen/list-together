@@ -17,12 +17,15 @@ export const Menu = () => {
   }
 
   const handleLogout = async () => {
-    dispatch({
-      type: 'TOGGLE_MODAL',
-      payload: { active: false }
-    });
-    await logout();
-    apolloClient.clearStore();
+    try {
+      dispatch({ type: 'TOGGLE_MODAL', payload: { active: false } });
+      await logout();
+      // await apolloClient.clearStore();
+      await apolloClient.resetStore();
+      dispatch({ type: 'SET_APP_STATE', payload: 'home' });
+    } catch (err) {
+      console.error('Error on logout mutation: ', err);
+    }
   };
 
   const toggleCreateList = () => {

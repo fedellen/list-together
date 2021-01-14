@@ -1,20 +1,19 @@
-import { useGetUsersListsQuery } from '../generated/graphql';
+import { useGetUserQuery, useGetUsersListsQuery } from '../generated/graphql';
 import ItemList from './ItemList';
 import { useStateValue } from 'src/state/state';
 import { UserPrivileges } from 'src/types';
 import ScrollingLists from './ScrollingLists';
 
-type UsersListProps = {
-  /** Sorted array to display lists in the user's preferred order */
-  sortedListArray: string[] | null;
-};
-
-export default function UsersLists({ sortedListArray }: UsersListProps) {
+export default function UsersLists() {
   const [{ currentListId }, dispatch] = useStateValue();
+
+  /** Todo: refactor handling nulled sorted arrays to backend */
+  const { data: userData } = useGetUserQuery({ skip: true });
+  const sortedListArray = userData?.getUser?.sortedListsArray;
 
   const { data, loading, error } = useGetUsersListsQuery({
     notifyOnNetworkStatusChange: true,
-    // fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-and-network',
     onCompleted: ({}) => {
       if (currentListId === '') {
         const initialListId = sortedLists[0].listId;
