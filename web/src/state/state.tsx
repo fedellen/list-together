@@ -1,6 +1,6 @@
 import { createContext, Dispatch, useContext, useReducer } from 'react';
 // import { UserToList } from 'src/generated/graphql';
-import { ModalState, SideMenuState, UserPrivileges } from 'src/types';
+import { AppState, ModalState, SideMenuState, UserPrivileges } from 'src/types';
 import { Action } from './reducer';
 
 export type State = {
@@ -10,6 +10,7 @@ export type State = {
   modalState: ModalState;
   sideMenuState: SideMenuState;
   errorMessage: string;
+  appState: AppState;
 };
 
 const initialState: State = {
@@ -18,7 +19,8 @@ const initialState: State = {
   privileges: null,
   modalState: { active: false },
   sideMenuState: 'add',
-  errorMessage: ''
+  errorMessage: '',
+  appState: 'home'
 };
 
 export const StateContext = createContext<[State, Dispatch<Action>]>([

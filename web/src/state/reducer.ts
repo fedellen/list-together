@@ -1,8 +1,12 @@
 // import { UserToList } from 'src/generated/graphql';
-import { ModalState, SideMenuState, UserPrivileges } from 'src/types';
+import { AppState, ModalState, SideMenuState, UserPrivileges } from 'src/types';
 import { State } from './state';
 
 export type Action =
+  | {
+      type: 'SET_APP_STATE';
+      payload: AppState;
+    }
   | {
       type: 'TOGGLE_MODAL';
       payload: ModalState;
@@ -54,6 +58,11 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         errorMessage: ''
+      };
+    case 'SET_APP_STATE':
+      return {
+        ...state,
+        appState: action.payload
       };
     // case 'SET_USERS_LISTS':
     //   return {
