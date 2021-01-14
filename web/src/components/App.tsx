@@ -1,13 +1,12 @@
 import Footer from './Footer';
 import Header from './Header';
-import Login from './Login';
-import UsersLists from './UsersLists';
 import { useGetUserQuery } from '../generated/graphql';
 import CurrentModal from './modals/CurrentModal';
-import ErrorNotification from './ErrorNotification';
+import ErrorNotification from './modals/ErrorNotification';
 import SideMenu from './SideMenu';
 import { useStateValue } from 'src/state/state';
 import { useEffect } from 'react';
+import BodyContent from './BodyContent';
 
 export default function App() {
   const [{ appState }, dispatch] = useStateValue();
@@ -16,11 +15,11 @@ export default function App() {
   });
 
   useEffect(() => {
-    console.log('Use effect for App State was triggered');
-    if (data?.getUser && appState !== 'list') {
+    if (data?.getUser && appState !== 'list' && !loading) {
+      console.log('User found in cache, App State set to `list`');
       dispatch({ type: 'SET_APP_STATE', payload: 'list' });
     }
-  }, [appState]);
+  }, [data]);
 
   if (loading) {
     return <div>Loading user data...</div>;
@@ -33,25 +32,10 @@ export default function App() {
     <div className="">
       <CurrentModal />
       <ErrorNotification />
-
       <SideMenu />
-
-      <div className="bg-dark">
-        <Header />
-
-        {data?.getUser ? (
-          <UsersLists
-            sortedListArray={
-              data?.getUser?.sortedListsArray
-                ? data.getUser.sortedListsArray
-                : null
-            }
-          />
-        ) : (
-          <Login />
-        )}
-        <Footer />
-      </div>
+      <Header />
+      <BodyContent />
+      <Footer />
     </div>
   );
 }
