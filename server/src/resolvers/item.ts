@@ -122,12 +122,32 @@ export class ItemResolver {
       userToListTable.itemHistory = [ItemHistory.create({ item: nameInput })];
     }
 
+    // Add item to front of sorted list for every user
     if (userToListTable.sortedItems) {
-      // Add item to front of sorted list
       userToListTable.sortedItems = [nameInput, ...userToListTable.sortedItems];
+    } else {
+      userToListTable.sortedItems = [nameInput];
     }
 
+    /** Save table to DB, cascades all updates */
     await userToListTable.save();
+
+    const allUserToListTables = await UserToList.find({
+      where: { listId: list.id }
+    });
+    allUserToListTables.forEach(async (table) => {
+      if (table.userId !== userId) {
+        // Add item to front of sorted list for every shared user
+        if (table.sortedItems) {
+          table.sortedItems = [nameInput, ...table.sortedItems];
+        } else {
+          table.sortedItems = [nameInput];
+        }
+        /** Save all shared tables */
+        await table.save();
+      }
+    });
+
     await publish({
       updatedListId: listId,
       notification: `${nameInput} was added to ${list.title}`
