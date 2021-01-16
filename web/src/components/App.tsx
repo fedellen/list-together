@@ -28,14 +28,19 @@ export default function App() {
     return <div>Major error in App component: {JSON.stringify(error)}</div>;
   }
 
+  let displaySideMenu = false;
+  if (appState === 'list' || appState === 'demo') {
+    displaySideMenu = true;
+  }
+
   return (
-    <div className="">
+    <>
+      {displaySideMenu && <SideMenu />}
       <CurrentModal />
       <ErrorNotification />
-      <SideMenu />
       <Header />
       <BodyContent />
       <Footer />
-    </div>
+    </>
   );
 }
