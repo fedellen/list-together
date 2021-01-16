@@ -124,9 +124,22 @@ export class ListResolver {
     const errors = validateContext(context);
     if (errors) return { errors };
 
+    const user = await User.findOne(context.req.session.userId);
+
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: 'context',
+            message: 'Context contains invalid user id..'
+          }
+        ]
+      };
+    }
+
     // Check to see if user already owns 25 lists
     const userToListTableArray = await UserToList.find({
-      where: { userId: context.req.session.userId }
+      where: { userId: user.id }
     });
     const userToListTablesAsOwner = userToListTableArray.filter(
       (listConnection) => listConnection.privileges.includes('owner')
@@ -149,10 +162,18 @@ export class ListResolver {
     }).save();
     const userToList = await UserToList.create({
       listId: list.id,
-      userId: context.req.session.userId,
+      userId: user.id,
       privileges: ['owner'],
       list: list
     }).save();
+    /** Add to front of user's sorted list array */
+    if (user.sortedListsArray) {
+      user.sortedListsArray = [list.id, ...user.sortedListsArray];
+    } else {
+      user.sortedListsArray = [list.id];
+    }
+    await user.save();
+
     return { userToList: [userToList] };
   }
 
