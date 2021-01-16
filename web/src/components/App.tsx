@@ -14,9 +14,9 @@ export default function App() {
     fetchPolicy: 'cache-and-network'
   });
 
+  /** Send to list if user is logged in  */
   useEffect(() => {
     if (data?.getUser && appState !== 'list' && !loading) {
-      console.log('User found in cache, App State set to `list`');
       dispatch({ type: 'SET_APP_STATE', payload: 'list' });
     }
   }, [data]);
@@ -28,6 +28,7 @@ export default function App() {
     return <div>Major error in App component: {JSON.stringify(error)}</div>;
   }
 
+  /** Disable side menu when not viewing list */
   let displaySideMenu = false;
   if (appState === 'list' || appState === 'demo') {
     displaySideMenu = true;
