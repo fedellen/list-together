@@ -10,16 +10,16 @@ import { WebSocketLink } from '@apollo/client/link/ws';
 // import { persistCache, LocalStorageWrapper } from 'apollo3-cache-persist';
 
 /** Schema constants */
-const API_HOST = 'http://localhost:4000/graphql';
+const API_HOST = '://localhost:4000/graphql';
 
 export const getApolloClient = async () => {
   const http = new HttpLink({
-    uri: API_HOST,
+    uri: `http${API_HOST}`,
     credentials: 'include'
   });
 
   const webSocket = new WebSocketLink({
-    uri: `ws://localhost:4000/graphql`,
+    uri: `ws${API_HOST}`,
     options: {
       reconnect: true
       // credentials: 'include'
@@ -38,7 +38,17 @@ export const getApolloClient = async () => {
     http
   );
 
-  const cache = new InMemoryCache();
+  const cache = new InMemoryCache({
+    typePolicies: {
+      List: {
+        fields: {
+          items: {
+            merge: false
+          }
+        }
+      }
+    }
+  });
 
   /** Persist cache to view list during PWA offline mode */
   /** Mutations will not work yet */
