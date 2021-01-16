@@ -1,6 +1,6 @@
 import { useDeleteListMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
-import { closeModal } from 'src/utils/closeModal';
+import { closeModal } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import Button from '../Button';
 

@@ -3,9 +3,9 @@ import { useStateValue } from '../../state/state';
 import Button from '../Button';
 import { OptionAction } from '../../types';
 import { errorNotifaction } from 'src/utils/errorNotification';
-import { closeModal } from 'src/utils/closeModal';
+import { closeModal } from 'src/utils/dispatchActions';
 
-/** Modal displaying user's item options */
+/** Modal for displaying user's item options when an item is clicked */
 export const ItemOptions = () => {
   const [{ currentListId, modalState, privileges }, dispatch] = useStateValue();
   const [deleteItems] = useDeleteItemsMutation();

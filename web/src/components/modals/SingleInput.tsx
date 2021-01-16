@@ -9,28 +9,22 @@ import {
   useGetUsersListsQuery
 } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
+import { closeModal } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import Button from '../Button';
 
-/** Single input component for mutations:
- *  `addItem` | `createList` | `addNote` */
+/**
+ * Single input modal component for mutations:
+ * `addItem` | `createList` | `addNote`
+ */
 
 export default function SingleInput({}) {
   const [{ modalState, currentListId }, dispatch] = useStateValue();
-  const { data /*, refetch*/ } = useGetUsersListsQuery({ skip: true });
+  const { data } = useGetUsersListsQuery({ skip: true });
 
   const [addItem, { loading: addItemLoading }] = useAddItemMutation();
   const [addNote, { loading: addNoteLoading }] = useAddNoteMutation();
-  const [createList, { loading: createListLoading }] = useCreateListMutation({
-    // onCompleted: () => refetch()
-  });
-
-  const closeModal = () => {
-    dispatch({
-      type: 'TOGGLE_MODAL',
-      payload: { active: false }
-    });
-  };
+  const [createList, { loading: createListLoading }] = useCreateListMutation();
 
   /** Use `addItem` mutation for default values */
   let placeholderText = 'Enter item name';
@@ -58,7 +52,7 @@ export default function SingleInput({}) {
         if (data?.addItem.errors) {
           errorNotifaction(data.addItem.errors, dispatch);
         } else {
-          closeModal();
+          closeModal(dispatch);
         }
       } catch (err) {
         console.error('Error on Add Item mutation: ', err);
@@ -87,7 +81,7 @@ export default function SingleInput({}) {
           if (data?.addNote.errors) {
             errorNotifaction(data.addNote.errors, dispatch);
           } else {
-            closeModal();
+            closeModal(dispatch);
           }
         } catch (err) {
           console.error(`Error on Add Note mutation: ${err}`);
@@ -132,7 +126,7 @@ export default function SingleInput({}) {
         if (data?.createList.errors) {
           errorNotifaction(data.createList.errors, dispatch);
         } else {
-          closeModal();
+          closeModal(dispatch);
         }
       } catch (err) {
         console.error(`Error on Create list mutation: ${err}`);

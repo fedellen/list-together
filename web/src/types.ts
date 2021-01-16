@@ -19,7 +19,7 @@ export type OptionAction =
   | 'sortItemUp'
   | 'sortItemDown';
 
-type ModalTypes =
+export type ModalTypes =
   | 'menu'
   | 'addItem'
   | 'createList'
