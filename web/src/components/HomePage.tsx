@@ -13,7 +13,7 @@ export default function HomePage() {
       {/** Hero image splash background */}
       <div className="px-8 max-w-4xl">
         <Heading>Sharable Grocery List App For Families</Heading>
-        <div className="flex gap-4">
+        <div className="flex gap-4 pt-8">
           <Button text="Login" onClick={() => setAppState(dispatch, 'login')} />
           <Button
             text="New User"

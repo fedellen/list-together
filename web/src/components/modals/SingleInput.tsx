@@ -144,10 +144,11 @@ export default function SingleInput({}) {
       {({ handleSubmit }) => (
         <Form
           onSubmit={handleSubmit}
-          className="flex flex-col justify-center items-center p-2 gap-2"
+          className="flex flex-col justify-center items-center"
         >
           <Field
             id="text"
+            className="mb-7"
             name="text"
             type="text"
             label="text"

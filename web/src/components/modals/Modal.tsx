@@ -1,5 +1,6 @@
 import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';
+import SubHeading from '../styled/SubHeading';
 
 /** Skeleton component for all overlayed Modals */
 
@@ -20,12 +21,12 @@ export default function Modal({ modalTitle, component }: ModalProps) {
         onClick={() => closeModal(dispatch)}
       />
       <div className="justify-center items-center flex z-50 max-w-xs sm:max-w-md lg:max-w-xl xl:max-w-3xl">
-        <div className="bg-darker border-light border-2 rounded-2xl flex flex-col p-5 gap-4">
+        <div className="bg-darker border-light border-2 rounded-2xl flex flex-col p-8 gap-5">
           {/* Header */}
-          <div className="flex justify-between pb-2 border-b-2 border-light">
-            <h3 className="text-3xl font-semibold py-2 px-4">{modalTitle}</h3>
+          <div className="flex justify-between pb-6 gap-8 border-b-2 border-light">
+            <SubHeading>{modalTitle}</SubHeading>
             <button
-              className="py-2 px-4 text-3xl  font-extrabold hover:text-light"
+              className="text-2xl pt-1  font-extrabold hover:text-light"
               onClick={() => closeModal(dispatch)}
             >
               X

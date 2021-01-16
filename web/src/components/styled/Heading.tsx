@@ -5,5 +5,5 @@ type HeadingProps = {
 };
 
 export default function Heading({ children }: HeadingProps) {
-  return <h1 className="text-6xl font-extrabold pb-10">{children}</h1>;
+  return <h1 className="text-6xl font-extrabold">{children}</h1>;
 }
