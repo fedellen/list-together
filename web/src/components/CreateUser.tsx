@@ -99,7 +99,7 @@ export default function CreateUser() {
             <Field
               id="passwordConfirmation"
               name="passwordConfirmation"
-              type="passwordConfirmation"
+              type="password"
               label="passwordConfirmation"
               placeholder="confirm password"
             />
