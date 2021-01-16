@@ -1,62 +1,58 @@
 import { useApolloClient } from '@apollo/client';
 import { useGetUserQuery, useLogoutUserMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
+import { openModal, setAppState } from 'src/utils/dispatchActions';
 import Button from '../Button';
 
 export const Menu = () => {
   const [, dispatch] = useStateValue();
-
   const [logout] = useLogoutUserMutation();
   const { data } = useGetUserQuery();
 
   const apolloClient = useApolloClient();
 
-  if (!data?.getUser) {
-    console.error('Menu opened without user in context..');
-    return <div />;
-  }
-
   const handleLogout = async () => {
     try {
-      dispatch({ type: 'TOGGLE_MODAL', payload: { active: false } });
       await logout();
       // await apolloClient.clearStore();
       await apolloClient.resetStore();
-      dispatch({ type: 'SET_APP_STATE', payload: 'home' });
+      setAppState(dispatch, 'home');
     } catch (err) {
       console.error('Error on logout mutation: ', err);
     }
   };
 
-  const toggleCreateList = () => {
-    dispatch({
-      type: 'TOGGLE_MODAL',
-      payload: { active: true, type: 'createList' }
-    });
-  };
-
-  const toggleShareList = () => {
-    dispatch({
-      type: 'TOGGLE_MODAL',
-      payload: { active: false, type: 'shareList' }
-    });
-  };
-
-  const toggleRemoveList = () => {
-    dispatch({
-      type: 'TOGGLE_MODAL',
-      payload: { active: true, type: 'removeList' }
-    });
-  };
-
   return (
     <>
-      {/*Menu options*/}
-
-      <Button text="New List" onClick={toggleCreateList} />
-      <Button text="Share List" onClick={toggleShareList} />
-      <Button text="Remove List" onClick={toggleRemoveList} />
-      <Button text="Logout" onClick={handleLogout} />
+      {data?.getUser ? (
+        /** User is logged in */
+        <>
+          <Button
+            text="New List"
+            onClick={() => openModal(dispatch, 'createList')}
+          />
+          <Button
+            text="Share List"
+            onClick={() => openModal(dispatch, 'shareList')}
+          />
+          <Button
+            text="Remove List"
+            onClick={() => openModal(dispatch, 'removeList')}
+          />
+          <Button text="Logout" onClick={handleLogout} />{' '}
+        </>
+      ) : (
+        /** No user logged in */
+        <>
+          <Button text="Home" onClick={() => setAppState(dispatch, 'home')} />
+          <Button text="Login" onClick={() => setAppState(dispatch, 'login')} />
+          <Button
+            text="New User"
+            onClick={() => setAppState(dispatch, 'createUser')}
+          />
+          <Button text="Demo" onClick={() => setAppState(dispatch, 'demo')} />
+        </>
+      )}
     </>
   );
 };
