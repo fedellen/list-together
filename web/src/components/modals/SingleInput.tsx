@@ -1,8 +1,5 @@
 import { Formik, Form, Field } from 'formik';
 import {
-  GetUsersListsDocument,
-  GetUsersListsQuery,
-  // GetUsersListsQueryResult,
   useAddItemMutation,
   useAddNoteMutation,
   useCreateListMutation,
@@ -20,7 +17,7 @@ import Button from '../Button';
 
 export default function SingleInput({}) {
   const [{ modalState, currentListId }, dispatch] = useStateValue();
-  const { data } = useGetUsersListsQuery({ skip: true });
+  const { data, refetch } = useGetUsersListsQuery({ skip: true });
 
   const [addItem, { loading: addItemLoading }] = useAddItemMutation();
   const [addNote, { loading: addNoteLoading }] = useAddNoteMutation();
@@ -98,34 +95,12 @@ export default function SingleInput({}) {
         const { data } = await createList({
           variables: {
             title: text
-          },
-          update: (cache, { data }) => {
-            if (data?.createList.userToList) {
-              const currentLists = cache.readQuery<GetUsersListsQuery>({
-                query: GetUsersListsDocument
-              });
-              console.log(currentLists);
-              let updatedLists;
-              if (currentLists?.getUsersLists.userToList) {
-                updatedLists = {
-                  ...currentLists.getUsersLists,
-                  userToList: [
-                    ...currentLists.getUsersLists.userToList,
-                    data.createList.userToList[0]
-                  ]
-                };
-                console.log(updatedLists);
-                cache.writeQuery({
-                  query: GetUsersListsDocument,
-                  data: { getUsersLists: updatedLists }
-                });
-              }
-            }
           }
         });
         if (data?.createList.errors) {
           errorNotifaction(data.createList.errors, dispatch);
         } else {
+          refetch();
           closeModal(dispatch);
         }
       } catch (err) {
