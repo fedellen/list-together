@@ -15,6 +15,12 @@ export default function SingleItem({ item, handleItemClick }: SingleItemProps) {
       >
         {item.name}
       </button>
+      {item.notes &&
+        item.notes.map((note) => (
+          <div className="pl-4 text-lg italic" key={note}>
+            {note}
+          </div>
+        ))}
     </div>
   );
 }

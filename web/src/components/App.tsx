@@ -14,6 +14,13 @@ export default function App() {
     fetchPolicy: 'cache-and-network'
   });
 
+  // const sortedListsArray = data?.getUser?.sortedListsArray
+  // useEffect(() => {
+  //   if(sortedListsArray) {
+  //     if(sortedListsArray  )
+  //   }
+  // }, [sortedListsArray])
+
   /** Send to list if user is logged in  */
   useEffect(() => {
     if (data?.getUser && appState !== 'list' && !loading) {
