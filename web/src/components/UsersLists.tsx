@@ -3,22 +3,22 @@ import ItemList from './ItemList';
 import { useStateValue } from 'src/state/state';
 import { UserPrivileges } from 'src/types';
 import ScrollingLists from './ScrollingLists';
+import { openModal } from 'src/utils/dispatchActions';
 
 export default function UsersLists() {
   const [{ currentListId }, dispatch] = useStateValue();
 
-  /** Todo: refactor handling nulled sorted arrays to backend */
-  const { data: userData } = useGetUserQuery({ skip: true });
+  const { data: userData } = useGetUserQuery({});
   const sortedListArray = userData?.getUser?.sortedListsArray;
 
   const { data, loading, error } = useGetUsersListsQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'cache-and-network',
     onCompleted: ({}) => {
-      if (currentListId === '') {
-        const initialListId = sortedLists[0].listId;
+      if (currentListId === '' && usersLists[0] !== undefined) {
+        const initialListId = usersLists[0].listId;
         /** Database only stores `UserPrivileges` type */
-        const initialPrivileges = sortedLists[0].privileges as UserPrivileges[];
+        const initialPrivileges = usersLists[0].privileges as UserPrivileges[];
         dispatch({
           type: 'SET_LIST',
           payload: { listId: initialListId, privileges: initialPrivileges }
@@ -27,7 +27,7 @@ export default function UsersLists() {
     }
   });
 
-  if (loading) {
+  if (loading && !data) {
     return <div>Loading lists..</div>;
   } else if (!data && error) {
     /** Fetch error can occur while data exists during offline mode */
@@ -40,23 +40,30 @@ export default function UsersLists() {
   } else if (!data || !data.getUsersLists.userToList)
     return <div>Could not find any lists for that user..</div>;
 
-  /** Sort the list data based on User's preferences */
-  const sortedLists = data.getUsersLists.userToList;
+  /** Sort the list data based on User's sorted preferences */
+  const usersLists = data.getUsersLists.userToList.map((list) => list);
   if (sortedListArray) {
-    /** This code remains untested for now */
-    sortedLists.sort((a, b) => {
-      if (sortedListArray.includes(a.listId)) return -1;
-      if (sortedListArray.includes(b.listId)) return 1;
-      else return 0;
+    usersLists.sort((a, b) => {
+      const aIndex = sortedListArray.indexOf(a.listId);
+      const bIndex = sortedListArray.indexOf(b.listId);
+      return aIndex - bIndex;
     });
   }
 
-  const currentList = sortedLists.find((list) => list.listId === currentListId);
+  const currentList = usersLists.find((list) => list.listId === currentListId);
 
   return (
     <>
-      <ScrollingLists lists={sortedLists} />
-      {currentList && <ItemList list={currentList.list} />}
+      {currentList ? (
+        <>
+          <ScrollingLists lists={usersLists} />
+          <ItemList list={currentList.list} />
+        </>
+      ) : (
+        <div onClick={() => openModal(dispatch, 'createList')}>
+          Add your first list!
+        </div>
+      )}
     </>
   );
 }
