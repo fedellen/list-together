@@ -1,4 +1,7 @@
-import { useDeleteListMutation } from 'src/generated/graphql';
+import {
+  useDeleteListMutation,
+  useGetUsersListsQuery
+} from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
@@ -6,7 +9,8 @@ import Button from '../Button';
 
 export default function RemoveList() {
   const [{ currentListId }, dispatch] = useStateValue();
-  const [removeList] = useDeleteListMutation({
+  const { refetch } = useGetUsersListsQuery({ skip: true });
+  const [removeList, { loading }] = useDeleteListMutation({
     variables: { listId: currentListId }
   });
 
@@ -16,13 +20,15 @@ export default function RemoveList() {
     if (data?.deleteList.errors) {
       errorNotifaction(data.deleteList.errors, dispatch);
     } else {
+      dispatch({ type: 'CLEAR_LIST' });
+      refetch();
       closeModal(dispatch);
     }
   };
 
   return (
     <>
-      <Button text="Confirm" onClick={handleRemoveList} />
+      <Button text="Confirm" onClick={handleRemoveList} isLoading={loading} />
       <Button text="Cancel" onClick={() => closeModal(dispatch)} />
     </>
   );

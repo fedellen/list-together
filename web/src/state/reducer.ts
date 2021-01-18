@@ -16,6 +16,9 @@ export type Action =
       payload: { listId: string; privileges: UserPrivileges[] };
     }
   | {
+      type: 'CLEAR_LIST';
+    }
+  | {
       type: 'SET_SIDE_MENU_STATE';
       payload: SideMenuState;
     }
@@ -43,6 +46,12 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         currentListId: action.payload.listId,
         privileges: action.payload.privileges
+      };
+    case 'CLEAR_LIST':
+      return {
+        ...state,
+        currentListId: '',
+        privileges: null
       };
     case 'SET_SIDE_MENU_STATE':
       return {
