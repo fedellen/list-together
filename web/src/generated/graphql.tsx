@@ -209,7 +209,6 @@ export type StyleItemInput = {
   listId: Scalars['String'];
   itemName: Scalars['String'];
   style: Scalars['String'];
-  isStyled: Scalars['Boolean'];
 };
 
 export type AddNoteInput = {
