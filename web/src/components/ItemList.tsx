@@ -1,41 +1,28 @@
 import { List /*, useStyleItemMutation*/ } from 'src/generated/graphql';
-import { useStateValue } from 'src/state/state';
 import SingleItem from './SingleItem';
 
 type ItemListProps = {
   /** Current list being displayed */
   list: List;
+  sortedItems: string[];
 };
 
-export default function ItemList({ list }: ItemListProps) {
-  const [{ sideMenuState }, dispatch] = useStateValue();
-  // const [styleItem] = useStyleItemMutation();
-
-  const handleItemClick = (itemName: string) => {
-    if (sideMenuState === 'add') {
-      dispatch({
-        type: 'TOGGLE_MODAL',
-        payload: { active: true, itemName: itemName, type: 'itemOptions' }
-      });
-    } else if (sideMenuState === 'shop') {
-      /** Use strikethrough mutation */
-    } else if (sideMenuState === 'sort') {
-      /** Handle dragging item */
-    }
-  };
+export default function ItemList({ list, sortedItems }: ItemListProps) {
+  if (!list.items) {
+    return null;
+  }
+  /** Sort the item data based on User's sorted preferences */
+  const orderedItemsToDisplay = list.items.map((itemArray) => itemArray);
+  orderedItemsToDisplay.sort((a, b) => {
+    return sortedItems.indexOf(a.name) - sortedItems.indexOf(b.name);
+  });
 
   return (
     <>
-      {/* {toggledModal()} */}
       <div className="pl-20 pb-4">
-        {list.items &&
-          list.items.map((i) => (
-            <SingleItem
-              item={i}
-              key={i.name}
-              handleItemClick={(itemName) => handleItemClick(itemName)}
-            />
-          ))}
+        {orderedItemsToDisplay.map((i) => (
+          <SingleItem item={i} key={i.name} />
+        ))}
       </div>
     </>
   );

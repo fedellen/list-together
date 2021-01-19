@@ -51,13 +51,19 @@ export default function UsersLists() {
   }
 
   const currentList = usersLists.find((list) => list.listId === currentListId);
+  const currentSortedItems = currentList?.sortedItems;
 
   return (
     <>
       {currentList ? (
         <>
           <ScrollingLists lists={usersLists} />
-          <ItemList list={currentList.list} />
+          {currentSortedItems && (
+            <ItemList
+              list={currentList.list}
+              sortedItems={currentSortedItems}
+            />
+          )}
         </>
       ) : (
         <div onClick={() => openModal(dispatch, 'createList')}>
