@@ -16,7 +16,4 @@ export class StyleItemInput {
 
   @Field()
   style: styles;
-
-  @Field()
-  isStyled: boolean;
 }
