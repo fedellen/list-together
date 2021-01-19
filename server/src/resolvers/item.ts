@@ -42,6 +42,17 @@ export class ItemResolver {
     const errors = validateContext(context);
     if (errors) return { errors };
 
+    if (nameInput.length < 2) {
+      return {
+        errors: [
+          {
+            field: 'itemName',
+            message: 'Item names must contain at least 2 characters..'
+          }
+        ]
+      };
+    }
+
     const userId = context.req.session.userId;
     const userToListTable = await UserToList.findOne({
       where: { listId: listId, userId: userId },
@@ -246,7 +257,7 @@ export class ItemResolver {
   @UseMiddleware(logger)
   @Mutation(() => ItemResponse)
   async styleItem(
-    @Arg('data') { listId, style, isStyled, itemName }: StyleItemInput,
+    @Arg('data') { listId, style, itemName }: StyleItemInput,
     @Ctx() context: MyContext,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<ItemResponse> {
@@ -309,9 +320,10 @@ export class ItemResolver {
 
     // Style the item
     if (style === 'bold') {
-      item.bold = isStyled;
+      item.bold = !item.bold;
     } else {
-      item.strike = isStyled;
+      item.strike = !item.strike;
+      // Sort to bottom
     }
 
     await userToListTable.save();
