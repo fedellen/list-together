@@ -3,8 +3,7 @@ import { UserToList, useUpdateListSubscription } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { UserPrivileges } from 'src/types';
 import { sendNotification } from 'src/utils/dispatchActions';
-import ArrowLeftIcon from './svg/ArrowLeftIcon';
-import ArrowRightIcon from './svg/ArrowRightIcon';
+import ArrowIcon from './svg/ArrowIcon';
 
 type ScrollingListsProps = {
   lists: UserToList[];
@@ -40,7 +39,7 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
   return (
     <>
       <div className="flex items-center py-4">
-        <ArrowLeftIcon />
+        <ArrowIcon direction="left" />
         <div className="overflow-x-auto whitespace-nowrap pb-4">
           {lists.map((userList) => (
             <button
@@ -60,7 +59,7 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
             </button>
           ))}
         </div>
-        <ArrowRightIcon />
+        <ArrowIcon direction="right" />
       </div>
     </>
   );
