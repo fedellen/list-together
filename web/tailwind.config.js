@@ -9,7 +9,11 @@ module.exports = {
       dark: '#494850', // Dark liver
       darker: '#2C2C34' // Raisen Black
     },
-    extend: {}
+    extend: {
+      fontFamily: {
+        body: ['Lato']
+      }
+    }
   },
   variants: {
     extend: {}
