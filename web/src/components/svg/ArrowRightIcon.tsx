@@ -1,22 +1,13 @@
 export default function ArrowRightIcon() {
   return (
     <svg
-      width="70"
-      height="70"
-      className="pb-6"
-      stroke="none"
-      fill="currentColor"
+      width="30px"
+      height="30px"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      preserveAspectRatio="xMidYMid meet"
-      data-attributes-set=",xmlns:xlink,xmlns,viewBox,preserveAspectRatio"
+      fill="currentColor"
     >
-      <path xmlns="http://www.w3.org/2000/svg" d="M10 17l5-5-5-5v10z"></path>
-      <path
-        xmlns="http://www.w3.org/2000/svg"
-        d="M0 24V0h24v24H0z"
-        fill="none"
-      ></path>
+      <path d="M15.146 12.354l-5.792 5.792a.5.5 0 01-.854-.353V6.207a.5.5 0 01.854-.353l5.792 5.792a.5.5 0 010 .708z"></path>
     </svg>
   );
 }
