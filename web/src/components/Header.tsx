@@ -3,7 +3,7 @@ import MenuIcon from './svg/MenuIcon';
 
 export default function Header({}) {
   return (
-    <div className=" bg-darker border-light border-b-4">
+    <div className=" bg-darker border-light border-t-4 shadow-lg">
       <div className="container mx-auto h-28 p-4  flex justify-between items-center  ">
         <SubHeading>
           List <br />

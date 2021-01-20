@@ -1,8 +1,18 @@
 type ArrowIconProps = {
+  /** Direction of icon */
   direction: 'up' | 'right' | 'down' | 'left';
+  /** Function to call when clicked */
+  onClick: () => void;
+  /** Tailwind classes to add */
+  className?: string;
 };
 
-export default function ArrowIcon({ direction }: ArrowIconProps) {
+export default function ArrowIcon({
+  direction,
+  onClick,
+  className
+}: ArrowIconProps) {
+  // Triangle icons from https://svgbox.net/iconset/octicons
   const arrowUpPath =
     'M12.354 8.854l5.792 5.792a.5.5 0 01-.353.854H6.207a.5.5 0 01-.353-.854l5.792-5.792a.5.5 0 01.708 0z';
 
@@ -16,7 +26,6 @@ export default function ArrowIcon({ direction }: ArrowIconProps) {
     'M8.854 11.646l5.792-5.792a.5.5 0 01.854.353v11.586a.5.5 0 01-.854.353l-5.792-5.792a.5.5 0 010-.708z';
 
   let path: string;
-
   if (direction === 'up') path = arrowUpPath;
   else if (direction === 'right') path = arrowRightPath;
   else if (direction === 'down') path = arrowDownPath;
@@ -25,11 +34,14 @@ export default function ArrowIcon({ direction }: ArrowIconProps) {
 
   return (
     <svg
-      width="70px"
-      height="70px"
+      width="60px"
+      height="60px"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="currentColor"
+      onClick={onClick}
+      cursor="pointer"
+      className={className}
     >
       <path d={path}></path>
     </svg>
