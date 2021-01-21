@@ -4,12 +4,16 @@ import SingleItem from './SingleItem';
 type ItemListProps = {
   /** Current list being displayed */
   list: List;
-  sortedItems: string[];
+  sortedItems: string[] | undefined | null;
 };
 
 export default function ItemList({ list, sortedItems }: ItemListProps) {
-  if (!list.items) {
-    return null;
+  if (!list.items || !sortedItems) {
+    return (
+      <div className="flex justify-center items-center py-6">
+        <div className="text-xl">This list is empty ✍🏾</div>
+      </div>
+    );
   }
   /** Sort the item data based on User's sorted preferences */
   const orderedItemsToDisplay = list.items.map((itemArray) => itemArray);
@@ -18,12 +22,10 @@ export default function ItemList({ list, sortedItems }: ItemListProps) {
   });
 
   return (
-    <>
-      <div className="pl-20 pb-4">
-        {orderedItemsToDisplay.map((i) => (
-          <SingleItem item={i} key={i.name} />
-        ))}
-      </div>
-    </>
+    <div className="container mx-auto px-8 sm:px-12  py-4">
+      {orderedItemsToDisplay.map((i) => (
+        <SingleItem item={i} key={i.name} />
+      ))}
+    </div>
   );
 }
