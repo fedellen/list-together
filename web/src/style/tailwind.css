@@ -6,6 +6,15 @@
 @tailwind utilities;
 
 @layer base {
+  ::-webkit-scrollbar {
+    @apply w-3 h-3 shadow-lg;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-darker;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-medium;
+  }
   a:hover {
     @apply text-medium;
   }

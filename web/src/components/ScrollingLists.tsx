@@ -10,7 +10,7 @@ type ScrollingListsProps = {
 };
 
 export default function ScrollingLists({ lists }: ScrollingListsProps) {
-  const [, dispatch] = useStateValue();
+  const [{ currentListId }, dispatch] = useStateValue();
 
   const [newData, setNewData] = useState(false);
   /** Component renders when we have the lists, use subscription */
@@ -37,30 +37,44 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
   }
 
   return (
-    <>
-      <div className="flex items-center py-4">
-        <ArrowIcon direction="left" />
-        <div className="overflow-x-auto whitespace-nowrap pb-4">
-          {lists.map((userList) => (
-            <button
-              className="inline-block text-2xl font-semibold  border-r-2  border-light px-4"
-              key={userList.listId}
-              onClick={() =>
-                dispatch({
-                  type: 'SET_LIST',
-                  payload: {
-                    listId: userList.listId,
-                    privileges: userList.privileges as UserPrivileges[]
-                  }
-                })
-              }
-            >
-              {userList.list.title}
-            </button>
-          ))}
-        </div>
-        <ArrowIcon direction="right" />
+    <div className="flex items-center  container mx-auto pt-2">
+      <div className="w-14 pb-4">
+        <ArrowIcon
+          direction="left"
+          onClick={() => console.log('we clicked left')}
+          className=""
+        />
       </div>
-    </>
+
+      <ul className="overflow-x-auto whitespace-nowrap flex  ">
+        {lists.map((userList) => (
+          <li
+            className={`text-xl font-bold px-6 mb-2 cursor-pointer transition-all duration-500 ${
+              currentListId === userList.listId && 'text-light underline'
+            }`}
+            key={userList.listId}
+            onClick={() =>
+              dispatch({
+                type: 'SET_LIST',
+                payload: {
+                  listId: userList.listId,
+                  // Postgres only saves as `UserPrivileges` type
+                  privileges: userList.privileges as UserPrivileges[]
+                }
+              })
+            }
+          >
+            {userList.list.title}
+          </li>
+        ))}
+      </ul>
+      <div>
+        <ArrowIcon
+          direction="right"
+          onClick={() => console.log('we clicked right')}
+          // className="pb-6 w-60"
+        />
+      </div>
+    </div>
   );
 }
