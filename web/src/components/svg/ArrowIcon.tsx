@@ -27,17 +27,23 @@ export default function ArrowIcon({
 
   let path: string;
   if (direction === 'up') path = arrowUpPath;
-  else if (direction === 'right') path = arrowRightPath;
   else if (direction === 'down') path = arrowDownPath;
-  else if (direction === 'left') path = arrowLeftPath;
-  else return null;
+  else if (direction === 'right') {
+    path = arrowRightPath;
+  } else if (direction === 'left') {
+    path = arrowLeftPath;
+  } else return null;
 
   return (
     <svg
-      width="60px"
-      height="60px"
+      width="50px"
+      height="50px"
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      viewBox={`
+      ${direction === 'left' ? '4' : '0' /* Shift icons to edge */} 
+      0 
+      ${direction === 'right' ? '16' : '24'} 
+      24`}
       fill="currentColor"
       onClick={onClick}
       cursor="pointer"
