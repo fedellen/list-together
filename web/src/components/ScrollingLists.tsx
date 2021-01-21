@@ -37,8 +37,8 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
   }
 
   return (
-    <div className="flex items-center  container mx-auto pt-2">
-      <div className="w-14 pb-4">
+    <div className="flex items-center  container mx-auto pt-4">
+      <div className="w-12 pb-4">
         <ArrowIcon
           direction="left"
           onClick={() => console.log('we clicked left')}
@@ -49,8 +49,9 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
       <ul className="overflow-x-auto whitespace-nowrap flex  ">
         {lists.map((userList) => (
           <li
-            className={`text-xl font-bold px-6 mb-2 cursor-pointer transition-all duration-500 ${
-              currentListId === userList.listId && 'text-light underline'
+            className={`text-xl  font-bold px-6 mb-4 cursor-pointer transition-all duration-500 ${
+              currentListId === userList.listId &&
+              'text-light underline font-extrabold'
             }`}
             key={userList.listId}
             onClick={() =>
@@ -68,7 +69,7 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
           </li>
         ))}
       </ul>
-      <div>
+      <div className="w-12 pb-4">
         <ArrowIcon
           direction="right"
           onClick={() => console.log('we clicked right')}

@@ -27,7 +27,7 @@ export default function SingleItem({ item }: SingleItemProps) {
       <button
         onClick={() => handleItemClick(item.name)}
         className={`
-          text-2xl font-semibold py-1 
+          text-2xl font-semibold py-1 break-all
           ${item.strike && 'line-through'} 
           ${activeItem && 'underline text-light font-bold'}
         `}
@@ -36,7 +36,7 @@ export default function SingleItem({ item }: SingleItemProps) {
       </button>
       {activeItem && <div>Item Options</div>}
       {item.notes && (
-        <ul className="list-decimal list-inside">
+        <ul className="list-disc list-inside">
           {item.notes.map((note) => (
             <li className="pl-6 text-lg font-bold italic opacity-70" key={note}>
               {note}

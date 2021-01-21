@@ -11,7 +11,7 @@ export default function ItemList({ list, sortedItems }: ItemListProps) {
   if (!list.items || !sortedItems) {
     return (
       <div className="flex justify-center items-center py-6">
-        <div className="text-xl">This list is empty ✍🏾</div>
+        <div className="text-xl italic">This list is empty ✍🏾</div>
       </div>
     );
   }
@@ -22,10 +22,10 @@ export default function ItemList({ list, sortedItems }: ItemListProps) {
   });
 
   return (
-    <div className="container mx-auto px-8 sm:px-12  py-4">
+    <ul className="container mx-auto px-14 list-disc py-4">
       {orderedItemsToDisplay.map((i) => (
         <SingleItem item={i} key={i.name} />
       ))}
-    </div>
+    </ul>
   );
 }
