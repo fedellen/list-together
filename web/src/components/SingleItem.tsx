@@ -7,7 +7,7 @@ type SingleItemProps = {
 };
 
 export default function SingleItem({ item }: SingleItemProps) {
-  const [{ sideMenuState }, dispatch] = useStateValue();
+  const [{ sideMenuState, modalState }, dispatch] = useStateValue();
   // const [styleItem] = useStyleItemMutation();
 
   const handleItemClick = (itemName: string) => {
@@ -20,22 +20,30 @@ export default function SingleItem({ item }: SingleItemProps) {
     }
   };
 
+  const activeItem = modalState.active && modalState.itemName === item.name;
+
   return (
-    <div>
+    <li>
       <button
         onClick={() => handleItemClick(item.name)}
-        className={`bg-red-400 text-2xl font-bold py-1 ${
-          item.strike && 'line-through'
-        }`}
+        className={`
+          text-2xl font-semibold py-1 
+          ${item.strike && 'line-through'} 
+          ${activeItem && 'underline text-light font-bold'}
+        `}
       >
         {item.name}
       </button>
-      {item.notes &&
-        item.notes.map((note) => (
-          <div className="pl-4 text-lg italic" key={note}>
-            {note}
-          </div>
-        ))}
-    </div>
+      {activeItem && <div>Item Options</div>}
+      {item.notes && (
+        <ul className="list-decimal list-inside">
+          {item.notes.map((note) => (
+            <li className="pl-6 text-lg font-bold italic opacity-70" key={note}>
+              {note}
+            </li>
+          ))}
+        </ul>
+      )}
+    </li>
   );
 }
