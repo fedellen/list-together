@@ -3,6 +3,7 @@ import {
   useAddItemMutation,
   useAddNoteMutation,
   useCreateListMutation,
+  useGetUserQuery,
   useGetUsersListsQuery
 } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
@@ -17,7 +18,8 @@ import Button from '../Button';
 
 export default function SingleInput({}) {
   const [{ modalState, currentListId }, dispatch] = useStateValue();
-  const { data, refetch } = useGetUsersListsQuery({ skip: true });
+  const { data, refetch: refetchLists } = useGetUsersListsQuery({ skip: true });
+  const { refetch: refetchUser } = useGetUserQuery({ skip: true });
 
   const [addItem, { loading: addItemLoading }] = useAddItemMutation();
   const [addNote, { loading: addNoteLoading }] = useAddNoteMutation();
@@ -100,7 +102,9 @@ export default function SingleInput({}) {
         if (data?.createList.errors) {
           errorNotifaction(data.createList.errors, dispatch);
         } else {
-          refetch();
+          await refetchUser();
+          await refetchLists();
+          dispatch({ type: 'CLEAR_LIST' });
           closeModal(dispatch);
         }
       } catch (err) {
