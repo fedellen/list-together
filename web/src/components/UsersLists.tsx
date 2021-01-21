@@ -58,12 +58,7 @@ export default function UsersLists() {
       {currentList ? (
         <>
           <ScrollingLists lists={usersLists} />
-          {currentSortedItems && (
-            <ItemList
-              list={currentList.list}
-              sortedItems={currentSortedItems}
-            />
-          )}
+          <ItemList list={currentList.list} sortedItems={currentSortedItems} />
         </>
       ) : (
         <div onClick={() => openModal(dispatch, 'createList')}>
