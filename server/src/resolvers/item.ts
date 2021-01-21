@@ -23,7 +23,6 @@ import { ItemResponse } from './types/response/ItemResponse';
 
 import { FieldError } from './types/response/FieldError';
 import { validateContext } from './types/validators/validateContext';
-// import { ListResponse } from './types/response/ListResponse';
 import { BooleanResponse } from './types/response/BooleanResponse';
 import { SubscriptionPayload } from './types/subscription/SubscriptionPayload';
 import { Topic } from './types/subscription/SubscriptionTopics';
@@ -39,15 +38,24 @@ export class ItemResolver {
     @Ctx() context: MyContext,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<UserToListResponse> {
-    const errors = validateContext(context);
-    if (errors) return { errors };
+    const contextErrors = validateContext(context);
+    if (contextErrors) return { errors: contextErrors };
 
     if (nameInput.length < 2) {
       return {
         errors: [
           {
             field: 'itemName',
-            message: 'Item names must contain at least 2 characters..'
+            message: 'Item names cannot contain at less than 2 characters..'
+          }
+        ]
+      };
+    } else if (nameInput.length > 40) {
+      return {
+        errors: [
+          {
+            field: 'itemName',
+            message: 'Item names cannot contain more than 40 characters..'
           }
         ]
       };
@@ -95,7 +103,6 @@ export class ItemResolver {
         };
       }
 
-      // Handle itemExists condition on the front end
       const itemExists = list.items.find(({ name }) => name === nameInput);
       if (itemExists) {
         return {
@@ -133,30 +140,41 @@ export class ItemResolver {
       userToListTable.itemHistory = [ItemHistory.create({ item: nameInput })];
     }
 
-    // Add item to front of sorted list for every user
-    if (userToListTable.sortedItems) {
-      userToListTable.sortedItems = [nameInput, ...userToListTable.sortedItems];
-    } else {
-      userToListTable.sortedItems = [nameInput];
-    }
-
-    /** Save table to DB, cascades all updates */
+    // Save table to DB, cascades all updates
     await userToListTable.save();
 
     const allUserToListTables = await UserToList.find({
       where: { listId: list.id }
     });
     allUserToListTables.forEach(async (table) => {
-      if (table.userId !== userId) {
-        // Add item to front of sorted list for every shared user
-        if (table.sortedItems) {
-          table.sortedItems = [nameInput, ...table.sortedItems];
-        } else {
-          table.sortedItems = [nameInput];
+      // Add item to front of sorted list for every user
+      if (table.sortedItems) {
+        const itemInHistory = table.itemHistory?.find(
+          (history) => nameInput === history.item
+        );
+        if (itemInHistory) {
+          if (itemInHistory.removalRatingArray) {
+            // User has removal history for item
+            const itemRating = itemInHistory.removalRating(itemInHistory);
+            const indexToInsert = Math.round(
+              table.sortedItems.length * (itemRating / 1000)
+            );
+            console.log(
+              `itemRating: "${itemRating}", indexToInsert: "${indexToInsert}" `
+            );
+            // Insert near user's preferred removal order
+            table.sortedItems.splice(indexToInsert, 0, nameInput);
+          } else {
+            // Insert at front of sortedItems
+            table.sortedItems = [nameInput, ...table.sortedItems];
+          }
         }
-        /** Save all shared tables */
-        await table.save();
+      } else {
+        // Initialize sortedItems
+        table.sortedItems = [nameInput];
       }
+      // Save all shared tables with sorted list
+      await table.save();
     });
 
     await publish({

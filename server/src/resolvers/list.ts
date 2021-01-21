@@ -46,7 +46,7 @@ export class ListResolver {
   })
   async subscribeToListUpdates(
     @Root() { updatedListId, userIdToShare, notification }: SubscriptionPayload,
-    /** Frontend sends array of their ListIds to subscribe to */
+    // Frontend sends array of their ListIds to subscribe to
     @Args() {}: SubscriptionArgs,
     @Ctx() { connection }: MyContext
   ): Promise<UserToListResponse> {
