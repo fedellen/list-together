@@ -438,8 +438,7 @@ describe('Style item mutation:', () => {
         data: {
           listId: userToListTable!.listId,
           itemName: itemNameArray[0],
-          style: 'bold',
-          isStyled: true
+          style: 'bold'
         }
       },
       userId: user.id
@@ -462,8 +461,7 @@ describe('Style item mutation:', () => {
         data: {
           listId: userToListTable!.listId,
           itemName: itemNameArray[1],
-          style: 'strike',
-          isStyled: true
+          style: 'strike'
         }
       },
       userId: user.id
@@ -518,8 +516,7 @@ describe('Style item mutation:', () => {
         data: {
           listId: listOwnerUserConnection!.listId,
           itemName: itemNameArray[3],
-          style: 'bold',
-          isStyled: true
+          style: 'bold'
         }
       },
       userId: sharedUser.id
@@ -569,8 +566,7 @@ describe('Style item mutation:', () => {
         data: {
           listId: listOwnerUserConnection!.listId,
           itemName: itemNameArray[2],
-          style: 'strike',
-          isStyled: true
+          style: 'strike'
         }
       },
       userId: sharedUser.id
@@ -620,8 +616,7 @@ describe('Style item mutation:', () => {
         data: {
           listId: listOwnerUserConnection!.listId,
           itemName: itemNameArray[1],
-          style: 'strike',
-          isStyled: true
+          style: 'strike'
         }
       },
       userId: sharedUser.id
