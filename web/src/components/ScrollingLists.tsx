@@ -3,7 +3,8 @@ import { UserToList, useUpdateListSubscription } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { UserPrivileges } from 'src/types';
 import { sendNotification } from 'src/utils/dispatchActions';
-import ArrowIcon from './svg/ArrowIcon';
+import LeftArrowIcon from './svg/LeftArrowIcon';
+import RightArrowIcon from './svg/RightArrowIcon';
 
 type ScrollingListsProps = {
   lists: UserToList[];
@@ -18,13 +19,8 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
   const { data, loading } = useUpdateListSubscription({
     variables: { listIdArray: listIdArray },
     fetchPolicy: 'network-only',
-
-    onSubscriptionData: () => setNewData(true),
-    onSubscriptionComplete: () =>
-      console.log(
-        'Connected to lists: ',
-        lists.map((list) => list.list.title + ' ,')
-      )
+    // Toggle `newData` boolean to await loading subscription's result
+    onSubscriptionData: () => setNewData(true)
   });
 
   if (!loading && data && newData) {
@@ -39,11 +35,9 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
   return (
     <div className="flex items-center  container mx-auto pt-4">
       <div className="w-12 pb-4">
-        <ArrowIcon
-          direction="left"
-          onClick={() => console.log('we clicked left')}
-          className=""
-        />
+        <button onClick={() => console.log('we clicked left')}>
+          <LeftArrowIcon />
+        </button>
       </div>
 
       <ul className="overflow-x-auto whitespace-nowrap flex  ">
@@ -70,11 +64,9 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
         ))}
       </ul>
       <div className="w-12 pb-4">
-        <ArrowIcon
-          direction="right"
-          onClick={() => console.log('we clicked right')}
-          // className="pb-6 w-60"
-        />
+        <button onClick={() => console.log('you clicked right')}>
+          <RightArrowIcon />
+        </button>
       </div>
     </div>
   );
