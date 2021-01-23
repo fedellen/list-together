@@ -1,5 +1,5 @@
 import { useStateValue } from 'src/state/state';
-import { ItemOptions } from './ItemOptions';
+// import { ItemOptions } from './ItemOptions';
 import { Menu } from './Menu';
 import Modal from './Modal';
 import RemoveList from './RemoveList';
@@ -22,9 +22,9 @@ export default function CurrentModal() {
   } else if (modalState.type === 'createList') {
     modalTitle = 'Create New List';
     // <SingleInput />
-  } else if (modalState.type === 'itemOptions') {
-    modalTitle = modalState.itemName || 'options';
-    component = <ItemOptions />;
+    // } else if (modalState.type === 'itemOptions') {
+    //   modalTitle = modalState.itemName || 'options';
+    //   component = <ItemOptions />;
   } else if (modalState.type === 'menu') {
     modalTitle = 'Menu';
     component = <Menu />;

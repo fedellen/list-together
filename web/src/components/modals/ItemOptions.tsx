@@ -3,10 +3,15 @@ import {
   useStyleItemMutation
 } from 'src/generated/graphql';
 import { useStateValue } from '../../state/state';
-import Button from '../Button';
 import { OptionAction } from '../../types';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import { closeModal, openModal } from 'src/utils/dispatchActions';
+import StrikeIcon from '../svg/StrikeIcon';
+import OptionButton from '../styled/OptionButton';
+import NoteIcon from '../svg/NoteIcon';
+import UpArrowIcon from '../svg/UpArrowIcon';
+import DownArrowIcon from '../svg/DownArrowIcon';
+import DeleteItemIcon from '../svg/DeleteItemIcon';
 
 /** Modal for displaying user's item options when an item is clicked */
 export const ItemOptions = () => {
@@ -73,30 +78,35 @@ export const ItemOptions = () => {
   }
 
   return (
-    <>
+    <div className="grid  grid-cols-3 ml-auto sm:ml-8">
       {/** Display buttons when user has privileges to access them */}
+      <OptionButton
+        onClick={() => handleOptionAction('sortItemUp')}
+        icon={<UpArrowIcon />}
+      />
       {(privileges.includes('add') || privileges.includes('owner')) && (
-        <Button text="Add Note" onClick={() => handleOptionAction('addNote')} />
-      )}
-      <Button text="Bold Item" onClick={() => handleOptionAction('boldItem')} />
-      {(privileges.includes('strike') || privileges.includes('owner')) && (
-        <Button
-          text="Strike Item"
-          onClick={() => handleOptionAction('strikeItem')}
+        <OptionButton
+          onClick={() => handleOptionAction('addNote')}
+          icon={<NoteIcon />}
         />
       )}
       {(privileges.includes('delete') || privileges.includes('owner')) && (
-        <Button
-          text="Delete Item"
+        <OptionButton
           onClick={() => handleOptionAction('deleteItem')}
+          icon={<DeleteItemIcon />}
         />
       )}
-      {/** Users can always sort their lists */}
-      <Button text="Move Up" onClick={() => handleOptionAction('sortItemUp')} />
-      <Button
-        text="Move Down"
+
+      <OptionButton
         onClick={() => handleOptionAction('sortItemDown')}
+        icon={<DownArrowIcon />}
       />
-    </>
+      {(privileges.includes('strike') || privileges.includes('owner')) && (
+        <OptionButton
+          onClick={() => handleOptionAction('strikeItem')}
+          icon={<StrikeIcon />}
+        />
+      )}
+    </div>
   );
 };
