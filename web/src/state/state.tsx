@@ -4,19 +4,22 @@ import { AppState, ModalState, SideMenuState, UserPrivileges } from 'src/types';
 import { Action } from './reducer';
 
 export type State = {
-  // usersLists: UserToList[] | null;
   currentListId: string;
   privileges: UserPrivileges[] | null;
+  /** Name of item for displaying `ItemOptions` */
+  activeItem: string;
   modalState: ModalState;
   sideMenuState: SideMenuState;
+  /** Error notification to display in `ErrorMessage` modal */
   errorMessage: string;
+  /** State for handling logged out visitors */
   appState: AppState;
 };
 
 const initialState: State = {
-  // usersLists: null,
   currentListId: '',
   privileges: null,
+  activeItem: '',
   modalState: { active: false },
   sideMenuState: 'add',
   errorMessage: '',

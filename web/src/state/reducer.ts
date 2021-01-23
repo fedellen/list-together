@@ -28,6 +28,10 @@ export type Action =
     }
   | {
       type: 'END_ERROR_MESSAGE';
+    }
+  | {
+      type: 'SET_ACTIVE_ITEM';
+      payload: string;
     };
 // | {
 //     type: 'SET_USERS_LISTS';
@@ -73,11 +77,11 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         appState: action.payload
       };
-    // case 'SET_USERS_LISTS':
-    //   return {
-    //     ...state,
-    //     usersLists: action.payload
-    //   };
+    case 'SET_ACTIVE_ITEM':
+      return {
+        ...state,
+        activeItem: action.payload
+      };
     default:
       return state;
   }
