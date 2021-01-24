@@ -8,7 +8,7 @@ type OptionButtonProps = {
 export default function OptionButton({ icon, onClick }: OptionButtonProps) {
   return (
     <button
-      className="bg-darker  rounded-lg p-2 m-1 shadow-lg hover:text-light"
+      className="bg-darker  rounded-lg p-2 m-1 shadow-lg hover:bg-medium hover:text-dark"
       onClick={onClick}
     >
       {icon}

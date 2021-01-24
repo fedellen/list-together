@@ -22,7 +22,7 @@ export default function ItemList({ list, sortedItems }: ItemListProps) {
   });
 
   return (
-    <ul className="container mx-auto px-14 list-disc py-4">
+    <ul className="container mx-auto pl-12 pr-2 py-4">
       {orderedItemsToDisplay.map((i) => (
         <SingleItem item={i} key={i.name} />
       ))}
