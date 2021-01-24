@@ -13,15 +13,18 @@ export default function SingleItem({ item }: SingleItemProps) {
   const isItemActive = activeItem === item.name;
 
   const handleItemClick = (itemName: string) => {
-    if (isItemActive) {
-      dispatch({ type: 'SET_ACTIVE_ITEM', payload: '' });
-    } else if (sideMenuState === 'add') {
-      dispatch({ type: 'SET_ACTIVE_ITEM', payload: itemName });
-    } else if (sideMenuState === 'shop') {
-      /** Use strikethrough mutation */
-    } else if (sideMenuState === 'sort') {
-      /** Handle dragging item */
-    }
+    /** Delay for .05 seconds to await item reset from `App` */
+    setTimeout(() => {
+      if (isItemActive) {
+        dispatch({ type: 'SET_ACTIVE_ITEM', payload: '' });
+      } else if (sideMenuState === 'add') {
+        dispatch({ type: 'SET_ACTIVE_ITEM', payload: itemName });
+      } else if (sideMenuState === 'shop') {
+        /** Use strikethrough mutation */
+      } else if (sideMenuState === 'sort') {
+        /** Handle dragging item */
+      }
+    }, 50);
   };
 
   return (
@@ -30,7 +33,7 @@ export default function SingleItem({ item }: SingleItemProps) {
         <button
           onClick={() => handleItemClick(item.name)}
           className={`
-        text-2xl font-semibold  px-2 break-all
+        text-2xl font-semibold  px-2 break-all text-left 
         ${item.strike && 'line-through'}
         ${isItemActive && 'underline text-light  font-bold'}
         `}

@@ -21,6 +21,11 @@ export const openModal = (
   });
 };
 
+export const resetActiveItem = (dispatch: (value: Action) => void) => {
+  console.log('item state reset');
+  dispatch({ type: 'SET_ACTIVE_ITEM', payload: '' });
+};
+
 export const setAppState = (
   dispatch: (value: Action) => void,
   state: AppState

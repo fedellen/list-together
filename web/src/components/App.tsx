@@ -7,19 +7,13 @@ import SideMenu from './SideMenu';
 import { useStateValue } from 'src/state/state';
 import { useEffect } from 'react';
 import BodyContent from './BodyContent';
+import { resetActiveItem } from 'src/utils/dispatchActions';
 
 export default function App() {
-  const [{ appState }, dispatch] = useStateValue();
+  const [{ appState, activeItem }, dispatch] = useStateValue();
   const { data, loading, error } = useGetUserQuery({
     fetchPolicy: 'cache-and-network'
   });
-
-  // const sortedListsArray = data?.getUser?.sortedListsArray
-  // useEffect(() => {
-  //   if(sortedListsArray) {
-  //     if(sortedListsArray  )
-  //   }
-  // }, [sortedListsArray])
 
   /** Send to list if user is logged in  */
   useEffect(() => {
@@ -35,20 +29,20 @@ export default function App() {
     return <div>Major error in App component: {JSON.stringify(error)}</div>;
   }
 
-  /** Disable side menu when not viewing list */
+  /** Disable side menu when not viewing list/demo */
   let displaySideMenu = false;
   if (appState === 'list' || appState === 'demo') {
     displaySideMenu = true;
   }
 
   return (
-    <>
+    <div onClick={() => activeItem !== '' && resetActiveItem(dispatch)}>
       {displaySideMenu && <SideMenu />}
       <CurrentModal />
       <ErrorNotification />
       <Header />
       <BodyContent />
       <Footer />
-    </>
+    </div>
   );
 }

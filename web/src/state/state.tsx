@@ -1,5 +1,4 @@
 import { createContext, Dispatch, useContext, useReducer } from 'react';
-// import { UserToList } from 'src/generated/graphql';
 import { AppState, ModalState, SideMenuState, UserPrivileges } from 'src/types';
 import { Action } from './reducer';
 
