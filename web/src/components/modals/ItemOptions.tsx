@@ -11,20 +11,21 @@ import OptionButton from '../styled/OptionButton';
 import NoteIcon from '../svg/NoteIcon';
 import UpArrowIcon from '../svg/UpArrowIcon';
 import DownArrowIcon from '../svg/DownArrowIcon';
-import DeleteItemIcon from '../svg/DeleteItemIcon';
+import DeleteIcon from '../svg/DeleteItemIcon';
 
 /** Modal for displaying user's item options when an item is clicked */
 export const ItemOptions = () => {
-  const [{ currentListId, modalState, privileges }, dispatch] = useStateValue();
+  const [{ currentListId, privileges, activeItem }, dispatch] = useStateValue();
   const [deleteItems] = useDeleteItemsMutation();
   const [styleItem] = useStyleItemMutation();
 
-  /** When button is pushed */
+  /** When option button is clicked */
   const handleOptionAction = async (optionAction: OptionAction) => {
-    const itemName = modalState.itemName;
+    const itemName = activeItem;
     if (!itemName) {
       console.error('No item in context for deleteItem..');
     } else {
+      dispatch({ type: 'SET_ACTIVE_ITEM', payload: '' });
       if (optionAction === 'addNote') {
         openModal(dispatch, 'addNote', itemName);
       } else if (optionAction === 'deleteItem') {
@@ -93,7 +94,7 @@ export const ItemOptions = () => {
       {(privileges.includes('delete') || privileges.includes('owner')) && (
         <OptionButton
           onClick={() => handleOptionAction('deleteItem')}
-          icon={<DeleteItemIcon />}
+          icon={<DeleteIcon />}
         />
       )}
 
