@@ -1,4 +1,4 @@
-export default function DeleteItemIcon() {
+export default function DeleteIcon() {
   // Triangle icons from https://svgbox.net/iconset/octicons
   return (
     <svg

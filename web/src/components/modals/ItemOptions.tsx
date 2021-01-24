@@ -11,7 +11,7 @@ import OptionButton from '../styled/OptionButton';
 import NoteIcon from '../svg/NoteIcon';
 import UpArrowIcon from '../svg/UpArrowIcon';
 import DownArrowIcon from '../svg/DownArrowIcon';
-import DeleteIcon from '../svg/DeleteItemIcon';
+import DeleteIcon from '../svg/DeleteIcon';
 
 /** Modal for displaying user's item options when an item is clicked */
 export const ItemOptions = () => {
