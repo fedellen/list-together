@@ -1,6 +1,6 @@
 import { Item } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
-import { ItemOptions } from './modals/ItemOptions';
+import { ItemOptions } from '../modals/ItemOptions';
 
 type SingleItemProps = {
   item: Item;

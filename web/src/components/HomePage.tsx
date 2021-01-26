@@ -1,6 +1,6 @@
 import { useStateValue } from 'src/state/state';
 import { setAppState } from 'src/utils/dispatchActions';
-import Button from './Button';
+import Button from './styled/Button';
 import Heading from './styled/Heading';
 
 /** Landing page for visitors while not logged in */

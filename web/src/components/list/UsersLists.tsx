@@ -1,4 +1,7 @@
-import { useGetUserQuery, useGetUsersListsQuery } from '../generated/graphql';
+import {
+  useGetUserQuery,
+  useGetUsersListsQuery
+} from '../../generated/graphql';
 import ItemList from './ItemList';
 import { useStateValue } from 'src/state/state';
 import { UserPrivileges } from 'src/types';

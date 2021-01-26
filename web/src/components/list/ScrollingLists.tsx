@@ -3,8 +3,8 @@ import { UserToList, useUpdateListSubscription } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { UserPrivileges } from 'src/types';
 import { sendNotification } from 'src/utils/dispatchActions';
-import LeftArrowIcon from './svg/LeftArrowIcon';
-import RightArrowIcon from './svg/RightArrowIcon';
+import LeftArrowIcon from '../svg/LeftArrowIcon';
+import RightArrowIcon from '../svg/RightArrowIcon';
 
 type ScrollingListsProps = {
   lists: UserToList[];

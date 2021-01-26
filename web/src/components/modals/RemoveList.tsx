@@ -5,7 +5,7 @@ import {
 import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
-import Button from '../Button';
+import Button from '../styled/Button';
 
 export default function RemoveList() {
   const [{ currentListId }, dispatch] = useStateValue();

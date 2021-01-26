@@ -2,7 +2,7 @@ import { Field, Form, Formik } from 'formik';
 import { useStateValue } from 'src/state/state';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import { GetUserDocument, useLoginUserMutation } from '../generated/graphql';
-import Button from './Button';
+import Button from './styled/Button';
 import * as yup from 'yup';
 import FormError from './styled/FormError';
 

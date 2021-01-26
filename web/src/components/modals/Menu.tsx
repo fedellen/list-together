@@ -2,7 +2,7 @@ import { useApolloClient } from '@apollo/client';
 import { useGetUserQuery, useLogoutUserMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { openModal, setAppState } from 'src/utils/dispatchActions';
-import Button from '../Button';
+import Button from '../styled/Button';
 
 export const Menu = () => {
   const [, dispatch] = useStateValue();
