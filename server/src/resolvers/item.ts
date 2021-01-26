@@ -29,8 +29,6 @@ import { Topic } from './types/subscription/SubscriptionTopics';
 
 @Resolver()
 export class ItemResolver {
-  // Send single item only when connection already exists from front
-  // Otherwise action list state should be sent as one object?
   @UseMiddleware(logger)
   @Mutation(() => UserToListResponse)
   async addItem(
@@ -152,22 +150,20 @@ export class ItemResolver {
         const itemInHistory = table.itemHistory?.find(
           (history) => nameInput === history.item
         );
-        if (itemInHistory) {
-          if (itemInHistory.removalRatingArray) {
-            // User has removal history for item
-            const itemRating = itemInHistory.removalRating(itemInHistory);
-            const indexToInsert = Math.round(
-              table.sortedItems.length * (itemRating / 1000)
-            );
-            console.log(
-              `itemRating: "${itemRating}", indexToInsert: "${indexToInsert}" `
-            );
-            // Insert near user's preferred removal order
-            table.sortedItems.splice(indexToInsert, 0, nameInput);
-          } else {
-            // Insert at front of sortedItems
-            table.sortedItems = [nameInput, ...table.sortedItems];
-          }
+        if (itemInHistory?.removalRatingArray) {
+          // User has removal history for item
+          const itemRating = itemInHistory.removalRating(itemInHistory);
+          const indexToInsert = Math.round(
+            table.sortedItems.length * (itemRating / 1000)
+          );
+          console.log(
+            `itemRating: "${itemRating}", indexToInsert: "${indexToInsert}" `
+          );
+          // Insert near user's preferred removal order
+          table.sortedItems.splice(indexToInsert, 0, nameInput);
+        } else {
+          // Insert at front of sortedItems
+          table.sortedItems = [nameInput, ...table.sortedItems];
         }
       } else {
         // Initialize sortedItems
