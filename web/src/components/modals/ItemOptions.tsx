@@ -79,7 +79,7 @@ export const ItemOptions = () => {
   }
 
   return (
-    <div className="grid  grid-cols-3 ml-auto sm:ml-8">
+    <div className="grid opacity-90 right-2 mt-4 grid-cols-3 ml-auto sm:ml-8 z-20">
       {/** Display buttons when user has privileges to access them */}
       <OptionButton
         onClick={() => handleOptionAction('sortItemUp')}

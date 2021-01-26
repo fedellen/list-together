@@ -4,7 +4,7 @@ import { errorNotifaction } from 'src/utils/errorNotification';
 import { GetUserDocument, useLoginUserMutation } from '../generated/graphql';
 import Button from './Button';
 import * as yup from 'yup';
-import FormError from './FormError';
+import FormError from './styled/FormError';
 
 export default function Login() {
   const [login, { loading }] = useLoginUserMutation();

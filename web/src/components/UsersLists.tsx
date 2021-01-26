@@ -54,7 +54,7 @@ export default function UsersLists() {
   const currentSortedItems = currentList?.sortedItems;
 
   return (
-    <>
+    <div className="z-10">
       {currentList ? (
         <>
           <ScrollingLists lists={usersLists} />
@@ -65,6 +65,6 @@ export default function UsersLists() {
           Add your first list!
         </div>
       )}
-    </>
+    </div>
   );
 }

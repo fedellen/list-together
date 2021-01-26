@@ -4,7 +4,7 @@ export default function AddItemIcon() {
   const [, dispatch] = useStateValue();
   return (
     <button
-      className="w-24 rounded-full bg-dark text-lighter border-light border-4 p-1"
+      className="w-16 rounded-full bg-darker shadow-md text-lighter hover:bg-medium hover:text-dark"
       onClick={() =>
         dispatch({
           type: 'TOGGLE_MODAL',
@@ -25,6 +25,7 @@ export default function AddItemIcon() {
           d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </svg>
+      <span className="hidden md:block text-xl font-extrabold pb-2 m-0">A</span>
     </button>
   );
 }

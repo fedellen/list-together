@@ -1,9 +1,13 @@
-export default function DeleteIcon() {
+type DeleteIconProps = {
+  size?: number;
+};
+
+export default function DeleteIcon({ size }: DeleteIconProps) {
   // Triangle icons from https://svgbox.net/iconset/octicons
   return (
     <svg
-      width="40px"
-      height="40px"
+      width={`${size || 40}px`}
+      height={`${size || 40}px`}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="currentColor"

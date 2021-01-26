@@ -8,7 +8,14 @@ type ItemListProps = {
 };
 
 export default function ItemList({ list, sortedItems }: ItemListProps) {
-  if (!list.items || !sortedItems) {
+  if (
+    !list.items ||
+    !sortedItems ||
+    list.items.length === 0
+    // ||
+    // sortedItems.length === 0
+  ) {
+    console.log(list.items, sortedItems);
     return (
       <div className="flex justify-center items-center py-6">
         <div className="text-xl italic">This list is empty ✍🏾</div>
