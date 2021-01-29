@@ -243,13 +243,22 @@ export class ListResolver {
     const contextError = validateContext(context);
     if (contextError) return { errors: contextError };
 
-    const userId = context.req.session.userId;
+    const user = await User.findOne(context.req.session.userId);
 
     const userToListTable = await UserToList.findOne({
-      where: { listId: listId, userId: userId }
+      where: { listId: listId, userId: context.req.session.userId }
     });
 
-    if (!userToListTable) {
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: 'userId',
+            message: 'A user with that ID could not be found..'
+          }
+        ]
+      };
+    } else if (!userToListTable) {
       return {
         errors: [
           {
@@ -260,6 +269,12 @@ export class ListResolver {
       };
     }
 
+    if (user.sortedListsArray) {
+      user.sortedListsArray = user.sortedListsArray.filter(
+        (listId) => listId !== userToListTable.listId
+      );
+      await user.save();
+    }
     await userToListTable.remove();
 
     const listInDatabase = await List.findOne(listId, {
@@ -268,7 +283,7 @@ export class ListResolver {
 
     if (listInDatabase) {
       if (listInDatabase.userConnection.length === 0) {
-        // Remove list from database if no User Connections
+        // Remove list from the database if no User Connections exist
         await listInDatabase.remove();
       } else {
         const remainingUsersArray = listInDatabase.userConnection;
@@ -284,6 +299,7 @@ export class ListResolver {
           });
           newOwnerUserToListTable!.privileges = ['owner'];
           await newOwnerUserToListTable!.save();
+          /** Notify new list owner if they're online */
           await publish({
             updatedListId: listId,
             userIdToShare: newOwnerUserToListTable!.userId,
