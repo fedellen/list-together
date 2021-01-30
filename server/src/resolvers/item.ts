@@ -26,6 +26,7 @@ import { validateContext } from './types/validators/validateContext';
 import { BooleanResponse } from './types/response/BooleanResponse';
 import { SubscriptionPayload } from './types/subscription/SubscriptionPayload';
 import { Topic } from './types/subscription/SubscriptionTopics';
+import { validateStringLength } from './types/validators/validateStringLength';
 
 @Resolver()
 export class ItemResolver {
@@ -39,25 +40,8 @@ export class ItemResolver {
     const contextErrors = validateContext(context);
     if (contextErrors) return { errors: contextErrors };
 
-    if (nameInput.length < 2) {
-      return {
-        errors: [
-          {
-            field: 'itemName',
-            message: 'Item names cannot contain at less than 2 characters..'
-          }
-        ]
-      };
-    } else if (nameInput.length > 40) {
-      return {
-        errors: [
-          {
-            field: 'itemName',
-            message: 'Item names cannot contain more than 40 characters..'
-          }
-        ]
-      };
-    }
+    const stringLengthErrors = validateStringLength(nameInput);
+    if (stringLengthErrors) return { errors: stringLengthErrors };
 
     const userId = context.req.session.userId;
     const userToListTable = await UserToList.findOne({
@@ -364,26 +348,8 @@ export class ItemResolver {
     const errors = validateContext(context);
     if (errors) return { errors };
 
-    /** Validate note length */
-    if (note.length <= 1) {
-      return {
-        errors: [
-          {
-            field: 'note',
-            message: 'Note must contain at least 2 characters'
-          }
-        ]
-      };
-    } else if (note.length >= 31) {
-      return {
-        errors: [
-          {
-            field: 'note',
-            message: 'Note must contain 30 characters or less'
-          }
-        ]
-      };
-    }
+    const stringLengthErrors = validateStringLength(itemName);
+    if (stringLengthErrors) return { errors: stringLengthErrors };
 
     const userId = context.req.session.userId;
     const userToListTable = await UserToList.findOne({

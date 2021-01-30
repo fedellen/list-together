@@ -31,6 +31,7 @@ import { UserResponse } from './types/response/UserResponse';
 import { SubscriptionPayload } from './types/subscription/SubscriptionPayload';
 import { SubscriptionArgs } from './types/subscription/SubscriptionArgs';
 import { Topic } from './types/subscription/SubscriptionTopics';
+import { validateStringLength } from './types/validators/validateStringLength';
 
 @Resolver()
 export class ListResolver {
@@ -124,26 +125,8 @@ export class ListResolver {
     const errors = validateContext(context);
     if (errors) return { errors };
 
-    /** Validate title length */
-    if (title.length <= 1) {
-      return {
-        errors: [
-          {
-            field: 'title',
-            message: 'Title must contain at least 2 characters'
-          }
-        ]
-      };
-    } else if (title.length >= 31) {
-      return {
-        errors: [
-          {
-            field: 'title',
-            message: 'Title must contain 30 characters or less'
-          }
-        ]
-      };
-    }
+    const stringLengthErrors = validateStringLength(title);
+    if (stringLengthErrors) return { errors: stringLengthErrors };
 
     const user = await User.findOne(context.req.session.userId);
 
