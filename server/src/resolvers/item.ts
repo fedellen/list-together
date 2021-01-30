@@ -138,12 +138,13 @@ export class ItemResolver {
       userToListTable.itemHistory = [ItemHistory.create({ item: nameInput })];
     }
 
-    // Save table to DB, cascades all updates
+    // Save table to DB, cascades list updates
     await userToListTable.save();
 
     const allUserToListTables = await UserToList.find({
       where: { listId: list.id }
     });
+
     allUserToListTables.forEach(async (table) => {
       // Add item to front of sorted list for every user
       if (table.sortedItems) {
@@ -177,7 +178,14 @@ export class ItemResolver {
       updatedListId: listId,
       notification: `${nameInput} was added to ${list.title}`
     });
-    return { userToList: [userToListTable] };
+
+    // Grab sorted list to return to user who added the item
+    const sortedUserToListTable = await UserToList.findOne({
+      where: { listId: listId, userId: userId },
+      relations: ['list', 'list.items', 'itemHistory']
+    });
+
+    return { userToList: [sortedUserToListTable!] };
   }
 
   // Delete array of items from list
