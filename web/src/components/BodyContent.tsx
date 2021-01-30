@@ -5,7 +5,6 @@ import HomePage from './HomePage';
 import Login from './Login';
 import UsersLists from './list/UsersLists';
 
-UsersLists;
 /** Handles logic for displaying content based on `appState` */
 
 export default function BodyContent() {
