@@ -364,6 +364,27 @@ export class ItemResolver {
     const errors = validateContext(context);
     if (errors) return { errors };
 
+    /** Validate note length */
+    if (note.length <= 1) {
+      return {
+        errors: [
+          {
+            field: 'note',
+            message: 'Note must contain at least 2 characters'
+          }
+        ]
+      };
+    } else if (note.length >= 31) {
+      return {
+        errors: [
+          {
+            field: 'note',
+            message: 'Note must contain 30 characters or less'
+          }
+        ]
+      };
+    }
+
     const userId = context.req.session.userId;
     const userToListTable = await UserToList.findOne({
       where: { listId: listId, userId: userId },
