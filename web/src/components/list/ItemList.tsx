@@ -11,9 +11,8 @@ export default function ItemList({ list, sortedItems }: ItemListProps) {
   if (
     !list.items ||
     !sortedItems ||
-    list.items.length === 0
-    // ||
-    // sortedItems.length === 0
+    list.items.length === 0 ||
+    sortedItems.length === 0
   ) {
     console.log(list.items, sortedItems);
     return (
