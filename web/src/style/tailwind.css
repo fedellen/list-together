@@ -15,9 +15,6 @@
   ::-webkit-scrollbar-thumb {
     @apply bg-medium;
   }
-  a:hover {
-    @apply text-medium;
-  }
   input {
     @apply p-2 m-2 text-xl placeholder-darker text-darker bg-medium border-solid border-4 border-lighter rounded-3xl w-full focus:border-light;
   }
