@@ -1,3 +1,6 @@
+export type ArrowIconDirection = 'right' | 'left';
+
+/** Postgres only saves UserPrivilegesType */
 export type UserPrivileges = 'add' | 'strike' | 'delete' | 'owner';
 
 /** State for handling which Item modal is open */
@@ -23,10 +26,19 @@ export type ModalTypes =
   | 'menu'
   | 'addItem'
   | 'createList'
-  | 'itemOptions'
+  // | 'itemOptions'
   | 'addNote'
   | 'shareList'
   | 'removeList';
+
+/** State to handle current list attributes */
+export type CurrentListState = {
+  listId: string;
+  /** Current UserPrivileges to determine which options to show */
+  privileges: UserPrivileges[];
+  /** To use in `sortItems` mutation */
+  sortedItems: string[];
+};
 
 /** State for which page to show */
 export type AppState = 'home' | 'login' | 'createUser' | 'demo' | 'list';
