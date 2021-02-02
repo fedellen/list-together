@@ -1,5 +1,9 @@
-// import { UserToList } from 'src/generated/graphql';
-import { AppState, ModalState, SideMenuState, UserPrivileges } from 'src/types';
+import {
+  AppState,
+  CurrentListState,
+  ModalState,
+  SideMenuState
+} from 'src/types';
 import { State } from './state';
 
 export type Action =
@@ -13,7 +17,7 @@ export type Action =
     }
   | {
       type: 'SET_LIST';
-      payload: { listId: string; privileges: UserPrivileges[] };
+      payload: CurrentListState;
     }
   | {
       type: 'CLEAR_LIST';
@@ -33,10 +37,6 @@ export type Action =
       type: 'SET_ACTIVE_ITEM';
       payload: string;
     };
-// | {
-//     type: 'SET_USERS_LISTS';
-//     payload: UserToList[];
-//   };
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -48,14 +48,12 @@ export const reducer = (state: State, action: Action): State => {
     case 'SET_LIST':
       return {
         ...state,
-        currentListId: action.payload.listId,
-        privileges: action.payload.privileges
+        currentListState: action.payload
       };
     case 'CLEAR_LIST':
       return {
         ...state,
-        currentListId: '',
-        privileges: null
+        currentListState: { listId: '', privileges: [], sortedItems: [] }
       };
     case 'SET_SIDE_MENU_STATE':
       return {

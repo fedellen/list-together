@@ -1,5 +1,11 @@
+import { List, UserToList } from 'src/generated/graphql';
 import { Action } from 'src/state/reducer';
-import { AppState, ModalTypes } from '../types';
+import {
+  AppState,
+  CurrentListState,
+  ModalTypes,
+  UserPrivileges
+} from '../types';
 
 /** Common shared dispatch actions */
 
@@ -22,7 +28,6 @@ export const openModal = (
 };
 
 export const resetActiveItem = (dispatch: (value: Action) => void) => {
-  console.log('item state reset');
   dispatch({ type: 'SET_ACTIVE_ITEM', payload: '' });
 };
 
@@ -34,6 +39,22 @@ export const setAppState = (
   dispatch({
     type: 'SET_APP_STATE',
     payload: state
+  });
+};
+
+export const setNewList = (
+  dispatch: (value: Action) => void,
+  list: UserToList
+) => {
+  closeModal(dispatch);
+  dispatch({
+    type: 'SET_LIST',
+    // Postgres only saves as `UserPrivileges` type
+    payload: {
+      listId: list.listId,
+      privileges: list.privileges as UserPrivileges[],
+      sortedItems: list.sortedItems || []
+    }
   });
 };
 

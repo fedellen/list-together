@@ -1,10 +1,15 @@
 import { createContext, Dispatch, useContext, useReducer } from 'react';
-import { AppState, ModalState, SideMenuState, UserPrivileges } from 'src/types';
+import {
+  AppState,
+  ModalState,
+  SideMenuState,
+  CurrentListState
+} from 'src/types';
 import { Action } from './reducer';
 
 export type State = {
-  currentListId: string;
-  privileges: UserPrivileges[] | null;
+  /** State for handling currently displayed list attributes */
+  currentListState: CurrentListState;
   /** Name of item for displaying `ItemOptions` */
   activeItem: string;
   modalState: ModalState;
@@ -16,8 +21,7 @@ export type State = {
 };
 
 const initialState: State = {
-  currentListId: '',
-  privileges: null,
+  currentListState: { listId: '', privileges: [], sortedItems: [] },
   activeItem: '',
   modalState: { active: false },
   sideMenuState: 'add',
