@@ -1,11 +1,6 @@
-import { List, UserToList } from 'src/generated/graphql';
+import { UserToList } from 'src/generated/graphql';
 import { Action } from 'src/state/reducer';
-import {
-  AppState,
-  CurrentListState,
-  ModalTypes,
-  UserPrivileges
-} from '../types';
+import { AppState, ModalTypes, UserPrivileges } from '../types';
 
 /** Common shared dispatch actions */
 
@@ -67,7 +62,7 @@ export const sendNotification = (
     /** Clear the previous timeout */
     clearTimeout(notificationTimeoutId);
     setTimeout(() => {
-      console.log(`Notification Message: "${messages}"`);
+      console.log(`New Notification Message: "${messages[i]}"`);
       dispatch({
         type: 'SET_ERROR_MESSAGE',
         payload: messages[i]
@@ -76,7 +71,7 @@ export const sendNotification = (
         dispatch({ type: 'END_ERROR_MESSAGE' });
         /** Close after 5 seconds */
       }, 5000);
-      /** Send next notification after 4 seconds  */
-    }, 4000 * i);
+      /** Send next notification before first is closed  */
+    }, 4500 * i);
   }
 };
