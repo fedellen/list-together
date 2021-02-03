@@ -125,45 +125,46 @@ export class ItemResolver {
     // Save table to DB, cascades list updates
     await userToListTable.save();
 
+    // Get all userToLists and add to their sortedItems --
     const allUserToListTables = await UserToList.find({
-      where: { listId: list.id }
+      where: { listId: list.id },
+      relations: ['itemHistory']
     });
-
-    allUserToListTables.forEach(async (table) => {
-      // Add item to front of sorted list for every user
-      if (table.sortedItems) {
-        const itemInHistory = table.itemHistory?.find(
-          (history) => nameInput === history.item
-        );
-        if (itemInHistory?.removalRatingArray) {
-          // User has removal history for item
-          const itemRating = itemInHistory.removalRating(itemInHistory);
-          const indexToInsert = Math.round(
-            table.sortedItems.length * (itemRating / 1000)
+    await Promise.all(
+      allUserToListTables.map(async (table) => {
+        if (table.sortedItems) {
+          const itemInHistory = table.itemHistory?.find(
+            (history) => nameInput === history.item
           );
-          console.log(
-            `itemRating: "${itemRating}", indexToInsert: "${indexToInsert}" `
-          );
-          // Insert near user's preferred removal order
-          table.sortedItems.splice(indexToInsert, 0, nameInput);
+          if (itemInHistory?.removalRatingArray) {
+            // User has removal history for item
+            const itemRating = itemInHistory.removalRating(itemInHistory);
+            const indexToInsert = Math.round(
+              table.sortedItems.length * (itemRating / 1000)
+            );
+            console.log(
+              `itemRating: "${itemRating}", indexToInsert: "${indexToInsert}" `
+            );
+            // Insert near user's preferred removal order
+            table.sortedItems.splice(indexToInsert, 0, nameInput);
+          } else {
+            // Insert at front of sortedItems
+            table.sortedItems = [nameInput, ...table.sortedItems];
+          }
         } else {
-          // Insert at front of sortedItems
-          table.sortedItems = [nameInput, ...table.sortedItems];
+          // Initialize sortedItems
+          table.sortedItems = [nameInput];
         }
-      } else {
-        // Initialize sortedItems
-        table.sortedItems = [nameInput];
-      }
-      // Save all shared tables with sorted list
-      await table.save();
-    });
-
+        // Save all shared tables with sorted list
+        await table.save();
+      })
+    );
     await publish({
       updatedListId: listId,
       notification: `${nameInput} was added to ${list.title}`
     });
 
-    // Grab sorted list to return to user who added the item
+    // Grab sorted list and return user who added the item
     const sortedUserToListTable = await UserToList.findOne({
       where: { listId: listId, userId: userId },
       relations: ['list', 'list.items', 'itemHistory']
