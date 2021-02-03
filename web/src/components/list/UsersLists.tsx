@@ -4,65 +4,78 @@ import {
 } from '../../generated/graphql';
 import ItemList from './ItemList';
 import { useStateValue } from 'src/state/state';
-import { UserPrivileges } from 'src/types';
 import ScrollingLists from './ScrollingLists';
-import { openModal } from 'src/utils/dispatchActions';
+import { openModal, setNewList } from 'src/utils/dispatchActions';
+import { createContext, useEffect } from 'react';
+import { CurrentListContext, UserPrivileges } from 'src/types';
+import LoadingIcon from '../svg/LoadingIcon';
+
+export const ListContext = createContext<CurrentListContext | null>(null);
 
 export default function UsersLists() {
-  const [{ currentListId }, dispatch] = useStateValue();
+  const [{ currentListState }, dispatch] = useStateValue();
 
   const { data: userData } = useGetUserQuery({});
   const sortedListArray = userData?.getUser?.sortedListsArray;
 
-  const { data, loading, error } = useGetUsersListsQuery({
-    notifyOnNetworkStatusChange: true,
-    fetchPolicy: 'cache-and-network',
-    onCompleted: ({}) => {
-      if (currentListId === '' && usersLists[0] !== undefined) {
-        const initialListId = usersLists[0].listId;
-        /** Database only stores `UserPrivileges` type */
-        const initialPrivileges = usersLists[0].privileges as UserPrivileges[];
-        dispatch({
-          type: 'SET_LIST',
-          payload: { listId: initialListId, privileges: initialPrivileges }
-        });
+  const { data, loading, error, refetch } = useGetUsersListsQuery({});
+  const usersLists = data?.getUsersLists?.userToList?.map((list) => list);
+
+  /** Initialize current list when data is initialized or list id is cleared */
+  useEffect(() => {
+    console.log('use effect is firing');
+    if (usersLists) {
+      if (currentListState.listId === '' && usersLists[0] !== undefined) {
+        setNewList(dispatch, usersLists[0]);
       }
     }
-  });
+  }, [usersLists, currentListState]);
 
-  if (loading && !data) {
-    return <div>Loading lists..</div>;
-  } else if (!data && error) {
-    /** Fetch error can occur while data exists during offline mode */
-    return (
-      <div>
-        There was an error loading your lists:
-        {error.message}
-      </div>
-    );
-  } else if (!data || !data.getUsersLists.userToList)
-    return <div>Could not find any lists for that user..</div>;
+  if (loading && !usersLists) {
+    return <LoadingIcon />;
+  } else if (!usersLists && error) {
+    /** Fetch error will occur while usersLists exists during offline mode */
+    const errorString = `There has been an unhandled error while loading your list data: ${error.message}`;
+    console.error(errorString);
+    return <div>{errorString}</div>;
+  } else if (!usersLists) {
+    /** List periodically fails to fetch upon login, refetch() is correcting this issue */
+    refetch();
+    return null;
+  }
 
-  /** Sort the list data based on User's sorted preferences */
-  const usersLists = data.getUsersLists.userToList.map((list) => list);
+  /** Sort the list data based on User's preference */
   if (sortedListArray) {
-    usersLists.sort((a, b) => {
-      const aIndex = sortedListArray.indexOf(a.listId);
-      const bIndex = sortedListArray.indexOf(b.listId);
-      return aIndex - bIndex;
+    usersLists?.sort((a, b) => {
+      return (
+        sortedListArray.indexOf(a.listId) - sortedListArray.indexOf(b.listId)
+      );
     });
   }
 
-  const currentList = usersLists.find((list) => list.listId === currentListId);
-  const currentSortedItems = currentList?.sortedItems;
+  const currentList = currentListState.listId
+    ? usersLists.find((list) => list.listId === currentListState.listId)
+    : usersLists[0];
+
+  // const currentSortedItems = currentList?.sortedItems
+  //   ? currentList.sortedItems
+  //   : [];
 
   return (
-    <div className="z-10">
+    <div className="z-10 py-2">
       {currentList ? (
-        <>
+        <ListContext.Provider
+          value={{
+            sortedItems: currentList.sortedItems || [],
+            privileges: currentList.privileges as UserPrivileges[]
+          }}
+        >
           <ScrollingLists lists={usersLists} />
-          <ItemList list={currentList.list} sortedItems={currentSortedItems} />
-        </>
+          <ItemList
+            list={currentList.list}
+            sortedItems={currentList.sortedItems || []}
+          />
+        </ListContext.Provider>
       ) : (
         <div onClick={() => openModal(dispatch, 'createList')}>
           Add your first list!

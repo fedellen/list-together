@@ -1,20 +1,14 @@
-import { List /*, useStyleItemMutation*/ } from 'src/generated/graphql';
+import { List } from 'src/generated/graphql';
 import SingleItem from './SingleItem';
 
 type ItemListProps = {
   /** Current list being displayed */
   list: List;
-  sortedItems: string[] | undefined | null;
+  sortedItems: string[];
 };
 
 export default function ItemList({ list, sortedItems }: ItemListProps) {
-  if (
-    !list.items ||
-    !sortedItems ||
-    list.items.length === 0 ||
-    sortedItems.length === 0
-  ) {
-    console.log(list.items, sortedItems);
+  if (!list.items || list.items.length === 0) {
     return (
       <div className="flex justify-center items-center py-6">
         <div className="text-xl italic">This list is empty ✍🏾</div>

@@ -31,6 +31,13 @@ export type ModalTypes =
   | 'shareList'
   | 'removeList';
 
+export type CurrentListContext = {
+  /** Current UserPrivileges to determine which options to show */
+  privileges: UserPrivileges[];
+  /** To use in `sortItems` mutation */
+  sortedItems: string[];
+};
+
 /** State to handle current list attributes */
 export type CurrentListState = {
   listId: string;
