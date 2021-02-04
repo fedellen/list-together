@@ -62,7 +62,7 @@ export default function UsersLists() {
   //   : [];
 
   return (
-    <div className="z-10 py-2">
+    <div className="container mx-auto px-4">
       {currentList ? (
         <ListContext.Provider
           value={{

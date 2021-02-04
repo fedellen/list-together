@@ -29,7 +29,7 @@ export default function SingleItem({ item }: SingleItemProps) {
 
   return (
     <li className="">
-      <div className="flex flex-wrap items-start my-1  ">
+      <div className="my-1 flex">
         <button
           onClick={() => handleItemClick(item.name)}
           className={`

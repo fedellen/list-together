@@ -11,12 +11,12 @@
     @apply w-3 h-3 shadow-lg;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-darker;
+    @apply bg-gradient-to-b;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-medium;
+    @apply bg-gray-400;
   }
   input {
-    @apply p-2 m-2 text-xl placeholder-darker text-darker bg-medium border-solid border-4 border-lighter rounded-3xl w-full focus:border-light;
+    /* @apply p-2 m-2 text-xl placeholder-darker text-darker bg-medium border-solid border-4 border-lighter rounded-3xl w-full focus:border-light; */
   }
 }
