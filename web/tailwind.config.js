@@ -3,6 +3,13 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     colors: {
+      // // Purple Theme
+      // lighter: '#95bdc4',
+      // light: '#313457',
+      // medium: '#120a1a',
+      // dark: '#120a1a',
+      // darker: '#07020a'
+
       lighter: '#d8d8f6', // Lavender Web
       light: '#B18FCF', // African Violet
       medium: '#978897', // Hellotrope Gray
@@ -11,7 +18,8 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        body: ['Lato']
+        body: ['Roboto'],
+        heading: ['Lora']
       }
     }
   },
