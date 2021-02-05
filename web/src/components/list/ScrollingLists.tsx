@@ -1,25 +1,50 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { UserToList, useUpdateListSubscription } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
-import { UserPrivileges } from 'src/types';
-import { sendNotification } from 'src/utils/dispatchActions';
-import LeftArrowIcon from '../svg/LeftArrowIcon';
-import RightArrowIcon from '../svg/RightArrowIcon';
+import { ArrowIconDirection } from 'src/types';
+import { sendNotification, setNewList } from 'src/utils/dispatchActions';
+import ListArrowButton from '../styled/ListArrowButton';
 
 type ScrollingListsProps = {
+  /** Pass down the main data object which has been sorted */
   lists: UserToList[];
 };
 
 export default function ScrollingLists({ lists }: ScrollingListsProps) {
   const [{ currentListId }, dispatch] = useStateValue();
+  const scrollingList = useRef<HTMLUListElement>(null);
+  const listIdArray = lists.map((list) => list.listId);
 
+  const handleArrowClick = (direction: ArrowIconDirection) => {
+    const currentIdIndex = listIdArray.indexOf(currentListId);
+
+    let nextListIndex: number;
+    if (direction === 'right') {
+      nextListIndex =
+        currentIdIndex < listIdArray.length - 1 ? currentIdIndex + 1 : 0;
+    } else {
+      nextListIndex =
+        currentIdIndex === 0 ? listIdArray.length - 1 : currentIdIndex - 1;
+    }
+    const nextList = lists[nextListIndex];
+
+    setNewList(dispatch, nextList);
+    const listNodeToScroll = scrollingList.current?.children[nextListIndex];
+    listNodeToScroll?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'center'
+    });
+
+    console.log(listNodeToScroll?.compareDocumentPosition);
+  };
+
+  /** State for awaiting subsciption's data to load new notifications */
   const [newData, setNewData] = useState(false);
   /** Component renders when we have the lists, use subscription */
-  const listIdArray = lists.map((list) => list.listId);
   const { data, loading } = useUpdateListSubscription({
     variables: { listIdArray: listIdArray },
     fetchPolicy: 'network-only',
-    // Toggle `newData` boolean to await loading subscription's result
     onSubscriptionData: () => setNewData(true)
   });
 
@@ -28,46 +53,31 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
     if (notifications) {
       sendNotification(dispatch, notifications);
     }
-    console.log('New data from subscription :', data);
     setNewData(false);
   }
 
   return (
-    <div className="flex items-center  container mx-auto pt-4">
-      <div className="w-12 pb-4">
-        <button onClick={() => console.log('we clicked left')}>
-          <LeftArrowIcon />
-        </button>
-      </div>
+    <div className="grid grid-flow-col pt-4 gap-3">
+      <ListArrowButton direction="left" handleArrowClick={handleArrowClick} />
 
-      <ul className="overflow-x-auto whitespace-nowrap flex  ">
+      <ul
+        ref={scrollingList}
+        className="overflow-x-auto whitespace-nowrap flex bg-gray-200 rounded-lg px-2 shadow-md"
+      >
         {lists.map((userList) => (
           <li
-            className={`text-xl  font-bold px-6 mb-4 cursor-pointer transition-all duration-500 ${
+            className={`text-2xl  pt-4  font-extrabold px-6 mb-4 cursor-pointer transition-all duration-500  border-t-4 ${
               currentListId === userList.listId &&
-              'text-light underline font-extrabold'
+              'text-indigo-600  border-indigo-600'
             }`}
             key={userList.listId}
-            onClick={() =>
-              dispatch({
-                type: 'SET_LIST',
-                payload: {
-                  listId: userList.listId,
-                  // Postgres only saves as `UserPrivileges` type
-                  privileges: userList.privileges as UserPrivileges[]
-                }
-              })
-            }
+            onClick={() => setNewList(dispatch, userList)}
           >
             {userList.list.title}
           </li>
         ))}
       </ul>
-      <div className="w-12 pb-4">
-        <button onClick={() => console.log('you clicked right')}>
-          <RightArrowIcon />
-        </button>
-      </div>
+      <ListArrowButton direction="right" handleArrowClick={handleArrowClick} />
     </div>
   );
 }
