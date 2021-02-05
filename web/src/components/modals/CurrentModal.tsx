@@ -2,7 +2,7 @@ import { useStateValue } from 'src/state/state';
 import { Menu } from './Menu';
 import Modal from './Modal';
 import RemoveList from './RemoveList';
-import SingleInput from './SingleInput';
+import SingleInput from '../form/SingleInput';
 
 /** Handles logic for displaying current modal */
 

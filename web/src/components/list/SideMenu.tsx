@@ -1,4 +1,4 @@
-import AddItemIcon from './svg/AddItemIcon';
+import AddItemIcon from '../svg/AddItemIcon';
 
 export default function SideMenu() {
   return (

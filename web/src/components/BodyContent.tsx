@@ -1,8 +1,8 @@
 import { useStateValue } from 'src/state/state';
-import CreateUser from './CreateUser';
+import CreateUser from './form/CreateUser';
 import DemoList from './DemoList';
 import HomePage from './HomePage';
-import Login from './Login';
+import Login from './form/Login';
 import UsersLists from './list/UsersLists';
 
 /** Handles logic for displaying content based on `appState` */

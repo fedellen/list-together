@@ -1,5 +1,5 @@
 import { List } from 'src/generated/graphql';
-import SideMenu from '../SideMenu';
+import SideMenu from './SideMenu';
 import SingleItem from './SingleItem';
 
 type ItemListProps = {
