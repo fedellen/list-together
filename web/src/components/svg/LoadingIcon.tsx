@@ -1,13 +1,7 @@
 export default function LoadingIcon() {
   // Loading icon from https://svgbox.net/iconset/loaders
   return (
-    <svg
-      width="32px"
-      height="32px"
-      viewBox="0 0 58 58"
-      xmlns="http://www.w3.org/2000/svg"
-      color="#000000"
-    >
+    <svg viewBox="0 0 58 58" xmlns="http://www.w3.org/2000/svg">
       <g
         stroke="currentColor"
         fill="currentColor"
