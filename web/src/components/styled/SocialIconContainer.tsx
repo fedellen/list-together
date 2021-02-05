@@ -14,7 +14,7 @@ export default function SocialIconContainer({
   return (
     <a
       href={link}
-      className="w-10 transform hover:scale-125 transition-all duration-500 hover:text-ppjsOrange"
+      className="w-9 sm:w-10 transform hover:scale-125 transition-all duration-500 hover:text-ppjsOrange"
     >
       {icon}
     </a>

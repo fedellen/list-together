@@ -35,7 +35,7 @@ export default function SingleItem({ item }: SingleItemProps) {
           className={`
         text-2xl font-semibold  px-2 break-all text-left 
         ${item.strike && 'line-through'}
-        ${isItemActive && 'underline text-light  font-bold'}
+        ${isItemActive && 'underline text-indigo-700  font-bold'}
         `}
         >
           {item.name}
@@ -50,7 +50,6 @@ export default function SingleItem({ item }: SingleItemProps) {
               key={note}
             >
               {note}
-              {/* <div className=""></div> */}
             </li>
           ))}
         </ul>
