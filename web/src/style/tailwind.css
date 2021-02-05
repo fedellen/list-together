@@ -17,6 +17,6 @@
     @apply bg-gray-400 rounded-lg;
   }
   input {
-    @apply p-4 text-xl placeholder-gray-500 text-gray-600 bg-gray-200 rounded-full w-auto;
+    @apply p-4 text-xl placeholder-gray-500 text-gray-600 bg-gray-200 shadow  rounded-full w-auto outline-none;
   }
 }

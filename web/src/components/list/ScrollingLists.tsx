@@ -66,9 +66,9 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
       >
         {lists.map((userList) => (
           <li
-            className={`text-2xl  pt-4  font-extrabold px-6 mb-4 cursor-pointer transition-all duration-500  border-t-4 ${
+            className={`text-2xl  pt-4  font-semibold px-6 mb-4 cursor-pointer transition-all duration-500  border-t-4 text-gray-500  ${
               currentListId === userList.listId &&
-              'text-indigo-600  border-indigo-600'
+              'text-indigo-600  border-indigo-600 font-extrabold'
             }`}
             key={userList.listId}
             onClick={() => setNewList(dispatch, userList)}

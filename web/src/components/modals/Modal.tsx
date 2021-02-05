@@ -17,16 +17,16 @@ export default function Modal({ modalTitle, component }: ModalProps) {
     <div className="fixed inset-0 items-center justify-center flex z-20">
       {/* Dark screen overlay  */}
       <div
-        className="bg-gray-900 opacity-50  absolute inset-0"
+        className="bg-gray-900 opacity-60  absolute inset-0"
         onClick={() => closeModal(dispatch)}
       />
       <div className="justify-center items-center flex z-50 max-w-xs sm:max-w-md lg:max-w-xl xl:max-w-3xl">
-        <div className="bg-gray-300 border-light border-2 rounded-2xl flex flex-col p-8 gap-5">
+        <div className="bg-gray-300 rounded-lg flex flex-col p-8 gap-4 shadow-md">
           {/* Header */}
-          <div className="flex justify-between pb-6 gap-8 border-b-2 border-light">
+          <div className="flex justify-between pb-4 gap-10 ">
             <SubHeading>{modalTitle}</SubHeading>
             <button
-              className="text-2xl pt-1  font-extrabold hover:text-light"
+              className="text-3xl pt-1  font-extrabold hover:text-indigo-700 outline-none"
               onClick={() => closeModal(dispatch)}
             >
               X

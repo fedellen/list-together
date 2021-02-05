@@ -15,7 +15,7 @@ export default function Button({
     <button
       type={type || undefined}
       onClick={onClick || undefined}
-      className=" bg-gray-200 px-3 py-1  shadow-md text-lg  font-semibold hover:bg-dark rounded-2xl "
+      className=" bg-indigo-300 py-3 px-6 rounded-full  shadow-md text-lg  font-semibold hover:bg-indigo-400  "
     >
       {isLoading ? 'Loading...' : text && text}
     </button>
