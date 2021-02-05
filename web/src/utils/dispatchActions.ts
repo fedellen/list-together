@@ -1,6 +1,6 @@
 import { UserToList } from 'src/generated/graphql';
 import { Action } from 'src/state/reducer';
-import { AppState, ModalTypes, UserPrivileges } from '../types';
+import { AppState, ModalTypes } from '../types';
 
 /** Common shared dispatch actions */
 
@@ -45,11 +45,7 @@ export const setNewList = (
   dispatch({
     type: 'SET_LIST',
     // Postgres only saves as `UserPrivileges` type
-    payload: {
-      listId: list.listId,
-      privileges: list.privileges as UserPrivileges[],
-      sortedItems: list.sortedItems || []
-    }
+    payload: list.listId
   });
 };
 

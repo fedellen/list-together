@@ -1,9 +1,4 @@
-import {
-  AppState,
-  CurrentListState,
-  ModalState,
-  SideMenuState
-} from 'src/types';
+import { AppState, ModalState, SideMenuState } from 'src/types';
 import { State } from './state';
 
 export type Action =
@@ -17,7 +12,7 @@ export type Action =
     }
   | {
       type: 'SET_LIST';
-      payload: CurrentListState;
+      payload: string;
     }
   | {
       type: 'CLEAR_LIST';
@@ -48,12 +43,12 @@ export const reducer = (state: State, action: Action): State => {
     case 'SET_LIST':
       return {
         ...state,
-        currentListState: action.payload
+        currentListId: action.payload
       };
     case 'CLEAR_LIST':
       return {
         ...state,
-        currentListState: { listId: '', privileges: [], sortedItems: [] }
+        currentListId: ''
       };
     case 'SET_SIDE_MENU_STATE':
       return {

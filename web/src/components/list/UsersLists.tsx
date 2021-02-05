@@ -13,7 +13,7 @@ import LoadingIcon from '../svg/LoadingIcon';
 export const ListContext = createContext<CurrentListContext | null>(null);
 
 export default function UsersLists() {
-  const [{ currentListState }, dispatch] = useStateValue();
+  const [{ currentListId }, dispatch] = useStateValue();
 
   const { data: userData } = useGetUserQuery({});
   const sortedListArray = userData?.getUser?.sortedListsArray;
@@ -25,11 +25,11 @@ export default function UsersLists() {
   useEffect(() => {
     console.log('use effect is firing');
     if (usersLists) {
-      if (currentListState.listId === '' && usersLists[0] !== undefined) {
+      if (currentListId === '' && usersLists[0] !== undefined) {
         setNewList(dispatch, usersLists[0]);
       }
     }
-  }, [usersLists, currentListState]);
+  }, [usersLists, currentListId]);
 
   if (loading && !usersLists) {
     return <LoadingIcon />;
@@ -53,8 +53,8 @@ export default function UsersLists() {
     });
   }
 
-  const currentList = currentListState.listId
-    ? usersLists.find((list) => list.listId === currentListState.listId)
+  const currentList = currentListId
+    ? usersLists.find((list) => list.listId === currentListId)
     : usersLists[0];
 
   // const currentSortedItems = currentList?.sortedItems

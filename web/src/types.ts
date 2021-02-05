@@ -38,15 +38,6 @@ export type CurrentListContext = {
   sortedItems: string[];
 };
 
-/** State to handle current list attributes */
-export type CurrentListState = {
-  listId: string;
-  /** Current UserPrivileges to determine which options to show */
-  privileges: UserPrivileges[];
-  /** To use in `sortItems` mutation */
-  sortedItems: string[];
-};
-
 /** State for which page to show */
 export type AppState = 'home' | 'login' | 'createUser' | 'demo' | 'list';
 

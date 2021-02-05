@@ -24,10 +24,7 @@ import LoadingIcon from '../svg/LoadingIcon';
 
 /** Modal for displaying user's item options when an item is clicked */
 export const ItemOptions = () => {
-  const [
-    { currentListState, activeItem: itemName },
-    dispatch
-  ] = useStateValue();
+  const [{ currentListId, activeItem: itemName }, dispatch] = useStateValue();
   const listContext = useContext(ListContext);
 
   const [deleteItems, { loading: deleteLoading }] = useDeleteItemsMutation();
@@ -53,7 +50,7 @@ export const ItemOptions = () => {
           variables: {
             data: {
               itemNameArray: [itemName],
-              listId: currentListState.listId
+              listId: currentListId
             }
           }
         });
@@ -72,7 +69,7 @@ export const ItemOptions = () => {
           variables: {
             data: {
               itemName: itemName,
-              listId: currentListState.listId,
+              listId: currentListId,
               style: optionAction === 'boldItem' ? 'bold' : 'strike'
             }
           }
@@ -119,11 +116,16 @@ export const ItemOptions = () => {
               data: {
                 stringArray: newSortedItemsArray
               },
-              listId: currentListState.listId
+              listId: currentListId
             }
           });
           if (data?.sortItems.errors) {
             errorNotifaction(data.sortItems.errors, dispatch);
+          } else {
+            setTimeout(() => {
+              /** After .05 sec set Active Item to continue sorting */
+              dispatch({ type: 'SET_ACTIVE_ITEM', payload: itemName });
+            }, 50);
           }
         } catch (err) {
           console.error(`Error on sortItem mutation: ${err}`);
@@ -137,7 +139,7 @@ export const ItemOptions = () => {
   const mutationIsLoading = styleLoading || sortLoading || deleteLoading;
 
   return (
-    <div className="grid absolute opacity-90 grid-cols-3 z-20 ml-12">
+    <div className="grid absolute grid-cols-3 z-20 ml-20 mt-2">
       {/** Display buttons when user has privileges to access them */}
       <OptionButton
         onClick={() => handleOptionAction('sortItemUp')}
