@@ -1,12 +1,13 @@
+import KofiWidget from './styled/KofiWidget';
+import PixelPajamaWidget from './styled/PixelPajamaWidget';
+import SocialMediaButtons from './styled/SocialMediaButtons';
+
 export default function Footer() {
   return (
-    <div className="h-28 bg-darker grid grid-cols-3 gap-2 justify-items-center items-center">
-      <div></div>
-      <div className="text-center">
-        Copyright 2020 <br />
-        Pixel Pajama Studios
-      </div>
-      <div></div>
+    <div className="flex flex-wrap justify-evenly gap-8 justify-items-center items-center p-4 pb-8 text-gray-600 text-sm sm:text-base font-semibold">
+      <KofiWidget />
+      <SocialMediaButtons />
+      <PixelPajamaWidget />
     </div>
   );
 }

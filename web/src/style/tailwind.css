@@ -14,9 +14,9 @@
     @apply bg-gradient-to-b;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-400;
+    @apply bg-gray-400 rounded-lg;
   }
   input {
-    /* @apply p-2 m-2 text-xl placeholder-darker text-darker bg-medium border-solid border-4 border-lighter rounded-3xl w-full focus:border-light; */
+    @apply p-4 text-xl placeholder-gray-500 text-gray-600 bg-gray-200 rounded-full w-auto;
   }
 }
