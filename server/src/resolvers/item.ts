@@ -27,6 +27,7 @@ import { BooleanResponse } from './types/response/BooleanResponse';
 import { SubscriptionPayload } from './types/subscription/SubscriptionPayload';
 import { Topic } from './types/subscription/SubscriptionTopics';
 import { validateStringLength } from './types/validators/validateStringLength';
+import { itemRemovalCallback } from '../utils/itemRemovalCallback';
 
 @Resolver()
 export class ItemResolver {
@@ -331,6 +332,28 @@ export class ItemResolver {
     } else {
       item.strike = !item.strike;
       // Sort to bottom
+    }
+
+    /** Add to removed items array */
+    if (item.strike) {
+      if (userToListTable.removedItems) {
+        userToListTable.removedItems = [
+          ...userToListTable.removedItems,
+          item.name
+        ];
+      } else {
+        userToListTable.removedItems = [item.name];
+      }
+      setTimeout(() => {
+        itemRemovalCallback(userToListTable, item.name);
+      }, 6000); // 30 minutes
+    } else {
+      // Item was unstriked -- remove it from array
+      if (userToListTable.removedItems?.includes(item.name)) {
+        userToListTable.removedItems = userToListTable.removedItems.filter(
+          (i) => i !== item.name
+        );
+      }
     }
 
     await userToListTable.save();
