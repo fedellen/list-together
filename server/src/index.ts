@@ -8,6 +8,8 @@ import connectRedis from 'connect-redis';
 import { createSchema } from './utils/createSchema';
 import { redis } from './redis';
 import http from 'http';
+import { FRONT_END_URL, __prod__ } from './constants';
+import router from './controllers/router';
 
 // Temporarily fixes a type error from @types/express-session update
 declare module 'express-session' {
@@ -55,7 +57,7 @@ const main = async () => {
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: __prod__, // production ? true : false
       maxAge: 1000 * 60 * 60 * 24 * 15 * 365, // 15 years
       sameSite: 'strict'
     }
@@ -67,15 +69,11 @@ const main = async () => {
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: [
-        'http://127.0.0.1:8080',
-        'http://localhost:8080',
-        'http://localhost:3000',
-        'http://192.168.86.136:8080'
-      ],
+      origin: [FRONT_END_URL],
       credentials: true
     }
   });
+  app.use('/confirm', router);
 
   const httpServer = http.createServer(app);
   apolloServer.installSubscriptionHandlers(httpServer);

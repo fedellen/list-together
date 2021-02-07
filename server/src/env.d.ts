@@ -8,5 +8,7 @@ declare namespace NodeJS {
     REDIS_URL: string;
     PORT: string;
     COOKIE_NAME: string;
+    FRONT_PROD_URL: string;
+    FRONT_DEV_URL: string;
   }
 }
