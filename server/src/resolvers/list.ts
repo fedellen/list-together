@@ -46,11 +46,17 @@ export class ListResolver {
     }
   })
   async subscribeToListUpdates(
-    @Root() { updatedListId, userIdToShare, notification }: SubscriptionPayload,
+    @Root()
+    {
+      updatedListId,
+      userIdToShare,
+      userIdToExclude,
+      notification
+    }: SubscriptionPayload,
     // Frontend sends array of their ListIds to subscribe to
     @Args() {}: SubscriptionArgs,
     @Ctx() { connection }: MyContext
-  ): Promise<UserToListResponse> {
+  ): Promise<UserToListResponse | null> {
     const userId: string = userIdToShare
       ? userIdToShare /** Newly shared list for the user */
       : connection.context.req.session.userId;
@@ -64,6 +70,8 @@ export class ListResolver {
         ]
       };
     }
+
+    if (userIdToExclude === userId) return null;
 
     const usersList = await UserToList.findOne({
       where: {
