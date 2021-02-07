@@ -1,8 +1,17 @@
 import nodemailer from 'nodemailer';
-import 'dotenv-safe/config';
 
 export async function sendEmail(email: string, url: string) {
-  const account = await nodemailer.createTestAccount();
+  const account = await nodemailer
+    .createTestAccount()
+    .catch((err) => console.log(JSON.stringify(err, null, 4)));
+
+  if (!account) {
+    console.log(
+      'test account could not be made, here is the url anyway: ',
+      url
+    );
+    return;
+  }
 
   const transporter = nodemailer.createTransport({
     // // production email via SMTP
