@@ -28,6 +28,8 @@ import { SubscriptionPayload } from './types/subscription/SubscriptionPayload';
 import { Topic } from './types/subscription/SubscriptionTopics';
 import { validateStringLength } from './types/validators/validateStringLength';
 import { itemRemovalCallback } from '../utils/itemRemovalCallback';
+import { sortIntoList } from '../utils/sortIntoList';
+import { addToSharedLists } from '../utils/addToSharedLists';
 
 @Resolver()
 export class ItemResolver {
@@ -123,55 +125,13 @@ export class ItemResolver {
       userToListTable.itemHistory = [ItemHistory.create({ item: nameInput })];
     }
 
+    const userToListTableAfterSort = sortIntoList(userToListTable, nameInput);
+    addToSharedLists(userToListTable, nameInput, publish);
+
     // Save table to DB, cascades list updates
-    await userToListTable.save();
+    await userToListTableAfterSort.save();
 
-    // Get all userToLists and add to their sortedItems --
-    const allUserToListTables = await UserToList.find({
-      where: { listId: list.id },
-      relations: ['itemHistory']
-    });
-    await Promise.all(
-      allUserToListTables.map(async (table) => {
-        if (table.sortedItems) {
-          const itemInHistory = table.itemHistory?.find(
-            (history) => nameInput === history.item
-          );
-          if (itemInHistory?.removalRatingArray) {
-            // User has removal history for item
-            const itemRating = itemInHistory.removalRating(itemInHistory);
-            const indexToInsert = Math.round(
-              table.sortedItems.length * (itemRating / 1000)
-            );
-            console.log(
-              `itemRating: "${itemRating}", indexToInsert: "${indexToInsert}" `
-            );
-            // Insert near user's preferred removal order
-            table.sortedItems.splice(indexToInsert, 0, nameInput);
-          } else {
-            // Insert at front of sortedItems
-            table.sortedItems = [nameInput, ...table.sortedItems];
-          }
-        } else {
-          // Initialize sortedItems
-          table.sortedItems = [nameInput];
-        }
-        // Save all shared tables with sorted list
-        await table.save();
-      })
-    );
-    await publish({
-      updatedListId: listId,
-      notification: `${nameInput} was added to ${list.title}`
-    });
-
-    // Grab sorted list and return user who added the item
-    const sortedUserToListTable = await UserToList.findOne({
-      where: { listId: listId, userId: userId },
-      relations: ['list', 'list.items', 'itemHistory']
-    });
-
-    return { userToList: [sortedUserToListTable!] };
+    return { userToList: [userToListTableAfterSort] };
   }
 
   // Delete array of items from list
@@ -334,8 +294,15 @@ export class ItemResolver {
       // Sort to bottom
     }
 
-    /** Add to removed items array */
     if (item.strike) {
+      /** Sort striked items to the end of the list */
+      if (userToListTable.sortedItems) {
+        const newSortedItems = userToListTable.sortedItems.filter(
+          (i) => i !== item.name
+        );
+        userToListTable.sortedItems = [...newSortedItems, item.name];
+      }
+      /** Add to removalArray */
       if (userToListTable.removedItems) {
         userToListTable.removedItems = [
           ...userToListTable.removedItems,
@@ -348,7 +315,13 @@ export class ItemResolver {
         itemRemovalCallback(userToListTable, item.name);
       }, 6000); // 30 minutes
     } else {
-      // Item was unstriked -- remove it from array
+      /** Sort unstriked items to the end of the list */
+      if (userToListTable.sortedItems) {
+        const newSortedItems = sortIntoList(userToListTable, item.name)
+          .sortedItems;
+        userToListTable.sortedItems = newSortedItems;
+      }
+      // Item was unstriked -- remove it from removalArray
       if (userToListTable.removedItems?.includes(item.name)) {
         userToListTable.removedItems = userToListTable.removedItems.filter(
           (i) => i !== item.name

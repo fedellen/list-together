@@ -58,6 +58,9 @@ export class UserToList extends BaseEntity {
   @Column({ type: 'simple-array', nullable: true })
   sortedItems: string[] | null;
 
+  @Column({ type: 'simple-array', nullable: true })
+  removedItems: string[] | null;
+
   @Field(() => List)
   @ManyToOne(() => List, (list) => list.userConnection, {
     primary: true,

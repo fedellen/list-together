@@ -3,7 +3,7 @@ import { ItemHistory, UserToList } from '../entities';
 export const itemRemovalCallback = async (
   userToList: UserToList,
   itemName: string
-) => {
+): Promise<void> => {
   console.log('here we are after 6 seconds on the server');
   /** Get current UserToList */
   const currentList = await UserToList.findOne({
