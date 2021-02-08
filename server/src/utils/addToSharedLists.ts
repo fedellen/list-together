@@ -16,7 +16,7 @@ export const addToSharedLists = async (
     (list) => list.userId !== userToList.userId
   );
 
-  if (sharedUserToListTables.length > -1) {
+  if (sharedUserToListTables.length > 0) {
     /** List has shared users, add to their lists */
     await Promise.all(
       sharedUserToListTables.map(async (table) => {

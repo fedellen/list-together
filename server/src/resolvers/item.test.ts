@@ -8,7 +8,6 @@ import { UserToList } from '../entities';
 import faker from 'faker';
 import { userListFragment } from '../test-helpers/fragments/userListFragment';
 import { fieldErrorFragment } from '../test-helpers/fragments/fieldErrorFragment';
-import { booleanFragment } from '../test-helpers/fragments/booleanFragment';
 import { itemFragment } from '../test-helpers/fragments/itemFragment';
 
 const addItemMutation = `
@@ -22,7 +21,10 @@ mutation AddItem($data: AddItemInput!) {
 
 const deleteItemsMutation = `
 mutation DeleteItems($data: DeleteItemsInput!) {
-  deleteItems(data: $data) ${booleanFragment}
+  deleteItems(data: $data) {
+    ${userListFragment} 
+    ${fieldErrorFragment}
+  }
 }
 `;
 
@@ -34,17 +36,6 @@ mutation StyleItem($data: StyleItemInput!) {
   }
 }
 `;
-
-// const renameItemMutation = `
-// mutation RenameItem($data: RenameItemInput!) {
-//   renameItem(data: $data) {
-//     item {
-//       ${itemFragment}
-//     }
-//     ${fieldErrorFragment}
-//   }
-// }
-// `;
 
 const addNoteMutation = `
 mutation AddNote($data: AddNoteInput!) {
@@ -187,20 +178,23 @@ describe('Delete items mutation:', () => {
       data: {
         deleteItems: {
           errors: null,
-          boolean: true
-          // list: {
-          //   items: [
-          //     {
-          //       name: itemNameArray[2]
-          //     },
-          //     {
-          //       name: itemNameArray[3]
-          //     },
-          //     {
-          //       name: itemNameArray[4]
-          //     }
-          //   ]
-          // }
+          userToList: [
+            {
+              list: {
+                items: [
+                  {
+                    name: itemNameArray[2]
+                  },
+                  {
+                    name: itemNameArray[3]
+                  },
+                  {
+                    name: itemNameArray[4]
+                  }
+                ]
+              }
+            }
+          ]
         }
       }
     });
@@ -260,20 +254,23 @@ describe('Delete items mutation:', () => {
               message: 'Item "fakeItemName" was not found on the list..'
             }
           ],
-          boolean: true
-          // list: {
-          //   items: [
-          //     {
-          //       name: itemNameArray[2]
-          //     },
-          //     {
-          //       name: itemNameArray[3]
-          //     },
-          //     {
-          //       name: itemNameArray[4]
-          //     }
-          //   ]
-          // }
+          userToList: [
+            {
+              list: {
+                items: [
+                  {
+                    name: itemNameArray[2]
+                  },
+                  {
+                    name: itemNameArray[3]
+                  },
+                  {
+                    name: itemNameArray[4]
+                  }
+                ]
+              }
+            }
+          ]
         }
       }
     });
@@ -326,17 +323,20 @@ describe('Delete items mutation:', () => {
       data: {
         deleteItems: {
           errors: null,
-          boolean: true
-          // list: {
-          //   items: [
-          //     {
-          //       name: itemNameArray[0]
-          //     },
-          //     {
-          //       name: itemNameArray[1]
-          //     }
-          //   ]
-          // }
+          userToList: [
+            {
+              list: {
+                items: [
+                  {
+                    name: itemNameArray[0]
+                  },
+                  {
+                    name: itemNameArray[1]
+                  }
+                ]
+              }
+            }
+          ]
         }
       }
     });
@@ -427,29 +427,6 @@ describe('Style item mutation:', () => {
     });
 
     const itemNameArray = userToListTable!.list.items!.map((i) => i.name);
-
-    // const responseBold = await graphqlCall({
-    //   source: styleItemMutation,
-    //   variableValues: {
-    //     data: {
-    //       listId: userToListTable!.listId,
-    //       itemName: itemNameArray[0],
-    //       style: 'bold'
-    //     }
-    //   },
-    //   userId: user.id
-    // });
-
-    // // Check response format, has bold
-    // expect(responseBold).toMatchObject({
-    //   data: {
-    //     styleItem: {
-    //       item: {
-    //         bold: true
-    //       }
-    //     }
-    //   }
-    // });
 
     const response = await graphqlCall({
       source: styleItemMutation,
@@ -812,155 +789,3 @@ describe('Add note mutation:', () => {
     ).toBeNull();
   });
 });
-
-// describe('Rename item mutation:', () => {
-//   it('User can rename items on own their own list', async () => {
-//     const user = await userWithListAndItems();
-//     const userToListTable = await UserToList.findOne({
-//       where: { userId: user.id },
-//       relations: ['list', 'list.items']
-//     });
-
-//     const itemNameArray = userToListTable!.list.items!.map((i) => i.name);
-//     const newItemName = faker.name.lastName();
-
-//     const response = await graphqlCall({
-//       source: renameItemMutation,
-//       variableValues: {
-//         data: {
-//           listId: userToListTable!.listId,
-//           itemName: itemNameArray[0],
-//           newName: newItemName
-//         }
-//       },
-//       userId: user.id
-//     });
-
-//     // Check response format, has bold
-//     expect(response).toMatchObject({
-//       data: {
-//         renameItem: {
-//           item: {
-//             name: newItemName
-//           }
-//         }
-//       }
-//     });
-
-//     const listConnectionInDatabase = await UserToList.findOne({
-//       where: { userId: user.id },
-//       relations: ['list', 'list.items']
-//     });
-
-//     expect(
-//       listConnectionInDatabase!.list
-//         .items!.map((i) => i.name)
-//         .includes(newItemName)
-//     ).toBeTruthy();
-//   });
-
-//   it('User with shared `add` privileges can rename items on the list', async () => {
-//     const listOwner = await userWithListAndItems();
-//     const listOwnerUserConnection = await UserToList.findOne({
-//       where: { userId: listOwner.id },
-//       relations: ['list', 'list.items']
-//     });
-//     const sharedUser = await createUserWithSharedPriv(
-//       listOwnerUserConnection!.listId,
-//       ['add']
-//     );
-
-//     const itemNameArray = listOwnerUserConnection!.list.items!.map(
-//       (i) => i.name
-//     );
-//     const newItemName = faker.name.lastName();
-
-//     const response = await graphqlCall({
-//       source: renameItemMutation,
-//       variableValues: {
-//         data: {
-//           listId: listOwnerUserConnection!.listId,
-//           itemName: itemNameArray[1],
-//           newName: newItemName
-//         }
-//       },
-//       userId: sharedUser.id
-//     });
-
-//     // Check response format, has bold
-//     expect(response).toMatchObject({
-//       data: {
-//         renameItem: {
-//           item: {
-//             name: newItemName
-//           }
-//         }
-//       }
-//     });
-
-//     const listConnectionInDatabase = await UserToList.findOne({
-//       where: { userId: listOwner.id },
-//       relations: ['list', 'list.items']
-//     });
-
-//     expect(
-//       listConnectionInDatabase!.list
-//         .items!.map((i) => i.name)
-//         .includes(newItemName)
-//     ).toBeTruthy();
-//   });
-
-//   it('User without shared `add` privileges cannot remame items on the list', async () => {
-//     const listOwner = await userWithListAndItems();
-//     const listOwnerUserConnection = await UserToList.findOne({
-//       where: { userId: listOwner.id },
-//       relations: ['list', 'list.items']
-//     });
-//     const sharedUser = await createUserWithSharedPriv(
-//       listOwnerUserConnection!.listId,
-//       ['strike']
-//     );
-
-//     const itemNameArray = listOwnerUserConnection!.list.items!.map(
-//       (i) => i.name
-//     );
-//     const newItemName = faker.name.lastName();
-
-//     const response = await graphqlCall({
-//       source: renameItemMutation,
-//       variableValues: {
-//         data: {
-//           listId: listOwnerUserConnection!.listId,
-//           itemName: itemNameArray[2],
-//           newName: newItemName
-//         }
-//       },
-//       userId: sharedUser.id
-//     });
-
-//     // Check response format, has bold
-//     expect(response).toMatchObject({
-//       data: {
-//         renameItem: {
-//           errors: [
-//             {
-//               message:
-//                 'User does not have privileges to rename items on that list..'
-//             }
-//           ]
-//         }
-//       }
-//     });
-
-//     const listConnectionInDatabase = await UserToList.findOne({
-//       where: { userId: listOwner.id },
-//       relations: ['list', 'list.items']
-//     });
-
-//     expect(
-//       listConnectionInDatabase!.list
-//         .items!.map((i) => i.name)
-//         .includes(newItemName)
-//     ).toBeFalsy();
-//   });
-// });

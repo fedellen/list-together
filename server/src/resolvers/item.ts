@@ -16,14 +16,12 @@ import { StyleItemInput } from './types/input/StyleItemsInput';
 import { AddNoteInput } from './types/input/AddNoteInput';
 import { AddItemInput } from './types/input/AddItemInput';
 import { DeleteItemsInput } from './types/input/DeleteItemsInput';
-// import { RenameItemInput } from './types/input/RenameItemInput';
 
 import { UserToListResponse } from './types/response/UserToListResponse';
 import { ItemResponse } from './types/response/ItemResponse';
 
 import { FieldError } from './types/response/FieldError';
 import { validateContext } from './types/validators/validateContext';
-import { BooleanResponse } from './types/response/BooleanResponse';
 import { SubscriptionPayload } from './types/subscription/SubscriptionPayload';
 import { Topic } from './types/subscription/SubscriptionTopics';
 import { validateStringLength } from './types/validators/validateStringLength';
@@ -32,6 +30,7 @@ import { sortIntoList } from '../utils/sortIntoList';
 import { addToSharedLists } from '../utils/addToSharedLists';
 import { validateUserToList } from './types/validators/validateUserToList';
 import { validateAddToList } from './types/validators/validateAddToList';
+import { removeFromSharedLists } from '../utils/removeFromSharedLists';
 
 @Resolver()
 export class ItemResolver {
@@ -105,12 +104,12 @@ export class ItemResolver {
   // Delete array of items from list
   // Items will usually be deleted in batches from front-end `deleteStrikes`
   @UseMiddleware(logger)
-  @Mutation(() => BooleanResponse)
+  @Mutation(() => UserToListResponse)
   async deleteItems(
     @Arg('data') { itemNameArray, listId }: DeleteItemsInput,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>,
     @Ctx() context: MyContext
-  ): Promise<BooleanResponse> {
+  ): Promise<UserToListResponse> {
     const errors = validateContext(context);
     if (errors) return { errors };
 
@@ -156,10 +155,11 @@ export class ItemResolver {
       );
     });
 
+    removeFromSharedLists(userToListTable, itemNameArray, publish);
+
     await userToListTable.save();
-    await publish({ updatedListId: listId });
     return {
-      boolean: true,
+      userToList: [userToListTable],
       errors: deleteErrors.length > 0 ? deleteErrors : undefined
     };
   }
@@ -311,76 +311,7 @@ export class ItemResolver {
     }
 
     await item.save();
-    await publish({ updatedListId: listId });
+    await publish({ updatedListId: listId, userIdToExclude: userId });
     return { item };
   }
-
-  // // Rename item on list
-  // @UseMiddleware(logger)
-  // @Mutation(() => ItemResponse)
-  // async renameItem(
-  //   @Arg('data') { listId, newName, itemName }: RenameItemInput,
-  //   @Ctx() context: MyContext
-  // ): Promise<ItemResponse> {
-  //   const errors = validateContext(context);
-  //   if (errors) return { errors };
-
-  //   const userId = context.req.session.userId;
-  //   const userToListTable = await UserToList.findOne({
-  //     where: { listId: listId, userId: userId },
-  //     relations: ['list', 'list.items']
-  //   });
-
-  //   if (!userToListTable) {
-  //     return {
-  //       errors: [
-  //         {
-  //           field: 'listId',
-  //           message: 'Could not find that user to list connection..'
-  //         }
-  //       ]
-  //     };
-  //   } else if (
-  //     !userToListTable.privileges.includes('owner') &&
-  //     !userToListTable.privileges.includes('add')
-  //   ) {
-  //     return {
-  //       errors: [
-  //         {
-  //           field: 'userId',
-  //           message:
-  //             'User does not have privileges to rename items on that list..'
-  //         }
-  //       ]
-  //     };
-  //   } else if (!userToListTable.list.items) {
-  //     return {
-  //       errors: [
-  //         {
-  //           field: 'listId',
-  //           message: 'List has no items rename..'
-  //         }
-  //       ]
-  //     };
-  //   }
-
-  //   const item = userToListTable.list.items.find(
-  //     ({ name }) => name === itemName
-  //   );
-  //   if (!item) {
-  //     return {
-  //       errors: [
-  //         {
-  //           field: 'name',
-  //           message: 'Item does not exist on list..'
-  //         }
-  //       ]
-  //     };
-  //   }
-
-  //   item.name = newName;
-
-  //   await item.save();
-  //   return { item };
-  // }
 }
