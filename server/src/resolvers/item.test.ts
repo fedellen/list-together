@@ -35,16 +35,16 @@ mutation StyleItem($data: StyleItemInput!) {
 }
 `;
 
-const renameItemMutation = `
-mutation RenameItem($data: RenameItemInput!) {
-  renameItem(data: $data) {
-    item {
-      ${itemFragment}
-    }
-    ${fieldErrorFragment}
-  }
-}
-`;
+// const renameItemMutation = `
+// mutation RenameItem($data: RenameItemInput!) {
+//   renameItem(data: $data) {
+//     item {
+//       ${itemFragment}
+//     }
+//     ${fieldErrorFragment}
+//   }
+// }
+// `;
 
 const addNoteMutation = `
 mutation AddNote($data: AddNoteInput!) {
@@ -386,9 +386,8 @@ describe('Delete items mutation:', () => {
         deleteItems: {
           errors: [
             {
-              field: 'userId',
-              message:
-                'User does not have privileges to delete items from that list..'
+              field: 'privileges',
+              message: 'User does not have the correct "delete" privilege..'
             }
           ]
         }
@@ -641,9 +640,8 @@ describe('Style item mutation:', () => {
         styleItem: {
           errors: [
             {
-              field: 'userId',
-              message:
-                'User does not have privileges to strike items from that list..'
+              field: 'privileges',
+              message: 'User does not have the correct "strike" privilege..'
             }
           ]
         }
@@ -794,8 +792,8 @@ describe('Add note mutation:', () => {
         addNote: {
           errors: [
             {
-              message:
-                'User does not have privileges to add notes to items on that list..'
+              field: 'privileges',
+              message: 'User does not have the correct "add" privilege..'
             }
           ]
         }
@@ -815,154 +813,154 @@ describe('Add note mutation:', () => {
   });
 });
 
-describe('Rename item mutation:', () => {
-  it('User can rename items on own their own list', async () => {
-    const user = await userWithListAndItems();
-    const userToListTable = await UserToList.findOne({
-      where: { userId: user.id },
-      relations: ['list', 'list.items']
-    });
+// describe('Rename item mutation:', () => {
+//   it('User can rename items on own their own list', async () => {
+//     const user = await userWithListAndItems();
+//     const userToListTable = await UserToList.findOne({
+//       where: { userId: user.id },
+//       relations: ['list', 'list.items']
+//     });
 
-    const itemNameArray = userToListTable!.list.items!.map((i) => i.name);
-    const newItemName = faker.name.lastName();
+//     const itemNameArray = userToListTable!.list.items!.map((i) => i.name);
+//     const newItemName = faker.name.lastName();
 
-    const response = await graphqlCall({
-      source: renameItemMutation,
-      variableValues: {
-        data: {
-          listId: userToListTable!.listId,
-          itemName: itemNameArray[0],
-          newName: newItemName
-        }
-      },
-      userId: user.id
-    });
+//     const response = await graphqlCall({
+//       source: renameItemMutation,
+//       variableValues: {
+//         data: {
+//           listId: userToListTable!.listId,
+//           itemName: itemNameArray[0],
+//           newName: newItemName
+//         }
+//       },
+//       userId: user.id
+//     });
 
-    // Check response format, has bold
-    expect(response).toMatchObject({
-      data: {
-        renameItem: {
-          item: {
-            name: newItemName
-          }
-        }
-      }
-    });
+//     // Check response format, has bold
+//     expect(response).toMatchObject({
+//       data: {
+//         renameItem: {
+//           item: {
+//             name: newItemName
+//           }
+//         }
+//       }
+//     });
 
-    const listConnectionInDatabase = await UserToList.findOne({
-      where: { userId: user.id },
-      relations: ['list', 'list.items']
-    });
+//     const listConnectionInDatabase = await UserToList.findOne({
+//       where: { userId: user.id },
+//       relations: ['list', 'list.items']
+//     });
 
-    expect(
-      listConnectionInDatabase!.list
-        .items!.map((i) => i.name)
-        .includes(newItemName)
-    ).toBeTruthy();
-  });
+//     expect(
+//       listConnectionInDatabase!.list
+//         .items!.map((i) => i.name)
+//         .includes(newItemName)
+//     ).toBeTruthy();
+//   });
 
-  it('User with shared `add` privileges can rename items on the list', async () => {
-    const listOwner = await userWithListAndItems();
-    const listOwnerUserConnection = await UserToList.findOne({
-      where: { userId: listOwner.id },
-      relations: ['list', 'list.items']
-    });
-    const sharedUser = await createUserWithSharedPriv(
-      listOwnerUserConnection!.listId,
-      ['add']
-    );
+//   it('User with shared `add` privileges can rename items on the list', async () => {
+//     const listOwner = await userWithListAndItems();
+//     const listOwnerUserConnection = await UserToList.findOne({
+//       where: { userId: listOwner.id },
+//       relations: ['list', 'list.items']
+//     });
+//     const sharedUser = await createUserWithSharedPriv(
+//       listOwnerUserConnection!.listId,
+//       ['add']
+//     );
 
-    const itemNameArray = listOwnerUserConnection!.list.items!.map(
-      (i) => i.name
-    );
-    const newItemName = faker.name.lastName();
+//     const itemNameArray = listOwnerUserConnection!.list.items!.map(
+//       (i) => i.name
+//     );
+//     const newItemName = faker.name.lastName();
 
-    const response = await graphqlCall({
-      source: renameItemMutation,
-      variableValues: {
-        data: {
-          listId: listOwnerUserConnection!.listId,
-          itemName: itemNameArray[1],
-          newName: newItemName
-        }
-      },
-      userId: sharedUser.id
-    });
+//     const response = await graphqlCall({
+//       source: renameItemMutation,
+//       variableValues: {
+//         data: {
+//           listId: listOwnerUserConnection!.listId,
+//           itemName: itemNameArray[1],
+//           newName: newItemName
+//         }
+//       },
+//       userId: sharedUser.id
+//     });
 
-    // Check response format, has bold
-    expect(response).toMatchObject({
-      data: {
-        renameItem: {
-          item: {
-            name: newItemName
-          }
-        }
-      }
-    });
+//     // Check response format, has bold
+//     expect(response).toMatchObject({
+//       data: {
+//         renameItem: {
+//           item: {
+//             name: newItemName
+//           }
+//         }
+//       }
+//     });
 
-    const listConnectionInDatabase = await UserToList.findOne({
-      where: { userId: listOwner.id },
-      relations: ['list', 'list.items']
-    });
+//     const listConnectionInDatabase = await UserToList.findOne({
+//       where: { userId: listOwner.id },
+//       relations: ['list', 'list.items']
+//     });
 
-    expect(
-      listConnectionInDatabase!.list
-        .items!.map((i) => i.name)
-        .includes(newItemName)
-    ).toBeTruthy();
-  });
+//     expect(
+//       listConnectionInDatabase!.list
+//         .items!.map((i) => i.name)
+//         .includes(newItemName)
+//     ).toBeTruthy();
+//   });
 
-  it('User without shared `add` privileges cannot remame items on the list', async () => {
-    const listOwner = await userWithListAndItems();
-    const listOwnerUserConnection = await UserToList.findOne({
-      where: { userId: listOwner.id },
-      relations: ['list', 'list.items']
-    });
-    const sharedUser = await createUserWithSharedPriv(
-      listOwnerUserConnection!.listId,
-      ['strike']
-    );
+//   it('User without shared `add` privileges cannot remame items on the list', async () => {
+//     const listOwner = await userWithListAndItems();
+//     const listOwnerUserConnection = await UserToList.findOne({
+//       where: { userId: listOwner.id },
+//       relations: ['list', 'list.items']
+//     });
+//     const sharedUser = await createUserWithSharedPriv(
+//       listOwnerUserConnection!.listId,
+//       ['strike']
+//     );
 
-    const itemNameArray = listOwnerUserConnection!.list.items!.map(
-      (i) => i.name
-    );
-    const newItemName = faker.name.lastName();
+//     const itemNameArray = listOwnerUserConnection!.list.items!.map(
+//       (i) => i.name
+//     );
+//     const newItemName = faker.name.lastName();
 
-    const response = await graphqlCall({
-      source: renameItemMutation,
-      variableValues: {
-        data: {
-          listId: listOwnerUserConnection!.listId,
-          itemName: itemNameArray[2],
-          newName: newItemName
-        }
-      },
-      userId: sharedUser.id
-    });
+//     const response = await graphqlCall({
+//       source: renameItemMutation,
+//       variableValues: {
+//         data: {
+//           listId: listOwnerUserConnection!.listId,
+//           itemName: itemNameArray[2],
+//           newName: newItemName
+//         }
+//       },
+//       userId: sharedUser.id
+//     });
 
-    // Check response format, has bold
-    expect(response).toMatchObject({
-      data: {
-        renameItem: {
-          errors: [
-            {
-              message:
-                'User does not have privileges to rename items on that list..'
-            }
-          ]
-        }
-      }
-    });
+//     // Check response format, has bold
+//     expect(response).toMatchObject({
+//       data: {
+//         renameItem: {
+//           errors: [
+//             {
+//               message:
+//                 'User does not have privileges to rename items on that list..'
+//             }
+//           ]
+//         }
+//       }
+//     });
 
-    const listConnectionInDatabase = await UserToList.findOne({
-      where: { userId: listOwner.id },
-      relations: ['list', 'list.items']
-    });
+//     const listConnectionInDatabase = await UserToList.findOne({
+//       where: { userId: listOwner.id },
+//       relations: ['list', 'list.items']
+//     });
 
-    expect(
-      listConnectionInDatabase!.list
-        .items!.map((i) => i.name)
-        .includes(newItemName)
-    ).toBeFalsy();
-  });
-});
+//     expect(
+//       listConnectionInDatabase!.list
+//         .items!.map((i) => i.name)
+//         .includes(newItemName)
+//     ).toBeFalsy();
+//   });
+// });

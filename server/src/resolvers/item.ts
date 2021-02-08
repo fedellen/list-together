@@ -16,7 +16,7 @@ import { StyleItemInput } from './types/input/StyleItemsInput';
 import { AddNoteInput } from './types/input/AddNoteInput';
 import { AddItemInput } from './types/input/AddItemInput';
 import { DeleteItemsInput } from './types/input/DeleteItemsInput';
-import { RenameItemInput } from './types/input/RenameItemInput';
+// import { RenameItemInput } from './types/input/RenameItemInput';
 
 import { UserToListResponse } from './types/response/UserToListResponse';
 import { ItemResponse } from './types/response/ItemResponse';
@@ -54,9 +54,13 @@ export class ItemResolver {
       relations: ['list', 'list.items', 'itemHistory']
     });
 
-    const userListErrors = validateUserToList({ userToList: userToListTable });
+    const userListErrors = validateUserToList({
+      userToList: userToListTable,
+      validatePrivilege: 'add'
+    });
     if (userListErrors) return { errors: userListErrors };
-    else if (!userToListTable) throw new Error('UserList validation error..');
+    else if (!userToListTable)
+      throw new Error('UserList validation error on `addItem`..');
 
     const list = userToListTable.list;
     if (!list.items) {
@@ -116,41 +120,17 @@ export class ItemResolver {
       relations: ['list', 'list.items']
     });
 
-    if (!userToListTable) {
-      return {
-        errors: [
-          {
-            field: 'listId',
-            message: 'Could not find that user to list connection..'
-          }
-        ]
-      };
-    } else if (
-      !userToListTable.privileges.includes('owner') &&
-      !userToListTable.privileges.includes('delete')
-    ) {
-      return {
-        errors: [
-          {
-            field: 'userId',
-            message:
-              'User does not have privileges to delete items from that list..'
-          }
-        ]
-      };
-    } else if (!userToListTable.list.items) {
-      return {
-        errors: [
-          {
-            field: 'listId',
-            message: 'List has no items to delete..'
-          }
-        ]
-      };
-    }
+    const userListErrors = validateUserToList({
+      userToList: userToListTable,
+      validatePrivilege: 'delete',
+      validateItemsExist: true
+    });
+    if (userListErrors) return { errors: userListErrors };
+    else if (!userToListTable || !userToListTable.list.items)
+      throw new Error('UserList validation error on `deleteItems`..');
 
-    // Store each error, continue deleting items in case of conflicts
-    let deleteErrors: FieldError[] | undefined = undefined;
+    // Store each error, continue deleting items in the case of conflicts
+    let deleteErrors: FieldError[] = [];
     itemNameArray.forEach(async (itemName) => {
       const itemExists = userToListTable.list.items!.find(
         ({ name }) => name === itemName
@@ -160,12 +140,8 @@ export class ItemResolver {
           field: 'itemName',
           message: `Item "${itemName}" was not found on the list..`
         };
+        deleteErrors = [...deleteErrors, error];
 
-        if (!deleteErrors) {
-          deleteErrors = [error];
-        } else {
-          deleteErrors = [...deleteErrors, error];
-        }
         return;
       }
 
@@ -182,7 +158,10 @@ export class ItemResolver {
 
     await userToListTable.save();
     await publish({ updatedListId: listId });
-    return { boolean: true, errors: deleteErrors };
+    return {
+      boolean: true,
+      errors: deleteErrors.length > 0 ? deleteErrors : undefined
+    };
   }
 
   // Style items on list
@@ -202,39 +181,14 @@ export class ItemResolver {
       relations: ['list', 'list.items']
     });
 
-    if (!userToListTable) {
-      return {
-        errors: [
-          {
-            field: 'listId',
-            message: 'Could not find that user to list connection..'
-          }
-        ]
-      };
-    } else if (
-      !userToListTable.privileges.includes('owner') &&
-      !userToListTable.privileges.includes('strike') &&
-      style === 'strike'
-    ) {
-      return {
-        errors: [
-          {
-            field: 'userId',
-            message:
-              'User does not have privileges to strike items from that list..'
-          }
-        ]
-      };
-    } else if (!userToListTable.list.items) {
-      return {
-        errors: [
-          {
-            field: 'listId',
-            message: 'List has no items to style..'
-          }
-        ]
-      };
-    }
+    const userListErrors = validateUserToList({
+      userToList: userToListTable,
+      validatePrivilege: 'strike',
+      validateItemsExist: true
+    });
+    if (userListErrors) return { errors: userListErrors };
+    else if (!userToListTable || !userToListTable.list.items)
+      throw new Error('UserList validation error on `strikeItems`..');
 
     const item = userToListTable.list.items.find(
       ({ name }) => name === itemName
@@ -316,38 +270,14 @@ export class ItemResolver {
       relations: ['list', 'list.items']
     });
 
-    if (!userToListTable) {
-      return {
-        errors: [
-          {
-            field: 'listId',
-            message: 'Could not find that user to list connection..'
-          }
-        ]
-      };
-    } else if (
-      !userToListTable.privileges.includes('owner') &&
-      !userToListTable.privileges.includes('add')
-    ) {
-      return {
-        errors: [
-          {
-            field: 'userId',
-            message:
-              'User does not have privileges to add notes to items on that list..'
-          }
-        ]
-      };
-    } else if (!userToListTable.list.items) {
-      return {
-        errors: [
-          {
-            field: 'listId',
-            message: 'List has no items to add notes to..'
-          }
-        ]
-      };
-    }
+    const userListErrors = validateUserToList({
+      userToList: userToListTable,
+      validatePrivilege: 'add',
+      validateItemsExist: true
+    });
+    if (userListErrors) return { errors: userListErrors };
+    else if (!userToListTable || !userToListTable.list.items)
+      throw new Error('UserList validation error on `addNote`..');
 
     const item = userToListTable.list.items.find(
       ({ name }) => name === itemName
@@ -385,72 +315,72 @@ export class ItemResolver {
     return { item };
   }
 
-  // Rename item on list
-  @UseMiddleware(logger)
-  @Mutation(() => ItemResponse)
-  async renameItem(
-    @Arg('data') { listId, newName, itemName }: RenameItemInput,
-    @Ctx() context: MyContext
-  ): Promise<ItemResponse> {
-    const errors = validateContext(context);
-    if (errors) return { errors };
+  // // Rename item on list
+  // @UseMiddleware(logger)
+  // @Mutation(() => ItemResponse)
+  // async renameItem(
+  //   @Arg('data') { listId, newName, itemName }: RenameItemInput,
+  //   @Ctx() context: MyContext
+  // ): Promise<ItemResponse> {
+  //   const errors = validateContext(context);
+  //   if (errors) return { errors };
 
-    const userId = context.req.session.userId;
-    const userToListTable = await UserToList.findOne({
-      where: { listId: listId, userId: userId },
-      relations: ['list', 'list.items']
-    });
+  //   const userId = context.req.session.userId;
+  //   const userToListTable = await UserToList.findOne({
+  //     where: { listId: listId, userId: userId },
+  //     relations: ['list', 'list.items']
+  //   });
 
-    if (!userToListTable) {
-      return {
-        errors: [
-          {
-            field: 'listId',
-            message: 'Could not find that user to list connection..'
-          }
-        ]
-      };
-    } else if (
-      !userToListTable.privileges.includes('owner') &&
-      !userToListTable.privileges.includes('add')
-    ) {
-      return {
-        errors: [
-          {
-            field: 'userId',
-            message:
-              'User does not have privileges to rename items on that list..'
-          }
-        ]
-      };
-    } else if (!userToListTable.list.items) {
-      return {
-        errors: [
-          {
-            field: 'listId',
-            message: 'List has no items rename..'
-          }
-        ]
-      };
-    }
+  //   if (!userToListTable) {
+  //     return {
+  //       errors: [
+  //         {
+  //           field: 'listId',
+  //           message: 'Could not find that user to list connection..'
+  //         }
+  //       ]
+  //     };
+  //   } else if (
+  //     !userToListTable.privileges.includes('owner') &&
+  //     !userToListTable.privileges.includes('add')
+  //   ) {
+  //     return {
+  //       errors: [
+  //         {
+  //           field: 'userId',
+  //           message:
+  //             'User does not have privileges to rename items on that list..'
+  //         }
+  //       ]
+  //     };
+  //   } else if (!userToListTable.list.items) {
+  //     return {
+  //       errors: [
+  //         {
+  //           field: 'listId',
+  //           message: 'List has no items rename..'
+  //         }
+  //       ]
+  //     };
+  //   }
 
-    const item = userToListTable.list.items.find(
-      ({ name }) => name === itemName
-    );
-    if (!item) {
-      return {
-        errors: [
-          {
-            field: 'name',
-            message: 'Item does not exist on list..'
-          }
-        ]
-      };
-    }
+  //   const item = userToListTable.list.items.find(
+  //     ({ name }) => name === itemName
+  //   );
+  //   if (!item) {
+  //     return {
+  //       errors: [
+  //         {
+  //           field: 'name',
+  //           message: 'Item does not exist on list..'
+  //         }
+  //       ]
+  //     };
+  //   }
 
-    item.name = newName;
+  //   item.name = newName;
 
-    await item.save();
-    return { item };
-  }
+  //   await item.save();
+  //   return { item };
+  // }
 }

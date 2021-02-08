@@ -1,4 +1,4 @@
-import { List } from 'src/entities';
+import { List } from '../../../entities';
 import { FieldError } from '../response/FieldError';
 
 export const validateAddToList = (
