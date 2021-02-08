@@ -30,6 +30,8 @@ import { validateStringLength } from './types/validators/validateStringLength';
 import { itemRemovalCallback } from '../utils/itemRemovalCallback';
 import { sortIntoList } from '../utils/sortIntoList';
 import { addToSharedLists } from '../utils/addToSharedLists';
+import { validateUserToList } from './types/validators/validateUserToList';
+import { validateAddToList } from './types/validators/validateAddToList';
 
 @Resolver()
 export class ItemResolver {
@@ -52,62 +54,26 @@ export class ItemResolver {
       relations: ['list', 'list.items', 'itemHistory']
     });
 
-    if (!userToListTable) {
-      return {
-        errors: [
-          {
-            field: 'listId',
-            message: 'Could not find that user to list connection..'
-          }
-        ]
-      };
-    } else if (
-      !userToListTable.privileges.includes('owner') &&
-      !userToListTable.privileges.includes('add')
-    ) {
-      return {
-        errors: [
-          {
-            field: 'userId',
-            message: 'User does not have privileges to add items to that list..'
-          }
-        ]
-      };
-    }
+    const userListErrors = validateUserToList({ userToList: userToListTable });
+    if (userListErrors) return { errors: userListErrors };
+    else if (!userToListTable) throw new Error('UserList validation error..');
 
     const list = userToListTable.list;
-    if (list.items) {
-      if (list.items.length >= 300) {
-        return {
-          errors: [
-            {
-              field: 'listId',
-              message: 'Lists cannot have more than 300 items..'
-            }
-          ]
-        };
-      }
-
-      const itemExists = list.items.find(({ name }) => name === nameInput);
-      if (itemExists) {
-        return {
-          errors: [
-            {
-              field: 'name',
-              message: 'Item already exists on this list..'
-            }
-          ]
-        };
-      }
-
-      list.items = [Item.create({ name: nameInput }), ...list.items];
-    } else {
-      // Initialize list if no items --
+    if (!list.items) {
+      // Initialize list
       list.items = [Item.create({ name: nameInput })];
+    } else {
+      const addItemErrors = validateAddToList(list, nameInput);
+      // Validation for max list length and if item already exists
+      if (addItemErrors) return { errors: addItemErrors };
+      else list.items = [Item.create({ name: nameInput }), ...list.items];
     }
 
     // Add item to User's personal item history for auto-completion and smart-sort
-    if (userToListTable.itemHistory) {
+    if (!userToListTable.itemHistory) {
+      // Initialize item history
+      userToListTable.itemHistory = [ItemHistory.create({ item: nameInput })];
+    } else {
       const existingItemInHistory = userToListTable.itemHistory.find(
         ({ item }) => item === nameInput
       );
@@ -120,11 +86,9 @@ export class ItemResolver {
           ItemHistory.create({ item: nameInput })
         ];
       }
-    } else {
-      // Initialize item history
-      userToListTable.itemHistory = [ItemHistory.create({ item: nameInput })];
     }
 
+    // Add to sortedItems
     const userToListTableAfterSort = sortIntoList(userToListTable, nameInput);
     addToSharedLists(userToListTable, nameInput, publish);
 
