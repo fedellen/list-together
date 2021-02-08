@@ -28,5 +28,5 @@ export default function BodyContent() {
     }
   };
 
-  return <div className="bg-dark">{bodyContent()}</div>;
+  return <section id="content">{bodyContent()}</section>;
 }

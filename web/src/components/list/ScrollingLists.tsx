@@ -57,12 +57,12 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
   }
 
   return (
-    <div className="grid grid-flow-col pt-4 gap-3">
+    <div className="flex gap-3">
       <ListArrowButton direction="left" handleArrowClick={handleArrowClick} />
 
       <ul
         ref={scrollingList}
-        className="overflow-x-auto whitespace-nowrap flex bg-gray-200 rounded-lg px-2 shadow-md"
+        className="overflow-x-auto whitespace-nowrap flex bg-gray-200 rounded-lg px-2 shadow-md w-full"
       >
         {lists.map((userList) => (
           <li

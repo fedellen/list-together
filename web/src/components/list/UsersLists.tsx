@@ -8,7 +8,7 @@ import ScrollingLists from './ScrollingLists';
 import { openModal, setNewList } from 'src/utils/dispatchActions';
 import { createContext, useEffect } from 'react';
 import { CurrentListContext, UserPrivileges } from 'src/types';
-import LoadingIcon from '../svg/LoadingIcon';
+import LoadingSplash from '../styled/LoadingSplash';
 
 export const ListContext = createContext<CurrentListContext | null>(null);
 
@@ -32,7 +32,7 @@ export default function UsersLists() {
   }, [usersLists, currentListId]);
 
   if (loading && !usersLists) {
-    return <LoadingIcon />;
+    return <LoadingSplash />;
   } else if (!usersLists && error) {
     /** Fetch error will occur while usersLists exists during offline mode */
     const errorString = `There has been an unhandled error while loading your list data: ${error.message}`;
@@ -60,9 +60,9 @@ export default function UsersLists() {
   // const currentSortedItems = currentList?.sortedItems
   //   ? currentList.sortedItems
   //   : [];
-
+  //
   return (
-    <div className="container mx-auto px-4">
+    <>
       {currentList ? (
         <ListContext.Provider
           value={{
@@ -81,6 +81,6 @@ export default function UsersLists() {
           Add your first list!
         </div>
       )}
-    </div>
+    </>
   );
 }

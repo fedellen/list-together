@@ -1,14 +1,23 @@
-import { Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { useStateValue } from 'src/state/state';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import { useCreateUserMutation } from '../../generated/graphql';
 import Button from '../styled/Button';
 import * as yup from 'yup';
-import FormError from '../styled/FormError';
+import SubHeading from '../styled/SubHeading';
+import FormikTextInput from './FormikTextInput';
+import { sendNotification } from 'src/utils/dispatchActions';
 
 export default function CreateUser() {
   const [createUser, { loading }] = useCreateUserMutation();
   const [, dispatch] = useStateValue();
+
+  const initialValues = {
+    username: '',
+    email: '',
+    password: '',
+    passwordConfirmation: ''
+  };
 
   const validationSchema = yup.object().shape({
     username: yup.string().min(3).max(25).required('A username is required..'),
@@ -25,15 +34,10 @@ export default function CreateUser() {
   });
 
   return (
-    <div className="py-8 justify-center items-center flex flex-col">
-      <h1 className="text-3xl font-semibold pb-4">Create User</h1>
+    <div className="gap-6 bg-gray-200 rounded-lg shadow-md justify-center items-center flex flex-col p-6">
+      <SubHeading>Create New User</SubHeading>
       <Formik
-        initialValues={{
-          username: '',
-          email: '',
-          password: '',
-          passwordConfirmation: ''
-        }}
+        initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={async (values) => {
           try {
@@ -46,70 +50,33 @@ export default function CreateUser() {
                 }
               }
             });
-            /** Display any errors from server resolvers as global errors */
             if (response.data?.createUser.errors) {
               errorNotifaction(response.data.createUser.errors, dispatch);
+            } else {
+              sendNotification(dispatch, [
+                'Confirmation email has been sent. Check your inbox shortly..'
+              ]);
             }
           } catch (err) {
             console.error('Error on createUser submission: ', err);
           }
         }}
       >
-        {({ handleSubmit, errors, touched }) => (
+        {({ handleSubmit }) => (
           <Form
             onSubmit={handleSubmit}
-            className="flex flex-col justify-center items-center p-2 gap-2 w-3/4"
+            className="flex flex-col justify-center items-center gap-4"
           >
-            <Field
-              id="username"
-              name="username"
-              type="username"
-              label="username"
-              placeholder="username"
-            />
-
-            {errors.username && touched.username && (
-              <FormError errorMessage={errors.username} />
-            )}
-
-            <Field
-              id="email"
-              name="email"
-              type="email"
-              label="email"
-              placeholder="email address"
-            />
-
-            {errors.email && touched.email && (
-              <FormError errorMessage={errors.email} />
-            )}
-
-            <Field
-              id="password"
-              name="password"
-              type="password"
-              label="password"
-              placeholder="password"
-            />
-
-            {errors.password && touched.password && (
-              <FormError errorMessage={errors.password} />
-            )}
-
-            <Field
-              id="passwordConfirmation"
+            <FormikTextInput name="username" />
+            <FormikTextInput name="email" placeholder="email address" />
+            <FormikTextInput name="password" />
+            <FormikTextInput
               name="passwordConfirmation"
-              type="password"
-              label="passwordConfirmation"
               placeholder="confirm password"
             />
 
-            {errors.passwordConfirmation && touched.passwordConfirmation && (
-              <FormError errorMessage={errors.passwordConfirmation} />
-            )}
-
             <div className="pt-2">
-              <Button type="submit" text="Login" isLoading={loading} />
+              <Button type="submit" text="Submit" isLoading={loading} />
             </div>
           </Form>
         )}

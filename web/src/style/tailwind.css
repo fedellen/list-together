@@ -7,6 +7,15 @@
 @tailwind utilities;
 
 @layer base {
+  body {
+    @apply bg-gray-300 text-gray-700 font-body;
+  }
+
+  /** Shared `hover-grow` effect */
+  .hover-grow {
+    @apply hover:scale-125 transform transition-all duration-500;
+  }
+
   ::-webkit-scrollbar {
     @apply w-3 h-3 shadow-lg;
   }
@@ -16,7 +25,58 @@
   ::-webkit-scrollbar-thumb {
     @apply bg-gray-400 rounded-lg;
   }
+
   input {
-    @apply p-4 text-xl placeholder-gray-500 text-gray-600 bg-gray-200 shadow  rounded-full w-auto outline-none;
+    @apply p-4 text-xl placeholder-gray-500 text-gray-600 bg-gray-300 shadow-md  rounded-full w-auto outline-none;
+  }
+
+  .text-link {
+    @apply hover:text-ppjsOrange hover-grow;
+  }
+
+  #header {
+    @apply bg-gray-200 border-indigo-700 border-t-4 shadow-md sticky top-0 z-10;
+  }
+  #header div {
+    @apply container py-2 flex justify-between items-center;
+  }
+
+  #content {
+    @apply container py-4;
+  }
+
+  #footer {
+    @apply container flex flex-wrap justify-evenly gap-8 justify-items-center items-center
+    p-4 text-gray-600 text-sm sm:text-base font-semibold;
+  }
+
+  #kofi-widget {
+    @apply grid items-center text-gray-500 grid-flow-col gap-2 text-link;
+  }
+  #kofi-widget span {
+    @apply leading-6 text-right hidden sm:block;
+  }
+  #kofi-icon {
+    @apply w-12 sm:w-14 lg:w-16;
+  }
+
+  #social-icons {
+    @apply flex gap-2;
+  }
+  #social-icons a {
+    @apply w-9 sm:w-10 text-link;
+  }
+
+  #ppjs-widget {
+    @apply flex gap-7;
+  }
+  #ppjs-widget div {
+    @apply flex flex-col gap-2 justify-center items-center underline opacity-80 font-semibold;
+  }
+  #ppjs-widget ul {
+    @apply flex gap-6;
+  }
+  #ppjs-mug {
+    @apply rounded-full w-14 sm:w-16 lg:w-24 lg:ml-4 shadow-md hover-grow;
   }
 }
