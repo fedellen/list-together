@@ -8,6 +8,7 @@ import {
 } from '../entities';
 import faker from 'faker';
 import argon2 from 'argon2';
+import { sortIntoList } from '../utils/sortIntoList';
 
 export const createUser = async (confirmed: boolean = true): Promise<User> => {
   const user = {
@@ -49,7 +50,7 @@ export const userWithListAndItems = async (
   items: number = 5
 ): Promise<User> => {
   const user = await userWithList();
-  const userToListTable = await UserToList.findOne({
+  let userToListTable = await UserToList.findOne({
     where: { userId: user.id },
     relations: ['list', 'list.items']
   });
@@ -63,6 +64,8 @@ export const userWithListAndItems = async (
     } else {
       userToListTable!.list.items = [newItem];
     }
+    // Add to sorted items
+    userToListTable = sortIntoList(userToListTable!, newItem.name);
   }
   await userToListTable!.save();
   return user;
