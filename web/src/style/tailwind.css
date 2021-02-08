@@ -45,6 +45,16 @@
     @apply container py-4;
   }
 
+  #side-menu {
+    @apply sticky ml-auto xl:mx-auto bottom-0 flex gap-3 p-2 justify-center z-10;
+  }
+  .side-menu-button {
+    @apply w-16 lg:w-20 lg:p-1 flex flex-col items-center rounded-full shadow-md text-gray-700 bg-indigo-300 hover:bg-indigo-400  hover:text-gray-800 hover-grow text-xs font-bold;
+  }
+  .side-menu-button span {
+    @apply pb-3 px-4;
+  }
+
   #footer {
     @apply container flex flex-wrap justify-evenly gap-8 justify-items-center items-center
     p-4 text-gray-600 text-sm sm:text-base font-semibold;

@@ -1,6 +1,8 @@
 import { useStateValue } from 'src/state/state';
 import SideMenuButton from '../styled/SideMenuButton';
 import AddItemIcon from '../svg/AddItemIcon';
+import ReviewListIcon from '../svg/ReviewListIcon';
+import ShopIcon from '../svg/ShopIcon';
 
 export default function SideMenu() {
   const [, dispatch] = useStateValue();
@@ -13,28 +15,22 @@ export default function SideMenu() {
   };
 
   return (
-    <div className="sticky ml-auto xl:mx-auto bottom-0 flex justify-center z-10">
+    <div id="side-menu">
       <SideMenuButton
-        icon={<AddItemIcon />}
+        icon={<ShopIcon />}
         onClick={handleAddItemClick}
-        text="Add"
-        expandedText="(A)"
+        text="Shop"
+      />
+      <SideMenuButton
+        icon={<ReviewListIcon />}
+        onClick={handleAddItemClick}
+        text="Review"
       />
       <SideMenuButton
         icon={<AddItemIcon />}
         onClick={handleAddItemClick}
         text="Add"
-        expandedText="(A)"
       />
-      <SideMenuButton
-        icon={<AddItemIcon />}
-        onClick={handleAddItemClick}
-        text="Add"
-        expandedText="(A)"
-      />
-      {/* <AddItemIcon />
-      <AddItemIcon />
-      <AddItemIcon /> */}
     </div>
   );
 }

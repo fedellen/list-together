@@ -21,7 +21,7 @@ export default function Modal({ modalTitle, component }: ModalProps) {
         onClick={() => closeModal(dispatch)}
       />
       <div className="justify-center items-center flex z-50 max-w-xs sm:max-w-md lg:max-w-xl xl:max-w-3xl">
-        <div className="bg-gray-300 rounded-lg flex flex-col p-8 gap-4 shadow-md">
+        <div className="bg-gray-200 rounded-lg flex flex-col p-8 gap-4 shadow-md">
           {/* Header */}
           <div className="flex justify-between pb-4 gap-10 ">
             <SubHeading>{modalTitle}</SubHeading>
