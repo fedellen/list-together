@@ -233,6 +233,10 @@ export class ItemResolver {
     } else {
       /** Sort unstriked items to the end of the list */
       if (userToListTable.sortedItems) {
+        const sortedItemsWithoutUnstriked = userToListTable.sortedItems.filter(
+          (i) => i !== item.name
+        );
+        userToListTable.sortedItems = sortedItemsWithoutUnstriked;
         const newSortedItems = sortIntoList(userToListTable, item.name)
           .sortedItems;
         userToListTable.sortedItems = newSortedItems;
