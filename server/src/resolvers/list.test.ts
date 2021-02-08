@@ -166,7 +166,7 @@ describe('Create list mutation:', () => {
 
   it('User cannot create more than 25 lists as owner', async () => {
     const user = await userWithList(25); // creates user with 25 lists
-    const title = faker.name.title();
+    const title = faker.name.firstName();
 
     const response = await graphqlCall({
       source: createListMutation,
@@ -500,7 +500,6 @@ describe('Re-order list mutation:', () => {
       where: { userId: user.id },
       relations: ['list', 'list.items']
     });
-    expect(userToListTable!.sortedItems).toBeNull();
 
     const itemNameArray = userToListTable!.list.items!.map((item) => item.name);
     expect(itemNameArray).toHaveLength(5);

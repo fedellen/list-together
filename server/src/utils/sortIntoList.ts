@@ -1,6 +1,7 @@
 import { UserToList } from '../entities';
 
 export const sortIntoList = (
+  /** UserToList with `relations: ['itemHistory']` */
   userToList: UserToList,
   itemName: string
 ): UserToList => {

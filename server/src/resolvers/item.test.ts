@@ -8,7 +8,6 @@ import { UserToList } from '../entities';
 import faker from 'faker';
 import { userListFragment } from '../test-helpers/fragments/userListFragment';
 import { fieldErrorFragment } from '../test-helpers/fragments/fieldErrorFragment';
-// import { listPartial } from '../test-helpers/fragments/listPartial';
 import { booleanFragment } from '../test-helpers/fragments/booleanFragment';
 import { itemFragment } from '../test-helpers/fragments/itemFragment';
 
@@ -30,9 +29,7 @@ mutation DeleteItems($data: DeleteItemsInput!) {
 const styleItemMutation = `
 mutation StyleItem($data: StyleItemInput!) {
   styleItem(data: $data) {
-    item {
-      ${itemFragment}
-    }
+    ${userListFragment}
     ${fieldErrorFragment}
   }
 }
@@ -432,30 +429,30 @@ describe('Style item mutation:', () => {
 
     const itemNameArray = userToListTable!.list.items!.map((i) => i.name);
 
-    const responseBold = await graphqlCall({
-      source: styleItemMutation,
-      variableValues: {
-        data: {
-          listId: userToListTable!.listId,
-          itemName: itemNameArray[0],
-          style: 'bold'
-        }
-      },
-      userId: user.id
-    });
+    // const responseBold = await graphqlCall({
+    //   source: styleItemMutation,
+    //   variableValues: {
+    //     data: {
+    //       listId: userToListTable!.listId,
+    //       itemName: itemNameArray[0],
+    //       style: 'bold'
+    //     }
+    //   },
+    //   userId: user.id
+    // });
 
-    // Check response format, has bold
-    expect(responseBold).toMatchObject({
-      data: {
-        styleItem: {
-          item: {
-            bold: true
-          }
-        }
-      }
-    });
+    // // Check response format, has bold
+    // expect(responseBold).toMatchObject({
+    //   data: {
+    //     styleItem: {
+    //       item: {
+    //         bold: true
+    //       }
+    //     }
+    //   }
+    // });
 
-    const responseStrike = await graphqlCall({
+    const response = await graphqlCall({
       source: styleItemMutation,
       variableValues: {
         data: {
@@ -467,27 +464,46 @@ describe('Style item mutation:', () => {
       userId: user.id
     });
 
-    // Check response format, has bold
-    expect(responseStrike).toMatchObject({
-      data: {
-        styleItem: {
-          item: {
-            strike: true
-          }
-        }
-      }
+    const userToList: UserToList = response.data!.styleItem.userToList[0];
+
+    // Check on response format, has strike
+    expect(userToList.list.items![1]).toMatchObject({
+      name: itemNameArray[1],
+      strike: true
     });
+    const sortedItems: string[] = userToList.sortedItems!;
+    // Item should be returned  at the end of the sorted items
+    expect(sortedItems[sortedItems.length - 1]).toBe(itemNameArray[1]);
+    //   // data: {
+    //   //   styleItem: {
+    //   //     item: {
+    //   //       strike: true
+    //   //     }
+    //   //   }
+    //   // }
+    //   data: {
+    //     styleItem: {
+    //       userToList: [
+    //         {
+    //           list: {
+    //             items: [{ name: itemNameArray[1], strike: true }]
+    //           }
+    //         }
+    //       ]
+    //     }
+    //   }
+    // });
 
     const listConnectionInDatabase = await UserToList.findOne({
       where: { userId: user.id },
       relations: ['list', 'list.items']
     });
 
-    expect(
-      listConnectionInDatabase!.list.items!.find(
-        (i) => i.name === itemNameArray[0]
-      )!.bold
-    ).toBeTruthy();
+    // expect(
+    //   listConnectionInDatabase!.list.items!.find(
+    //     (i) => i.name === itemNameArray[0]
+    //   )!.bold
+    // ).toBeTruthy();
     expect(
       listConnectionInDatabase!.list.items!.find(
         (i) => i.name === itemNameArray[1]
@@ -495,55 +511,55 @@ describe('Style item mutation:', () => {
     ).toBeTruthy();
   });
 
-  it('User with access to the list can bold items', async () => {
-    const listOwner = await userWithListAndItems();
-    const listOwnerUserConnection = await UserToList.findOne({
-      where: { userId: listOwner.id },
-      relations: ['list', 'list.items']
-    });
-    const sharedUser = await createUserWithSharedPriv(
-      listOwnerUserConnection!.listId,
-      ['add']
-    );
+  // it('User with access to the list can bold items', async () => {
+  //   const listOwner = await userWithListAndItems();
+  //   const listOwnerUserConnection = await UserToList.findOne({
+  //     where: { userId: listOwner.id },
+  //     relations: ['list', 'list.items']
+  //   });
+  //   const sharedUser = await createUserWithSharedPriv(
+  //     listOwnerUserConnection!.listId,
+  //     ['add']
+  //   );
 
-    const itemNameArray = listOwnerUserConnection!.list.items!.map(
-      (i) => i.name
-    );
+  //   const itemNameArray = listOwnerUserConnection!.list.items!.map(
+  //     (i) => i.name
+  //   );
 
-    const response = await graphqlCall({
-      source: styleItemMutation,
-      variableValues: {
-        data: {
-          listId: listOwnerUserConnection!.listId,
-          itemName: itemNameArray[3],
-          style: 'bold'
-        }
-      },
-      userId: sharedUser.id
-    });
+  //   const response = await graphqlCall({
+  //     source: styleItemMutation,
+  //     variableValues: {
+  //       data: {
+  //         listId: listOwnerUserConnection!.listId,
+  //         itemName: itemNameArray[3],
+  //         style: 'bold'
+  //       }
+  //     },
+  //     userId: sharedUser.id
+  //   });
 
-    // Check response format, has bold
-    expect(response).toMatchObject({
-      data: {
-        styleItem: {
-          item: {
-            bold: true
-          }
-        }
-      }
-    });
+  //   // Check response format, has bold
+  //   expect(response).toMatchObject({
+  //     data: {
+  //       styleItem: {
+  //         item: {
+  //           bold: true
+  //         }
+  //       }
+  //     }
+  //   });
 
-    const listConnectionInDatabase = await UserToList.findOne({
-      where: { userId: listOwner.id },
-      relations: ['list', 'list.items']
-    });
+  //   const listConnectionInDatabase = await UserToList.findOne({
+  //     where: { userId: listOwner.id },
+  //     relations: ['list', 'list.items']
+  //   });
 
-    expect(
-      listConnectionInDatabase!.list.items!.find(
-        (i) => i.name === itemNameArray[3]
-      )!.bold
-    ).toBeTruthy();
-  });
+  //   expect(
+  //     listConnectionInDatabase!.list.items!.find(
+  //       (i) => i.name === itemNameArray[3]
+  //     )!.bold
+  //   ).toBeTruthy();
+  // });
 
   it('User with shared `strike` privileges can strike items from list', async () => {
     const listOwner = await userWithListAndItems();
@@ -572,15 +588,12 @@ describe('Style item mutation:', () => {
       userId: sharedUser.id
     });
 
-    // Check response format
-    expect(response).toMatchObject({
-      data: {
-        styleItem: {
-          item: {
-            strike: true
-          }
-        }
-      }
+    const userToList: UserToList = response.data!.styleItem.userToList[0];
+
+    // Check on response format, has strike
+    expect(userToList.list.items![2]).toMatchObject({
+      name: itemNameArray[2],
+      strike: true
     });
 
     const listConnectionInDatabase = await UserToList.findOne({

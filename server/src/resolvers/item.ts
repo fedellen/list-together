@@ -223,12 +223,12 @@ export class ItemResolver {
 
   // Style items on list
   @UseMiddleware(logger)
-  @Mutation(() => ItemResponse)
+  @Mutation(() => UserToListResponse)
   async styleItem(
     @Arg('data') { listId, style, itemName }: StyleItemInput,
     @Ctx() context: MyContext,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
-  ): Promise<ItemResponse> {
+  ): Promise<UserToListResponse> {
     const errors = validateContext(context);
     if (errors) return { errors };
 
@@ -311,9 +311,7 @@ export class ItemResolver {
       } else {
         userToListTable.removedItems = [item.name];
       }
-      setTimeout(() => {
-        itemRemovalCallback(userToListTable, item.name);
-      }, 6000); // 30 minutes
+      itemRemovalCallback(userToListTable, item.name);
     } else {
       /** Sort unstriked items to the end of the list */
       if (userToListTable.sortedItems) {
@@ -330,8 +328,8 @@ export class ItemResolver {
     }
 
     await userToListTable.save();
-    await publish({ updatedListId: listId });
-    return { item };
+    await publish({ updatedListId: listId, userIdToExclude: userId });
+    return { userToList: [userToListTable] };
   }
 
   // Add note to item on list
