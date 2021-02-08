@@ -73,6 +73,7 @@ export default function CreateUser() {
             <FormikTextInput
               name="passwordConfirmation"
               placeholder="confirm password"
+              type="password"
             />
 
             <div className="pt-2">
