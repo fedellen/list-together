@@ -1,5 +1,5 @@
 mutation StyleItem($data: StyleItemInput!) {
   styleItem(data: $data) {
-    ...itemResponse
+    ...userListResponse
   }
 }

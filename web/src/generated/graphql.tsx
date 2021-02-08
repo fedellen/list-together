@@ -77,10 +77,9 @@ export type Item = {
 export type Mutation = {
   __typename?: 'Mutation';
   addItem: UserToListResponse;
-  deleteItems: BooleanResponse;
-  styleItem: ItemResponse;
+  deleteItems: UserToListResponse;
+  styleItem: UserToListResponse;
   addNote: ItemResponse;
-  renameItem: ItemResponse;
   createUser: UserResponse;
   confirmUser: Scalars['Boolean'];
   login: UserResponse;
@@ -114,11 +113,6 @@ export type MutationStyleItemArgs = {
 
 export type MutationAddNoteArgs = {
   data: AddNoteInput;
-};
-
-
-export type MutationRenameItemArgs = {
-  data: RenameItemInput;
 };
 
 
@@ -188,21 +182,9 @@ export type AddItemInput = {
   nameInput: Scalars['String'];
 };
 
-export type BooleanResponse = {
-  __typename?: 'BooleanResponse';
-  errors?: Maybe<Array<FieldError>>;
-  boolean?: Maybe<Scalars['Boolean']>;
-};
-
 export type DeleteItemsInput = {
   itemNameArray: Array<Scalars['String']>;
   listId: Scalars['String'];
-};
-
-export type ItemResponse = {
-  __typename?: 'ItemResponse';
-  errors?: Maybe<Array<FieldError>>;
-  item?: Maybe<Item>;
 };
 
 export type StyleItemInput = {
@@ -211,16 +193,16 @@ export type StyleItemInput = {
   style: Scalars['String'];
 };
 
+export type ItemResponse = {
+  __typename?: 'ItemResponse';
+  errors?: Maybe<Array<FieldError>>;
+  item?: Maybe<Item>;
+};
+
 export type AddNoteInput = {
   listId: Scalars['String'];
   itemName: Scalars['String'];
   note: Scalars['String'];
-};
-
-export type RenameItemInput = {
-  newName: Scalars['String'];
-  listId: Scalars['String'];
-  itemName: Scalars['String'];
 };
 
 export type UserResponse = {
@@ -243,6 +225,12 @@ export type LoginUserInput = {
 export type ChangePasswordInput = {
   token: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type BooleanResponse = {
+  __typename?: 'BooleanResponse';
+  errors?: Maybe<Array<FieldError>>;
+  boolean?: Maybe<Scalars['Boolean']>;
 };
 
 export type ShareListInput = {
@@ -370,21 +358,8 @@ export type DeleteItemsMutationVariables = Exact<{
 export type DeleteItemsMutation = (
   { __typename?: 'Mutation' }
   & { deleteItems: (
-    { __typename?: 'BooleanResponse' }
-    & BooleanResponseFragment
-  ) }
-);
-
-export type RenameItemMutationVariables = Exact<{
-  data: RenameItemInput;
-}>;
-
-
-export type RenameItemMutation = (
-  { __typename?: 'Mutation' }
-  & { renameItem: (
-    { __typename?: 'ItemResponse' }
-    & ItemResponseFragment
+    { __typename?: 'UserToListResponse' }
+    & UserListResponseFragment
   ) }
 );
 
@@ -396,8 +371,8 @@ export type StyleItemMutationVariables = Exact<{
 export type StyleItemMutation = (
   { __typename?: 'Mutation' }
   & { styleItem: (
-    { __typename?: 'ItemResponse' }
-    & ItemResponseFragment
+    { __typename?: 'UserToListResponse' }
+    & UserListResponseFragment
   ) }
 );
 
@@ -864,10 +839,10 @@ export type AddNoteMutationOptions = Apollo.BaseMutationOptions<AddNoteMutation,
 export const DeleteItemsDocument = gql`
     mutation DeleteItems($data: DeleteItemsInput!) {
   deleteItems(data: $data) {
-    ...booleanResponse
+    ...userListResponse
   }
 }
-    ${BooleanResponseFragmentDoc}`;
+    ${UserListResponseFragmentDoc}`;
 export type DeleteItemsMutationFn = Apollo.MutationFunction<DeleteItemsMutation, DeleteItemsMutationVariables>;
 
 /**
@@ -893,45 +868,13 @@ export function useDeleteItemsMutation(baseOptions?: Apollo.MutationHookOptions<
 export type DeleteItemsMutationHookResult = ReturnType<typeof useDeleteItemsMutation>;
 export type DeleteItemsMutationResult = Apollo.MutationResult<DeleteItemsMutation>;
 export type DeleteItemsMutationOptions = Apollo.BaseMutationOptions<DeleteItemsMutation, DeleteItemsMutationVariables>;
-export const RenameItemDocument = gql`
-    mutation RenameItem($data: RenameItemInput!) {
-  renameItem(data: $data) {
-    ...itemResponse
-  }
-}
-    ${ItemResponseFragmentDoc}`;
-export type RenameItemMutationFn = Apollo.MutationFunction<RenameItemMutation, RenameItemMutationVariables>;
-
-/**
- * __useRenameItemMutation__
- *
- * To run a mutation, you first call `useRenameItemMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRenameItemMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [renameItemMutation, { data, loading, error }] = useRenameItemMutation({
- *   variables: {
- *      data: // value for 'data'
- *   },
- * });
- */
-export function useRenameItemMutation(baseOptions?: Apollo.MutationHookOptions<RenameItemMutation, RenameItemMutationVariables>) {
-        return Apollo.useMutation<RenameItemMutation, RenameItemMutationVariables>(RenameItemDocument, baseOptions);
-      }
-export type RenameItemMutationHookResult = ReturnType<typeof useRenameItemMutation>;
-export type RenameItemMutationResult = Apollo.MutationResult<RenameItemMutation>;
-export type RenameItemMutationOptions = Apollo.BaseMutationOptions<RenameItemMutation, RenameItemMutationVariables>;
 export const StyleItemDocument = gql`
     mutation StyleItem($data: StyleItemInput!) {
   styleItem(data: $data) {
-    ...itemResponse
+    ...userListResponse
   }
 }
-    ${ItemResponseFragmentDoc}`;
+    ${UserListResponseFragmentDoc}`;
 export type StyleItemMutationFn = Apollo.MutationFunction<StyleItemMutation, StyleItemMutationVariables>;
 
 /**

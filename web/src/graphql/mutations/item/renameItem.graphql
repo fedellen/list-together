@@ -1,5 +1,5 @@
-mutation RenameItem($data: RenameItemInput!) {
-  renameItem(data: $data) {
-    ...itemResponse
-  }
-}
+# mutation RenameItem($data: RenameItemInput!) {
+#   renameItem(data: $data) {
+#     ...itemResponse
+#   }
+# }
