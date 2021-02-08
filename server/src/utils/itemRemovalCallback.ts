@@ -1,16 +1,19 @@
 import { ItemHistory, UserToList } from '../entities';
 
+/**
+ *  Gathers recently deleted/striked items into an
+ *  ordered array. After 30 minutes, and if the item is
+ *  still in the last index, submit the array with
+ *  calculated `removalRating` values for auto-sorting lists.
+ */
+
 export const itemRemovalCallback = (
   userToList: UserToList,
   itemName: string
 ) => {
-  console.log(process.env.NODE_ENV);
-  let delay = 1000 * 60 * 30; // 30 minutes
-  if (process.env.NODE_ENV === 'development') delay = 1000 * 5; // 5 seconds
-  if (process.env.NODE_ENV === 'test') {
-    console.log('hey');
-    return; // don't run
-  }
+  let delay = 1000 * 5; // 5 seconds in dev
+  if (process.env.NODE_ENV === 'production') delay = 1000 * 60 * 30; // 30 minutes in prod
+  if (process.env.NODE_ENV === 'test') return; // don't run in test
   setTimeout(async () => {
     /** Get current UserToList */
     const currentList = await UserToList.findOne({
@@ -35,8 +38,6 @@ export const itemRemovalCallback = (
     if (currentList.removedItems.length > 2) {
       /** Only run when three or more items have been removed */
       const removedItemArray = currentList.removedItems;
-      console.log('removedItemArray', removedItemArray);
-
       const arrayLengthRating = Math.round(1000 / removedItemArray.length);
 
       removedItemArray.forEach((itemRemoved) => {
@@ -44,7 +45,6 @@ export const itemRemovalCallback = (
           (removedItemArray.indexOf(itemRemoved) + 0.5) * arrayLengthRating
         ).toString(); // Save number as a string in Postgres
 
-        console.log(itemRemoved, ': newRemovalRating =', newRemovalRating);
         if (!currentList.itemHistory) {
           // User has no item history, initialize
           currentList.itemHistory = [
@@ -94,5 +94,4 @@ export const itemRemovalCallback = (
     currentList.removedItems = null;
     currentList.save();
   }, delay); // 30 minutes
-  // console.log('here we are after 6 seconds on the server');
 };
