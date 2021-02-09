@@ -4,13 +4,9 @@ module.exports = {
   theme: {
     screens: {
       sm: '460px',
-
       md: '670px',
-
       lg: '1024px',
-
       xl: '1280px',
-
       '2xl': '1536px'
     },
     container: {
@@ -25,6 +21,9 @@ module.exports = {
       }
     },
     extend: {
+      fontSize: {
+        xxs: '.65rem'
+      },
       fontFamily: {
         body: ['Roboto'],
         heading: ['Lora']

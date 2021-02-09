@@ -1,4 +1,5 @@
 // import { useApolloClient } from '@apollo/client';
+import React from 'react';
 import {
   // useLogoutUserMutation,
   useGetUserQuery,
@@ -7,11 +8,12 @@ import {
 import { useStateValue } from 'src/state/state';
 import { openModal, setAppState } from 'src/utils/dispatchActions';
 import IconButton from '../styled/SideMenuButton';
-import LoginIcon from '../svg/header/LoginIcon';
-import NewListIcon from '../svg/header/NewListIcon';
-import NewUserIcon from '../svg/header/NewUserIcon';
-import OptionsIcon from '../svg/header/OptionsIcon';
-import ShareIcon from '../svg/header/ShareIcon';
+import LoginIcon from '../svg/headerMenu/LoginIcon';
+import NewListIcon from '../svg/headerMenu/NewListIcon';
+import NewUserIcon from '../svg/headerMenu/NewUserIcon';
+import OptionsIcon from '../svg/headerMenu/OptionsIcon';
+import ShareIcon from '../svg/headerMenu/ShareIcon';
+import MoveListIcon from '../svg/headerOptions/MoveListIcon';
 import { HeaderOptions } from './HeaderOptions';
 
 export default function HeaderMenu() {
@@ -32,6 +34,7 @@ export default function HeaderMenu() {
     }
   }
 
+  const style = 'header-button';
   // Needs to know when user exists, and if list exists
   return (
     <div id="header-menu">
@@ -42,7 +45,7 @@ export default function HeaderMenu() {
             icon={<NewListIcon />}
             text="New List"
             onClick={() => openModal(dispatch, 'createList')}
-            style="header-button"
+            style={style}
           />
           {listExist && (
             <>
@@ -50,13 +53,19 @@ export default function HeaderMenu() {
                 icon={<ShareIcon />}
                 text="Share"
                 onClick={() => openModal(dispatch, 'shareList')}
-                style="header-button"
+                style={style}
+              />
+              <IconButton
+                onClick={() => console.log('')}
+                text="Smart Sort"
+                style={style}
+                icon={<MoveListIcon />}
               />
               <IconButton
                 icon={<OptionsIcon />}
                 text="Options"
                 onClick={() => dispatch({ type: 'TOGGLE_OPTIONS' })}
-                style="header-button"
+                style={style}
                 active={optionsOpen}
               />
             </>
@@ -68,13 +77,13 @@ export default function HeaderMenu() {
             icon={<LoginIcon />}
             text="Login"
             onClick={() => setAppState(dispatch, 'login')}
-            style="header-button"
+            style={style}
           />
           <IconButton
             icon={<NewUserIcon />}
             text="New User"
             onClick={() => setAppState(dispatch, 'createUser')}
-            style="header-button"
+            style={style}
           />
         </>
       )}

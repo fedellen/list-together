@@ -2,8 +2,8 @@
 // import { useStateValue } from '../../state/state';
 
 import IconButton from '../styled/SideMenuButton';
-import MoveListIcon from '../svg/header/MoveListIcon';
-import LogoutIcon from '../svg/header/LogoutIcon';
+import MoveListIcon from '../svg/headerOptions/MoveListIcon';
+import LogoutIcon from '../svg/headerOptions/LogoutIcon';
 
 /** Modal for displaying user's list options when header menu is clicked */
 export const HeaderOptions = () => {
@@ -52,28 +52,29 @@ export const HeaderOptions = () => {
       />
       <IconButton
         onClick={() => console.log('')}
-        text="Move List"
+        text="Rename"
         style="header-option-button"
         icon={<MoveListIcon />}
       />
       <IconButton
         onClick={() => console.log('')}
-        text="Move List"
+        text="Save Order"
         style="header-option-button"
         icon={<MoveListIcon />}
       />
       <IconButton
         onClick={() => console.log('')}
-        text="Move List"
+        text="Remove List"
         style="header-option-button"
         icon={<MoveListIcon />}
       />
       <IconButton
         onClick={() => console.log('')}
-        text="Move List"
+        text="Edit Rights"
         style="header-option-button"
         icon={<MoveListIcon />}
       />
+
       <IconButton
         onClick={() => console.log('')}
         text="Logout"

@@ -51,7 +51,7 @@
 
   /** Shared icon-button styles for SideMenu / HeaderMenu / HeaderOptions */
   .icon-button {
-    @apply flex flex-col gap-1 items-center justify-center text-xs font-bold p-1;
+    @apply flex flex-col gap-1 items-center justify-center text-xxs font-bold;
   }
 
   /** Shared form styles for Login / CreateUser / ChangePassword */
@@ -79,7 +79,7 @@
   /** Header Menu */
 
   #header-menu {
-    @apply flex flex-row-reverse gap-2 sm:gap-5 md:gap-7 lg:gap-12;
+    @apply flex flex-row-reverse gap-2 sm:gap-4 md:gap-8 lg:gap-10;
   }
 
   .header-button {
@@ -89,14 +89,14 @@
     @apply text-indigo-700;
   }
   .header-button svg {
-    @apply w-9 h-9 md:w-12 md:h-12 lg:w-14 lg:h-14;
+    @apply w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10;
   }
 
   .header-option-button {
-    @apply icon-button  rounded-lg bg-indigo-300 hover:bg-indigo-400 hover:text-indigo-700  shadow-md text-gray-700 p-2;
+    @apply icon-button  rounded-lg bg-indigo-300 hover:bg-indigo-400 hover:text-indigo-800  shadow-md text-gray-700 p-1 sm:p-2;
   }
   .header-option-button.active {
-    @apply bg-indigo-400 text-indigo-700;
+    @apply bg-indigo-400 text-indigo-800;
   }
   .header-option-button svg {
     @apply w-7 h-7 sm:w-9 sm:h-9;
@@ -112,7 +112,7 @@
     @apply sticky ml-auto xl:mx-auto bottom-0 flex gap-3 p-2 justify-center z-10;
   }
   .side-menu-button {
-    @apply icon-button rounded-full shadow-md text-gray-700 bg-indigo-300 hover:bg-indigo-400  hover:text-gray-800 hover-grow  pb-3;
+    @apply icon-button rounded-full shadow-md text-gray-700 bg-indigo-300 hover:bg-indigo-400  hover:text-gray-800 hover-grow  p-1  pb-3;
   }
   .side-menu-button svg {
     @apply w-14 sm:w-16 h-14 sm:h-16 lg:w-20 lg:h-20;
