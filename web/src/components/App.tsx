@@ -1,5 +1,5 @@
 import Footer from './Footer';
-import Header from './Header';
+import Header from './header/Header';
 import { useGetUserQuery } from '../generated/graphql';
 import CurrentModal from './modals/CurrentModal';
 import ErrorNotification from './modals/ErrorNotification';
