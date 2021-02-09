@@ -11,16 +11,16 @@ import {
   openModal,
   sendNotification
 } from 'src/utils/dispatchActions';
-import StrikeIcon from '../svg/StrikeIcon';
+import StrikeIcon from '../svg/itemOptions/StrikeIcon';
 import OptionButton from '../styled/OptionButton';
-import NoteIcon from '../svg/NoteIcon';
-import UpArrowIcon from '../svg/UpArrowIcon';
-import DownArrowIcon from '../svg/DownArrowIcon';
-import DeleteIcon from '../svg/DeleteIcon';
+import NoteIcon from '../svg/itemOptions/NoteIcon';
+import UpArrowIcon from '../svg/itemOptions/UpArrowIcon';
+import DownArrowIcon from '../svg/itemOptions/DownArrowIcon';
+import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import { arrayMove } from 'src/utils/arrayMove';
 import { useContext } from 'react';
 import { ListContext } from './UsersLists';
-import LoadingIcon from '../svg/LoadingIcon';
+import LoadingIcon from '../svg/list/LoadingIcon';
 
 /** Modal for displaying user's item options when an item is clicked */
 export const ItemOptions = () => {

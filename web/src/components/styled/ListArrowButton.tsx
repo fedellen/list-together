@@ -1,5 +1,5 @@
-import RightArrowIcon from '../svg/RightArrowIcon';
-import LeftArrowIcon from '../svg/LeftArrowIcon';
+import RightArrowIcon from '../svg/list/RightArrowIcon';
+import LeftArrowIcon from '../svg/list/LeftArrowIcon';
 import { ArrowIconDirection } from '../../types';
 
 type ListArrowButtonProps = {

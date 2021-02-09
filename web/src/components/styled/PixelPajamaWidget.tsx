@@ -1,4 +1,4 @@
-import PixelPajamaMugLogo from '../svg/PixelPajamaMugLogo';
+import PixelPajamaMugLogo from '../svg/ppjs/PixelPajamaMugLogo';
 
 export default function PixelPajamaWidget() {
   return (

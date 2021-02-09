@@ -1,24 +1,22 @@
 import { ReactNode } from 'react';
 
-type SideMenuButtonProps = {
+type IconButtonProps = {
   icon: ReactNode;
   onClick: () => void;
   text: string;
-  /** Use header styles? */
-  header?: boolean;
+  style: 'header-button' | 'side-menu-button' | 'header-option-button';
+  active?: boolean;
 };
 
-export default function SideMenuButton({
+export default function IconButton({
   onClick,
   icon,
   text,
-  header
-}: SideMenuButtonProps) {
+  style,
+  active
+}: IconButtonProps) {
   return (
-    <button
-      className={header ? 'header-button' : 'side-menu-button'}
-      onClick={onClick}
-    >
+    <button className={`${style} ${active && 'active'}`} onClick={onClick}>
       {icon}
       <span>{text}</span>
     </button>

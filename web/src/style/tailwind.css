@@ -13,16 +13,14 @@
     @apply bg-gray-300 text-gray-700 font-body;
   }
 
-  /* Shared `hover-grow` effect */
+  /* Shared `hover-grow` effects */
 
   .hover-grow {
     @apply hover:scale-125 transform transition-all duration-500;
   }
-
   .hover-grow-blue {
     @apply hover-grow hover:text-indigo-700;
   }
-
   .hover-grow-orange {
     @apply hover-grow hover:text-ppjsOrange;
   }
@@ -40,7 +38,7 @@
   }
 
   input {
-    @apply p-4 text-lg  placeholder-gray-500 text-gray-400 bg-gray-200 shadow-md  rounded-full w-full outline-none;
+    @apply py-4 px-6 text-lg  placeholder-gray-500 text-gray-700  bg-gray-200 shadow-md  rounded-full w-full outline-none;
   }
 
   button {
@@ -48,10 +46,15 @@
   }
 
   h2 {
-    @apply text-2xl sm:text-4xl lg:text-5xl font-semibold  font-heading;
+    @apply text-2xl sm:text-4xl lg:text-5xl font-semibold font-heading;
   }
 
-  /** Shared form styles for Login / Create User / Change Password */
+  /** Shared icon-button styles for SideMenu / HeaderMenu / HeaderOptions */
+  .icon-button {
+    @apply flex flex-col gap-1 items-center justify-center text-xs font-bold p-1;
+  }
+
+  /** Shared form styles for Login / CreateUser / ChangePassword */
   .form-container {
     @apply gap-8 justify-center items-center flex flex-col py-4;
   }
@@ -80,11 +83,23 @@
   }
 
   .header-button {
-    @apply flex gap-1 flex-col items-center justify-center  text-gray-600  hover:text-indigo-700  text-xs font-bold;
+    @apply icon-button text-gray-600  hover:text-indigo-700;
+  }
+  .header-button.active {
+    @apply text-indigo-700;
+  }
+  .header-button svg {
+    @apply w-9 h-9 md:w-12 md:h-12 lg:w-14 lg:h-14;
   }
 
-  .header-button svg {
-    @apply w-9 h-9 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16;
+  .header-option-button {
+    @apply icon-button  rounded-lg bg-indigo-300 hover:bg-indigo-400 hover:text-indigo-700  shadow-md text-gray-700 p-2;
+  }
+  .header-option-button.active {
+    @apply bg-indigo-400 text-indigo-700;
+  }
+  .header-option-button svg {
+    @apply w-7 h-7 sm:w-9 sm:h-9;
   }
 
   #content {
@@ -97,11 +112,14 @@
     @apply sticky ml-auto xl:mx-auto bottom-0 flex gap-3 p-2 justify-center z-10;
   }
   .side-menu-button {
-    @apply w-16 lg:w-20 lg:p-1 flex flex-col items-center rounded-full shadow-md text-gray-700 bg-indigo-300 hover:bg-indigo-400  hover:text-gray-800 hover-grow text-xs font-bold;
+    @apply icon-button rounded-full shadow-md text-gray-700 bg-indigo-300 hover:bg-indigo-400  hover:text-gray-800 hover-grow  pb-3;
   }
-  .side-menu-button span {
-    @apply pb-3 px-4;
+  .side-menu-button svg {
+    @apply w-14 sm:w-16 h-14 sm:h-16 lg:w-20 lg:h-20;
   }
+  /* .side-menu-button span {
+    @apply pb-3;
+  } */
 
   /*===================================================\
   |                      Footer                        |

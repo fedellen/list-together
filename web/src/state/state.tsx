@@ -6,6 +6,7 @@ export type State = {
   currentListId: string;
   /** Name of item for displaying `ItemOptions` */
   activeItem: string;
+  optionsOpen: boolean;
   modalState: ModalState;
   sideMenuState: SideMenuState;
   /** Error notification to display in `ErrorMessage` modal */
@@ -17,6 +18,7 @@ export type State = {
 const initialState: State = {
   currentListId: '',
   activeItem: '',
+  optionsOpen: false,
   modalState: { active: false },
   sideMenuState: 'add',
   errorMessage: '',

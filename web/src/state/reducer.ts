@@ -31,6 +31,9 @@ export type Action =
   | {
       type: 'SET_ACTIVE_ITEM';
       payload: string;
+    }
+  | {
+      type: 'TOGGLE_OPTIONS';
     };
 
 export const reducer = (state: State, action: Action): State => {
@@ -74,6 +77,11 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         activeItem: action.payload
+      };
+    case 'TOGGLE_OPTIONS':
+      return {
+        ...state,
+        optionsOpen: !state.optionsOpen
       };
     default:
       return state;

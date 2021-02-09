@@ -1,4 +1,4 @@
-import LoadingIcon from '../svg/LoadingIcon';
+import LoadingIcon from '../svg/list/LoadingIcon';
 
 export default function LoadingSplash() {
   return (
