@@ -4,15 +4,21 @@ type SideMenuButtonProps = {
   icon: ReactNode;
   onClick: () => void;
   text: string;
+  /** Use header styles? */
+  header?: boolean;
 };
 
 export default function SideMenuButton({
   onClick,
   icon,
-  text
+  text,
+  header
 }: SideMenuButtonProps) {
   return (
-    <button className="side-menu-button" onClick={onClick}>
+    <button
+      className={header ? 'header-button' : 'side-menu-button'}
+      onClick={onClick}
+    >
       {icon}
       <span>{text}</span>
     </button>

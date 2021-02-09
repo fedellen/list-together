@@ -5,5 +5,5 @@ type SubHeadingProps = {
 };
 
 export default function SubHeading({ children }: SubHeadingProps) {
-  return <h2 className="text-4xl font-semibold  font-heading">{children}</h2>;
+  return <h2 className="">{children}</h2>;
 }

@@ -13,7 +13,7 @@ export default function ListArrowButton({
 }: ListArrowButtonProps) {
   return (
     <button
-      className="w-5 hover:scale-125 transform transition-all duration-500"
+      className="w-5 hover-grow-blue"
       onClick={() => handleArrowClick(direction)}
     >
       {direction === 'right' ? <RightArrowIcon /> : <LeftArrowIcon />}

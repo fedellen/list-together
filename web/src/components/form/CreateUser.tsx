@@ -4,7 +4,6 @@ import { errorNotifaction } from 'src/utils/errorNotification';
 import { useCreateUserMutation } from '../../generated/graphql';
 import Button from '../styled/Button';
 import * as yup from 'yup';
-import SubHeading from '../styled/SubHeading';
 import FormikTextInput from './FormikTextInput';
 import { sendNotification } from 'src/utils/dispatchActions';
 
@@ -34,8 +33,8 @@ export default function CreateUser() {
   });
 
   return (
-    <div className="gap-6 bg-gray-200 rounded-lg shadow-md justify-center items-center flex flex-col p-6">
-      <SubHeading>Create New User</SubHeading>
+    <div className="form-container">
+      <h2>Create New User</h2>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -63,10 +62,7 @@ export default function CreateUser() {
         }}
       >
         {({ handleSubmit }) => (
-          <Form
-            onSubmit={handleSubmit}
-            className="flex flex-col justify-center items-center gap-4"
-          >
+          <Form onSubmit={handleSubmit} className="form ">
             <FormikTextInput name="username" />
             <FormikTextInput name="email" placeholder="email address" />
             <FormikTextInput name="password" />
@@ -75,10 +71,7 @@ export default function CreateUser() {
               placeholder="confirm password"
               type="password"
             />
-
-            <div className="pt-2">
-              <Button type="submit" text="Submit" isLoading={loading} />
-            </div>
+            <Button type="submit" text="Submit" isLoading={loading} />
           </Form>
         )}
       </Formik>

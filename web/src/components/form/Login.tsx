@@ -1,10 +1,11 @@
-import { Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { useStateValue } from 'src/state/state';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import { GetUserDocument, useLoginUserMutation } from '../../generated/graphql';
 import Button from '../styled/Button';
 import * as yup from 'yup';
-import FormError from '../styled/FormError';
+import React from 'react';
+import FormikTextInput from './FormikTextInput';
 
 export default function Login() {
   const [login, { loading }] = useLoginUserMutation();
@@ -19,8 +20,8 @@ export default function Login() {
   });
 
   return (
-    <div className="py-8 justify-center items-center flex flex-col">
-      <h1 className="text-3xl font-semibold pb-4">Login</h1>
+    <div className="form-container">
+      <h2>Login</h2>
       <Formik
         initialValues={{
           email: '',
@@ -58,37 +59,11 @@ export default function Login() {
           }
         }}
       >
-        {({ handleSubmit, errors, touched }) => (
-          <Form
-            onSubmit={handleSubmit}
-            className="flex flex-col justify-center items-center p-2 gap-2 w-3/4"
-          >
-            <Field
-              id="email"
-              name="email"
-              type="email"
-              label="email"
-              placeholder="email address"
-            />
-
-            {errors.email && touched.email && (
-              <FormError errorMessage={errors.email} />
-            )}
-
-            <Field
-              id="password"
-              name="password"
-              type="password"
-              label="password"
-              placeholder="password"
-            />
-
-            {errors.password && touched.password && (
-              <FormError errorMessage={errors.password} />
-            )}
-            <div className="pt-2">
-              <Button type="submit" text="Login" isLoading={loading} />
-            </div>
+        {({ handleSubmit }) => (
+          <Form onSubmit={handleSubmit} className="form">
+            <FormikTextInput name="email" />
+            <FormikTextInput name="password" />
+            <Button type="submit" text="Login" isLoading={loading} />
           </Form>
         )}
       </Formik>
