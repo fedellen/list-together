@@ -1,10 +1,6 @@
 // import { useApolloClient } from '@apollo/client';
 import React from 'react';
-import {
-  // useLogoutUserMutation,
-  useGetUserQuery,
-  useGetUsersListsQuery
-} from 'src/generated/graphql';
+import { useGetUserQuery, useGetUsersListsQuery } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { openModal, setAppState } from 'src/utils/dispatchActions';
 import IconButton from '../styled/SideMenuButton';
@@ -13,7 +9,7 @@ import NewListIcon from '../svg/headerMenu/NewListIcon';
 import NewUserIcon from '../svg/headerMenu/NewUserIcon';
 import OptionsIcon from '../svg/headerMenu/OptionsIcon';
 import ShareIcon from '../svg/headerMenu/ShareIcon';
-import MoveListIcon from '../svg/headerOptions/MoveListIcon';
+import SmartSortIcon from '../svg/headerMenu/SmartSortIcon';
 import { HeaderOptions } from './HeaderOptions';
 
 export default function HeaderMenu() {
@@ -59,7 +55,7 @@ export default function HeaderMenu() {
                 onClick={() => console.log('')}
                 text="Smart Sort"
                 style={style}
-                icon={<MoveListIcon />}
+                icon={<SmartSortIcon />}
               />
               <IconButton
                 icon={<OptionsIcon />}

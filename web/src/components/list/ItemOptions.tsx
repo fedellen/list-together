@@ -122,9 +122,9 @@ export const ItemOptions = () => {
             errorNotifaction(data.sortItems.errors, dispatch);
           } else {
             setTimeout(() => {
-              /** After .05 sec set Active Item to continue sorting */
+              /** After .005 sec set Active Item to continue sorting */
               dispatch({ type: 'SET_ACTIVE_ITEM', payload: itemName });
-            }, 50);
+            }, 5);
           }
         } catch (err) {
           console.error(`Error on sortItem mutation: ${err}`);

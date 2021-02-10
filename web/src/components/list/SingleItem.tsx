@@ -13,18 +13,16 @@ export default function SingleItem({ item }: SingleItemProps) {
   const isItemActive = activeItem === item.name;
 
   const handleItemClick = (itemName: string) => {
-    /** Delay for .05 seconds to await item reset from `App` */
+    /** Delay for .001 seconds to await item reset from `App` */
     setTimeout(() => {
       if (isItemActive) {
         dispatch({ type: 'SET_ACTIVE_ITEM', payload: '' });
-      } else if (sideMenuState === 'add') {
+      } else if (sideMenuState === 'add' || sideMenuState === 'review') {
         dispatch({ type: 'SET_ACTIVE_ITEM', payload: itemName });
       } else if (sideMenuState === 'shop') {
         /** Use strikethrough mutation */
-      } else if (sideMenuState === 'sort') {
-        /** Handle dragging item */
       }
-    }, 50);
+    }, 1);
   };
 
   return (

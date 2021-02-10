@@ -4,7 +4,11 @@ type IconButtonProps = {
   icon: ReactNode;
   onClick: () => void;
   text: string;
-  style: 'header-button' | 'side-menu-button' | 'header-option-button';
+  style:
+    | 'header-button'
+    | 'side-menu-button'
+    | 'header-option-button'
+    | 'item-option';
   active?: boolean;
 };
 

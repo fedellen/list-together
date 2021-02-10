@@ -5,7 +5,16 @@ import ReviewListIcon from '../svg/sideMenu/ReviewListIcon';
 import ShopIcon from '../svg/sideMenu/ShopIcon';
 
 export default function SideMenu() {
-  const [, dispatch] = useStateValue();
+  const [
+    { activeItem, optionsOpen, sideMenuState },
+    dispatch
+  ] = useStateValue();
+
+  console.log(sideMenuState);
+
+  /** Do not show SideMenu when another menu is open */
+  const visible = activeItem !== '' || optionsOpen;
+  // if (activeItem !== '' || optionsOpen) return <div className="h-28" />;
 
   const handleAddItemClick = () => {
     dispatch({
@@ -18,9 +27,10 @@ export default function SideMenu() {
 
   // Needs to know when list has strikes
   // Needs to know when in `shop` mode
+  // Needs to know when in `review` mode
 
   return (
-    <div id="side-menu">
+    <div id="side-menu" className={visible ? 'opacity-0' : 'opacity-100'}>
       <IconButton
         icon={<ShopIcon />}
         onClick={handleAddItemClick}

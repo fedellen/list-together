@@ -10,7 +10,7 @@ import { resetActiveItem } from 'src/utils/dispatchActions';
 import LoadingSplash from './styled/LoadingSplash';
 
 export default function App() {
-  const [{ appState, activeItem }, dispatch] = useStateValue();
+  const [{ appState, activeItem, optionsOpen }, dispatch] = useStateValue();
   const { data, loading: userDataLoading, error } = useGetUserQuery({
     fetchPolicy: 'cache-and-network'
   });
@@ -27,11 +27,17 @@ export default function App() {
     return <div>Major error in App component: {JSON.stringify(error)}</div>;
   }
 
+  const handleClick = () => {
+    if (activeItem !== '') {
+      resetActiveItem(dispatch);
+    }
+    if (optionsOpen) {
+      dispatch({ type: 'TOGGLE_OPTIONS' });
+    }
+  };
+
   return (
-    <div
-      id="app"
-      onClick={() => activeItem !== '' && resetActiveItem(dispatch)}
-    >
+    <div id="app" onClick={handleClick}>
       <CurrentModal />
       <ErrorNotification />
       <Header />

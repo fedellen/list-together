@@ -11,7 +11,7 @@ export type ToggleItemState = {
 };
 
 /** Side menu states determine what happens when clicking on items */
-export type SideMenuState = 'shop' | 'add' | 'sort';
+export type SideMenuState = 'shop' | 'add' | 'review';
 
 /** Actions to take from user clicking on `ItemOptions` modal buttons */
 export type OptionAction =
