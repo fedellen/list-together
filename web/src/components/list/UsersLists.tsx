@@ -57,24 +57,22 @@ export default function UsersLists() {
     ? usersLists.find((list) => list.listId === currentListId)
     : usersLists[0];
 
-  // const currentSortedItems = currentList?.sortedItems
-  //   ? currentList.sortedItems
-  //   : [];
-  //
+  const strikedItems = currentList?.list.items
+    ?.filter((i) => i.strike === true)
+    .map((i) => i.name);
+
   return (
     <>
       {currentList ? (
         <ListContext.Provider
           value={{
             sortedItems: currentList.sortedItems || [],
-            privileges: currentList.privileges as UserPrivileges[]
+            privileges: currentList.privileges as UserPrivileges[],
+            strikedItems: strikedItems || []
           }}
         >
           <ScrollingLists lists={usersLists} />
-          <ItemList
-            list={currentList.list}
-            sortedItems={currentList.sortedItems || []}
-          />
+          <ItemList list={currentList.list} />
         </ListContext.Provider>
       ) : (
         <div onClick={() => openModal(dispatch, 'createList')}>
