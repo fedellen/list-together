@@ -62,18 +62,19 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
 
       <ul
         ref={scrollingList}
-        className="overflow-x-auto whitespace-nowrap flex bg-gray-200 rounded-lg px-2 shadow-md w-full"
+        className="overflow-x-auto whitespace-nowrap flex bg-gray-200 rounded-lg px-2 shadow-md w-full z-10"
       >
         {lists.map((userList) => (
-          <li
-            className={`text-2xl  pt-4  font-semibold px-6 mb-4 cursor-pointer transition-all duration-500  border-t-4 text-gray-500  ${
-              currentListId === userList.listId &&
-              'text-indigo-600  border-indigo-600 font-extrabold'
-            }`}
-            key={userList.listId}
-            onClick={() => setNewList(dispatch, userList)}
-          >
-            {userList.list.title}
+          <li key={userList.listId}>
+            <button
+              onClick={() => setNewList(dispatch, userList)}
+              className={`text-2xl  pt-4  font-semibold px-6 pb-4 cursor-pointer transition-all duration-500  border-t-4 text-gray-500   ${
+                currentListId === userList.listId &&
+                'text-indigo-600  border-indigo-600 font-extrabold'
+              }`}
+            >
+              {userList.list.title}
+            </button>
           </li>
         ))}
       </ul>

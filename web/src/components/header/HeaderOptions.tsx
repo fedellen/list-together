@@ -41,7 +41,7 @@ export const HeaderOptions = () => {
   return (
     <div
       id="header-options"
-      className="grid absolute grid-cols-3 rounded-lg gap-2 z-20 mt-16 bg-gray-300 shadow-lg p-3 md:mr-10 lg:mr-16 xl:mr-24"
+      className="grid absolute grid-cols-3 rounded-lg gap-2 z-30 mt-16 bg-gray-300 shadow-lg p-3 md:mr-10 lg:mr-16 xl:mr-24"
     >
       <IconButton
         onClick={() => console.log('')}

@@ -37,7 +37,13 @@ export default function App() {
   };
 
   return (
-    <div id="app" onClick={handleClick}>
+    <div id="app">
+      {/** clickLayer handles closing menus/modals at zindex: 0 */}
+      <div
+        id="clickLayer"
+        onClick={handleClick}
+        className="absolute inset-0 z-0"
+      />
       <CurrentModal />
       <ErrorNotification />
       <Header />

@@ -31,7 +31,7 @@ export default function SingleItem({ item }: SingleItemProps) {
         <button
           onClick={() => handleItemClick(item.name)}
           className={`
-        text-2xl font-semibold  px-2 break-all text-left 
+        text-2xl font-semibold  px-2 break-all text-left z-10 
         ${item.strike && 'line-through'}
         ${isItemActive && 'underline text-indigo-700  font-bold'}
         `}

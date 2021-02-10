@@ -51,7 +51,7 @@
 
   /** Shared icon-button styles for SideMenu / HeaderMenu / HeaderOptions */
   .icon-button {
-    @apply flex flex-col gap-0 items-center justify-center text-xxs font-bold;
+    @apply flex flex-col gap-0 items-center justify-center text-xxs font-bold z-20;
   }
 
   /** Shared form styles for Login / CreateUser / ChangePassword */
@@ -70,7 +70,7 @@
   \====================================================*/
 
   #header {
-    @apply bg-gray-200 border-indigo-700 border-t-4 shadow-md sticky top-0 z-10;
+    @apply bg-gray-200 border-indigo-700 border-t-4 shadow-md sticky top-0 z-40;
   }
   #header-container {
     @apply container py-3 flex justify-between items-center;
