@@ -3,11 +3,9 @@ export default function NoteIcon() {
 
   return (
     <svg
-      width="40px"
-      height="40px"
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 16 16"
       fill="currentColor"
+      viewBox="0 2 16 12"
     >
       <path
         fillRule="evenodd"

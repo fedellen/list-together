@@ -19,7 +19,7 @@
     @apply hover:scale-125 transform transition-all duration-500;
   }
   .hover-grow-blue {
-    @apply hover-grow hover:text-indigo-700;
+    @apply hover-grow hover:text-indigo-800;
   }
   .hover-grow-orange {
     @apply hover-grow hover:text-ppjsOrange;
@@ -51,7 +51,7 @@
 
   /** Shared icon-button styles for SideMenu / HeaderMenu / HeaderOptions */
   .icon-button {
-    @apply flex flex-col gap-1 items-center justify-center text-xxs font-bold;
+    @apply flex flex-col gap-0 items-center justify-center text-xxs font-bold;
   }
 
   /** Shared form styles for Login / CreateUser / ChangePassword */
@@ -79,7 +79,7 @@
   /** Header Menu */
 
   #header-menu {
-    @apply flex flex-row-reverse gap-2 sm:gap-4 md:gap-8 lg:gap-10;
+    @apply flex flex-row-reverse gap-2 sm:gap-4 md:gap-8 lg:gap-10 pl-2;
   }
 
   .header-button {
@@ -89,7 +89,7 @@
     @apply text-indigo-700;
   }
   .header-button svg {
-    @apply w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10;
+    @apply w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 pb-1;
   }
 
   .header-option-button {
@@ -99,7 +99,19 @@
     @apply bg-indigo-400 text-indigo-800;
   }
   .header-option-button svg {
-    @apply w-7 h-7 sm:w-9 sm:h-9;
+    @apply w-7 h-7 sm:w-9 sm:h-9 mb-2;
+  }
+
+  /** Item options */
+
+  #item-options-container {
+    @apply grid absolute grid-cols-3 z-20 right-2 sm:right-auto sm:ml-20  mt-2 gap-2;
+  }
+  .item-option {
+    @apply icon-button bg-indigo-300 rounded-lg shadow-md hover:bg-indigo-400 hover:text-indigo-800  py-2 px-4;
+  }
+  .item-option svg {
+    @apply w-9 h-9;
   }
 
   #content {
@@ -112,7 +124,7 @@
     @apply sticky ml-auto xl:mx-auto bottom-0 flex gap-3 p-2 justify-center z-10;
   }
   .side-menu-button {
-    @apply icon-button rounded-full shadow-md text-gray-700 bg-indigo-300 hover:bg-indigo-400  hover:text-gray-800 hover-grow  p-1  pb-3;
+    @apply icon-button rounded-full shadow-md text-gray-700 bg-indigo-300 hover:bg-indigo-400   hover-grow-blue  p-1  pb-3;
   }
   .side-menu-button svg {
     @apply w-14 sm:w-16 h-14 sm:h-16 lg:w-20 lg:h-20;

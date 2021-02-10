@@ -1,16 +1,10 @@
-type DeleteIconProps = {
-  size?: number;
-};
-
-export default function DeleteIcon({ size }: DeleteIconProps) {
+export default function DeleteIcon() {
   // Triangle icons from https://svgbox.net/iconset/octicons
   return (
     <svg
-      width={`${size || 40}px`}
-      height={`${size || 40}px`}
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
       fill="currentColor"
+      viewBox="2 0 20 22.5"
     >
       <path
         fillRule="evenodd"

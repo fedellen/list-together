@@ -12,7 +12,6 @@ import {
   sendNotification
 } from 'src/utils/dispatchActions';
 import StrikeIcon from '../svg/itemOptions/StrikeIcon';
-import OptionButton from '../styled/OptionButton';
 import NoteIcon from '../svg/itemOptions/NoteIcon';
 import UpArrowIcon from '../svg/itemOptions/UpArrowIcon';
 import DownArrowIcon from '../svg/itemOptions/DownArrowIcon';
@@ -21,6 +20,7 @@ import { arrayMove } from 'src/utils/arrayMove';
 import { useContext } from 'react';
 import { ListContext } from './UsersLists';
 import LoadingIcon from '../svg/list/LoadingIcon';
+import IconButton from '../styled/SideMenuButton';
 
 /** Modal for displaying user's item options when an item is clicked */
 export const ItemOptions = () => {
@@ -108,7 +108,6 @@ export const ItemOptions = () => {
           currentListIndex,
           currentListIndex + delta
         );
-
         try {
           /** Use `sortItems` mutation */
           const { data } = await sortItems({
@@ -137,33 +136,44 @@ export const ItemOptions = () => {
 
   const privileges = listContext.privileges;
   const mutationIsLoading = styleLoading || sortLoading || deleteLoading;
+  const style = 'item-option';
 
   return (
-    <div className="grid absolute grid-cols-3 z-20 ml-20 mt-2">
+    <div id="item-options-container">
       {/** Display buttons when user has privileges to access them */}
-      <OptionButton
+      <IconButton
+        text="Up"
+        style={style}
         onClick={() => handleOptionAction('sortItemUp')}
         icon={mutationIsLoading ? <LoadingIcon /> : <UpArrowIcon />}
       />
       {(privileges.includes('add') || privileges.includes('owner')) && (
-        <OptionButton
+        <IconButton
+          text="Note"
+          style={style}
           onClick={() => handleOptionAction('addNote')}
           icon={mutationIsLoading ? <LoadingIcon /> : <NoteIcon />}
         />
       )}
       {(privileges.includes('delete') || privileges.includes('owner')) && (
-        <OptionButton
+        <IconButton
+          text="Delete"
+          style={style}
           onClick={() => handleOptionAction('deleteItem')}
           icon={mutationIsLoading ? <LoadingIcon /> : <DeleteIcon />}
         />
       )}
 
-      <OptionButton
+      <IconButton
+        text="Down"
+        style={style}
         onClick={() => handleOptionAction('sortItemDown')}
         icon={mutationIsLoading ? <LoadingIcon /> : <DownArrowIcon />}
       />
       {(privileges.includes('strike') || privileges.includes('owner')) && (
-        <OptionButton
+        <IconButton
+          text="Strike"
+          style={style}
           onClick={() => handleOptionAction('strikeItem')}
           icon={mutationIsLoading ? <LoadingIcon /> : <StrikeIcon />}
         />
