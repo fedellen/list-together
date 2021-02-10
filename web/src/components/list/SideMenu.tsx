@@ -4,6 +4,7 @@ import { useStateValue } from 'src/state/state';
 import { sendNotification } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import IconButton from '../styled/SideMenuButton';
+import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import LoadingIcon from '../svg/list/LoadingIcon';
 import AddItemIcon from '../svg/sideMenu/AddItemIcon';
 import ReviewListIcon from '../svg/sideMenu/ReviewListIcon';
@@ -75,7 +76,7 @@ export default function SideMenu() {
         <>
           {/** Review strikes mode */}
           <IconButton
-            icon={deleteLoading ? <LoadingIcon /> : <ReviewListIcon />}
+            icon={deleteLoading ? <LoadingIcon /> : <DeleteIcon />}
             onClick={handleDeleteAllClick}
             text="Delete All"
             style={style}

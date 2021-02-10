@@ -4,6 +4,11 @@
 import IconButton from '../styled/SideMenuButton';
 import MoveListIcon from '../svg/headerOptions/MoveListIcon';
 import LogoutIcon from '../svg/headerOptions/LogoutIcon';
+import RenameListIcon from '../svg/headerOptions/RenameListIcon';
+import SaveOrderIcon from '../svg/headerOptions/SaveOrderIcon';
+// import RemoveListIcon from '../svg/headerOptions/RemoveListIcon';
+import EditRightsIcon from '../svg/headerOptions/EditRightsIcon';
+import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 
 /** Modal for displaying user's list options when header menu is clicked */
 export const HeaderOptions = () => {
@@ -52,27 +57,27 @@ export const HeaderOptions = () => {
       />
       <IconButton
         onClick={() => console.log('')}
-        text="Rename"
+        text="Rename List"
         style="header-option-button"
-        icon={<MoveListIcon />}
+        icon={<RenameListIcon />}
       />
       <IconButton
         onClick={() => console.log('')}
         text="Save Order"
         style="header-option-button"
-        icon={<MoveListIcon />}
+        icon={<SaveOrderIcon />}
       />
       <IconButton
         onClick={() => console.log('')}
         text="Remove List"
         style="header-option-button"
-        icon={<MoveListIcon />}
+        icon={<DeleteIcon />}
       />
       <IconButton
         onClick={() => console.log('')}
         text="Edit Rights"
         style="header-option-button"
-        icon={<MoveListIcon />}
+        icon={<EditRightsIcon />}
       />
 
       <IconButton
