@@ -7,8 +7,8 @@ import { useStateValue } from '../../state/state';
 import { OptionAction } from '../../types';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import {
-  closeModal,
   openModal,
+  resetActiveItem,
   sendNotification
 } from 'src/utils/dispatchActions';
 import StrikeIcon from '../svg/itemOptions/StrikeIcon';
@@ -19,7 +19,6 @@ import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import { arrayMove } from 'src/utils/arrayMove';
 import { useContext } from 'react';
 import { ListContext } from './UsersLists';
-import LoadingIcon from '../svg/list/LoadingIcon';
 import IconButton from '../styled/SideMenuButton';
 
 /** Modal for displaying user's item options when an item is clicked */
@@ -38,8 +37,13 @@ export const ItemOptions = () => {
     return null;
   }
 
+  const mutationIsLoading = styleLoading || sortLoading || deleteLoading;
   /** When option button is clicked */
   const handleOptionAction = async (optionAction: OptionAction) => {
+    /** Don't run if request loading */
+    if (mutationIsLoading) {
+      return;
+    }
     if (optionAction === 'addNote') {
       openModal(dispatch, 'addNote', itemName);
       dispatch({ type: 'SET_ACTIVE_ITEM', payload: '' });
@@ -57,7 +61,7 @@ export const ItemOptions = () => {
         if (data?.deleteItems.errors) {
           errorNotifaction(data.deleteItems.errors, dispatch);
         } else {
-          closeModal(dispatch);
+          resetActiveItem(dispatch);
         }
       } catch (err) {
         console.error(`Error on Delete Item mutation: ${err}`);
@@ -77,7 +81,7 @@ export const ItemOptions = () => {
         if (data?.styleItem.errors) {
           errorNotifaction(data.styleItem.errors, dispatch);
         } else {
-          closeModal(dispatch);
+          resetActiveItem(dispatch);
         }
       } catch (err) {
         console.error(`Error on styleItem mutation: ${err}`);
@@ -120,11 +124,6 @@ export const ItemOptions = () => {
           });
           if (data?.sortItems.errors) {
             errorNotifaction(data.sortItems.errors, dispatch);
-          } else {
-            setTimeout(() => {
-              /** After .005 sec set Active Item to continue sorting */
-              dispatch({ type: 'SET_ACTIVE_ITEM', payload: itemName });
-            }, 5);
           }
         } catch (err) {
           console.error(`Error on sortItem mutation: ${err}`);
@@ -135,7 +134,6 @@ export const ItemOptions = () => {
   };
 
   const privileges = listContext.privileges;
-  const mutationIsLoading = styleLoading || sortLoading || deleteLoading;
   const style = 'item-option';
 
   return (
@@ -145,14 +143,14 @@ export const ItemOptions = () => {
         text="Up"
         style={style}
         onClick={() => handleOptionAction('sortItemUp')}
-        icon={mutationIsLoading ? <LoadingIcon /> : <UpArrowIcon />}
+        icon={/*mutationIsLoading ? <LoadingIcon /> :*/ <UpArrowIcon />}
       />
       {(privileges.includes('add') || privileges.includes('owner')) && (
         <IconButton
           text="Note"
           style={style}
           onClick={() => handleOptionAction('addNote')}
-          icon={mutationIsLoading ? <LoadingIcon /> : <NoteIcon />}
+          icon={/*mutationIsLoading ? <LoadingIcon /> :*/ <NoteIcon />}
         />
       )}
       {(privileges.includes('delete') || privileges.includes('owner')) && (
@@ -160,7 +158,7 @@ export const ItemOptions = () => {
           text="Delete"
           style={style}
           onClick={() => handleOptionAction('deleteItem')}
-          icon={mutationIsLoading ? <LoadingIcon /> : <DeleteIcon />}
+          icon={/*mutationIsLoading ? <LoadingIcon /> :*/ <DeleteIcon />}
         />
       )}
 
@@ -168,14 +166,14 @@ export const ItemOptions = () => {
         text="Down"
         style={style}
         onClick={() => handleOptionAction('sortItemDown')}
-        icon={mutationIsLoading ? <LoadingIcon /> : <DownArrowIcon />}
+        icon={/*mutationIsLoading ? <LoadingIcon /> :*/ <DownArrowIcon />}
       />
       {(privileges.includes('strike') || privileges.includes('owner')) && (
         <IconButton
           text="Strike"
           style={style}
           onClick={() => handleOptionAction('strikeItem')}
-          icon={mutationIsLoading ? <LoadingIcon /> : <StrikeIcon />}
+          icon={/*mutationIsLoading ? <LoadingIcon /> :*/ <StrikeIcon />}
         />
       )}
     </div>
