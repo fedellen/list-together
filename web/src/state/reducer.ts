@@ -44,8 +44,12 @@ export const reducer = (state: State, action: Action): State => {
         modalState: action.payload
       };
     case 'SET_LIST':
+      // console.log('im here reseting your state');
       return {
         ...state,
+        sideMenuState: 'add',
+        activeItem: '',
+        optionsOpen: false,
         currentListId: action.payload
       };
     case 'CLEAR_LIST':
@@ -76,11 +80,13 @@ export const reducer = (state: State, action: Action): State => {
     case 'SET_ACTIVE_ITEM':
       return {
         ...state,
+        optionsOpen: false,
         activeItem: action.payload
       };
     case 'TOGGLE_OPTIONS':
       return {
         ...state,
+        activeItem: '',
         optionsOpen: !state.optionsOpen
       };
     default:
