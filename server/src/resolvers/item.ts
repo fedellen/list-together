@@ -31,6 +31,7 @@ import { addToSharedLists } from '../utils/addToSharedLists';
 import { validateUserToList } from './types/validators/validateUserToList';
 import { validateAddToList } from './types/validators/validateAddToList';
 import { removeFromSharedLists } from '../utils/removeFromSharedLists';
+import { DeleteNoteInput } from './types/input/DeleteNoteInput';
 
 @Resolver()
 export class ItemResolver {
@@ -310,12 +311,82 @@ export class ItemResolver {
             }
           ]
         };
+      } else if (item.notes.includes(note)) {
+        return {
+          errors: [
+            {
+              field: 'name',
+              message: 'Item already contains a note with that name..'
+            }
+          ]
+        };
       }
       item.notes = [...item.notes, note];
     }
 
     await item.save();
-    await publish({ updatedListId: listId, userIdToExclude: userId });
+    publish({ updatedListId: listId, userIdToExclude: userId });
     return { item };
+  }
+  // Delete array of items from list
+  // Items will usually be deleted in batches from front-end `deleteStrikes`
+  @UseMiddleware(logger)
+  @Mutation(() => ItemResponse)
+  async deleteNote(
+    @Arg('data') { note, itemName, listId }: DeleteNoteInput,
+    @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>,
+    @Ctx() context: MyContext
+  ): Promise<ItemResponse> {
+    const errors = validateContext(context);
+    if (errors) return { errors };
+
+    const userId = context.req.session.userId;
+    const userToListTable = await UserToList.findOne({
+      where: { listId: listId, userId: userId },
+      relations: ['list', 'list.items']
+    });
+
+    const userListErrors = validateUserToList({
+      userToList: userToListTable,
+      validatePrivilege: 'delete',
+      validateItemsExist: true
+    });
+    if (userListErrors) return { errors: userListErrors };
+    else if (!userToListTable || !userToListTable.list.items)
+      throw new Error('UserList validation error on `deleteNote`..');
+
+    const item = userToListTable.list.items.find(
+      ({ name }) => name === itemName
+    );
+    if (!item) {
+      return {
+        errors: [
+          {
+            field: 'itemName',
+            message: `Item "${itemName}" was not found on the list..`
+          }
+        ]
+      };
+    }
+
+    const noteExists = item.notes?.find((n) => n === note);
+    if (!noteExists) {
+      return {
+        errors: [
+          {
+            field: 'note',
+            message: `"${note}" was not found on that item..`
+          }
+        ]
+      };
+    }
+
+    const newNotesArray = item.notes!.filter((n) => n !== note);
+    item.notes = newNotesArray;
+
+    await item.save();
+    publish({ updatedListId: listId, userIdToExclude: userId });
+
+    return { item: item };
   }
 }
