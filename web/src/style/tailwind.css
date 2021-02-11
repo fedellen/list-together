@@ -92,6 +92,8 @@
     @apply w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 pb-1;
   }
 
+  /** Header Options */
+
   .header-option-button {
     @apply icon-button  rounded-lg bg-indigo-300 hover:bg-indigo-400 hover:text-indigo-800  shadow-md text-gray-700 p-2;
   }
@@ -114,8 +116,54 @@
     @apply w-9 h-9;
   }
 
+  /*===================================================\
+  |                      Content                        |
+  \====================================================*/
+
   #content {
     @apply container py-4;
+  }
+
+  /** User's item list */
+
+  #list-container {
+    @apply my-4 pt-4 bg-gray-200 shadow-md flex-col flex rounded-lg;
+  }
+  #list-container > ul {
+    @apply px-8 gap-1 flex flex-col;
+  }
+  #list-container > span {
+    @apply italic text-2xl text-center pt-4;
+  }
+
+  /** Single Item */
+
+  .item-container {
+    @apply flex flex-col items-start gap-1;
+  }
+  .item-button {
+    @apply text-2xl font-semibold  px-2 break-all text-left z-10 hover:text-indigo-700;
+  }
+  .item-button.active {
+    @apply underline text-indigo-700  font-extrabold;
+  }
+
+  /** Shared strike class */
+
+  .strike {
+    @apply line-through;
+  }
+
+  /** Item notes */
+
+  .note {
+    @apply flex;
+  }
+  .note-button {
+    @apply ml-8 rounded-full text-lg font-bold italic opacity-70 hover:text-indigo-700;
+  }
+  .delete-note {
+    @apply ml-4 w-8 h-8 hover:text-red-700 z-10;
   }
 
   /** Side Menu */
@@ -129,9 +177,6 @@
   .side-menu-button svg {
     @apply w-8  h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14;
   }
-  /* .side-menu-button span {
-    @apply pb-3;
-  } */
 
   /*===================================================\
   |                      Footer                        |

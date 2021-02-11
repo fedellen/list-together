@@ -43,6 +43,7 @@ export default function SideMenu() {
           errorNotifaction(data.deleteItems.errors, dispatch);
         } else {
           dispatch({ type: 'SET_SIDE_MENU_STATE', payload: 'add' });
+          sendNotification(dispatch, ['All striked items have been deleted']);
         }
       } catch (err) {
         console.error(`Error on Delete Item mutation: ${err}`);

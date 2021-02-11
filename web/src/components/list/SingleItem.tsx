@@ -1,5 +1,6 @@
 import { Item } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
+import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import { ItemOptions } from './ItemOptions';
 
 type SingleItemProps = {
@@ -7,47 +8,51 @@ type SingleItemProps = {
 };
 
 export default function SingleItem({ item }: SingleItemProps) {
-  const [{ activeItem, sideMenuState }, dispatch] = useStateValue();
+  const [{ activeItem, activeNote }, dispatch] = useStateValue();
 
   /** Set to true when user has clicked on an item */
-  const isItemActive = activeItem === item.name;
-
-  const handleItemClick = (itemName: string) => {
-    /** Delay for .001 seconds to await item reset from `App` */
-    setTimeout(() => {
-      if (isItemActive) {
-        dispatch({ type: 'SET_ACTIVE_ITEM', payload: '' });
-      } else if (sideMenuState === 'add' || sideMenuState === 'review') {
-        dispatch({ type: 'SET_ACTIVE_ITEM', payload: itemName });
-      } else if (sideMenuState === 'shop') {
-        /** Use strikethrough mutation */
-      }
-    }, 1);
-  };
+  const isItemActive = activeItem === item.name ? ' active' : '';
+  const isStriked = item.strike ? ' strike' : '';
+  const hasActiveNote = activeNote[0] === item.name;
 
   return (
-    <li className="">
-      <div className="my-1 flex">
-        <button
-          onClick={() => handleItemClick(item.name)}
-          className={`
-        text-2xl font-semibold  px-2 break-all text-left z-10 
-        ${item.strike && 'line-through'}
-        ${isItemActive && 'underline text-indigo-700  font-bold'}
-        `}
-        >
-          {item.name}
-        </button>
-        {isItemActive && <ItemOptions />}
-      </div>
+    <li className="item-container">
+      <button
+        onClick={() =>
+          dispatch({ type: 'SET_ACTIVE_ITEM', payload: item.name })
+        }
+        className={`item-button${isStriked}${isItemActive}`}
+      >
+        {item.name}
+      </button>
+      {isItemActive && <ItemOptions />}
       {item.notes && (
-        <ul className="">
+        <ul>
           {item.notes.map((note) => (
-            <li
-              className="ml-8  rounded-full text-lg font-bold italic opacity-60  "
-              key={note}
-            >
-              {note}
+            <li className="note" key={note}>
+              <button
+                className={`note-button${isStriked}${
+                  hasActiveNote && activeNote[1] === note
+                    ? ' hover:text-indigo-700'
+                    : ''
+                }`}
+                onClick={() =>
+                  dispatch({
+                    type: 'SET_ACTIVE_NOTE',
+                    payload: [item.name, note]
+                  })
+                }
+              >
+                {note}
+              </button>
+              {hasActiveNote && activeNote[1] === note && (
+                <button
+                  className="delete-note"
+                  onClick={() => console.log('handle remove note')}
+                >
+                  <DeleteIcon />
+                </button>
+              )}
             </li>
           ))}
         </ul>

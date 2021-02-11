@@ -6,6 +6,7 @@ export type State = {
   currentListId: string;
   /** Name of item for displaying `ItemOptions` */
   activeItem: string;
+  activeNote: [string, string];
   optionsOpen: boolean;
   modalState: ModalState;
   sideMenuState: SideMenuState;
@@ -18,6 +19,7 @@ export type State = {
 const initialState: State = {
   currentListId: '',
   activeItem: '',
+  activeNote: ['', ''],
   optionsOpen: false,
   modalState: { active: false },
   sideMenuState: 'add',

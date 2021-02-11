@@ -29,6 +29,7 @@ export const ItemOptions = () => {
   const [deleteItems, { loading: deleteLoading }] = useDeleteItemsMutation();
   const [styleItem, { loading: styleLoading }] = useStyleItemMutation();
   const [sortItems, { loading: sortLoading }] = useSortItemsMutation();
+  const mutationIsLoading = styleLoading || sortLoading || deleteLoading;
 
   if (!itemName || !listContext) {
     sendNotification(dispatch, [
@@ -37,10 +38,9 @@ export const ItemOptions = () => {
     return null;
   }
 
-  const mutationIsLoading = styleLoading || sortLoading || deleteLoading;
   /** When option button is clicked */
   const handleOptionAction = async (optionAction: OptionAction) => {
-    /** Don't run if request loading */
+    /** Don't run new mutation if a request is already loading */
     if (mutationIsLoading) {
       return;
     }
@@ -94,17 +94,17 @@ export const ItemOptions = () => {
       const delta = optionAction === 'sortItemUp' ? -1 : 1;
 
       if (currentListIndex < 1 && delta === -1) {
-        // if up and top
+        // if up clicked and already on top of list
         sendNotification(dispatch, [
-          'Item is already at the top of the list..'
+          'That item is already at the top of the list..'
         ]);
       } else if (
         currentListIndex > listContext.sortedItems.length - 2 &&
         delta === 1
       ) {
-        // if down and bottom
+        // if down clicked and already on bottom of list
         sendNotification(dispatch, [
-          'Item is already at the bottom of the list..'
+          'That item is already at the bottom of the list..'
         ]);
       } else {
         const newSortedItemsArray = arrayMove(
@@ -143,14 +143,14 @@ export const ItemOptions = () => {
         text="Up"
         style={style}
         onClick={() => handleOptionAction('sortItemUp')}
-        icon={/*mutationIsLoading ? <LoadingIcon /> :*/ <UpArrowIcon />}
+        icon={<UpArrowIcon />}
       />
       {(privileges.includes('add') || privileges.includes('owner')) && (
         <IconButton
           text="Note"
           style={style}
           onClick={() => handleOptionAction('addNote')}
-          icon={/*mutationIsLoading ? <LoadingIcon /> :*/ <NoteIcon />}
+          icon={<NoteIcon />}
         />
       )}
       {(privileges.includes('delete') || privileges.includes('owner')) && (
@@ -158,7 +158,7 @@ export const ItemOptions = () => {
           text="Delete"
           style={style}
           onClick={() => handleOptionAction('deleteItem')}
-          icon={/*mutationIsLoading ? <LoadingIcon /> :*/ <DeleteIcon />}
+          icon={<DeleteIcon />}
         />
       )}
 
@@ -166,14 +166,14 @@ export const ItemOptions = () => {
         text="Down"
         style={style}
         onClick={() => handleOptionAction('sortItemDown')}
-        icon={/*mutationIsLoading ? <LoadingIcon /> :*/ <DownArrowIcon />}
+        icon={<DownArrowIcon />}
       />
       {(privileges.includes('strike') || privileges.includes('owner')) && (
         <IconButton
           text="Strike"
           style={style}
           onClick={() => handleOptionAction('strikeItem')}
-          icon={/*mutationIsLoading ? <LoadingIcon /> :*/ <StrikeIcon />}
+          icon={<StrikeIcon />}
         />
       )}
     </div>

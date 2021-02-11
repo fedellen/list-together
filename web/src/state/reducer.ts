@@ -33,6 +33,10 @@ export type Action =
       payload: string;
     }
   | {
+      type: 'SET_ACTIVE_NOTE';
+      payload: [string, string];
+    }
+  | {
       type: 'TOGGLE_OPTIONS';
     };
 
@@ -48,6 +52,7 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         sideMenuState: 'add',
+        activeNote: ['', ''],
         activeItem: '',
         optionsOpen: false,
         currentListId: action.payload
@@ -81,7 +86,15 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         optionsOpen: false,
+        activeNote: ['', ''],
         activeItem: action.payload
+      };
+    case 'SET_ACTIVE_NOTE':
+      return {
+        ...state,
+        optionsOpen: false,
+        activeItem: '',
+        activeNote: action.payload
       };
     case 'TOGGLE_OPTIONS':
       return {

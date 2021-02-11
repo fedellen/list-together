@@ -10,7 +10,10 @@ import { resetActiveItem } from 'src/utils/dispatchActions';
 import LoadingSplash from './styled/LoadingSplash';
 
 export default function App() {
-  const [{ appState, activeItem, optionsOpen }, dispatch] = useStateValue();
+  const [
+    { appState, activeItem, activeNote, optionsOpen },
+    dispatch
+  ] = useStateValue();
   const { data, loading: userDataLoading, error } = useGetUserQuery({
     fetchPolicy: 'cache-and-network'
   });
@@ -33,6 +36,9 @@ export default function App() {
     }
     if (optionsOpen) {
       dispatch({ type: 'TOGGLE_OPTIONS' });
+    }
+    if (activeNote !== ['', '']) {
+      dispatch({ type: 'SET_ACTIVE_NOTE', payload: ['', ''] });
     }
   };
 

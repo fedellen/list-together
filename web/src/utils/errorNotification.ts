@@ -21,6 +21,6 @@ export const errorNotifaction = (
       timeoutId = setTimeout(() => {
         dispatch({ type: 'END_ERROR_MESSAGE' });
       }, time);
-    }, 3000 * i); // Show next notifaction after 3 seconds
+    }, 4500 * i); // Show next notifaction before 3 seconds
   }
 };

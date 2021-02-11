@@ -28,22 +28,22 @@ export default function ItemList({ list }: ItemListProps) {
   orderedItems?.sort((a, b) => {
     return sortedItems.indexOf(a.name) - sortedItems.indexOf(b.name);
   });
-
   const strikedItems = orderedItems?.filter((item) => item.strike === true);
 
+  /** Display only striked items in `review` mode, else display all items */
   const displayItems = sideMenuState === 'review' ? strikedItems : orderedItems;
 
   return (
-    <div className="my-4 pt-4 bg-gray-200 shadow-md flex-col flex rounded-lg">
-      <ul className="px-8">
-        {list.items && list.items.length > 0 ? (
-          displayItems?.map((i) => <SingleItem item={i} key={i.name} />)
-        ) : (
-          <div className="italic text-2xl text-center pb-4">
-            This list is empty ✍🏾
-          </div>
-        )}
-      </ul>
+    <div id="list-container">
+      {list.items && list.items.length > 0 ? (
+        <ul>
+          {displayItems?.map((i) => (
+            <SingleItem item={i} key={i.name} />
+          ))}
+        </ul>
+      ) : (
+        <span>This list is empty ✍🏾</span>
+      )}
       <SideMenu />
     </div>
   );
