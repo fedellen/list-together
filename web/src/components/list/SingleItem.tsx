@@ -1,5 +1,6 @@
-import { Item } from 'src/generated/graphql';
+import { Item, useDeleteNoteMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
+import { errorNotifaction } from 'src/utils/errorNotification';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import { ItemOptions } from './ItemOptions';
 
@@ -8,7 +9,32 @@ type SingleItemProps = {
 };
 
 export default function SingleItem({ item }: SingleItemProps) {
-  const [{ activeItem, activeNote }, dispatch] = useStateValue();
+  const [{ currentListId, activeItem, activeNote }, dispatch] = useStateValue();
+  const [deleteNote, { loading: deleteNoteLoading }] = useDeleteNoteMutation();
+
+  const handleDeleteNote = async (note: string) => {
+    if (!deleteNoteLoading) {
+      try {
+        /** Use `deleteNote` mutation */
+        const { data } = await deleteNote({
+          variables: {
+            data: {
+              itemName: item.name,
+              listId: currentListId,
+              note: note
+            }
+          }
+        });
+        if (data?.deleteNote.errors) {
+          errorNotifaction(data.deleteNote.errors, dispatch);
+        } else {
+          dispatch({ type: 'SET_ACTIVE_NOTE', payload: ['', ''] });
+        }
+      } catch (err) {
+        console.error(`Error on Delete Note mutation: ${err}`);
+      }
+    }
+  };
 
   /** Set to true when user has clicked on an item */
   const isItemActive = activeItem === item.name ? ' active' : '';
@@ -48,7 +74,7 @@ export default function SingleItem({ item }: SingleItemProps) {
               {hasActiveNote && activeNote[1] === note && (
                 <button
                   className="delete-note"
-                  onClick={() => console.log('handle remove note')}
+                  onClick={() => handleDeleteNote(note)}
                 >
                   <DeleteIcon />
                 </button>

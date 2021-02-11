@@ -1,0 +1,5 @@
+mutation DeleteNote($data: DeleteNoteInput!) {
+  deleteNote(data: $data) {
+    ...itemResponse
+  }
+}
