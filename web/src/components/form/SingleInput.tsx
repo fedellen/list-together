@@ -1,4 +1,4 @@
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 import {
   useAddItemMutation,
   useAddNoteMutation,
@@ -10,9 +10,11 @@ import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import Button from '../styled/Button';
+import FormikTextInput from './FormikTextInput';
 
 /**
- * Single input modal component for mutations:
+ * Single input component to be placed inside `Modal`
+ * This component uses the following  mutations:
  * `addItem` | `createList` | `addNote`
  */
 
@@ -121,20 +123,12 @@ export default function SingleInput({}) {
       onSubmit={(values) => handleAdd(values.text)}
     >
       {({ handleSubmit }) => (
-        <Form
-          onSubmit={handleSubmit}
-          className="flex flex-col justify-center items-center"
-        >
-          <Field
-            id="text"
-            className="mb-7"
+        <Form onSubmit={handleSubmit} className="single-input">
+          <FormikTextInput
             name="text"
-            type="text"
-            label="text"
-            autoFocus={true}
             placeholder={placeholderText}
+            autoFocus={true}
           />
-
           <Button type="submit" text="Submit" isLoading={isLoading} />
         </Form>
       )}

@@ -1,7 +1,7 @@
 import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';
 
-/** Skeleton component for all overlayed Modals */
+/** Skeleton component for overlayed Modals */
 
 type ModalProps = {
   modalTitle: string;
@@ -19,22 +19,22 @@ export default function Modal({ modalTitle, component }: ModalProps) {
         className="bg-gray-900 opacity-60  absolute inset-0"
         onClick={() => closeModal(dispatch)}
       />
-      <div className="justify-center items-center flex z-50 max-w-xs sm:max-w-md lg:max-w-xl xl:max-w-3xl">
-        <div className="bg-gray-300 rounded-lg flex flex-col py-8 px-5 sm:px-8 gap-4 shadow-md mx-2">
-          {/* Header */}
-          <div className="flex justify-between pb-4 gap-10 ">
-            <h2>{modalTitle}</h2>
-            <button
-              className="text-1xl sm:text-2xl  font-extrabold hover:text-indigo-700 outline-none"
-              onClick={() => closeModal(dispatch)}
-            >
-              X
-            </button>
-          </div>
-          {/* Content */}
-          {component}
+      {/* <div className="justify-center items-center flex z-50 max-w-xs sm:max-w-md lg:max-w-xl xl:max-w-3xl"> */}
+      <div className="bg-gray-300 rounded-lg flex flex-col py-8 px-5 sm:px-8 gap-4 shadow-md mx-4  z-50 max-w-xs sm:max-w-md lg:max-w-2xl xl:max-w-4xl justify-center items-center">
+        {/* Header */}
+        <div className="flex justify-between pb-4 md:pb-6 gap-16 sm:gap-20 lg:gap-24 w-full  ">
+          <h2>{modalTitle}</h2>
+          <button
+            className="text-2xl sm:text-3xl font-heading  font-bold hover:text-indigo-700 outline-none"
+            onClick={() => closeModal(dispatch)}
+          >
+            X
+          </button>
         </div>
+        {/* Content */}
+        {component}
       </div>
+      {/* </div> */}
     </div>
   );
 }

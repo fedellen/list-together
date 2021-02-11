@@ -46,7 +46,7 @@
   } */
 
   h2 {
-    @apply text-2xl sm:text-4xl lg:text-5xl font-semibold font-heading;
+    @apply text-2xl sm:text-3xl lg:text-4xl font-semibold font-heading;
   }
 
   /** Shared icon-button styles for SideMenu / HeaderMenu / HeaderOptions */
@@ -64,6 +64,13 @@
   .form button {
     @apply mt-4;
   }
+
+  .single-input {
+    @apply flex flex-col w-full justify-center items-center gap-8 md:gap-10 sm:px-2 md:px-4;
+  }
+  /* .single-input input {
+    @apply 
+  } */
 
   /*===================================================\
   |                      Header                        |
@@ -129,11 +136,13 @@
   #list-container {
     @apply my-4 pt-4 bg-gray-200 shadow-md flex-col flex rounded-lg;
   }
+  /** The list with items  */
   #list-container > ul {
     @apply px-8 gap-1 flex flex-col;
   }
+  /** Empty list  */
   #list-container > span {
-    @apply italic text-2xl text-center pt-4;
+    @apply italic text-xl sm:text-2xl lg:text-3xl text-center pt-4 lg:mb-16;
   }
 
   /** Single Item */
