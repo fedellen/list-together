@@ -154,12 +154,16 @@
     @apply text-2xl font-semibold  px-2 break-all text-left z-10 hover:text-indigo-700;
   }
   .item-button.active {
-    @apply underline text-indigo-700  font-extrabold;
+    @apply underline text-indigo-700 font-extrabold;
   }
 
   /** Shared strike class */
 
   .strike {
+    @apply line-through;
+  }
+
+  .item-button.strike.active {
     @apply line-through;
   }
 
