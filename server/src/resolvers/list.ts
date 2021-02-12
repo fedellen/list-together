@@ -394,7 +394,7 @@ export class ListResolver {
       return {
         errors: [
           {
-            field: 'listId',
+            field: 'userId',
             message: 'User does not exist..'
           }
         ]
