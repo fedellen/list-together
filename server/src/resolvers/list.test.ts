@@ -77,9 +77,9 @@ const sortItemsMutation = `
   }
 `;
 
-export const submitRemovalOrderMutation = `
-  mutation SubmitRemovalOrder($data: RemovalOrderInput!) {
-    submitRemovalOrder(data: $data) {
+export const submitPreferredOrderMutation = `
+  mutation SubmitPreferredOrder($data: PreferredOrderInput!) {
+    submitPreferredOrder(data: $data) {
       ${userListItemHistoryPartial}
       ${fieldErrorFragment}
     }
@@ -537,8 +537,8 @@ describe('Re-order list mutation:', () => {
 });
 
 // Submit and merge removalOrder results for Auto-Sort feature
-describe('Submit removal order mutation:', () => {
-  it('User can save an array of items removed into a removalRatingArray, api returns average rating for each item', async () => {
+describe('Submit preferred order mutation:', () => {
+  it('User can save a sorted array of items into their removalRatingArray as their preferred order, api returns average rating for each item', async () => {
     const user = await userWithItemHistory();
     const userToListTable = await UserToList.findOne({
       where: { userId: user.id },
@@ -550,7 +550,7 @@ describe('Submit removal order mutation:', () => {
     expect(itemNameArray).toHaveLength(10);
 
     const response = await graphqlCall({
-      source: submitRemovalOrderMutation,
+      source: submitPreferredOrderMutation,
       variableValues: {
         data: {
           removedItemArray: itemNameArray,
@@ -560,58 +560,50 @@ describe('Submit removal order mutation:', () => {
       userId: user.id
     });
 
-    expect(response).toMatchObject({
-      data: {
-        submitRemovalOrder: {
-          userToList: [
-            {
-              itemHistory: [
-                {
-                  item: itemNameArray[0],
-                  removalRating: 0
-                },
-                {
-                  item: itemNameArray[1],
-                  removalRating: 100
-                },
-                {
-                  item: itemNameArray[2],
-                  removalRating: 200
-                },
-                {
-                  item: itemNameArray[3],
-                  removalRating: 300
-                },
-                {
-                  item: itemNameArray[4],
-                  removalRating: 400
-                },
-                {
-                  item: itemNameArray[5],
-                  removalRating: 500
-                },
-                {
-                  item: itemNameArray[6],
-                  removalRating: 600
-                },
-                {
-                  item: itemNameArray[7],
-                  removalRating: 700
-                },
-                {
-                  item: itemNameArray[8],
-                  removalRating: 800
-                },
-                {
-                  item: itemNameArray[9],
-                  removalRating: 900
-                }
-              ]
-            }
-          ]
-        }
+    expect(
+      response.data?.submitPreferredOrder.userToList[0].itemHistory
+    ).toMatchObject([
+      {
+        item: itemNameArray[0],
+        removalRating: 50
+      },
+      {
+        item: itemNameArray[1],
+        removalRating: 150
+      },
+      {
+        item: itemNameArray[2],
+        removalRating: 250
+      },
+      {
+        item: itemNameArray[3],
+        removalRating: 350
+      },
+      {
+        item: itemNameArray[4],
+        removalRating: 450
+      },
+      {
+        item: itemNameArray[5],
+        removalRating: 550
+      },
+      {
+        item: itemNameArray[6],
+        removalRating: 650
+      },
+      {
+        item: itemNameArray[7],
+        removalRating: 750
+      },
+      {
+        item: itemNameArray[8],
+        removalRating: 850
+      },
+      {
+        item: itemNameArray[9],
+        removalRating: 950
       }
-    });
+    ]);
 
     const userToListTableAfter = await UserToList.findOne({
       where: { userId: user.id },
@@ -619,16 +611,49 @@ describe('Submit removal order mutation:', () => {
     });
     expect(
       userToListTableAfter!.itemHistory![0].removalRatingArray
-    ).toHaveLength(1);
+    ).toHaveLength(10);
     expect(
       userToListTableAfter!.itemHistory![0].removalRatingArray
-    ).toStrictEqual(['0']);
+    ).toStrictEqual([
+      '50',
+      '50',
+      '50',
+      '50',
+      '50',
+      '50',
+      '50',
+      '50',
+      '50',
+      '50'
+    ]);
     expect(
       userToListTableAfter!.itemHistory![1].removalRatingArray
-    ).toStrictEqual(['100']);
+    ).toStrictEqual([
+      '150',
+      '150',
+      '150',
+      '150',
+      '150',
+      '150',
+      '150',
+      '150',
+      '150',
+      '150'
+    ]);
     expect(
       userToListTableAfter!.itemHistory![9].removalRatingArray
-    ).toStrictEqual(['900']);
+    ).toStrictEqual([
+      '950',
+      '950',
+      '950',
+      '950',
+      '950',
+      '950',
+      '950',
+      '950',
+      '950',
+      '950'
+    ]);
   });
 
   it('Pushes item in index 0 off the list to store only recent ratings', async () => {
@@ -645,7 +670,7 @@ describe('Submit removal order mutation:', () => {
       .removalRatingArray![0];
 
     await graphqlCall({
-      source: submitRemovalOrderMutation,
+      source: submitPreferredOrderMutation,
       variableValues: {
         data: {
           removedItemArray: itemNameArray,

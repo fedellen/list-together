@@ -1,7 +1,7 @@
 import { Field, InputType } from 'type-graphql';
 
 @InputType()
-export class RemovalOrderInput {
+export class PreferredOrderInput {
   @Field(() => [String])
   removedItemArray: string[];
 
