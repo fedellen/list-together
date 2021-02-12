@@ -9,14 +9,20 @@ import SaveOrderIcon from '../svg/headerOptions/SaveOrderIcon';
 // import RemoveListIcon from '../svg/headerOptions/RemoveListIcon';
 import EditRightsIcon from '../svg/headerOptions/EditRightsIcon';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
-import { useLogoutUserMutation } from 'src/generated/graphql';
+import {
+  useGetUsersListsQuery,
+  useLogoutUserMutation,
+  useSubmitPreferredOrderMutation
+} from 'src/generated/graphql';
 // import { setAppState } from 'src/utils/dispatchActions';
 import { useApolloClient } from '@apollo/client';
 import { useStateValue } from 'src/state/state';
+import { sendNotification } from 'src/utils/dispatchActions';
 
 /** Modal for displaying user's list options when header menu is clicked */
 export const HeaderOptions = () => {
-  const [{ moveList }, dispatch] = useStateValue();
+  const [{ moveList, currentListId }, dispatch] = useStateValue();
+  const { data: listData } = useGetUsersListsQuery();
 
   // Only display when user already exists
   // Needs to know if lists exist
@@ -49,6 +55,37 @@ export const HeaderOptions = () => {
     }
   };
 
+  const [
+    submitPreferredOrder,
+    { loading: submitOrderLoading }
+  ] = useSubmitPreferredOrderMutation();
+  const handleSaveOrder = async () => {
+    if (!submitOrderLoading) {
+      const currentItemsOrder = listData?.getUsersLists.userToList?.find(
+        (userList) => userList.listId === currentListId
+      )?.sortedItems;
+      if (!currentItemsOrder) {
+        sendNotification(dispatch, [
+          'There has been an error handling list data on `Save Order`'
+        ]);
+      } else {
+        try {
+          await submitPreferredOrder({
+            variables: {
+              data: {
+                listId: currentListId,
+                removedItemArray: currentItemsOrder
+              }
+            }
+          });
+          dispatch({ type: 'TOGGLE_OPTIONS' });
+        } catch (err) {
+          console.error('Error on Submit Preferred Order mutation: ', err);
+        }
+      }
+    }
+  };
+
   // const handleMoveLists = () = {
 
   // }
@@ -77,7 +114,7 @@ export const HeaderOptions = () => {
         icon={<RenameListIcon />}
       />
       <IconButton
-        onClick={() => console.log('')}
+        onClick={() => handleSaveOrder()}
         text="Save Order"
         style="header-option-button"
         icon={<SaveOrderIcon />}
