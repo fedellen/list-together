@@ -17,7 +17,7 @@ import {
 // import { setAppState } from 'src/utils/dispatchActions';
 import { useApolloClient } from '@apollo/client';
 import { useStateValue } from 'src/state/state';
-import { sendNotification } from 'src/utils/dispatchActions';
+import { openModal, sendNotification } from 'src/utils/dispatchActions';
 
 /** Modal for displaying user's list options when header menu is clicked */
 export const HeaderOptions = () => {
@@ -29,16 +29,6 @@ export const HeaderOptions = () => {
   // Needs to know if user has `owner` and/or `add` privileges
   // Needs to know if sharedUsers exist
   // Needs to know if `moveList` is active
-
-  // const { data: userListData } = useGetUsersListsQuery({
-  //   notifyOnNetworkStatusChange: true
-  // });
-  // let listExist = false;
-  // if (userListData?.getUsersLists.userToList) {
-  //   if (userListData.getUsersLists.userToList.length > 0) {
-  //     listExist = true;
-  //   }
-  // }
 
   const apolloClient = useApolloClient();
   const [logout, { loading: logoutLoading }] = useLogoutUserMutation();
@@ -103,12 +93,7 @@ export const HeaderOptions = () => {
         active={moveList}
       />
       <IconButton
-        onClick={() =>
-          dispatch({
-            type: 'TOGGLE_MODAL',
-            payload: { active: true, type: 'renameList' }
-          })
-        }
+        onClick={() => openModal(dispatch, 'renameList')}
         text="Rename List"
         style="header-option-button"
         icon={<RenameListIcon />}
@@ -120,7 +105,7 @@ export const HeaderOptions = () => {
         icon={<SaveOrderIcon />}
       />
       <IconButton
-        onClick={() => console.log('')}
+        onClick={() => openModal(dispatch, 'removeList')}
         text="Remove List"
         style="header-option-button"
         icon={<DeleteIcon />}
