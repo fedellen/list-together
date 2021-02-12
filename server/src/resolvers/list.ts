@@ -175,7 +175,7 @@ export class ListResolver {
     const userToList = await UserToList.create({
       listId: list.id,
       userId: user.id,
-      privileges: ['owner'],
+      privileges: 'owner',
       list: list
     }).save();
     /** Add to front of user's sorted list array */
@@ -309,7 +309,7 @@ export class ListResolver {
             where: { userId: remainingUsersArray[0].userId, listId: listId },
             relations: ['list']
           });
-          newOwnerUserToListTable!.privileges = ['owner'];
+          newOwnerUserToListTable!.privileges = 'owner';
           await newOwnerUserToListTable!.save();
           /** Notify new list owner if they're online */
           await publish({

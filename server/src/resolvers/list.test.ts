@@ -226,7 +226,7 @@ describe('Share list mutation:', () => {
     const shareListInput = {
       email: userToShare.email,
       listId: userToListTable!.listId,
-      privileges: ['add', 'strike']
+      privileges: 'strike'
     };
 
     const response = await graphqlCall({
@@ -242,6 +242,12 @@ describe('Share list mutation:', () => {
         }
       }
     });
+
+    const sharedUserListTable = await UserToList.findOne({
+      where: { listId: userToListTable!.listId, userId: userToShare.id }
+    });
+    expect(sharedUserListTable).toBeDefined();
+    expect(sharedUserListTable?.privileges).toBe('strike');
   });
 
   it('Non-owners cannot share the list', async () => {
@@ -249,16 +255,16 @@ describe('Share list mutation:', () => {
     const userToListTable = await UserToList.findOne({
       where: { userId: listOwner.id }
     });
-    const sharedUser = await createUserWithSharedPriv(userToListTable!.listId, [
-      'add',
+    const sharedUser = await createUserWithSharedPriv(
+      userToListTable!.listId,
       'strike'
-    ]);
+    );
     const userToShare = await createUser();
 
     const shareListInput = {
       email: userToShare.email,
       listId: userToListTable!.listId,
-      privileges: ['delete']
+      privileges: 'delete'
     };
 
     const response = await graphqlCall({
@@ -324,11 +330,11 @@ describe('Delete list mutation:', () => {
       where: { userId: listOwner.id }
     });
     const listId = ownersUserToListTable!.listId;
-    const sharedUser = await createUserWithSharedPriv(listId, [
-      'add',
-      'strike',
+    const sharedUser = await createUserWithSharedPriv(
+      listId,
+
       'delete'
-    ]);
+    );
 
     const response = await graphqlCall({
       source: deleteListMutation,
@@ -350,7 +356,7 @@ describe('Delete list mutation:', () => {
 
     // List has new owner
     expect(sharedUserToListTableAfter).toMatchObject({
-      privileges: ['owner']
+      privileges: 'owner'
     });
   });
 
@@ -426,10 +432,7 @@ describe('Rename list mutation:', () => {
     const listId = ownersUserToListTable!.listId;
     const newListName = faker.name.jobArea();
 
-    const sharedUser = await createUserWithSharedPriv(listId, [
-      'add',
-      'delete'
-    ]);
+    const sharedUser = await createUserWithSharedPriv(listId, 'add');
 
     const response = await graphqlCall({
       source: renameListMutation,

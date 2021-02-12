@@ -300,7 +300,7 @@ describe('Delete items mutation:', () => {
     });
     const sharedUser = await createUserWithSharedPriv(
       listOwnerUserConnection!.listId,
-      ['delete']
+      'delete'
     );
 
     const itemNameArray = listOwnerUserConnection!.list.items!.map(
@@ -362,7 +362,7 @@ describe('Delete items mutation:', () => {
     });
     const sharedUser = await createUserWithSharedPriv(
       listOwnerUserConnection!.listId,
-      ['add', 'strike']
+      'strike'
     );
 
     const itemNameArray = listOwnerUserConnection!.list.items!.map(
@@ -545,7 +545,7 @@ describe('Style item mutation:', () => {
     });
     const sharedUser = await createUserWithSharedPriv(
       listOwnerUserConnection!.listId,
-      ['strike']
+      'strike'
     );
 
     const itemNameArray = listOwnerUserConnection!.list.items!.map(
@@ -592,7 +592,7 @@ describe('Style item mutation:', () => {
     });
     const sharedUser = await createUserWithSharedPriv(
       listOwnerUserConnection!.listId,
-      ['add']
+      'add'
     );
 
     const itemNameArray = listOwnerUserConnection!.list.items!.map(
@@ -692,7 +692,7 @@ describe('Add note mutation:', () => {
     });
     const sharedUser = await createUserWithSharedPriv(
       listOwnerUserConnection!.listId,
-      ['add']
+      'add'
     );
 
     const itemNameArray = listOwnerUserConnection!.list.items!.map(
@@ -735,7 +735,7 @@ describe('Add note mutation:', () => {
     ).toBe(noteToAdd);
   });
 
-  it('User without shared `add` privileges cannot add notes to items on the list', async () => {
+  it('User with only `read` privileges cannot add notes to items on the list', async () => {
     const listOwner = await userWithListAndItems();
     const listOwnerUserConnection = await UserToList.findOne({
       where: { userId: listOwner.id },
@@ -743,7 +743,7 @@ describe('Add note mutation:', () => {
     });
     const sharedUser = await createUserWithSharedPriv(
       listOwnerUserConnection!.listId,
-      ['strike', 'delete']
+      'read'
     );
 
     const itemNameArray = listOwnerUserConnection!.list.items!.map(

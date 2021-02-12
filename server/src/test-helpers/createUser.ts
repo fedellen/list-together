@@ -39,7 +39,7 @@ export const userWithList = async (lists: number = 1): Promise<User> => {
     await UserToList.create({
       listId: list.id,
       userId: user.id,
-      privileges: ['owner']
+      privileges: 'owner'
     }).save();
   }
 
@@ -73,7 +73,7 @@ export const userWithListAndItems = async (
 
 export const createUserWithSharedPriv = async (
   listId: string,
-  privileges: UserPrivileges[]
+  privileges: UserPrivileges
 ): Promise<User> => {
   const user = await createUser();
   await UserToList.create({

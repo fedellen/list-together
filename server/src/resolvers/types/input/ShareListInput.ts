@@ -9,6 +9,6 @@ export class ShareListInput {
   @Field()
   email: string;
 
-  @Field(() => [String])
-  privileges: UserPrivileges[];
+  @Field(() => String)
+  privileges: UserPrivileges;
 }

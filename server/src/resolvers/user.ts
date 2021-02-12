@@ -103,7 +103,7 @@ export class UserResolver {
       await UserToList.create({
         listId: list.id,
         userId: user!.id,
-        privileges: ['owner'] // Only list creator has owner rights
+        privileges: 'owner' // Only list creator has owner rights
       }).save();
     }
 
