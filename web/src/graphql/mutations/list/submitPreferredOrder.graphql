@@ -1,0 +1,10 @@
+mutation SubmitPreferredOrder($data: PreferredOrderInput!) {
+  submitPreferredOrder(data: $data) {
+    userToList {
+      ...userListWithHistory
+    }
+    errors {
+      ...fieldError
+    }
+  }
+}

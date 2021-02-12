@@ -101,7 +101,7 @@ export type Mutation = {
   renameList: ListResponse;
   sortLists: UserResponse;
   sortItems: UserToListResponse;
-  submitRemovalOrder: UserToListResponse;
+  submitPreferredOrder: UserToListResponse;
 };
 
 
@@ -187,8 +187,8 @@ export type MutationSortItemsArgs = {
 };
 
 
-export type MutationSubmitRemovalOrderArgs = {
-  data: RemovalOrderInput;
+export type MutationSubmitPreferredOrderArgs = {
+  data: PreferredOrderInput;
 };
 
 export type AddItemInput = {
@@ -269,7 +269,7 @@ export type StringArrayInput = {
   stringArray: Array<Scalars['String']>;
 };
 
-export type RemovalOrderInput = {
+export type PreferredOrderInput = {
   removedItemArray: Array<Scalars['String']>;
   listId: Scalars['String'];
 };
@@ -498,14 +498,14 @@ export type SortListsMutation = (
   ) }
 );
 
-export type SubmitRemovalOrderMutationVariables = Exact<{
-  data: RemovalOrderInput;
+export type SubmitPreferredOrderMutationVariables = Exact<{
+  data: PreferredOrderInput;
 }>;
 
 
-export type SubmitRemovalOrderMutation = (
+export type SubmitPreferredOrderMutation = (
   { __typename?: 'Mutation' }
-  & { submitRemovalOrder: (
+  & { submitPreferredOrder: (
     { __typename?: 'UserToListResponse' }
     & { userToList?: Maybe<Array<(
       { __typename?: 'UserToList' }
@@ -1173,9 +1173,9 @@ export function useSortListsMutation(baseOptions?: Apollo.MutationHookOptions<So
 export type SortListsMutationHookResult = ReturnType<typeof useSortListsMutation>;
 export type SortListsMutationResult = Apollo.MutationResult<SortListsMutation>;
 export type SortListsMutationOptions = Apollo.BaseMutationOptions<SortListsMutation, SortListsMutationVariables>;
-export const SubmitRemovalOrderDocument = gql`
-    mutation SubmitRemovalOrder($data: RemovalOrderInput!) {
-  submitRemovalOrder(data: $data) {
+export const SubmitPreferredOrderDocument = gql`
+    mutation SubmitPreferredOrder($data: PreferredOrderInput!) {
+  submitPreferredOrder(data: $data) {
     userToList {
       ...userListWithHistory
     }
@@ -1186,31 +1186,31 @@ export const SubmitRemovalOrderDocument = gql`
 }
     ${UserListWithHistoryFragmentDoc}
 ${FieldErrorFragmentDoc}`;
-export type SubmitRemovalOrderMutationFn = Apollo.MutationFunction<SubmitRemovalOrderMutation, SubmitRemovalOrderMutationVariables>;
+export type SubmitPreferredOrderMutationFn = Apollo.MutationFunction<SubmitPreferredOrderMutation, SubmitPreferredOrderMutationVariables>;
 
 /**
- * __useSubmitRemovalOrderMutation__
+ * __useSubmitPreferredOrderMutation__
  *
- * To run a mutation, you first call `useSubmitRemovalOrderMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSubmitRemovalOrderMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useSubmitPreferredOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitPreferredOrderMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [submitRemovalOrderMutation, { data, loading, error }] = useSubmitRemovalOrderMutation({
+ * const [submitPreferredOrderMutation, { data, loading, error }] = useSubmitPreferredOrderMutation({
  *   variables: {
  *      data: // value for 'data'
  *   },
  * });
  */
-export function useSubmitRemovalOrderMutation(baseOptions?: Apollo.MutationHookOptions<SubmitRemovalOrderMutation, SubmitRemovalOrderMutationVariables>) {
-        return Apollo.useMutation<SubmitRemovalOrderMutation, SubmitRemovalOrderMutationVariables>(SubmitRemovalOrderDocument, baseOptions);
+export function useSubmitPreferredOrderMutation(baseOptions?: Apollo.MutationHookOptions<SubmitPreferredOrderMutation, SubmitPreferredOrderMutationVariables>) {
+        return Apollo.useMutation<SubmitPreferredOrderMutation, SubmitPreferredOrderMutationVariables>(SubmitPreferredOrderDocument, baseOptions);
       }
-export type SubmitRemovalOrderMutationHookResult = ReturnType<typeof useSubmitRemovalOrderMutation>;
-export type SubmitRemovalOrderMutationResult = Apollo.MutationResult<SubmitRemovalOrderMutation>;
-export type SubmitRemovalOrderMutationOptions = Apollo.BaseMutationOptions<SubmitRemovalOrderMutation, SubmitRemovalOrderMutationVariables>;
+export type SubmitPreferredOrderMutationHookResult = ReturnType<typeof useSubmitPreferredOrderMutation>;
+export type SubmitPreferredOrderMutationResult = Apollo.MutationResult<SubmitPreferredOrderMutation>;
+export type SubmitPreferredOrderMutationOptions = Apollo.BaseMutationOptions<SubmitPreferredOrderMutation, SubmitPreferredOrderMutationVariables>;
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($data: ChangePasswordInput!) {
   changePassword(data: $data) {
