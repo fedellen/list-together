@@ -38,7 +38,7 @@
   }
 
   input {
-    @apply py-4 px-6 text-lg  placeholder-gray-500 text-gray-700  bg-gray-200 shadow-md  rounded-full w-full outline-none;
+    @apply py-4 px-6 text-lg z-10 placeholder-gray-500 text-gray-700  bg-gray-200 shadow-md  rounded-full w-full outline-none;
   }
 
   /* button {
