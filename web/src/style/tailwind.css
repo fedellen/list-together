@@ -41,9 +41,15 @@
     @apply py-4 px-6 text-lg z-10 placeholder-gray-500 text-gray-700  bg-gray-200 shadow-md  rounded-full w-full outline-none;
   }
 
-  /* button {
-    @apply focus:outline-none;
-  } */
+  .button-shared {
+    @apply z-10 py-2 px-6 rounded-full font-semibold;
+  }
+  .button {
+    @apply button-shared;
+  }
+  .button-secondary {
+    @apply button-shared  hover:bg-indigo-300 hover:shadow-md;
+  }
 
   h2 {
     @apply text-2xl sm:text-3xl lg:text-4xl font-semibold font-heading;

@@ -23,7 +23,7 @@ export default function Modal({ modalTitle, component }: ModalProps) {
       {/* <div className="justify-center items-center flex z-50 max-w-xs sm:max-w-md lg:max-w-xl xl:max-w-3xl"> */}
       <div className="bg-gray-300 rounded-lg flex flex-col py-8 px-5 sm:px-8 gap-4 shadow-md mx-4  z-50 max-w-xs sm:max-w-md lg:max-w-2xl xl:max-w-4xl justify-center items-center">
         {/* Header */}
-        <div className="flex justify-between pb-4 md:pb-6 gap-16 sm:gap-20 lg:gap-24 w-full  ">
+        <div className="flex justify-between pb-4 md:pb-6 gap-16 sm:gap-20 lg:gap-24 w-full items-start ">
           {modalTitle}
           <button
             className="text-2xl sm:text-3xl font-heading  font-bold hover:text-indigo-700 outline-none"

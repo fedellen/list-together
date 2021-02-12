@@ -41,14 +41,8 @@ export default function CurrentModal() {
     modalTitle = <h2>Menu</h2>;
     component = <Menu />;
   } else if (modalState.type === 'removeList') {
-    modalTitle = currentListName ? (
-      <h2>
-        Remove list:
-        <br /> {currentListName}?
-      </h2>
-    ) : (
-      <h2>Remove current list?</h2>
-    );
+    modalTitle = <h2>Remove list</h2>;
+
     component = <RemoveList />;
   }
 
