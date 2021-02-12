@@ -26,7 +26,7 @@ export type ModalTypes =
   | 'menu'
   | 'addItem'
   | 'createList'
-  // | 'itemOptions'
+  | 'renameList'
   | 'addNote'
   | 'shareList'
   | 'removeList';

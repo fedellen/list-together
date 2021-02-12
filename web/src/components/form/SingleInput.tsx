@@ -4,7 +4,8 @@ import {
   useAddNoteMutation,
   useCreateListMutation,
   useGetUserQuery,
-  useGetUsersListsQuery
+  useGetUsersListsQuery,
+  useRenameListMutation
 } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';
@@ -15,7 +16,7 @@ import FormikTextInput from './FormikTextInput';
 /**
  * Single input component to be placed inside `Modal`
  * This component uses the following  mutations:
- * `addItem` | `createList` | `addNote`
+ * `addItem` | `createList` | `addNote` | `renameItem`
  */
 
 export default function SingleInput({}) {
@@ -26,6 +27,7 @@ export default function SingleInput({}) {
   const [addItem, { loading: addItemLoading }] = useAddItemMutation();
   const [addNote, { loading: addNoteLoading }] = useAddNoteMutation();
   const [createList, { loading: createListLoading }] = useCreateListMutation();
+  const [renameList, { loading: renameListLoading }] = useRenameListMutation();
 
   /** Use `addItem` mutation for default values */
   let placeholderText = 'Enter item name';
@@ -111,6 +113,26 @@ export default function SingleInput({}) {
         }
       } catch (err) {
         console.error(`Error on Create list mutation: ${err}`);
+      }
+    };
+  } else if (modalState.type === 'renameList') {
+    placeholderText = 'Enter new list name';
+    isLoading = renameListLoading;
+    handleAdd = async (text: string) => {
+      try {
+        const { data } = await renameList({
+          variables: {
+            name: text,
+            listId: currentListId
+          }
+        });
+        if (data?.renameList.errors) {
+          errorNotifaction(data.renameList.errors, dispatch);
+        } else {
+          closeModal(dispatch);
+        }
+      } catch (err) {
+        console.error(`Error on Rename List mutation: ${err}`);
       }
     };
   }

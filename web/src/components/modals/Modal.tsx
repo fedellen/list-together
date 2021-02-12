@@ -1,12 +1,13 @@
+import { ReactNode } from 'react';
 import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';
 
 /** Skeleton component for overlayed Modals */
 
 type ModalProps = {
-  modalTitle: string;
+  modalTitle: ReactNode;
   /** Component to put in the `content` portion of the modal */
-  component: React.ReactNode;
+  component: ReactNode;
 };
 
 export default function Modal({ modalTitle, component }: ModalProps) {
@@ -23,7 +24,7 @@ export default function Modal({ modalTitle, component }: ModalProps) {
       <div className="bg-gray-300 rounded-lg flex flex-col py-8 px-5 sm:px-8 gap-4 shadow-md mx-4  z-50 max-w-xs sm:max-w-md lg:max-w-2xl xl:max-w-4xl justify-center items-center">
         {/* Header */}
         <div className="flex justify-between pb-4 md:pb-6 gap-16 sm:gap-20 lg:gap-24 w-full  ">
-          <h2>{modalTitle}</h2>
+          {modalTitle}
           <button
             className="text-2xl sm:text-3xl font-heading  font-bold hover:text-indigo-700 outline-none"
             onClick={() => closeModal(dispatch)}

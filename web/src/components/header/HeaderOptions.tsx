@@ -66,7 +66,12 @@ export const HeaderOptions = () => {
         active={moveList}
       />
       <IconButton
-        onClick={() => console.log('')}
+        onClick={() =>
+          dispatch({
+            type: 'TOGGLE_MODAL',
+            payload: { active: true, type: 'renameList' }
+          })
+        }
         text="Rename List"
         style="header-option-button"
         icon={<RenameListIcon />}
