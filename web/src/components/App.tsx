@@ -53,7 +53,7 @@ export default function App() {
       <CurrentModal />
       <ErrorNotification />
       <Header />
-      {userDataLoading ? <LoadingSplash /> : <BodyContent />}
+      {userDataLoading && !data ? <LoadingSplash /> : <BodyContent />}
       <Footer />
     </div>
   );

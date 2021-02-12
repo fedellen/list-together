@@ -105,7 +105,7 @@
     @apply icon-button  rounded-lg bg-indigo-300 hover:bg-indigo-400 hover:text-indigo-800  shadow-md text-gray-700 p-2;
   }
   .header-option-button.active {
-    @apply bg-indigo-400 text-indigo-800;
+    @apply bg-green-400 text-green-800 hover:bg-green-500;
   }
   .header-option-button svg {
     @apply w-7 h-7 sm:w-9 sm:h-9 mb-2;

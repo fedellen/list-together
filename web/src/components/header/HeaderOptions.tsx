@@ -9,10 +9,14 @@ import SaveOrderIcon from '../svg/headerOptions/SaveOrderIcon';
 // import RemoveListIcon from '../svg/headerOptions/RemoveListIcon';
 import EditRightsIcon from '../svg/headerOptions/EditRightsIcon';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
+import { useLogoutUserMutation } from 'src/generated/graphql';
+// import { setAppState } from 'src/utils/dispatchActions';
+import { useApolloClient } from '@apollo/client';
+import { useStateValue } from 'src/state/state';
 
 /** Modal for displaying user's list options when header menu is clicked */
 export const HeaderOptions = () => {
-  // const [{ currentListId }, dispatch] = useStateValue();
+  const [{ moveList }, dispatch] = useStateValue();
 
   // Only display when user already exists
   // Needs to know if lists exist
@@ -29,19 +33,25 @@ export const HeaderOptions = () => {
   //     listExist = true;
   //   }
   // }
-  // const apolloClient = useApolloClient();
 
-  // const [logout] = useLogoutUserMutation();
-  // const handleLogout = async () => {
-  //   try {
-  //     await logout();
-  //     // await apolloClient.clearStore();
-  //     await apolloClient.resetStore();
-  //     setAppState(dispatch, 'home');
-  //   } catch (err) {
-  //     console.error('Error on logout mutation: ', err);
-  //   }
-  // };
+  const apolloClient = useApolloClient();
+  const [logout, { loading: logoutLoading }] = useLogoutUserMutation();
+  const handleLogout = async () => {
+    if (!logoutLoading) {
+      try {
+        await logout();
+        // await apolloClient.clearStore();
+        await apolloClient.resetStore();
+        dispatch({ type: 'TOGGLE_OPTIONS' });
+      } catch (err) {
+        console.error('Error on logout mutation: ', err);
+      }
+    }
+  };
+
+  // const handleMoveLists = () = {
+
+  // }
 
   return (
     <div
@@ -49,11 +59,11 @@ export const HeaderOptions = () => {
       className="grid absolute grid-cols-3 rounded-lg gap-2 z-30 mt-16 bg-gray-300 shadow-lg p-3 md:mr-10 lg:mr-16 xl:mr-24"
     >
       <IconButton
-        onClick={() => console.log('')}
-        text="Move List"
+        onClick={() => dispatch({ type: 'TOGGLE_MOVE_LISTS' })}
+        text={moveList ? 'End Move' : 'Move Lists'}
         style="header-option-button"
         icon={<MoveListIcon />}
-        // active={moveList}
+        active={moveList}
       />
       <IconButton
         onClick={() => console.log('')}
@@ -81,7 +91,7 @@ export const HeaderOptions = () => {
       />
 
       <IconButton
-        onClick={() => console.log('')}
+        onClick={() => handleLogout()}
         text="Logout"
         style="header-option-button"
         icon={<LogoutIcon />}

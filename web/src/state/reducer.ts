@@ -38,6 +38,9 @@ export type Action =
     }
   | {
       type: 'TOGGLE_OPTIONS';
+    }
+  | {
+      type: 'TOGGLE_MOVE_LISTS';
     };
 
 export const reducer = (state: State, action: Action): State => {
@@ -45,10 +48,12 @@ export const reducer = (state: State, action: Action): State => {
     case 'TOGGLE_MODAL':
       return {
         ...state,
-        modalState: action.payload
+        modalState: action.payload,
+        activeNote: ['', ''],
+        activeItem: '',
+        optionsOpen: false
       };
     case 'SET_LIST':
-      // console.log('im here reseting your state');
       return {
         ...state,
         sideMenuState: 'add',
@@ -100,7 +105,14 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         activeItem: '',
+        modalState: { active: false },
         optionsOpen: !state.optionsOpen
+      };
+    case 'TOGGLE_MOVE_LISTS':
+      return {
+        ...state,
+        optionsOpen: false,
+        moveList: !state.moveList
       };
     default:
       return state;

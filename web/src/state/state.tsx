@@ -3,12 +3,19 @@ import { AppState, ModalState, SideMenuState } from 'src/types';
 import { Action } from './reducer';
 
 export type State = {
+  /** ID for the actively displayed list */
   currentListId: string;
-  /** Name of item for displaying `ItemOptions` */
+  /** Name of clicked item for displaying `ItemOptions` */
   activeItem: string;
+  /** Contains [itemName, noteContent] when a note is clicked on */
   activeNote: [string, string];
+  /** Current list displays arrows for sorting when `Move List` option is active */
+  moveList: boolean;
+  /** Header Options clicked on? */
   optionsOpen: boolean;
+  /** Currently displayed modal */
   modalState: ModalState;
+  /** List currently in `review` view or `add` view */
   sideMenuState: SideMenuState;
   /** Error notification to display in `ErrorMessage` modal */
   errorMessage: string;
@@ -20,6 +27,7 @@ const initialState: State = {
   currentListId: '',
   activeItem: '',
   activeNote: ['', ''],
+  moveList: false,
   optionsOpen: false,
   modalState: { active: false },
   sideMenuState: 'add',

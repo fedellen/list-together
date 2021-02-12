@@ -20,7 +20,7 @@ export default function IconButton({
   active
 }: IconButtonProps) {
   return (
-    <button className={`${style} ${active && 'active'}`} onClick={onClick}>
+    <button className={`${style}${active ? ' active' : ''}`} onClick={onClick}>
       {icon}
       <span>{text}</span>
     </button>
