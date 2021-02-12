@@ -3,6 +3,11 @@ fragment userListFragment on UserToList {
   listId
   privileges
   mostCommonWords
+  sharedUsers {
+    shared
+    email
+    privileges
+  }
   sortedItems
   itemHistory {
     ...itemHistoryFragment

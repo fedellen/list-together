@@ -1,7 +1,7 @@
 export type ArrowIconDirection = 'right' | 'left';
 
 /** Postgres only saves UserPrivilegesType */
-export type UserPrivileges = 'add' | 'strike' | 'delete' | 'owner';
+export type UserPrivileges = 'read' | 'add' | 'strike' | 'delete' | 'owner';
 
 /** State for handling which Item modal is open */
 export type ToggleItemState = {
@@ -33,7 +33,7 @@ export type ModalTypes =
 
 export type CurrentListContext = {
   /** Current UserPrivileges to determine which options to show */
-  privileges: UserPrivileges[];
+  privileges: UserPrivileges;
   /** To use in `sortItems` mutation */
   sortedItems: string[];
   /** List has strikethroughs? */

@@ -67,7 +67,7 @@ export default function UsersLists() {
         <ListContext.Provider
           value={{
             sortedItems: currentList.sortedItems || [],
-            privileges: currentList.privileges as UserPrivileges[],
+            privileges: currentList.privileges as UserPrivileges,
             strikedItems: strikedItems || []
           }}
         >

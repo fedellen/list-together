@@ -44,9 +44,10 @@ export type UserToList = {
   __typename?: 'UserToList';
   userId: Scalars['ID'];
   listId: Scalars['ID'];
-  privileges: Array<Scalars['String']>;
+  privileges: Scalars['String'];
   itemHistory?: Maybe<Array<ItemHistory>>;
   mostCommonWords?: Maybe<Array<Scalars['String']>>;
+  sharedUsers: Array<SharedUsers>;
   sortedItems?: Maybe<Array<Scalars['String']>>;
   list: List;
 };
@@ -56,6 +57,13 @@ export type ItemHistory = {
   id: Scalars['ID'];
   item: Scalars['String'];
   removalRating?: Maybe<Scalars['Int']>;
+};
+
+export type SharedUsers = {
+  __typename?: 'SharedUsers';
+  shared: Scalars['Boolean'];
+  email?: Maybe<Scalars['String']>;
+  privileges?: Maybe<Scalars['String']>;
 };
 
 export type List = {
@@ -248,7 +256,7 @@ export type BooleanResponse = {
 export type ShareListInput = {
   listId: Scalars['String'];
   email: Scalars['String'];
-  privileges: Array<Scalars['String']>;
+  privileges: Scalars['String'];
 };
 
 export type ListResponse = {
@@ -313,7 +321,10 @@ export type UserFragmentFragment = (
 export type UserListFragmentFragment = (
   { __typename?: 'UserToList' }
   & Pick<UserToList, 'userId' | 'listId' | 'privileges' | 'mostCommonWords' | 'sortedItems'>
-  & { itemHistory?: Maybe<Array<(
+  & { sharedUsers: Array<(
+    { __typename?: 'SharedUsers' }
+    & Pick<SharedUsers, 'shared' | 'email' | 'privileges'>
+  )>, itemHistory?: Maybe<Array<(
     { __typename?: 'ItemHistory' }
     & ItemHistoryFragmentFragment
   )>>, list: (
@@ -756,6 +767,11 @@ export const UserListFragmentFragmentDoc = gql`
   listId
   privileges
   mostCommonWords
+  sharedUsers {
+    shared
+    email
+    privileges
+  }
   sortedItems
   itemHistory {
     ...itemHistoryFragment
