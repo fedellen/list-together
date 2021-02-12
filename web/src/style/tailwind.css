@@ -31,10 +31,10 @@
     @apply w-3 h-3 shadow-lg;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-gradient-to-b;
+    @apply bg-gradient-to-r;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-400 rounded-lg;
+    @apply bg-gray-400 rounded-lg hover:bg-gray-500;
   }
 
   input {
@@ -129,6 +129,33 @@
 
   #content {
     @apply container py-4;
+  }
+
+  /** Scrolling lists component */
+  .scrolling-lists {
+    @apply flex gap-3 items-center;
+  }
+  /** Arrow button to handle switching lists */
+  .list-arrow-button {
+    @apply w-9 p-2 hover-grow-blue;
+  }
+  /** Container for displaying lists */
+  .scrolling-lists ul {
+    @apply overflow-x-auto whitespace-nowrap flex  bg-gray-200 rounded-lg px-2 shadow-md w-full z-10;
+  }
+
+  .list-button {
+    @apply text-2xl py-2 border-t-4 text-gray-500 font-bold justify-center items-center flex;
+  }
+  .list-button.active {
+    @apply text-indigo-700 border-indigo-600 font-extrabold;
+  }
+  /** Toggleable buttons for sorting lists left and right */
+  .list-button button {
+    @apply w-9 p-3;
+  }
+  .list-button span {
+    @apply p-3 mx-4;
   }
 
   /** User's item list */

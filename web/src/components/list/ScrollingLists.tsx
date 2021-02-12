@@ -9,7 +9,6 @@ import { ArrowIconDirection } from 'src/types';
 import { arrayMove } from 'src/utils/arrayMove';
 import { sendNotification, setNewList } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
-import ListArrowButton from '../styled/ListArrowButton';
 import LeftArrowIcon from '../svg/list/LeftArrowIcon';
 import RightArrowIcon from '../svg/list/RightArrowIcon';
 
@@ -99,37 +98,31 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
   }
 
   return (
-    <div className="flex gap-3">
-      <ListArrowButton direction="left" handleArrowClick={handleArrowClick} />
-
-      <ul
-        ref={scrollingList}
-        className="overflow-x-auto whitespace-nowrap flex bg-gray-200 rounded-lg px-2 shadow-md w-full z-10"
+    <div className="scrolling-lists">
+      <button
+        className="list-arrow-button"
+        onClick={() => handleArrowClick('left')}
       >
+        <LeftArrowIcon />
+      </button>
+
+      <ul ref={scrollingList}>
         {lists.map((userList) => (
           <li key={userList.listId}>
             <button
               onClick={() => setNewList(dispatch, userList)}
-              className={`text-2xl py-2  cursor-pointer border-t-4 text-gray-500 font-bold justify-center items-center flex ${
-                currentListId === userList.listId
-                  ? ' text-indigo-700  border-indigo-600 font-extrabold'
-                  : ''
-              }${!moveList ? '' : ''}`}
+              className={`list-button${
+                currentListId === userList.listId ? ' active' : ''
+              }`}
             >
               {moveList && currentListId === userList.listId && (
-                <button
-                  className="w-9 p-3"
-                  onClick={() => handleSortList('left')}
-                >
+                <button onClick={() => handleSortList('left')}>
                   <LeftArrowIcon />
                 </button>
               )}
-              <span className="p-3 mx-4">{userList.list.title}</span>
+              <span>{userList.list.title}</span>
               {moveList && currentListId === userList.listId && (
-                <button
-                  className="w-9 p-3"
-                  onClick={() => handleSortList('right')}
-                >
+                <button onClick={() => handleSortList('right')}>
                   <RightArrowIcon />
                 </button>
               )}
@@ -137,7 +130,12 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
           </li>
         ))}
       </ul>
-      <ListArrowButton direction="right" handleArrowClick={handleArrowClick} />
+      <button
+        className="list-arrow-button"
+        onClick={() => handleArrowClick('right')}
+      >
+        <RightArrowIcon />
+      </button>
     </div>
   );
 }
