@@ -4,6 +4,7 @@ import Modal from './Modal';
 import RemoveList from './RemoveList';
 import SingleInput from '../form/SingleInput';
 import { useGetUsersListsQuery } from 'src/generated/graphql';
+import ShareList from './ShareList';
 
 /** Handles logic for displaying current modal */
 
@@ -47,8 +48,10 @@ export default function CurrentModal() {
         <br /> Remove List
       </h2>
     );
-
     component = <RemoveList />;
+  } else if (modalState.type === 'shareList') {
+    modalTitle = <h2>Share List</h2>;
+    component = <ShareList />;
   }
 
   // else 'addItem' default

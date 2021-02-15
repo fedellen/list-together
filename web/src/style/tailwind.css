@@ -64,6 +64,24 @@
     @apply flex flex-col gap-0 items-center justify-center text-xxs font-bold z-20;
   }
 
+  /** Special multi-button to choose which privilege to share with users */
+  .privilege-button {
+    @apply text-xs grid grid-cols-4 items-center justify-center rounded-full font-semibold shadow-md;
+  }
+  .privilege-button button {
+    @apply flex justify-center font-semibold bg-indigo-300 border-indigo-500 hover:bg-indigo-400 text-gray-600;
+  }
+  .privilege-button button.active {
+    @apply bg-indigo-500 text-indigo-900;
+  }
+  .privilege-button div {
+    @apply w-14 h-14 flex flex-col m-1 p-1 gap-1;
+  }
+
+  .text-label {
+    @apply absolute -mt-4 ml-4;
+  }
+
   /** Shared form styles for Login / CreateUser / ChangePassword */
   .form-container {
     @apply gap-8 justify-center items-center flex flex-col py-4;

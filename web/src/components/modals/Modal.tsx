@@ -14,13 +14,12 @@ export default function Modal({ modalTitle, component }: ModalProps) {
   const [, dispatch] = useStateValue();
 
   return (
-    <div className="fixed inset-0 items-center justify-center flex z-20">
+    <div className="fixed inset-0 items-center justify-center flex z-20 top-20">
       {/* Dark screen overlay  */}
       <div
         className="bg-gray-900 opacity-60  absolute inset-0"
         onClick={() => closeModal(dispatch)}
       />
-      {/* <div className="justify-center items-center flex z-50 max-w-xs sm:max-w-md lg:max-w-xl xl:max-w-3xl"> */}
       <div className="bg-gray-300 rounded-lg flex flex-col py-8 px-5 sm:px-8 gap-4 shadow-md mx-4  z-50 max-w-s sm:max-w-md lg:max-w-2xl xl:max-w-4xl justify-center items-center">
         {/* Header */}
         <div className="flex justify-between pb-4 md:pb-6 gap-16 sm:gap-20 lg:gap-24 w-full items-start ">
