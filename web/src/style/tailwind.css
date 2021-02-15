@@ -45,10 +45,10 @@
     @apply z-10 py-2 px-6 rounded-full font-semibold;
   }
   .button {
-    @apply button-shared;
+    @apply button-shared bg-indigo-300 hover:bg-indigo-400;
   }
   .button-secondary {
-    @apply button-shared  hover:bg-indigo-300 hover:shadow-md;
+    @apply button-shared hover:bg-indigo-300 hover:shadow-md;
   }
 
   h2 {
@@ -74,9 +74,13 @@
   .single-input {
     @apply flex flex-col w-full justify-center items-center gap-8 md:gap-10 sm:px-2 md:px-4;
   }
-  /* .single-input input {
-    @apply 
-  } */
+
+  .remove-confirmation {
+    @apply grid grid-cols-2 gap-10 mt-2 text-lg;
+  }
+  .remove-confirmation span {
+    @apply text-2xl md:text-3xl col-span-2 text-center font-extrabold;
+  }
 
   /*===================================================\
   |                      Header                        |
