@@ -39,6 +39,7 @@ export const HeaderOptions = () => {
         // await apolloClient.clearStore();
         await apolloClient.resetStore();
         dispatch({ type: 'TOGGLE_OPTIONS' });
+        dispatch({ type: 'SET_APP_STATE', payload: 'home' });
       } catch (err) {
         console.error('Error on logout mutation: ', err);
       }
