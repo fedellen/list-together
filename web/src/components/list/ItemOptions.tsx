@@ -19,7 +19,7 @@ import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import { arrayMove } from 'src/utils/arrayMove';
 import { useContext } from 'react';
 import { ListContext } from './UsersLists';
-import IconButton from '../styled/SideMenuButton';
+import IconButton from '../shared/IconButton';
 
 /** Modal for displaying user's item options when an item is clicked */
 export const ItemOptions = () => {

@@ -3,7 +3,7 @@ import { useDeleteItemsMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { sendNotification } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
-import IconButton from '../styled/SideMenuButton';
+import IconButton from '../shared/IconButton';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import LoadingIcon from '../svg/list/LoadingIcon';
 import AddItemIcon from '../svg/sideMenu/AddItemIcon';

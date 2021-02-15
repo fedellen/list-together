@@ -3,7 +3,7 @@ import React from 'react';
 import { useGetUserQuery, useGetUsersListsQuery } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { openModal, setAppState } from 'src/utils/dispatchActions';
-import IconButton from '../styled/SideMenuButton';
+import IconButton from '../shared/IconButton';
 import LoginIcon from '../svg/headerMenu/LoginIcon';
 import NewListIcon from '../svg/headerMenu/NewListIcon';
 import NewUserIcon from '../svg/headerMenu/NewUserIcon';

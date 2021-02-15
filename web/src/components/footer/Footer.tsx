@@ -1,6 +1,6 @@
-import KofiWidget from './styled/KofiWidget';
-import PixelPajamaWidget from './styled/PixelPajamaWidget';
-import SocialMediaButtons from './styled/SocialMediaButtons';
+import KofiWidget from './KofiWidget';
+import PixelPajamaWidget from './PixelPajamaWidget';
+import SocialMediaButtons from './SocialMediaButtons';
 
 export default function Footer() {
   return (

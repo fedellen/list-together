@@ -51,6 +51,10 @@
     @apply button-shared hover:bg-indigo-300 hover:shadow-md;
   }
 
+  h1 {
+    @apply text-5xl md:text-6xl font-extrabold font-heading;
+  }
+
   h2 {
     @apply text-2xl sm:text-3xl lg:text-4xl font-semibold font-heading;
   }

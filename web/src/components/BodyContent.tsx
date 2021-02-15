@@ -5,7 +5,9 @@ import HomePage from './HomePage';
 import Login from './form/Login';
 import UsersLists from './list/UsersLists';
 
-/** Handles logic for displaying content based on `appState` */
+/**
+ * Handles logic for displaying content based on `appState`
+ */
 
 export default function BodyContent() {
   const [{ appState }] = useStateValue();

@@ -1,5 +1,4 @@
 import { useField } from 'formik';
-import FormError from '../styled/FormError';
 
 type FormikTextInputProps = {
   name: string;
@@ -28,7 +27,9 @@ export default function FormikTextInput({
         type={type || name}
         autoFocus={autoFocus}
       />
-      {showError && meta.error && <FormError errorMessage={meta.error} />}
+      {showError && meta.error && (
+        <span className="text-red-600">{meta.error}</span>
+      )}
     </>
   );
 }

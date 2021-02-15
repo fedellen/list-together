@@ -1,4 +1,4 @@
-import Footer from './Footer';
+import Footer from './footer/Footer';
 import Header from './header/Header';
 import { useGetUserQuery } from '../generated/graphql';
 import CurrentModal from './modals/CurrentModal';
@@ -7,7 +7,7 @@ import { useStateValue } from 'src/state/state';
 import { useEffect } from 'react';
 import BodyContent from './BodyContent';
 import { resetActiveItem } from 'src/utils/dispatchActions';
-import LoadingSplash from './styled/LoadingSplash';
+import LoadingSplash from './shared/LoadingSplash';
 
 export default function App() {
   const [

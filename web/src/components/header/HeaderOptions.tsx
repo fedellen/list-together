@@ -1,12 +1,8 @@
-// import { useGetUsersListsQuery } from 'src/generated/graphql';
-// import { useStateValue } from '../../state/state';
-
-import IconButton from '../styled/SideMenuButton';
+import IconButton from '../shared/IconButton';
 import MoveListIcon from '../svg/headerOptions/MoveListIcon';
 import LogoutIcon from '../svg/headerOptions/LogoutIcon';
 import RenameListIcon from '../svg/headerOptions/RenameListIcon';
 import SaveOrderIcon from '../svg/headerOptions/SaveOrderIcon';
-// import RemoveListIcon from '../svg/headerOptions/RemoveListIcon';
 import EditRightsIcon from '../svg/headerOptions/EditRightsIcon';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import {
@@ -14,7 +10,6 @@ import {
   useLogoutUserMutation,
   useSubmitPreferredOrderMutation
 } from 'src/generated/graphql';
-// import { setAppState } from 'src/utils/dispatchActions';
 import { useApolloClient } from '@apollo/client';
 import { useStateValue } from 'src/state/state';
 import { openModal, sendNotification } from 'src/utils/dispatchActions';

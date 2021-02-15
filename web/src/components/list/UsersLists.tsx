@@ -8,7 +8,7 @@ import ScrollingLists from './ScrollingLists';
 import { openModal, setNewList } from 'src/utils/dispatchActions';
 import { createContext, useEffect } from 'react';
 import { CurrentListContext, UserPrivileges } from 'src/types';
-import LoadingSplash from '../styled/LoadingSplash';
+import LoadingSplash from '../shared/LoadingSplash';
 
 export const ListContext = createContext<CurrentListContext | null>(null);
 
