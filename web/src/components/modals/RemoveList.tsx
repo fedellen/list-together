@@ -20,37 +20,29 @@ export default function RemoveList() {
 
   const handleRemoveList = async () => {
     if (!loading) {
-      const { data, errors } = await removeList();
-      if (errors) console.log(errors);
-      if (data?.deleteList.errors) {
-        errorNotifaction(data.deleteList.errors, dispatch);
-      } else {
-        dispatch({ type: 'CLEAR_LIST' });
-        refetch();
-        closeModal(dispatch);
+      try {
+        const { data } = await removeList();
+        if (data?.deleteList.errors) {
+          errorNotifaction(data.deleteList.errors, dispatch);
+        } else {
+          dispatch({ type: 'CLEAR_LIST' });
+          refetch();
+          closeModal(dispatch);
+        }
+      } catch (err) {
+        console.error('Error in Remove List mutation : ', err);
       }
     }
   };
 
   return (
-    <div className="grid grid-cols-2 gap-7 mt-2 text-lg  ">
-      <span className="col-span-2 px-4 font-semibold">
-        Are you sure you want to remove this list?
-      </span>
-      <span className="text-2xl col-span-2 text-center mb-4 font-extrabold text-indigo-700">
-        {currentListName}
-      </span>
-      <button
-        onClick={() => closeModal(dispatch)}
-        className="button z-10 py-2 px-6 rounded-full font-semibold hover:bg-indigo-300 hover:shadow-md "
-      >
+    <div className="remove-confirmation">
+      <span>{`" ${currentListName} "`}</span>
+      <button onClick={() => closeModal(dispatch)} className="button-secondary">
         Cancel
       </button>
-      <button
-        onClick={() => handleRemoveList}
-        className="button-secondary z-10 py-2 px-6 rounded-full font-semibold  shadow-md  bg-indigo-300   hover:bg-indigo-400 "
-      >
-        Remove List
+      <button onClick={() => handleRemoveList()} className="button">
+        Remove
       </button>
     </div>
   );
