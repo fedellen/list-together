@@ -18,7 +18,7 @@ export default function ShareList() {
     notifyOnNetworkStatusChange: true
   });
   const [shareList, { loading }] = useShareListMutation({});
-  const [privilege, setPrivilege] = useState<UserPrivileges>('read');
+  const [privilege, setPrivilege] = useState<UserPrivileges>('delete');
 
   const validationSchema = yup.object().shape({
     email: yup
@@ -63,13 +63,19 @@ export default function ShareList() {
       {({ handleSubmit }) => (
         <Form
           onSubmit={handleSubmit}
-          className="flex flex-col justify-center items-center gap-8 w-full max-w-xs px-2"
+          className="flex flex-col items-start gap-10 max-w-xs md:max-w-sm"
         >
-          <span className="text-2xl md:text-3xl col-span-2 text-center font-extrabold ">{`" ${currentListName} "`}</span>
+          <div className="flex mt-4">
+            <span className="text-label">List Title:</span>
+            <span className="list-title">{currentListName}</span>
+          </div>
 
-          <FormikTextInput name="email" placeholder="email address" />
+          <div className="flex flex-col w-full">
+            <span className="text-label">User&lsquo;s Email Address:</span>
+            <FormikTextInput name="email" placeholder="email address" />
+          </div>
           <PrivilegeButton privilege={privilege} setPrivilege={setPrivilege} />
-          <div className="flex gap-12 ">
+          <div className="flex w-full justify-between px-4 ">
             <button
               onClick={() => closeModal(dispatch)}
               className="button-secondary"

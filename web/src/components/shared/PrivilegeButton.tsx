@@ -16,7 +16,7 @@ export default function PrivilegeButton({
 }: PrivilegeButtonProps) {
   return (
     <div className="privilege-button">
-      <span className="text-label">Privilege to Share:</span>
+      <span className="text-label">Privilege Level to Share:</span>
       <button
         className={`rounded-l-full  border-r-2 pl-2${
           privilege === 'read' ? ' active' : ''
@@ -58,7 +58,7 @@ export default function PrivilegeButton({
       >
         <div>
           <DeleteIcon />
-          <span>Delete</span>
+          <span>Full</span>
         </div>
       </button>
     </div>

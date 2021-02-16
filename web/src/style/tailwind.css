@@ -42,7 +42,7 @@
   }
 
   .button-shared {
-    @apply z-10 py-2 px-6 rounded-full font-semibold;
+    @apply flex z-10 py-2 px-6 rounded-full font-semibold;
   }
   .button {
     @apply button-shared bg-indigo-300 hover:bg-indigo-400;
@@ -66,20 +66,24 @@
 
   /** Special multi-button to choose which privilege to share with users */
   .privilege-button {
-    @apply text-xs grid grid-cols-4 items-center justify-center rounded-full font-semibold shadow-md;
+    @apply text-xxs grid grid-cols-4 items-center justify-center rounded-full font-semibold shadow-md w-full;
   }
   .privilege-button button {
-    @apply flex justify-center font-semibold bg-indigo-300 border-indigo-500 hover:bg-indigo-400 text-gray-600;
+    @apply flex justify-center font-semibold bg-indigo-300 border-indigo-500 hover:bg-indigo-400 text-gray-600 transition-all duration-200;
   }
   .privilege-button button.active {
     @apply bg-indigo-500 text-indigo-900;
   }
   .privilege-button div {
-    @apply w-14 h-14 flex flex-col m-1 p-1 gap-1;
+    @apply w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 flex flex-col m-1 p-1 sm:p-2 md:p-3 gap-1 md:gap-2;
+  }
+
+  .list-title {
+    @apply text-3xl md:text-4xl col-span-2 font-extrabold py-2 px-4 underline text-indigo-700;
   }
 
   .text-label {
-    @apply absolute -mt-4 ml-4;
+    @apply absolute -mt-4 ml-4 text-xs font-bold;
   }
 
   /** Shared form styles for Login / CreateUser / ChangePassword */

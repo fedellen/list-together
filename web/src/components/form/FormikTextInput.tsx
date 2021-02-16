@@ -28,7 +28,7 @@ export default function FormikTextInput({
         autoFocus={autoFocus}
       />
       {showError && meta.error && (
-        <span className="text-red-600">{meta.error}</span>
+        <span className="text-red-600 py-2 px-4">{meta.error}</span>
       )}
     </>
   );
