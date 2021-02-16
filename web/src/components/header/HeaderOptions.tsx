@@ -87,6 +87,7 @@ export const HeaderOptions = () => {
         style="header-option-button"
         icon={<MoveListIcon />}
         active={moveList}
+        autoFocus={true}
       />
       <IconButton
         onClick={() => openModal(dispatch, 'renameList')}

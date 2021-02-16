@@ -144,6 +144,7 @@ export const ItemOptions = () => {
         style={style}
         onClick={() => handleOptionAction('sortItemUp')}
         icon={<UpArrowIcon />}
+        autoFocus={true}
       />
       {(privileges.includes('add') || privileges.includes('owner')) && (
         <IconButton

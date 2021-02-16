@@ -10,6 +10,7 @@ type IconButtonProps = {
     | 'header-option-button'
     | 'item-option';
   active?: boolean;
+  autoFocus?: boolean;
 };
 
 export default function IconButton({
@@ -17,10 +18,15 @@ export default function IconButton({
   icon,
   text,
   style,
-  active
+  active,
+  autoFocus = false
 }: IconButtonProps) {
   return (
-    <button className={`${style}${active ? ' active' : ''}`} onClick={onClick}>
+    <button
+      autoFocus={autoFocus}
+      className={`${style}${active ? ' active' : ''}`}
+      onClick={onClick}
+    >
       {icon}
       <span>{text}</span>
     </button>
