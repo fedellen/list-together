@@ -110,12 +110,6 @@ export default function EditRights() {
       <PrivilegeButton privilege={privilege} setPrivilege={setPrivilege} />
       <div className="grid grid-cols-2 w-full gap-6 items-center justify-items-center px-4">
         <button
-          onClick={() => handleUpdatePrivileges(true)}
-          className="col-span-2 button-secondary hover:bg-red-400"
-        >
-          Remove All Access
-        </button>
-        <button
           type="submit"
           className="button-secondary"
           onClick={() => closeModal(dispatch)}
@@ -128,6 +122,12 @@ export default function EditRights() {
           onClick={() => handleUpdatePrivileges()}
         >
           Update
+        </button>
+        <button
+          onClick={() => handleUpdatePrivileges(true)}
+          className="col-span-2 button-secondary hover:bg-red-400"
+        >
+          Remove All Access
         </button>
       </div>
     </div>
