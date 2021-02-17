@@ -199,11 +199,11 @@ export class ListResolver {
 
   // Share a list
   @UseMiddleware(logger)
-  @Mutation(() => BooleanResponse)
+  @Mutation(() => UserToListResponse)
   async shareList(
     @Arg('data') data: ShareListInput,
     @Ctx() context: MyContext
-  ): Promise<BooleanResponse> {
+  ): Promise<UserToListResponse> {
     const contextError = validateContext(context);
     if (contextError) return { errors: contextError };
 
@@ -235,23 +235,54 @@ export class ListResolver {
       };
     }
 
+    const userAlreadyHasList = await UserToList.findOne({
+      where: { listId: data.listId, userId: userToShare.id },
+      relations: ['list']
+    });
+
+    if (userAlreadyHasList) {
+      return {
+        errors: [
+          {
+            field: 'email',
+            message: 'That email already has a connection to that list..'
+          }
+        ]
+      };
+    }
+
     await UserToList.create({
       listId: data.listId,
       privileges: data.privileges,
       userId: userToShare.id
     }).save();
 
-    return { boolean: true };
+    const userToListTableWithUpdatedSharedUsers = await UserToList.findOne({
+      where: { listId: data.listId, userId: userId }
+    });
+    if (!userToListTableWithUpdatedSharedUsers) {
+      return {
+        errors: [
+          {
+            field: 'updatedList',
+            message:
+              'An unexpected error has occurred while returning list with updated sharedUsers..'
+          }
+        ]
+      };
+    }
+
+    return { userToList: [userToListTableWithUpdatedSharedUsers] };
   }
 
   // Update shared user's privileges
   @UseMiddleware(logger)
-  @Mutation(() => BooleanResponse)
+  @Mutation(() => UserToListResponse)
   async updatePrivileges(
     @Arg('data') data: UpdatePrivilegesInput,
     @Ctx() context: MyContext,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
-  ): Promise<BooleanResponse> {
+  ): Promise<UserToListResponse> {
     const contextError = validateContext(context);
     if (contextError) return { errors: contextError };
 
@@ -297,13 +328,13 @@ export class ListResolver {
     }
 
     if (!data.privileges) {
+      /** If no privileges are specified, remove all access from sharedUser */
       await sharedUserToListTable.remove();
       await publish({
-        updatedListId: sharedUserToListTable?.listId,
+        updatedListId: sharedUserToListTable.listId,
         userIdToShare: sharedUserToListTable.userId,
         notification: `Your access to list: "${sharedUserToListTable.list.title}" has been removed`
       });
-      return { boolean: true };
     } else {
       const privilegeTypeError = validatePrivilegeType(data.privileges);
       if (privilegeTypeError) return { errors: privilegeTypeError };
@@ -315,8 +346,23 @@ export class ListResolver {
         userIdToShare: sharedUserToListTable?.userId,
         notification: `Your privilege level for list: "${sharedUserToListTable.list.title}" has been changed to ${sharedUserToListTable.privileges}`
       });
-      return { boolean: true };
     }
+    const userToListTableWithUpdatedSharedUsers = await UserToList.findOne({
+      where: { listId: data.listId, userId: userId }
+    });
+    if (!userToListTableWithUpdatedSharedUsers) {
+      return {
+        errors: [
+          {
+            field: 'updatedList',
+            message:
+              'An unexpected error has occurred while returning list with updated sharedUsers..'
+          }
+        ]
+      };
+    }
+
+    return { userToList: [userToListTableWithUpdatedSharedUsers] };
   }
 
   @UseMiddleware(logger)

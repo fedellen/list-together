@@ -10,6 +10,6 @@ export class UpdatePrivilegesInput {
   email: string;
 
   /** When privileges is undefined/null, list rights are revoked */
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   privileges?: UserPrivileges;
 }
