@@ -48,7 +48,7 @@ export const getApolloClient = async () => {
         }
       },
       UserToList: {
-        keyFields: ['userId', 'listId']
+        keyFields: ['listId']
       }
     }
   });
