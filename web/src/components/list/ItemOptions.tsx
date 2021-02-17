@@ -146,6 +146,12 @@ export const ItemOptions = () => {
         icon={<UpArrowIcon />}
         autoFocus={true}
       />
+      <IconButton
+        text="Down"
+        style={style}
+        onClick={() => handleOptionAction('sortItemDown')}
+        icon={<DownArrowIcon />}
+      />
       {(privileges.includes('add') || privileges.includes('owner')) && (
         <IconButton
           text="Note"
@@ -154,27 +160,20 @@ export const ItemOptions = () => {
           icon={<NoteIcon />}
         />
       )}
-      {(privileges.includes('delete') || privileges.includes('owner')) && (
-        <IconButton
-          text="Delete"
-          style={style}
-          onClick={() => handleOptionAction('deleteItem')}
-          icon={<DeleteIcon />}
-        />
-      )}
-
-      <IconButton
-        text="Down"
-        style={style}
-        onClick={() => handleOptionAction('sortItemDown')}
-        icon={<DownArrowIcon />}
-      />
       {(privileges.includes('strike') || privileges.includes('owner')) && (
         <IconButton
           text="Strike"
           style={style}
           onClick={() => handleOptionAction('strikeItem')}
           icon={<StrikeIcon />}
+        />
+      )}
+      {(privileges.includes('delete') || privileges.includes('owner')) && (
+        <IconButton
+          text="Delete"
+          style={style}
+          onClick={() => handleOptionAction('deleteItem')}
+          icon={<DeleteIcon />}
         />
       )}
     </div>

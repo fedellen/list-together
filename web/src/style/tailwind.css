@@ -150,7 +150,7 @@
   /** Item options */
 
   #item-options-container {
-    @apply grid absolute grid-cols-3 z-20 right-2 sm:right-auto sm:ml-20  mt-2 gap-2;
+    @apply grid absolute grid-rows-2 grid-flow-col z-20 right-2 sm:right-auto sm:ml-20  mt-2 gap-2;
   }
   .item-option {
     @apply icon-button bg-indigo-300 rounded-lg shadow-md hover:bg-indigo-400 hover:text-indigo-800  py-2 px-4;
