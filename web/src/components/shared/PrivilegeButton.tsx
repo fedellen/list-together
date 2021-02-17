@@ -5,7 +5,7 @@ import AddItemIcon from '../svg/sideMenu/AddItemIcon';
 import ReviewListIcon from '../svg/sideMenu/ReviewListIcon';
 
 type PrivilegeButtonProps = {
-  /** Currently active privilege */
+  /** Currently active privilege to submit with mutation */
   privilege: UserPrivileges;
   setPrivilege: (privilege: UserPrivileges) => void;
 };

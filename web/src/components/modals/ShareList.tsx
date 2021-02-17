@@ -1,9 +1,6 @@
 import { Formik, Form } from 'formik';
 import React, { useState } from 'react';
-import {
-  useGetUsersListsQuery,
-  useShareListMutation
-} from 'src/generated/graphql';
+import { useShareListMutation } from 'src/generated/graphql';
 import * as yup from 'yup';
 import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';
@@ -11,13 +8,12 @@ import { errorNotifaction } from 'src/utils/errorNotification';
 import FormikTextInput from '../form/FormikTextInput';
 import PrivilegeButton from '../shared/PrivilegeButton';
 import { UserPrivileges } from 'src/types';
+import useCurrentListName from 'src/hooks/fragmentHooks/useCurrentListName';
 
 export default function ShareList() {
   const [{ currentListId }, dispatch] = useStateValue();
-  const { data, refetch } = useGetUsersListsQuery({
-    notifyOnNetworkStatusChange: true
-  });
   const [shareList, { loading }] = useShareListMutation({});
+  /** State for handling the `PrivilegeButton` */
   const [privilege, setPrivilege] = useState<UserPrivileges>('delete');
 
   const validationSchema = yup.object().shape({
@@ -27,10 +23,9 @@ export default function ShareList() {
       .required('A valid email must be entered..')
   });
 
-  const currentListName = data?.getUsersLists.userToList?.find(
-    (list) => list.listId === currentListId
-  )?.list.title;
+  const currentListName = useCurrentListName();
 
+  /** shareList Mutation */
   const handleShareList = async (email: string) => {
     if (!loading) {
       try {
@@ -42,8 +37,6 @@ export default function ShareList() {
         if (data?.shareList.errors) {
           errorNotifaction(data.shareList.errors, dispatch);
         } else {
-          dispatch({ type: 'CLEAR_LIST' });
-          refetch();
           closeModal(dispatch);
         }
       } catch (err) {
@@ -75,7 +68,7 @@ export default function ShareList() {
             <FormikTextInput name="email" placeholder="email address" />
           </div>
           <PrivilegeButton privilege={privilege} setPrivilege={setPrivilege} />
-          <div className="flex w-full justify-between px-4 ">
+          <div className="flex w-full justify-between px-4">
             <button
               onClick={() => closeModal(dispatch)}
               className="button-secondary"
