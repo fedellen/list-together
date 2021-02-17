@@ -96,7 +96,8 @@ export type Mutation = {
   changePassword?: Maybe<UserResponse>;
   logout: Scalars['Boolean'];
   createList: UserToListResponse;
-  shareList: BooleanResponse;
+  shareList: UserToListResponse;
+  updatePrivileges: UserToListResponse;
   deleteList: BooleanResponse;
   renameList: ListResponse;
   sortLists: UserResponse;
@@ -162,6 +163,11 @@ export type MutationCreateListArgs = {
 
 export type MutationShareListArgs = {
   data: ShareListInput;
+};
+
+
+export type MutationUpdatePrivilegesArgs = {
+  data: UpdatePrivilegesInput;
 };
 
 
@@ -247,16 +253,22 @@ export type ChangePasswordInput = {
   password: Scalars['String'];
 };
 
-export type BooleanResponse = {
-  __typename?: 'BooleanResponse';
-  errors?: Maybe<Array<FieldError>>;
-  boolean?: Maybe<Scalars['Boolean']>;
-};
-
 export type ShareListInput = {
   listId: Scalars['String'];
   email: Scalars['String'];
   privileges: Scalars['String'];
+};
+
+export type UpdatePrivilegesInput = {
+  listId: Scalars['String'];
+  email: Scalars['String'];
+  privileges?: Maybe<Scalars['String']>;
+};
+
+export type BooleanResponse = {
+  __typename?: 'BooleanResponse';
+  errors?: Maybe<Array<FieldError>>;
+  boolean?: Maybe<Scalars['Boolean']>;
 };
 
 export type ListResponse = {
@@ -460,8 +472,18 @@ export type ShareListMutationVariables = Exact<{
 export type ShareListMutation = (
   { __typename?: 'Mutation' }
   & { shareList: (
-    { __typename?: 'BooleanResponse' }
-    & BooleanResponseFragment
+    { __typename?: 'UserToListResponse' }
+    & { userToList?: Maybe<Array<(
+      { __typename?: 'UserToList' }
+      & Pick<UserToList, 'listId'>
+      & { sharedUsers: Array<(
+        { __typename?: 'SharedUsers' }
+        & Pick<SharedUsers, 'shared' | 'email' | 'privileges'>
+      )> }
+    )>>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & FieldErrorFragment
+    )>> }
   ) }
 );
 
@@ -510,6 +532,29 @@ export type SubmitPreferredOrderMutation = (
     & { userToList?: Maybe<Array<(
       { __typename?: 'UserToList' }
       & UserListWithHistoryFragment
+    )>>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & FieldErrorFragment
+    )>> }
+  ) }
+);
+
+export type UpdatePrivilegesMutationVariables = Exact<{
+  data: UpdatePrivilegesInput;
+}>;
+
+
+export type UpdatePrivilegesMutation = (
+  { __typename?: 'Mutation' }
+  & { updatePrivileges: (
+    { __typename?: 'UserToListResponse' }
+    & { userToList?: Maybe<Array<(
+      { __typename?: 'UserToList' }
+      & Pick<UserToList, 'listId'>
+      & { sharedUsers: Array<(
+        { __typename?: 'SharedUsers' }
+        & Pick<SharedUsers, 'shared' | 'email' | 'privileges'>
+      )> }
     )>>, errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & FieldErrorFragment
@@ -1073,10 +1118,20 @@ export type RenameListMutationOptions = Apollo.BaseMutationOptions<RenameListMut
 export const ShareListDocument = gql`
     mutation ShareList($data: ShareListInput!) {
   shareList(data: $data) {
-    ...booleanResponse
+    userToList {
+      listId
+      sharedUsers {
+        shared
+        email
+        privileges
+      }
+    }
+    errors {
+      ...fieldError
+    }
   }
 }
-    ${BooleanResponseFragmentDoc}`;
+    ${FieldErrorFragmentDoc}`;
 export type ShareListMutationFn = Apollo.MutationFunction<ShareListMutation, ShareListMutationVariables>;
 
 /**
@@ -1211,6 +1266,48 @@ export function useSubmitPreferredOrderMutation(baseOptions?: Apollo.MutationHoo
 export type SubmitPreferredOrderMutationHookResult = ReturnType<typeof useSubmitPreferredOrderMutation>;
 export type SubmitPreferredOrderMutationResult = Apollo.MutationResult<SubmitPreferredOrderMutation>;
 export type SubmitPreferredOrderMutationOptions = Apollo.BaseMutationOptions<SubmitPreferredOrderMutation, SubmitPreferredOrderMutationVariables>;
+export const UpdatePrivilegesDocument = gql`
+    mutation UpdatePrivileges($data: UpdatePrivilegesInput!) {
+  updatePrivileges(data: $data) {
+    userToList {
+      listId
+      sharedUsers {
+        shared
+        email
+        privileges
+      }
+    }
+    errors {
+      ...fieldError
+    }
+  }
+}
+    ${FieldErrorFragmentDoc}`;
+export type UpdatePrivilegesMutationFn = Apollo.MutationFunction<UpdatePrivilegesMutation, UpdatePrivilegesMutationVariables>;
+
+/**
+ * __useUpdatePrivilegesMutation__
+ *
+ * To run a mutation, you first call `useUpdatePrivilegesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePrivilegesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePrivilegesMutation, { data, loading, error }] = useUpdatePrivilegesMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdatePrivilegesMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePrivilegesMutation, UpdatePrivilegesMutationVariables>) {
+        return Apollo.useMutation<UpdatePrivilegesMutation, UpdatePrivilegesMutationVariables>(UpdatePrivilegesDocument, baseOptions);
+      }
+export type UpdatePrivilegesMutationHookResult = ReturnType<typeof useUpdatePrivilegesMutation>;
+export type UpdatePrivilegesMutationResult = Apollo.MutationResult<UpdatePrivilegesMutation>;
+export type UpdatePrivilegesMutationOptions = Apollo.BaseMutationOptions<UpdatePrivilegesMutation, UpdatePrivilegesMutationVariables>;
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($data: ChangePasswordInput!) {
   changePassword(data: $data) {

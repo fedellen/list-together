@@ -1,5 +1,5 @@
-mutation ShareList($data: ShareListInput!) {
-  shareList(data: $data) {
+mutation UpdatePrivileges($data: UpdatePrivilegesInput!) {
+  updatePrivileges(data: $data) {
     userToList {
       listId
       sharedUsers {
