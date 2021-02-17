@@ -1,4 +1,5 @@
 import { Item, useDeleteNoteMutation } from 'src/generated/graphql';
+import useCurrentPrivileges from 'src/hooks/useCurrentPrivileges';
 import { useStateValue } from 'src/state/state';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
@@ -11,6 +12,11 @@ type SingleItemProps = {
 export default function SingleItem({ item }: SingleItemProps) {
   const [{ currentListId, activeItem, activeNote }, dispatch] = useStateValue();
   const [deleteNote, { loading: deleteNoteLoading }] = useDeleteNoteMutation();
+
+  const currentPrivileges = useCurrentPrivileges();
+
+  const userCanDeleteNotes: boolean =
+    currentPrivileges === 'owner' || currentPrivileges === 'delete';
 
   const handleDeleteNote = async (note: string) => {
     if (!deleteNoteLoading) {
@@ -36,7 +42,7 @@ export default function SingleItem({ item }: SingleItemProps) {
     }
   };
 
-  /** Set to true when user has clicked on an item */
+  /** activeItem contains item name as string when the user has clicked on an item */
   const isItemActive = activeItem === item.name ? ' active' : '';
   const isStriked = item.strike ? ' strike' : '';
   const hasActiveNote = activeNote[0] === item.name;
@@ -56,28 +62,36 @@ export default function SingleItem({ item }: SingleItemProps) {
         <ul>
           {item.notes.map((note) => (
             <li className="note" key={note}>
-              <button
-                className={`note-button${isStriked}${
-                  hasActiveNote && activeNote[1] === note
-                    ? ' hover:text-indigo-700'
-                    : ''
-                }`}
-                onClick={() =>
-                  dispatch({
-                    type: 'SET_ACTIVE_NOTE',
-                    payload: [item.name, note]
-                  })
-                }
-              >
-                {note}
-              </button>
-              {hasActiveNote && activeNote[1] === note && (
-                <button
-                  className="delete-note"
-                  onClick={() => handleDeleteNote(note)}
-                >
-                  <DeleteIcon />
-                </button>
+              {/** Note with togglable delete button */}
+              {userCanDeleteNotes ? (
+                <>
+                  <button
+                    className={`note-button${isStriked}${
+                      hasActiveNote && activeNote[1] === note
+                        ? ' hover:text-indigo-700'
+                        : ''
+                    }`}
+                    onClick={() =>
+                      dispatch({
+                        type: 'SET_ACTIVE_NOTE',
+                        payload: [item.name, note]
+                      })
+                    }
+                  >
+                    {note}
+                  </button>
+                  {hasActiveNote && activeNote[1] === note && (
+                    <button
+                      className="delete-note"
+                      onClick={() => handleDeleteNote(note)}
+                    >
+                      <DeleteIcon />
+                    </button>
+                  )}
+                </>
+              ) : (
+                /** Note without togglable delete button */
+                <span className={`note-button${isStriked}`}>{note}</span>
               )}
             </li>
           ))}
