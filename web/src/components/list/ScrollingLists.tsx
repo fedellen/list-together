@@ -22,6 +22,14 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
   const scrollingList = useRef<HTMLUListElement>(null);
   const listIdArray = lists.map((list) => list.listId);
 
+  const scrollContainerToChildList = (index: number) => {
+    scrollingList.current?.children[index].scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'center'
+    });
+  };
+
   const handleArrowClick = (direction: ArrowIconDirection) => {
     const currentIdIndex = listIdArray.indexOf(currentListId);
 
@@ -35,15 +43,8 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
     }
     const nextList = lists[nextListIndex];
 
+    scrollContainerToChildList(nextListIndex);
     setNewList(dispatch, nextList);
-    const listNodeToScroll = scrollingList.current?.children[nextListIndex];
-    listNodeToScroll?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-      inline: 'center'
-    });
-
-    console.log(listNodeToScroll?.compareDocumentPosition);
   };
 
   const [sortLists] = useSortListsMutation();
@@ -74,21 +75,26 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
       });
       if (data?.sortLists.errors) {
         errorNotifaction(data.sortLists.errors, dispatch);
+      } else {
+        scrollContainerToChildList(moveToIndex);
       }
     } catch (err) {
       console.error(`Error on sortItem mutation: ${err}`);
     }
   };
 
-  /** State for awaiting subsciption's data to load new notifications */
+  /** State for awaiting subsciption's data to load any new notifications */
   const [newData, setNewData] = useState(false);
+  /** Only subscribe to list IDs that have shared users, can be empty [] */
+  const listIdsToShare = lists
+    .filter((userList) => userList.sharedUsers[0].shared === true)
+    .map((userList) => userList.listId);
+
   /** Component renders when we have the lists, use subscription */
   const { data, loading } = useUpdateListSubscription({
-    variables: { listIdArray: listIdArray },
-    fetchPolicy: 'network-only',
+    variables: { listIdArray: listIdsToShare },
     onSubscriptionData: () => setNewData(true)
   });
-
   if (!loading && data && newData) {
     const notifications = data.subscribeToListUpdates.notifications;
     if (notifications) {
@@ -109,24 +115,30 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
       <ul ref={scrollingList}>
         {lists.map((userList) => (
           <li key={userList.listId}>
+            {moveList && currentListId === userList.listId && (
+              <button
+                className="move-list-button"
+                onClick={() => handleSortList('left')}
+              >
+                <LeftArrowIcon />
+              </button>
+            )}
             <button
               onClick={() => setNewList(dispatch, userList)}
               className={`list-button${
                 currentListId === userList.listId ? ' active' : ''
               }`}
             >
-              {moveList && currentListId === userList.listId && (
-                <button onClick={() => handleSortList('left')}>
-                  <LeftArrowIcon />
-                </button>
-              )}
               <span>{userList.list.title}</span>
-              {moveList && currentListId === userList.listId && (
-                <button onClick={() => handleSortList('right')}>
-                  <RightArrowIcon />
-                </button>
-              )}
             </button>
+            {moveList && currentListId === userList.listId && (
+              <button
+                className="move-list-button"
+                onClick={() => handleSortList('right')}
+              >
+                <RightArrowIcon />
+              </button>
+            )}
           </li>
         ))}
       </ul>

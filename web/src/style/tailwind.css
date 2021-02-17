@@ -179,6 +179,9 @@
   .scrolling-lists ul {
     @apply overflow-x-auto whitespace-nowrap flex  bg-gray-200 rounded-lg px-2 shadow-md w-full z-10;
   }
+  .scrolling-lists li {
+    @apply flex flex-row items-center justify-center;
+  }
 
   .list-button {
     @apply text-2xl py-2 border-t-4 text-gray-500 font-bold justify-center items-center flex;
@@ -187,8 +190,8 @@
     @apply text-indigo-700 border-indigo-600 font-extrabold;
   }
   /** Toggleable buttons for sorting lists left and right */
-  .list-button button {
-    @apply w-9 p-3;
+  .move-list-button {
+    @apply w-9 p-3 hover:text-indigo-700;
   }
   .list-button span {
     @apply p-3 mx-4;
