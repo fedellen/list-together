@@ -34,6 +34,7 @@ import { Topic } from './types/subscription/SubscriptionTopics';
 import { validateStringLength } from './types/validators/validateStringLength';
 import { validateUserToList } from './types/validators/validateUserToList';
 import { UpdatePrivilegesInput } from './types/input/UpdatePrivilegesInput';
+import { validatePrivilegeType } from './types/validators/validatePrivilegeType';
 
 @Resolver()
 export class ListResolver {
@@ -202,6 +203,9 @@ export class ListResolver {
     const contextError = validateContext(context);
     if (contextError) return { errors: contextError };
 
+    const privilegeTypeError = validatePrivilegeType(data.privileges);
+    if (privilegeTypeError) return { errors: privilegeTypeError };
+
     const userId = context.req.session.userId;
     const userToListTable = await UserToList.findOne({
       where: { listId: data.listId, userId: userId }
@@ -297,6 +301,9 @@ export class ListResolver {
       });
       return { boolean: true };
     } else {
+      const privilegeTypeError = validatePrivilegeType(data.privileges);
+      if (privilegeTypeError) return { errors: privilegeTypeError };
+
       sharedUserToListTable.privileges = data.privileges;
       await sharedUserToListTable.save();
       await publish({
