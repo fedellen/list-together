@@ -5,6 +5,7 @@ import RemoveList from './RemoveList';
 import SingleInput from '../form/SingleInput';
 import { useGetUsersListsQuery } from 'src/generated/graphql';
 import ShareList from './ShareList';
+import EditRights from './EditRights';
 
 /** Handles logic for displaying current modal */
 
@@ -52,6 +53,9 @@ export default function CurrentModal() {
   } else if (modalState.type === 'shareList') {
     modalTitle = <h2>Share List</h2>;
     component = <ShareList />;
+  } else if (modalState.type === 'editRights') {
+    modalTitle = <h2>Edit Rights</h2>;
+    component = <EditRights />;
   }
 
   // else 'addItem' default

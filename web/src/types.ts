@@ -29,7 +29,8 @@ export type ModalTypes =
   | 'renameList'
   | 'addNote'
   | 'shareList'
-  | 'removeList';
+  | 'removeList'
+  | 'editRights';
 
 export type CurrentListContext = {
   /** Current UserPrivileges to determine which options to show */

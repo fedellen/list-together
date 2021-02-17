@@ -10,7 +10,7 @@ export default function useCurrentSharedUsers(): SharedUsers[] | null {
     id: `UserToList:{"listId":"${currentListId}"}`,
     fragment: gql`
       fragment CurrentSharedUsers on UserToList {
-        title
+        sharedUsers
       }
     `
   });

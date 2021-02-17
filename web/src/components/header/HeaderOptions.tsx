@@ -108,7 +108,7 @@ export const HeaderOptions = () => {
         icon={<DeleteIcon />}
       />
       <IconButton
-        onClick={() => console.log('')}
+        onClick={() => openModal(dispatch, 'editRights')}
         text="Edit Rights"
         style="header-option-button"
         icon={<EditRightsIcon />}

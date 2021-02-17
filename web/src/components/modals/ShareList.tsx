@@ -40,7 +40,7 @@ export default function ShareList() {
           closeModal(dispatch);
         }
       } catch (err) {
-        console.error('Error in Remove List mutation : ', err);
+        console.error('Error in Share List mutation : ', err);
       }
     }
   };
