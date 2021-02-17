@@ -254,7 +254,8 @@ export class ListResolver {
     await UserToList.create({
       listId: data.listId,
       privileges: data.privileges,
-      userId: userToShare.id
+      userId: userToShare.id,
+      sortedItems: userToListTable.sortedItems
     }).save();
 
     const userToListTableWithUpdatedSharedUsers = await UserToList.findOne({
