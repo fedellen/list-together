@@ -33,6 +33,7 @@ import { SubscriptionArgs } from './types/subscription/SubscriptionArgs';
 import { Topic } from './types/subscription/SubscriptionTopics';
 import { validateStringLength } from './types/validators/validateStringLength';
 import { validateUserToList } from './types/validators/validateUserToList';
+import { UpdatePrivilegesInput } from './types/input/UpdatePrivilegesInput';
 
 @Resolver()
 export class ListResolver {
@@ -206,25 +207,13 @@ export class ListResolver {
       where: { listId: data.listId, userId: userId }
     });
 
-    if (!userToListTable) {
-      return {
-        errors: [
-          {
-            field: 'listId',
-            message: 'User to list connection does not exist..'
-          }
-        ]
-      };
-    } else if (!userToListTable.privileges.includes('owner')) {
-      return {
-        errors: [
-          {
-            field: 'userToList',
-            message: 'User does not have rights to share that list..'
-          }
-        ]
-      };
-    }
+    const userListErrors = validateUserToList({
+      userToList: userToListTable,
+      validatePrivilege: 'owner'
+    });
+    if (userListErrors) return { errors: userListErrors };
+    else if (!userToListTable)
+      throw new Error('UserList validation error on `shareList`..');
 
     const userToShare = await User.findOne({ where: { email: data.email } });
     if (!userToShare) {
@@ -245,6 +234,78 @@ export class ListResolver {
     }).save();
 
     return { boolean: true };
+  }
+
+  // Update shared user's privileges
+  @UseMiddleware(logger)
+  @Mutation(() => BooleanResponse)
+  async updatePrivileges(
+    @Arg('data') data: UpdatePrivilegesInput,
+    @Ctx() context: MyContext,
+    @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
+  ): Promise<BooleanResponse> {
+    const contextError = validateContext(context);
+    if (contextError) return { errors: contextError };
+
+    const userId = context.req.session.userId;
+    const userToListTable = await UserToList.findOne({
+      where: { listId: data.listId, userId: userId }
+    });
+
+    const userListErrors = validateUserToList({
+      userToList: userToListTable,
+      validatePrivilege: 'owner'
+    });
+    if (userListErrors) return { errors: userListErrors };
+    else if (!userToListTable)
+      throw new Error('UserList validation error on `shareList`..');
+
+    const userToUpdate = await User.findOne({ where: { email: data.email } });
+    if (!userToUpdate) {
+      return {
+        errors: [
+          {
+            field: 'email',
+            message: 'A user with that email address does not exist..'
+          }
+        ]
+      };
+    }
+
+    const sharedUserToListTable = await UserToList.findOne({
+      where: { listId: data.listId, userId: userToUpdate.id },
+      relations: ['list']
+    });
+    if (!sharedUserToListTable) {
+      return {
+        errors: [
+          {
+            field: 'email',
+            message:
+              'A user with that email address does not have access to that list..'
+          }
+        ]
+      };
+    }
+
+    if (!data.privileges) {
+      await sharedUserToListTable.remove();
+      await publish({
+        updatedListId: sharedUserToListTable?.listId,
+        userIdToShare: sharedUserToListTable.userId,
+        notification: `Your access to list: "${sharedUserToListTable.list.title}" has been removed`
+      });
+      return { boolean: true };
+    } else {
+      sharedUserToListTable.privileges = data.privileges;
+      await sharedUserToListTable.save();
+      await publish({
+        updatedListId: sharedUserToListTable?.listId,
+        userIdToShare: sharedUserToListTable?.userId,
+        notification: `Your privilege level for list: "${sharedUserToListTable.list.title}" has been changed to ${sharedUserToListTable.privileges}`
+      });
+      return { boolean: true };
+    }
   }
 
   @UseMiddleware(logger)
