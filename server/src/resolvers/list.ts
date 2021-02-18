@@ -77,7 +77,7 @@ export class ListResolver {
     /** Return user an undefined response instead of null to keep subscription alive */
     if (
       userIdToExclude === userId ||
-      userIdToShare !== connection.context.req.session.userId
+      (userIdToShare && userIdToShare !== connection.context.req.session.userId)
     )
       return { userToList: undefined };
 
