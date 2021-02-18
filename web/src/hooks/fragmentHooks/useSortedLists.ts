@@ -9,7 +9,7 @@ export default function useSortedLists(): string[] | null {
   const userFrag: User | null = apolloClient.readFragment({
     id: `User:${currentUserId}`,
     fragment: gql`
-      fragment CurrentListName on List {
+      fragment SortedLists on User {
         sortedListsArray
       }
     `

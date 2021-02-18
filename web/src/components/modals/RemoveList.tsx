@@ -1,5 +1,6 @@
 import {
   useDeleteListMutation,
+  useGetUserQuery,
   useGetUsersListsQuery
 } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
@@ -9,7 +10,8 @@ import useCurrentListName from 'src/hooks/fragmentHooks/useCurrentListName';
 
 export default function RemoveList() {
   const [{ currentListId }, dispatch] = useStateValue();
-  const { refetch } = useGetUsersListsQuery();
+  const { refetch: refetchLists } = useGetUsersListsQuery({ skip: true });
+  const { refetch: refetchUser } = useGetUserQuery({ skip: true });
 
   const currentListName = useCurrentListName();
 
@@ -24,8 +26,10 @@ export default function RemoveList() {
         if (data?.deleteList.errors) {
           errorNotifaction(data.deleteList.errors, dispatch);
         } else {
+          await refetchUser();
+          await refetchLists();
+          console.log('clearing that list mon');
           dispatch({ type: 'CLEAR_LIST' });
-          refetch();
           closeModal(dispatch);
         }
       } catch (err) {

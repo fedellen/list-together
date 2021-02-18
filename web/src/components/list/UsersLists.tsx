@@ -1,35 +1,31 @@
-import {
-  useGetUserQuery,
-  useGetUsersListsQuery
-} from '../../generated/graphql';
+import { useGetUsersListsQuery } from '../../generated/graphql';
 import ItemList from './ItemList';
 import { useStateValue } from 'src/state/state';
 import ScrollingLists from './ScrollingLists';
-import { openModal, setNewList } from 'src/utils/dispatchActions';
+import { openModal } from 'src/utils/dispatchActions';
 import { createContext, useEffect } from 'react';
 import { CurrentListContext, UserPrivileges } from 'src/types';
 import LoadingSplash from '../shared/LoadingSplash';
+import useSortedLists from 'src/hooks/fragmentHooks/useSortedLists';
 
 export const ListContext = createContext<CurrentListContext | null>(null);
 
 export default function UsersLists() {
   const [{ currentListId }, dispatch] = useStateValue();
 
-  const { data: userData } = useGetUserQuery({});
-  const sortedListArray = userData?.getUser?.sortedListsArray;
+  const sortedListArray = useSortedLists();
 
   const { data, loading, error, refetch } = useGetUsersListsQuery({});
   const usersLists = data?.getUsersLists?.userToList?.map((list) => list);
 
   /** Initialize current list when data is initialized or list id is cleared */
   useEffect(() => {
-    console.log('use effect is firing');
-    if (usersLists) {
-      if (currentListId === '' && usersLists[0] !== undefined) {
-        setNewList(dispatch, usersLists[0]);
+    if (sortedListArray) {
+      if (currentListId === '') {
+        dispatch({ type: 'SET_LIST', payload: sortedListArray[0] });
       }
     }
-  }, [usersLists, currentListId]);
+  }, [sortedListArray, currentListId]);
 
   if (loading && !usersLists) {
     return <LoadingSplash />;
@@ -39,7 +35,7 @@ export default function UsersLists() {
     console.error(errorString);
     return <div>{errorString}</div>;
   } else if (!usersLists) {
-    /** List periodically fails to fetch upon login, refetch() is correcting this issue */
+    /** List periodically fails to fetch upon login, refetch() seems to be correcting this issue */
     refetch();
     return null;
   }
