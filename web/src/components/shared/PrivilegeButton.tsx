@@ -16,7 +16,7 @@ export default function PrivilegeButton({
 }: PrivilegeButtonProps) {
   return (
     <div className="privilege-button">
-      <span className="text-label">Privilege Level to Share:</span>
+      <span className="text-label mb-20 pb-2">Privilege Level to Share:</span>
       <button
         className={`rounded-l-full  border-r-2 pl-2${
           privilege === 'read' ? ' active' : ''
