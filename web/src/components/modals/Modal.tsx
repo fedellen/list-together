@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import useKeyPress from 'src/hooks/useKeyPress';
 import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';
@@ -15,11 +15,9 @@ export default function Modal({ modalTitle, component }: ModalProps) {
   const [, dispatch] = useStateValue();
 
   const escapeModalKeyPress = useKeyPress('Escape');
-  if (escapeModalKeyPress) closeModal(dispatch);
-  // useEffect(() => {
-  //   if (sideMenuActive && sideMenuState === 'review' && deleteAllKeyPress)
-  //     handleAddItemClick();
-  // }, [deleteAllKeyPress]);
+  useEffect(() => {
+    if (escapeModalKeyPress) closeModal(dispatch);
+  }, [escapeModalKeyPress]);
 
   return (
     <div className="fixed inset-0 items-center justify-center flex z-20 top-20">

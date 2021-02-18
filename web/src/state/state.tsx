@@ -25,6 +25,10 @@ export type State = {
   appState: AppState;
 };
 
+// ListState = 'item' | 'note' | 'modal' | 'options' | 'side'
+
+// modal || itemMenu || noteDelete || optionsOpen || sideMenuState
+
 const initialState: State = {
   currentUserId: '',
   currentListId: '',
