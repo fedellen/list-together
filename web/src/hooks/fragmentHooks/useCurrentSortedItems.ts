@@ -2,7 +2,7 @@ import { useApolloClient, gql } from '@apollo/client';
 import { UserToList } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 
-export default function useCurrentSortedItems(): string[] | undefined | null {
+export default function useCurrentSortedItems(): string[] | null {
   const apolloClient = useApolloClient();
   const [{ currentListId }] = useStateValue();
 
@@ -15,5 +15,7 @@ export default function useCurrentSortedItems(): string[] | undefined | null {
     `
   });
 
-  return userListFrag ? userListFrag.sortedItems : null;
+  return userListFrag && userListFrag.sortedItems
+    ? userListFrag.sortedItems
+    : null;
 }

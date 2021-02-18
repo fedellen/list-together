@@ -41,6 +41,10 @@ export type Action =
     }
   | {
       type: 'TOGGLE_MOVE_LISTS';
+    }
+  | {
+      type: 'SET_USER';
+      payload: string;
     };
 
 export const reducer = (state: State, action: Action): State => {
@@ -113,6 +117,12 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         optionsOpen: false,
         moveList: !state.moveList
+      };
+    case 'SET_USER':
+      return {
+        ...state,
+        currentUserId: action.payload,
+        appState: 'list'
       };
     default:
       return state;

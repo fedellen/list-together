@@ -3,6 +3,8 @@ import { AppState, ModalState, SideMenuState } from 'src/types';
 import { Action } from './reducer';
 
 export type State = {
+  /** ID for current user */
+  currentUserId: string;
   /** ID for the actively displayed list */
   currentListId: string;
   /** Name of clicked item for displaying `ItemOptions` */
@@ -24,6 +26,7 @@ export type State = {
 };
 
 const initialState: State = {
+  currentUserId: '',
   currentListId: '',
   activeItem: '',
   activeNote: ['', ''],

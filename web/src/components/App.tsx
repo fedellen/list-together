@@ -21,7 +21,10 @@ export default function App() {
   /** Send to list if user is logged in  */
   useEffect(() => {
     if (data?.getUser && appState !== 'list' && !userDataLoading) {
-      dispatch({ type: 'SET_APP_STATE', payload: 'list' });
+      dispatch({
+        type: 'SET_USER',
+        payload: data.getUser.id
+      });
     }
   }, [data]);
 
