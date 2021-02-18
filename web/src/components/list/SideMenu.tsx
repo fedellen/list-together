@@ -1,7 +1,9 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useDeleteItemsMutation } from 'src/generated/graphql';
+import useCurrentPrivileges from 'src/hooks/useCurrentPrivileges';
+import useKeyPress from 'src/hooks/useKeyPress';
 import { useStateValue } from 'src/state/state';
-import { sendNotification } from 'src/utils/dispatchActions';
+import { openModal, sendNotification } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import IconButton from '../shared/IconButton';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
@@ -12,11 +14,21 @@ import { ListContext } from './UsersLists';
 
 export default function SideMenu() {
   const [
-    { activeItem, optionsOpen, sideMenuState, currentListId },
+    { modalState, activeItem, optionsOpen, sideMenuState, currentListId },
     dispatch
   ] = useStateValue();
   const listContext = useContext(ListContext);
   const [deleteItems, { loading: deleteLoading }] = useDeleteItemsMutation();
+
+  const sideMenuActive =
+    activeItem === '' && !optionsOpen && modalState.active === false;
+
+  const currentPrivileges = useCurrentPrivileges();
+  const hasStrikedItems =
+    listContext && listContext.strikedItems.length > 0 ? true : false;
+  const userCanDelete =
+    currentPrivileges === 'delete' || currentPrivileges === 'owner';
+  const userCanAdd = currentPrivileges !== 'read';
 
   const handleAddItemClick = () => {
     dispatch({
@@ -25,12 +37,12 @@ export default function SideMenu() {
     });
   };
 
+  /** Use `deleteItems` mutation on all striked items */
   const handleDeleteAllClick = async () => {
     if (!listContext || listContext.strikedItems.length < 1) {
       sendNotification(dispatch, ['List has no striked items to remove..']);
     } else {
       try {
-        /** Use `deleteItems` mutation */
         const { data } = await deleteItems({
           variables: {
             data: {
@@ -65,14 +77,44 @@ export default function SideMenu() {
     });
   };
 
-  /** Do not show SideMenu when another menu is open */
-  const visible = activeItem !== '' || optionsOpen;
-  const hasStrikedItems =
-    listContext && listContext.strikedItems.length > 0 ? true : false;
+  /** Keyboard events while Side Menu is active */
+
+  const addKeyPress = useKeyPress('a');
+  useEffect(() => {
+    if (sideMenuActive && sideMenuState === 'add' && addKeyPress && userCanAdd)
+      handleAddItemClick();
+  }, [addKeyPress]);
+
+  const deleteAllKeyPress = useKeyPress('d');
+  useEffect(() => {
+    if (sideMenuActive && sideMenuState === 'review' && deleteAllKeyPress)
+      handleDeleteAllClick();
+  }, [deleteAllKeyPress]);
+
+  const reviewKeyPress = useKeyPress('r');
+  useEffect(() => {
+    if (sideMenuActive && hasStrikedItems && userCanDelete && reviewKeyPress) {
+      if (sideMenuState === 'add') {
+        handleReviewClick();
+      } else if (sideMenuState === 'review') {
+        handleReturnClick();
+      }
+    }
+  }, [reviewKeyPress]);
+
+  const newListKeyPress = useKeyPress('n');
+  useEffect(() => {
+    if (sideMenuActive && newListKeyPress) openModal(dispatch, 'createList');
+  }, [newListKeyPress]);
+
   const style = 'side-menu-button';
 
   return (
-    <div id="side-menu" className={visible ? 'opacity-0' : 'opacity-100'}>
+    <div
+      id="side-menu"
+      /** Do not show SideMenu when another menu is open */
+      className={!sideMenuActive ? 'opacity-0' : 'opacity-100'}
+    >
       {sideMenuState === 'review' ? (
         <>
           {/** Review strikes mode */}
@@ -91,7 +133,7 @@ export default function SideMenu() {
         </>
       ) : (
         <>
-          {hasStrikedItems && (
+          {hasStrikedItems && userCanDelete && (
             <IconButton
               icon={<ReviewListIcon />}
               onClick={handleReviewClick}
@@ -99,12 +141,14 @@ export default function SideMenu() {
               style={style}
             />
           )}
-          <IconButton
-            icon={<AddItemIcon />}
-            onClick={handleAddItemClick}
-            text="Add"
-            style={style}
-          />
+          {userCanAdd && (
+            <IconButton
+              icon={<AddItemIcon />}
+              onClick={handleAddItemClick}
+              text="Add"
+              style={style}
+            />
+          )}
         </>
       )}
     </div>
