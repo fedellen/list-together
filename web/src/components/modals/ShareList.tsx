@@ -8,7 +8,7 @@ import { errorNotifaction } from 'src/utils/errorNotification';
 import FormikTextInput from '../form/FormikTextInput';
 import PrivilegeButton from '../shared/PrivilegeButton';
 import { UserPrivileges } from 'src/types';
-import useCurrentListName from 'src/hooks/fragmentHooks/useCurrentListName';
+import useCurrentListName from 'src/hooks/useCurrentListName';
 
 export default function ShareList() {
   const [{ currentListId }, dispatch] = useStateValue();

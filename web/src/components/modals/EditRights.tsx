@@ -4,12 +4,12 @@ import { closeModal } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import PrivilegeButton from '../shared/PrivilegeButton';
 import { UserPrivileges } from 'src/types';
-import useCurrentListName from 'src/hooks/fragmentHooks/useCurrentListName';
+import useCurrentListName from 'src/hooks/useCurrentListName';
 import {
   SharedUsers,
   useUpdatePrivilegesMutation
 } from 'src/generated/graphql';
-import useCurrentSharedUsers from 'src/hooks/fragmentHooks/useCurrentSharedUsers';
+import useCurrentSharedUsers from 'src/hooks/useCurrentSharedUsers';
 import LeftArrowIcon from '../svg/list/LeftArrowIcon';
 import RightArrowIcon from '../svg/list/RightArrowIcon';
 

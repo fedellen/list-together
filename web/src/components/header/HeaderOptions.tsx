@@ -12,9 +12,9 @@ import {
 import { useApolloClient } from '@apollo/client';
 import { useStateValue } from 'src/state/state';
 import { openModal, sendNotification } from 'src/utils/dispatchActions';
-import useCurrentPrivileges from 'src/hooks/fragmentHooks/useCurrentPrivileges';
-import useCurrentSharedUsers from 'src/hooks/fragmentHooks/useCurrentSharedUsers';
-import useCurrentSortedItems from 'src/hooks/fragmentHooks/useCurrentSortedItems';
+import useCurrentPrivileges from 'src/hooks/useCurrentPrivileges';
+import useCurrentSharedUsers from 'src/hooks/useCurrentSharedUsers';
+import useCurrentSortedItems from 'src/hooks/useCurrentSortedItems';
 import { errorNotifaction } from 'src/utils/errorNotification';
 
 /** Modal for displaying user's list options when header menu is clicked */

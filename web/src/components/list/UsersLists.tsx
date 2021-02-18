@@ -6,7 +6,7 @@ import { openModal } from 'src/utils/dispatchActions';
 import { createContext, useEffect } from 'react';
 import { CurrentListContext, UserPrivileges } from 'src/types';
 import LoadingSplash from '../shared/LoadingSplash';
-import useSortedLists from 'src/hooks/fragmentHooks/useSortedLists';
+import useSortedLists from 'src/hooks/useSortedLists';
 
 export const ListContext = createContext<CurrentListContext | null>(null);
 

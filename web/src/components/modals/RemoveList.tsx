@@ -6,7 +6,7 @@ import {
 import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
-import useCurrentListName from 'src/hooks/fragmentHooks/useCurrentListName';
+import useCurrentListName from 'src/hooks/useCurrentListName';
 
 export default function RemoveList() {
   const [{ currentListId }, dispatch] = useStateValue();
