@@ -113,7 +113,9 @@ export default function SideMenu() {
     <div
       id="side-menu"
       /** Do not show SideMenu when another menu is open */
-      className={!sideMenuActive ? 'opacity-0' : 'opacity-100'}
+      className={
+        !sideMenuActive ? 'opacity-0 pointer-events-none' : 'opacity-100'
+      }
     >
       {sideMenuState === 'review' ? (
         <>
