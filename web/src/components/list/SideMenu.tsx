@@ -108,6 +108,7 @@ export default function SideMenu() {
   }, [newListKeyPress]);
 
   const style = 'side-menu-button';
+  const largeScreen = window.innerWidth > 1024;
 
   return (
     <div
@@ -123,13 +124,13 @@ export default function SideMenu() {
           <IconButton
             icon={deleteLoading ? <LoadingIcon /> : <DeleteIcon />}
             onClick={handleDeleteAllClick}
-            text="Delete All"
+            text={`Delete All${largeScreen ? ' (D)' : ''}`}
             style={style}
           />
           <IconButton
             icon={<ReviewListIcon />}
             onClick={handleReturnClick}
-            text="Return"
+            text={`Return${largeScreen ? ' (R)' : ''}`}
             style={style}
           />
         </>
@@ -139,7 +140,7 @@ export default function SideMenu() {
             <IconButton
               icon={<ReviewListIcon />}
               onClick={handleReviewClick}
-              text="Review"
+              text={`Review${largeScreen ? ' (R)' : ''}`}
               style={style}
             />
           )}
@@ -147,7 +148,7 @@ export default function SideMenu() {
             <IconButton
               icon={<AddItemIcon />}
               onClick={handleAddItemClick}
-              text="Add"
+              text={`Add${largeScreen ? ' (A)' : ''}`}
               style={style}
             />
           )}
