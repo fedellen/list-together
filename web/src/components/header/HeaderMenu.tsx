@@ -1,6 +1,7 @@
 // import { useApolloClient } from '@apollo/client';
 import React from 'react';
 import { useGetUserQuery, useGetUsersListsQuery } from 'src/generated/graphql';
+import useCurrentPrivileges from 'src/hooks/fragmentHooks/useCurrentPrivileges';
 import { useStateValue } from 'src/state/state';
 import { openModal, setAppState } from 'src/utils/dispatchActions';
 import IconButton from '../shared/IconButton';
@@ -21,6 +22,8 @@ export default function HeaderMenu() {
   const { data: userListData } = useGetUsersListsQuery({
     notifyOnNetworkStatusChange: true
   });
+
+  const isOwner = useCurrentPrivileges() === 'owner';
 
   const userExist = userData?.getUser?.username;
   let listExist = false;
@@ -45,12 +48,14 @@ export default function HeaderMenu() {
           />
           {listExist && (
             <>
-              <IconButton
-                icon={<ShareIcon />}
-                text="Share"
-                onClick={() => openModal(dispatch, 'shareList')}
-                style={style}
-              />
+              {isOwner && (
+                <IconButton
+                  icon={<ShareIcon />}
+                  text="Share"
+                  onClick={() => openModal(dispatch, 'shareList')}
+                  style={style}
+                />
+              )}
               <IconButton
                 onClick={() => console.log('')}
                 text="Smart Sort"
