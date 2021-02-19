@@ -17,23 +17,28 @@ import UpArrowIcon from '../svg/itemOptions/UpArrowIcon';
 import DownArrowIcon from '../svg/itemOptions/DownArrowIcon';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import { arrayMove } from 'src/utils/arrayMove';
-import { useContext } from 'react';
-import { ListContext } from './UsersLists';
 import IconButton from '../shared/IconButton';
+import useKeyPress from 'src/hooks/useKeyPress';
+import useCurrentSortedItems from 'src/hooks/useCurrentSortedItems';
+import useCurrentPrivileges from 'src/hooks/useCurrentPrivileges';
+import { useEffect, useState } from 'react';
 
 /** Modal for displaying user's item options when an item is clicked */
 export const ItemOptions = () => {
   const [{ currentListId, activeItem: itemName }, dispatch] = useStateValue();
-  const listContext = useContext(ListContext);
+  // const listContext = useContext(ListContext);
+  const currentSortedItems = useCurrentSortedItems();
+  const currentPrivileges = useCurrentPrivileges();
 
-  const [deleteItems, { loading: deleteLoading }] = useDeleteItemsMutation();
-  const [styleItem, { loading: styleLoading }] = useStyleItemMutation();
-  const [sortItems, { loading: sortLoading }] = useSortItemsMutation();
-  const mutationIsLoading = styleLoading || sortLoading || deleteLoading;
+  const [deleteItems] = useDeleteItemsMutation();
+  const [styleItem] = useStyleItemMutation();
+  const [sortItems] = useSortItemsMutation();
 
-  if (!itemName || !listContext) {
+  const [mutationLoading, setMutationLoading] = useState(false);
+
+  if (!itemName) {
     sendNotification(dispatch, [
-      `Error: ItemOptions was opened without itemName: ${itemName} and/or listContext: ${listContext} `
+      `Error: ItemOptions was opened without itemName: ${itemName}  `
     ]);
     return null;
   }
@@ -41,9 +46,11 @@ export const ItemOptions = () => {
   /** When option button is clicked */
   const handleOptionAction = async (optionAction: OptionAction) => {
     /** Don't run new mutation if a request is already loading */
-    if (mutationIsLoading) {
+    if (mutationLoading) {
       return;
     }
+    setMutationLoading(true);
+
     if (optionAction === 'addNote') {
       openModal(dispatch, 'addNote', itemName);
       dispatch({ type: 'SET_ACTIVE_ITEM', payload: '' });
@@ -60,12 +67,11 @@ export const ItemOptions = () => {
         });
         if (data?.deleteItems.errors) {
           errorNotifaction(data.deleteItems.errors, dispatch);
-        } else {
-          resetActiveItem(dispatch);
         }
       } catch (err) {
         console.error(`Error on Delete Item mutation: ${err}`);
       }
+      setMutationLoading(false);
     } else if (optionAction === 'boldItem' || optionAction === 'strikeItem') {
       try {
         /** Use `styleItem` mutation */
@@ -86,11 +92,19 @@ export const ItemOptions = () => {
       } catch (err) {
         console.error(`Error on styleItem mutation: ${err}`);
       }
+      setMutationLoading(false);
     } else if (
       optionAction === 'sortItemUp' ||
       optionAction === 'sortItemDown'
     ) {
-      const currentListIndex = listContext.sortedItems.indexOf(itemName);
+      if (!currentSortedItems) {
+        sendNotification(dispatch, [
+          'There has been an error reading your sorted items from the cache..'
+        ]);
+        return;
+      }
+
+      const currentListIndex = currentSortedItems.indexOf(itemName);
       const delta = optionAction === 'sortItemUp' ? -1 : 1;
 
       if (currentListIndex < 1 && delta === -1) {
@@ -99,7 +113,7 @@ export const ItemOptions = () => {
           'That item is already at the top of the list..'
         ]);
       } else if (
-        currentListIndex > listContext.sortedItems.length - 2 &&
+        currentListIndex > currentSortedItems.length - 2 &&
         delta === 1
       ) {
         // if down clicked and already on bottom of list
@@ -108,10 +122,11 @@ export const ItemOptions = () => {
         ]);
       } else {
         const newSortedItemsArray = arrayMove(
-          listContext.sortedItems,
+          currentSortedItems,
           currentListIndex,
           currentListIndex + delta
         );
+
         try {
           /** Use `sortItems` mutation */
           const { data } = await sortItems({
@@ -128,14 +143,44 @@ export const ItemOptions = () => {
         } catch (err) {
           console.error(`Error on sortItem mutation: ${err}`);
         }
+        setMutationLoading(false);
       }
-    } else if (optionAction === 'sortItemDown') {
     }
   };
+  const userCanAdd = currentPrivileges !== 'read';
+  const userCanStrike =
+    currentPrivileges !== 'read' && currentPrivileges !== 'add';
+  const userCanDelete =
+    currentPrivileges === 'delete' || currentPrivileges === 'owner';
 
-  const privileges = listContext.privileges;
+  /** Keyboard access for mutations */
+
+  const moveUpKeyPressed = useKeyPress('ArrowUp');
+  if (moveUpKeyPressed && !mutationLoading) handleOptionAction('sortItemUp');
+
+  const moveDownKeyPressed = useKeyPress('ArrowDown');
+  if (moveDownKeyPressed && !mutationLoading)
+    handleOptionAction('sortItemDown');
+
+  const strikeKeyPressed = userCanStrike && useKeyPress('s');
+  if (strikeKeyPressed && !mutationLoading) handleOptionAction('strikeItem');
+
+  const deleteKeyPressed = userCanDelete && useKeyPress('d');
+  if (deleteKeyPressed && !mutationLoading) handleOptionAction('deleteItem');
+
+  const noteKeyPressed = userCanAdd && useKeyPress('n');
+  useEffect(() => {
+    // Note key press results in an immediate dispatch, wrap in a useEffect
+    if (noteKeyPressed && !mutationLoading) handleOptionAction('addNote');
+  }, [noteKeyPressed]);
+
+  const escapeKeyPressed = useKeyPress('Escape');
+  useEffect(() => {
+    // Close item Modal
+    if (escapeKeyPressed) dispatch({ type: 'SET_ACTIVE_ITEM', payload: '' });
+  });
+
   const style = 'item-option';
-
   return (
     <div id="item-options-container">
       {/** Display buttons when user has privileges to access them */}
@@ -152,7 +197,7 @@ export const ItemOptions = () => {
         onClick={() => handleOptionAction('sortItemDown')}
         icon={<DownArrowIcon />}
       />
-      {(privileges.includes('add') || privileges.includes('owner')) && (
+      {userCanAdd && (
         <IconButton
           text="Note"
           style={style}
@@ -160,7 +205,7 @@ export const ItemOptions = () => {
           icon={<NoteIcon />}
         />
       )}
-      {(privileges.includes('strike') || privileges.includes('owner')) && (
+      {userCanStrike && (
         <IconButton
           text="Strike"
           style={style}
@@ -168,7 +213,7 @@ export const ItemOptions = () => {
           icon={<StrikeIcon />}
         />
       )}
-      {(privileges.includes('delete') || privileges.includes('owner')) && (
+      {userCanDelete && (
         <IconButton
           text="Delete"
           style={style}
