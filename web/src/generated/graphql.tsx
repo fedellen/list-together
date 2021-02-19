@@ -499,7 +499,7 @@ export type SortItemsMutation = (
     { __typename?: 'UserToListResponse' }
     & { userToList?: Maybe<Array<(
       { __typename?: 'UserToList' }
-      & UserListPartialFragment
+      & Pick<UserToList, 'listId' | 'sortedItems'>
     )>>, errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & FieldErrorFragment
@@ -1161,15 +1161,15 @@ export const SortItemsDocument = gql`
     mutation SortItems($data: StringArrayInput!, $listId: String!) {
   sortItems(data: $data, listId: $listId) {
     userToList {
-      ...userListPartial
+      listId
+      sortedItems
     }
     errors {
       ...fieldError
     }
   }
 }
-    ${UserListPartialFragmentDoc}
-${FieldErrorFragmentDoc}`;
+    ${FieldErrorFragmentDoc}`;
 export type SortItemsMutationFn = Apollo.MutationFunction<SortItemsMutation, SortItemsMutationVariables>;
 
 /**
