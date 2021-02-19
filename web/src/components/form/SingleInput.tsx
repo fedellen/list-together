@@ -1,4 +1,4 @@
-import { Formik, Form } from 'formik';
+import { useState } from 'react';
 import {
   useAddItemMutation,
   useAddNoteMutation,
@@ -7,16 +7,19 @@ import {
   useGetUsersListsQuery,
   useRenameListMutation
 } from 'src/generated/graphql';
+import useCurrentMostCommonWords from 'src/hooks/useCurrentMostCommonWords';
+import useCurrentSortedItems from 'src/hooks/useCurrentSortedItems';
+import useKeyPress from 'src/hooks/useKeyPress';
 import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import Button from '../styled/Button';
-import FormikTextInput from './FormikTextInput';
+import AutoCompleteItems from './AutoCompleteItems';
 
 /**
  * Single input component to be placed inside `Modal`
  * This component uses the following  mutations:
- * `addItem` | `createList` | `addNote` | `renameItem`
+ * `addItem` | `createList` | `addNote` | `renameList`
  */
 
 export default function SingleInput({}) {
@@ -24,14 +27,15 @@ export default function SingleInput({}) {
   const { data, refetch: refetchLists } = useGetUsersListsQuery({ skip: true });
   const { refetch: refetchUser } = useGetUserQuery({ skip: true });
 
-  const [addItem, { loading: addItemLoading }] = useAddItemMutation();
-  const [addNote, { loading: addNoteLoading }] = useAddNoteMutation();
-  const [createList, { loading: createListLoading }] = useCreateListMutation();
-  const [renameList, { loading: renameListLoading }] = useRenameListMutation();
+  const [addItem] = useAddItemMutation();
+  const [addNote] = useAddNoteMutation();
+  const [createList] = useCreateListMutation();
+  const [renameList] = useRenameListMutation();
+
+  const [submit, setSubmit] = useState(false);
 
   /** Use `addItem` mutation for default values */
   let placeholderText = 'Enter item name';
-  let isLoading = addItemLoading;
   let handleAdd = async (text: string) => {
     const userList = data?.getUsersLists.userToList?.find(
       (userList) => userList.listId === currentListId
@@ -43,6 +47,7 @@ export default function SingleInput({}) {
         dispatch
       );
     } else {
+      setSubmit(true);
       try {
         const { data } = await addItem({
           variables: {
@@ -54,6 +59,7 @@ export default function SingleInput({}) {
         });
         if (data?.addItem.errors) {
           errorNotifaction(data.addItem.errors, dispatch);
+          setSubmit(false);
         } else {
           closeModal(dispatch);
         }
@@ -63,14 +69,14 @@ export default function SingleInput({}) {
     }
   };
 
-  /** addNote mutation values */
+  /** addNote mutation */
   if (modalState.type === 'addNote') {
     placeholderText = 'Enter your note';
-    isLoading = addNoteLoading;
     handleAdd = async (text: string) => {
       if (!modalState.itemName) {
         console.error('No item name in context for addNote mutation..');
       } else {
+        setSubmit(true);
         try {
           const { data } = await addNote({
             variables: {
@@ -83,6 +89,7 @@ export default function SingleInput({}) {
           });
           if (data?.addNote.errors) {
             errorNotifaction(data.addNote.errors, dispatch);
+            setSubmit(false);
           } else {
             closeModal(dispatch);
           }
@@ -91,12 +98,11 @@ export default function SingleInput({}) {
         }
       }
     };
-
-    /** createList mutation values */
   } else if (modalState.type === 'createList') {
     placeholderText = 'Enter list name';
-    isLoading = createListLoading;
+    /** createList mutation  */
     handleAdd = async (text: string) => {
+      setSubmit(true);
       try {
         const { data } = await createList({
           variables: {
@@ -105,6 +111,7 @@ export default function SingleInput({}) {
         });
         if (data?.createList.errors) {
           errorNotifaction(data.createList.errors, dispatch);
+          setSubmit(false);
         } else {
           await refetchUser();
           await refetchLists();
@@ -117,8 +124,9 @@ export default function SingleInput({}) {
     };
   } else if (modalState.type === 'renameList') {
     placeholderText = 'Enter new list name';
-    isLoading = renameListLoading;
+    /** Rename list mutation */
     handleAdd = async (text: string) => {
+      setSubmit(true);
       try {
         const { data } = await renameList({
           variables: {
@@ -128,6 +136,7 @@ export default function SingleInput({}) {
         });
         if (data?.renameList.errors) {
           errorNotifaction(data.renameList.errors, dispatch);
+          setSubmit(false);
         } else {
           closeModal(dispatch);
         }
@@ -137,23 +146,40 @@ export default function SingleInput({}) {
     };
   }
 
+  const [textValue, setTextValue] = useState('');
+  const currentItemsArray = useCurrentSortedItems();
+  const mostCommonWords = useCurrentMostCommonWords();
+  const commonWordsWithoutCurrentItems = mostCommonWords?.filter(
+    (word) => !currentItemsArray?.includes(word)
+  );
+
+  const autoCompleteList = commonWordsWithoutCurrentItems?.filter(
+    (word) => word.toLowerCase().indexOf(textValue.toLowerCase()) !== -1
+  );
+
+  /** Keyboard submit */
+  const submitKeyPress = useKeyPress('Enter');
+  if (submitKeyPress && !submit) handleAdd(textValue);
+
   return (
-    <Formik
-      initialValues={{
-        text: ''
-      }}
-      onSubmit={(values) => handleAdd(values.text)}
-    >
-      {({ handleSubmit }) => (
-        <Form onSubmit={handleSubmit} className="single-input">
-          <FormikTextInput
-            name="text"
-            placeholder={placeholderText}
-            autoFocus={true}
-          />
-          <Button type="submit" text="Submit" isLoading={isLoading} />
-        </Form>
+    <div className="single-input">
+      <input
+        onChange={(e) => setTextValue(e.target.value)}
+        value={textValue}
+        placeholder={placeholderText}
+        autoFocus
+      />
+      <Button
+        text="Submit"
+        isLoading={submit}
+        onClick={!submit ? () => handleAdd(textValue) : undefined}
+      />
+      {modalState.type === 'addItem' && autoCompleteList && (
+        <AutoCompleteItems
+          handleAdd={handleAdd}
+          filteredWords={autoCompleteList}
+        />
       )}
-    </Formik>
+    </div>
   );
 }
