@@ -1,5 +1,11 @@
 mutation AddNote($data: AddNoteInput!) {
   addNote(data: $data) {
-    ...itemResponse
+    item {
+      id
+      notes
+    }
+    errors {
+      ...fieldError
+    }
   }
 }

@@ -1,5 +1,17 @@
 mutation DeleteItems($data: DeleteItemsInput!) {
   deleteItems(data: $data) {
-    ...userListResponse
+    userToList {
+      listId
+      sortedItems
+      list {
+        id
+        items {
+          id
+        }
+      }
+    }
+    errors {
+      ...fieldError
+    }
   }
 }

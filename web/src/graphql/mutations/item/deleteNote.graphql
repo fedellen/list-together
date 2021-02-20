@@ -1,5 +1,11 @@
 mutation DeleteNote($data: DeleteNoteInput!) {
   deleteNote(data: $data) {
-    ...itemResponse
+    item {
+      id
+      notes
+    }
+    errors {
+      ...fieldError
+    }
   }
 }

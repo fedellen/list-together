@@ -1,5 +1,11 @@
 mutation RenameList($name: String!, $listId: String!) {
   renameList(name: $name, listId: $listId) {
-    ...listResponse
+    list {
+      id
+      title
+    }
+    errors {
+      ...fieldError
+    }
   }
 }

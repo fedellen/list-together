@@ -1,5 +1,11 @@
 mutation SortLists($data: StringArrayInput!) {
   sortLists(data: $data) {
-    ...userResponse
+    user {
+      id
+      sortedListsArray
+    }
+    errors {
+      ...fieldError
+    }
   }
 }

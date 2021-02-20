@@ -1,7 +1,11 @@
 mutation SubmitPreferredOrder($data: PreferredOrderInput!) {
   submitPreferredOrder(data: $data) {
     userToList {
-      ...userListWithHistory
+      listId
+      itemHistory {
+        id
+        removalRating
+      }
     }
     errors {
       ...fieldError

@@ -1,5 +1,18 @@
 mutation StyleItem($data: StyleItemInput!) {
   styleItem(data: $data) {
-    ...userListResponse
+    userToList {
+      listId
+      sortedItems
+      list {
+        id
+        items {
+          id
+          strike
+        }
+      }
+    }
+    errors {
+      ...fieldError
+    }
   }
 }

@@ -394,7 +394,21 @@ export type DeleteItemsMutation = (
   { __typename?: 'Mutation' }
   & { deleteItems: (
     { __typename?: 'UserToListResponse' }
-    & UserListResponseFragment
+    & { userToList?: Maybe<Array<(
+      { __typename?: 'UserToList' }
+      & Pick<UserToList, 'listId' | 'sortedItems'>
+      & { list: (
+        { __typename?: 'List' }
+        & Pick<List, 'id'>
+        & { items?: Maybe<Array<(
+          { __typename?: 'Item' }
+          & Pick<Item, 'id'>
+        )>> }
+      ) }
+    )>>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & FieldErrorFragment
+    )>> }
   ) }
 );
 
@@ -420,7 +434,21 @@ export type StyleItemMutation = (
   { __typename?: 'Mutation' }
   & { styleItem: (
     { __typename?: 'UserToListResponse' }
-    & UserListResponseFragment
+    & { userToList?: Maybe<Array<(
+      { __typename?: 'UserToList' }
+      & Pick<UserToList, 'listId' | 'sortedItems'>
+      & { list: (
+        { __typename?: 'List' }
+        & Pick<List, 'id'>
+        & { items?: Maybe<Array<(
+          { __typename?: 'Item' }
+          & Pick<Item, 'id' | 'strike'>
+        )>> }
+      ) }
+    )>>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & FieldErrorFragment
+    )>> }
   ) }
 );
 
@@ -460,7 +488,13 @@ export type RenameListMutation = (
   { __typename?: 'Mutation' }
   & { renameList: (
     { __typename?: 'ListResponse' }
-    & ListResponseFragment
+    & { list?: Maybe<(
+      { __typename?: 'List' }
+      & Pick<List, 'id' | 'title'>
+    )>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & FieldErrorFragment
+    )>> }
   ) }
 );
 
@@ -516,7 +550,13 @@ export type SortListsMutation = (
   { __typename?: 'Mutation' }
   & { sortLists: (
     { __typename?: 'UserResponse' }
-    & UserResponseFragment
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'sortedListsArray'>
+    )>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & FieldErrorFragment
+    )>> }
   ) }
 );
 
@@ -531,7 +571,11 @@ export type SubmitPreferredOrderMutation = (
     { __typename?: 'UserToListResponse' }
     & { userToList?: Maybe<Array<(
       { __typename?: 'UserToList' }
-      & UserListWithHistoryFragment
+      & Pick<UserToList, 'listId'>
+      & { itemHistory?: Maybe<Array<(
+        { __typename?: 'ItemHistory' }
+        & Pick<ItemHistory, 'id' | 'removalRating'>
+      )>> }
     )>>, errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & FieldErrorFragment
@@ -925,10 +969,22 @@ export type AddNoteMutationOptions = Apollo.BaseMutationOptions<AddNoteMutation,
 export const DeleteItemsDocument = gql`
     mutation DeleteItems($data: DeleteItemsInput!) {
   deleteItems(data: $data) {
-    ...userListResponse
+    userToList {
+      listId
+      sortedItems
+      list {
+        id
+        items {
+          id
+        }
+      }
+    }
+    errors {
+      ...fieldError
+    }
   }
 }
-    ${UserListResponseFragmentDoc}`;
+    ${FieldErrorFragmentDoc}`;
 export type DeleteItemsMutationFn = Apollo.MutationFunction<DeleteItemsMutation, DeleteItemsMutationVariables>;
 
 /**
@@ -989,10 +1045,23 @@ export type DeleteNoteMutationOptions = Apollo.BaseMutationOptions<DeleteNoteMut
 export const StyleItemDocument = gql`
     mutation StyleItem($data: StyleItemInput!) {
   styleItem(data: $data) {
-    ...userListResponse
+    userToList {
+      listId
+      sortedItems
+      list {
+        id
+        items {
+          id
+          strike
+        }
+      }
+    }
+    errors {
+      ...fieldError
+    }
   }
 }
-    ${UserListResponseFragmentDoc}`;
+    ${FieldErrorFragmentDoc}`;
 export type StyleItemMutationFn = Apollo.MutationFunction<StyleItemMutation, StyleItemMutationVariables>;
 
 /**
@@ -1085,10 +1154,16 @@ export type DeleteListMutationOptions = Apollo.BaseMutationOptions<DeleteListMut
 export const RenameListDocument = gql`
     mutation RenameList($name: String!, $listId: String!) {
   renameList(name: $name, listId: $listId) {
-    ...listResponse
+    list {
+      id
+      title
+    }
+    errors {
+      ...fieldError
+    }
   }
 }
-    ${ListResponseFragmentDoc}`;
+    ${FieldErrorFragmentDoc}`;
 export type RenameListMutationFn = Apollo.MutationFunction<RenameListMutation, RenameListMutationVariables>;
 
 /**
@@ -1199,10 +1274,16 @@ export type SortItemsMutationOptions = Apollo.BaseMutationOptions<SortItemsMutat
 export const SortListsDocument = gql`
     mutation SortLists($data: StringArrayInput!) {
   sortLists(data: $data) {
-    ...userResponse
+    user {
+      id
+      sortedListsArray
+    }
+    errors {
+      ...fieldError
+    }
   }
 }
-    ${UserResponseFragmentDoc}`;
+    ${FieldErrorFragmentDoc}`;
 export type SortListsMutationFn = Apollo.MutationFunction<SortListsMutation, SortListsMutationVariables>;
 
 /**
@@ -1232,15 +1313,18 @@ export const SubmitPreferredOrderDocument = gql`
     mutation SubmitPreferredOrder($data: PreferredOrderInput!) {
   submitPreferredOrder(data: $data) {
     userToList {
-      ...userListWithHistory
+      listId
+      itemHistory {
+        id
+        removalRating
+      }
     }
     errors {
       ...fieldError
     }
   }
 }
-    ${UserListWithHistoryFragmentDoc}
-${FieldErrorFragmentDoc}`;
+    ${FieldErrorFragmentDoc}`;
 export type SubmitPreferredOrderMutationFn = Apollo.MutationFunction<SubmitPreferredOrderMutation, SubmitPreferredOrderMutationVariables>;
 
 /**
