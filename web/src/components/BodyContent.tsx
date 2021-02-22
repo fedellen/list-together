@@ -30,5 +30,5 @@ export default function BodyContent() {
     }
   };
 
-  return <section id="content">{bodyContent()}</section>;
+  return bodyContent();
 }

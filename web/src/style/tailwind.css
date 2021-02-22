@@ -163,7 +163,7 @@
   |                      Content                        |
   \====================================================*/
 
-  #content {
+  .content {
     @apply container py-4;
   }
 

@@ -58,7 +58,7 @@ export default function UsersLists() {
     .map((i) => i.name);
 
   return (
-    <>
+    <section id="users-lists" className="content">
       {currentList ? (
         <ListContext.Provider
           value={{
@@ -75,6 +75,6 @@ export default function UsersLists() {
           Add your first list!
         </div>
       )}
-    </>
+    </section>
   );
 }

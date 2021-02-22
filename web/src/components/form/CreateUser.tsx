@@ -79,6 +79,10 @@ export default function CreateUser() {
           </Form>
         )}
       </Formik>
+
+      <a className="button" href="http://localhost:4000/auth/google">
+        Login with Google
+      </a>
       {/* <Button type="submit" text="Google Login" onClick={signIn} /> */}
     </div>
   );
