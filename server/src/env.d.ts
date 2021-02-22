@@ -10,5 +10,7 @@ declare namespace NodeJS {
     COOKIE_NAME: string;
     FRONT_PROD_URL: string;
     FRONT_DEV_URL: string;
+    GOOGLE_CLIENT_ID: string;
+    GOOGLE_CLIENT_SECRET: string;
   }
 }

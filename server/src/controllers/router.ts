@@ -2,8 +2,24 @@ import express from 'express';
 import { confirmUserPrefix, FRONT_END_URL } from '../constants';
 import { User } from '../entities';
 import { redis } from '../redis';
+import passport from 'passport';
+// import { OAuth2Strategy } from "passport-google-oauth"
 
 const router = express.Router();
+
+router.get(
+  '/google',
+  passport.authenticate('google', { scope: 'openid email' })
+);
+
+router.get(
+  '/google/callback',
+  passport.authenticate('google', { session: false }),
+  (_req, res) => {
+    // req.session.userId = (req.user as any).id;
+    res.redirect(FRONT_END_URL);
+  }
+);
 
 router.get('/:id', async (req, res) => {
   const token = req.params.id;
