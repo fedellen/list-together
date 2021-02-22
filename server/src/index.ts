@@ -11,8 +11,7 @@ import http from 'http';
 import { FRONT_END_URL, __prod__ } from './constants';
 import router from './controllers/router';
 import passport from 'passport';
-import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
-import { User } from './entities';
+import { googleStrategy } from './utils/googleStrategy';
 
 // Temporarily fixes a type error from @types/express-session update
 declare module 'express-session' {
@@ -68,31 +67,7 @@ const main = async () => {
 
   app.use(sessionMiddleware);
 
-  passport.use(
-    new GoogleStrategy(
-      {
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: 'http://localhost:4000/auth/google/callback'
-      },
-      async (_, __, profile, cb) => {
-        const { emails, id } = profile;
-        console.log('id', id);
-        console.log('emails', emails);
-        if (emails) {
-          let user = await User.findOne({ where: { email: emails[0].value } });
-          if (!user) {
-            // Email was not found in the database, create a new user
-            // user = await User.create
-          }
-
-          return cb(null, { id: id });
-        } else {
-          return cb('Email on Google oAuth callback could not be found..');
-        }
-      }
-    )
-  );
+  passport.use(googleStrategy);
   app.use(passport.initialize());
 
   // app.set('trust proxy', 1);
