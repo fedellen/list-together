@@ -1,11 +1,11 @@
-// import {
-//   Arg,
-//   Ctx,
-//   Mutation,
-//   Query,
-//   Resolver,
-//   UseMiddleware
-// } from 'type-graphql';
+import {
+  // Arg,
+  Ctx,
+  // Mutation,
+  Query,
+  Resolver,
+  UseMiddleware
+} from 'type-graphql';
 
 // import { redis } from '../redis';
 // import { confirmUserPrefix, forgetPasswordPrefix } from '../constants';
@@ -13,7 +13,7 @@
 // import { v4 } from 'uuid';
 // import argon2 from 'argon2';
 
-// import { logger } from '../middleware/logger';
+import { logger } from '../middleware/logger';
 // import { sendEmail } from '../utils/sendEmail';
 // import { createConfirmationUrl } from '../utils/confirmationUrl';
 
@@ -24,25 +24,25 @@
 // import { LoginUserInput } from './types/input/LoginUserInput';
 // import { ChangePasswordInput } from './types/input/ChangePasswordInput';
 
-// import { List, User, UserToList } from '../entities';
+import { User /*, List, UserToList*/ } from '../entities';
 // import { UserResponse } from './types/response/UserResponse';
-// import { MyContext } from '../MyContext';
+import { MyContext } from '../MyContext';
 
-// @Resolver()
-// export class UserResolver {
-//   @Query(() => User, { nullable: true })
-//   @UseMiddleware(logger)
-//   async getUser(@Ctx() { req }: MyContext): Promise<User | null> {
-//     // Not logged in
-//     if (!req.session.userId) return null;
+@Resolver()
+export class UserResolver {
+  @Query(() => User, { nullable: true })
+  @UseMiddleware(logger)
+  async getUser(@Ctx() { req }: MyContext): Promise<User | null> {
+    // Not logged in
+    if (!req.session.userId) return null;
 
-//     const user = await User.findOne(req.session.userId);
-//     // User not found..
-//     if (!user) return null;
+    const user = await User.findOne(req.session.userId);
+    // User not found..
+    if (!user) return null;
 
-//     return user;
-//   }
-
+    return user;
+  }
+}
 //   // Create a User
 //   @UseMiddleware(logger)
 //   @Mutation(() => UserResponse)
