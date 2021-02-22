@@ -484,8 +484,8 @@ describe('Sort list mutation:', () => {
           user: {
             sortedListsArray: reversedListIdArray,
             email: user.email,
-            id: user.id,
-            username: user.username
+            id: user.id
+            // username: user.username
           }
         }
       }

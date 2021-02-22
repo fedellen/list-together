@@ -17,15 +17,15 @@ export class User extends BaseEntity {
   @PrimaryColumn('uuid')
   id!: string;
 
-  @Field()
-  @Column('text')
-  username!: string;
+  // @Field()
+  // @Column('text')
+  // username!: string;
 
-  @Column('text')
-  password!: string;
+  // @Column('text')
+  // password!: string;
 
-  @Column('bool', { default: false })
-  confirmed!: boolean;
+  // @Column('bool', { default: false })
+  // confirmed!: boolean;
 
   @Field()
   @Column({ type: 'text', unique: true })
