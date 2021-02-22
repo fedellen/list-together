@@ -1,5 +1,5 @@
 import express from 'express';
-// import { /*confirmUserPrefix,*/ FRONT_END_URL } from '../constants';
+import { /*confirmUserPrefix,*/ FRONT_END_URL } from '../constants';
 // import { User } from '../entities';
 // import { redis } from '../redis';
 import passport from 'passport';
@@ -16,8 +16,8 @@ router.get(
     console.log('(req.user as any).id', (req.user as any).id);
     req.session.userId = (req.user as any).id;
 
-    res.redirect('http://localhost:4000/graphql');
-    // res.redirect(FRONT_END_URL);
+    // res.redirect('http://localhost:4000/graphql');
+    res.redirect(FRONT_END_URL);
   }
 );
 

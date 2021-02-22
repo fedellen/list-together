@@ -6,10 +6,10 @@ import SaveOrderIcon from '../svg/headerOptions/SaveOrderIcon';
 import EditRightsIcon from '../svg/headerOptions/EditRightsIcon';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import {
-  // useLogoutUserMutation,
+  useLogoutUserMutation,
   useSubmitPreferredOrderMutation
 } from 'src/generated/graphql';
-// import { useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import { useStateValue } from 'src/state/state';
 import { openModal, sendNotification } from 'src/utils/dispatchActions';
 import useCurrentPrivileges from 'src/hooks/useCurrentPrivileges';
@@ -29,22 +29,22 @@ export const HeaderOptions = () => {
   const hasSharedLists = currentSharedLists[0].shared;
   const userHasLists = currentListId !== '';
 
-  // /** logout mutation */
-  // const apolloClient = useApolloClient();
-  // const [logout, { loading: logoutLoading }] = useLogoutUserMutation();
-  // const handleLogout = async () => {
-  //   if (!logoutLoading) {
-  //     try {
-  //       await logout();
-  //       // await apolloClient.clearStore();
-  //       await apolloClient.resetStore();
-  //       dispatch({ type: 'TOGGLE_OPTIONS' });
-  //       dispatch({ type: 'SET_APP_STATE', payload: 'home' });
-  //     } catch (err) {
-  //       console.error('Error on logout mutation: ', err);
-  //     }
-  //   }
-  // };
+  /** logout mutation */
+  const apolloClient = useApolloClient();
+  const [logout, { loading: logoutLoading }] = useLogoutUserMutation();
+  const handleLogout = async () => {
+    if (!logoutLoading) {
+      try {
+        await logout();
+        // await apolloClient.clearStore();
+        await apolloClient.resetStore();
+        dispatch({ type: 'TOGGLE_OPTIONS' });
+        dispatch({ type: 'SET_APP_STATE', payload: 'home' });
+      } catch (err) {
+        console.error('Error on logout mutation: ', err);
+      }
+    }
+  };
 
   /** submitPreferredOrder mutation */
   const [
@@ -130,7 +130,7 @@ export const HeaderOptions = () => {
         />
       )}
       <IconButton
-        onClick={() => console.log('hey logout') /*handleLogout()*/}
+        onClick={() => handleLogout()}
         text="Logout"
         style="header-option-button"
         icon={<LogoutIcon />}

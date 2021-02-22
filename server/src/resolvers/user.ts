@@ -1,7 +1,7 @@
 import {
   // Arg,
   Ctx,
-  // Mutation,
+  Mutation,
   Query,
   Resolver,
   UseMiddleware
@@ -41,6 +41,23 @@ export class UserResolver {
     if (!user) return null;
 
     return user;
+  }
+
+  // Logout user
+  @UseMiddleware(/*isAuth,*/ logger) // Auth errors on logout
+  @Mutation(() => Boolean)
+  async logout(@Ctx() ctx: MyContext): Promise<Boolean> {
+    return new Promise((resolve) =>
+      ctx.req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+          return resolve(false);
+        }
+
+        ctx.res.clearCookie(process.env.COOKIE_NAME);
+        return resolve(true);
+      })
+    );
   }
 }
 //   // Create a User
@@ -170,20 +187,4 @@ export class UserResolver {
 //     return { user };
 //   }
 
-//   // Logout user
-//   @UseMiddleware(/*isAuth,*/ logger) // Auth errors on logout
-//   @Mutation(() => Boolean)
-//   async logout(@Ctx() ctx: MyContext): Promise<Boolean> {
-//     return new Promise((resolve) =>
-//       ctx.req.session.destroy((err) => {
-//         if (err) {
-//           console.log(err);
-//           return resolve(false);
-//         }
-
-//         ctx.res.clearCookie(process.env.COOKIE_NAME);
-//         return resolve(true);
-//       })
-//     );
-//   }
 // }
