@@ -25,7 +25,7 @@ export default function HeaderMenu() {
 
   const isOwner = useCurrentPrivileges() === 'owner';
 
-  const userExist = userData?.getUser?.username;
+  const userExist = userData?.getUser?.email;
   let listExist = false;
   if (userListData?.getUsersLists.userToList) {
     if (userListData.getUsersLists.userToList.length > 0) {

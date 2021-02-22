@@ -1,5 +1,5 @@
 import { useStateValue } from 'src/state/state';
-import { Menu } from './Menu';
+// import { Menu } from './Menu';
 import Modal from './Modal';
 import RemoveList from './RemoveList';
 import SingleInput from '../form/SingleInput';
@@ -39,10 +39,12 @@ export default function CurrentModal() {
       <h2>Rename current list?</h2>
     );
     // component = <SingleInput />
-  } else if (modalState.type === 'menu') {
-    modalTitle = <h2>Menu</h2>;
-    component = <Menu />;
-  } else if (modalState.type === 'removeList') {
+  }
+  // else if (modalState.type === 'menu') {
+  //   modalTitle = <h2>Menu</h2>;
+  //   component = <Menu />;
+  // }
+  else if (modalState.type === 'removeList') {
     modalTitle = (
       <h2>
         Confirm

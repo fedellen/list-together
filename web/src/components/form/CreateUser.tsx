@@ -1,15 +1,16 @@
 import { Form, Formik } from 'formik';
-import { useStateValue } from 'src/state/state';
-import { errorNotifaction } from 'src/utils/errorNotification';
-import { useCreateUserMutation } from '../../generated/graphql';
+// import { useStateValue } from 'src/state/state';
+// import { errorNotifaction } from 'src/utils/errorNotification';
+// import { useCreateUserMutation } from '../../generated/graphql';
 import Button from '../styled/Button';
 import * as yup from 'yup';
 import FormikTextInput from './FormikTextInput';
-import { sendNotification } from 'src/utils/dispatchActions';
+// import { sendNotification } from 'src/utils/dispatchActions';
+// import GoogleLogin, { useGoogleLogin } from 'react-google-login';
 
 export default function CreateUser() {
-  const [createUser, { loading }] = useCreateUserMutation();
-  const [, dispatch] = useStateValue();
+  // const [createUser, { loading }] = useCreateUserMutation();
+  // const [, dispatch] = useStateValue();
 
   const initialValues = {
     username: '',
@@ -32,34 +33,37 @@ export default function CreateUser() {
       })
   });
 
+  // const { signIn } = useGoogleLogin({});
+
   return (
     <div className="form-container">
       <h2>Create New User</h2>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={async (values) => {
-          try {
-            const response = await createUser({
-              variables: {
-                data: {
-                  username: values.username,
-                  email: values.email,
-                  password: values.password
-                }
-              }
-            });
-            if (response.data?.createUser.errors) {
-              errorNotifaction(response.data.createUser.errors, dispatch);
-            } else {
-              sendNotification(dispatch, [
-                'Confirmation email has been sent. Check your inbox shortly..'
-              ]);
-            }
-          } catch (err) {
-            console.error('Error on createUser submission: ', err);
-          }
-        }}
+        onSubmit={() => console.log('hey')}
+        // onSubmit={async (values) => {
+        //   try {
+        //     const response = await createUser({
+        //       variables: {
+        //         data: {
+        //           username: values.username,
+        //           email: values.email,
+        //           password: values.password
+        //         }
+        //       }
+        //     });
+        //     if (response.data?.createUser.errors) {
+        //       errorNotifaction(response.data.createUser.errors, dispatch);
+        //     } else {
+        //       sendNotification(dispatch, [
+        //         'Confirmation email has been sent. Check your inbox shortly..'
+        //       ]);
+        //     }
+        //   } catch (err) {
+        //     console.error('Error on createUser submission: ', err);
+        //   }
+        // }}
       >
         {({ handleSubmit }) => (
           <Form onSubmit={handleSubmit} className="form ">
@@ -71,10 +75,11 @@ export default function CreateUser() {
               placeholder="confirm password"
               type="password"
             />
-            <Button type="submit" text="Submit" isLoading={loading} />
+            <Button type="submit" text="Submit" />
           </Form>
         )}
       </Formik>
+      {/* <Button type="submit" text="Google Login" onClick={signIn} /> */}
     </div>
   );
 }

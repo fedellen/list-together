@@ -1,5 +1,5 @@
-mutation CreateUser($data: CreateUserInput!) {
-  createUser(data: $data) {
-    ...userResponse
-  }
-}
+# mutation CreateUser($data: CreateUserInput!) {
+#   createUser(data: $data) {
+#     ...userResponse
+#   }
+# }

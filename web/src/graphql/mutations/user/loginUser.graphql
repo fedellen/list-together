@@ -1,5 +1,5 @@
-mutation LoginUser($data: LoginUserInput!) {
-  login(data: $data) {
-    ...userResponse
-  }
-}
+# mutation LoginUser($data: LoginUserInput!) {
+#   login(data: $data) {
+#     ...userResponse
+#   }
+# }
