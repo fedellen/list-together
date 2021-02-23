@@ -45,7 +45,7 @@ const server = async () => {
     }
   });
 
-  // Add cors with credentials for session auth
+  // Add express to Apollo, include cors with credentials for session auth
   apolloServer.applyMiddleware({
     app,
     cors: {
@@ -54,7 +54,7 @@ const server = async () => {
     }
   });
 
-  // Handle subscriptions via httpServer
+  // Handle subscriptions via http
   const httpServer = http.createServer(app);
   apolloServer.installSubscriptionHandlers(httpServer);
 
