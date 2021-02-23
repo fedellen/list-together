@@ -15,8 +15,8 @@ export const sessionMiddleware = session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: __prod__, // true in prod
+    secure: 'auto', // true only in prod
     maxAge: 1000 * 60 * 60 * 24 * 15 * 365, // 15 years
-    sameSite: 'strict'
+    sameSite: 'lax'
   }
 });
