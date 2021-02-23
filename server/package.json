@@ -2,12 +2,12 @@
   "name": "grocery-app-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "server.ts",
   "scripts": {
     "build": "tsc --build --clean",
     "watch": "tsc -w",
-    "start": "node dist/index.js",
-    "dev": "nodemon dist/index.js",
+    "start": "node dist/server.js",
+    "dev": "nodemon dist/server.js",
     "test": "jest --runInBand --detectOpenHandles --forceExit",
     "gen-env": "gen-env-types .env -o src/env.d.ts -e ."
   },

@@ -30,6 +30,7 @@ const main = async () => {
     entities: ['dist/entities/**/*.js']
   });
 
+  /** type-graphql Schema */
   const schema = await createSchema();
 
   const apolloServer = new ApolloServer({
@@ -45,10 +46,10 @@ const main = async () => {
       }
     }
   });
+
   const app = express();
 
   const RedisStore = connectRedis(session);
-
   const sessionMiddleware = session({
     store: new RedisStore({
       client: redis
