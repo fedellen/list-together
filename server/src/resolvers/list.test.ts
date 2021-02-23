@@ -7,12 +7,11 @@ import {
   userWithList,
   userWithListAndItems
 } from '../test-helpers/createUser';
-import { List, User, UserToList } from '../entities';
+import { List, User, UserPrivileges, UserToList } from '../entities';
 import { userListFragment } from '../test-helpers/fragments/userListFragment';
 import { userListPartial } from '../test-helpers/fragments/userListPartial';
 import { fieldErrorFragment } from '../test-helpers/fragments/fieldErrorFragment';
 import { listPartial } from '../test-helpers/fragments/listPartial';
-import { userFragment } from '../test-helpers/fragments/userFragment';
 import { userListItemHistoryPartial } from '../test-helpers/fragments/userListItemHistoryPartial';
 
 const getUsersListsQuery = `
@@ -36,7 +35,14 @@ mutation CreateList($title: String!) {
 const shareListMutation = `
   mutation ShareList($data: ShareListInput!) {
     shareList (data: $data) {
-      boolean
+      userToList {
+        listId
+        sharedUsers {
+          shared
+          email
+          privileges
+        }
+      }
       ${fieldErrorFragment}
     }
   }
@@ -62,9 +68,13 @@ const renameListMutation = `
 
 const sortListsMutation = `
   mutation SortLists($data: StringArrayInput!) {
-    sortLists(data: $data) 
-      ${userFragment}
-    
+    sortLists(data: $data) {
+      user {
+        id
+        sortedListsArray
+      }
+      ${fieldErrorFragment}
+    } 
   }
 `;
 
@@ -222,11 +232,12 @@ describe('Share list mutation:', () => {
     const userToListTable = await UserToList.findOne({
       where: { userId: user.id }
     });
+    const privilegeToShare: UserPrivileges = 'strike';
 
     const shareListInput = {
       email: userToShare.email,
       listId: userToListTable!.listId,
-      privileges: 'strike'
+      privileges: privilegeToShare
     };
 
     const response = await graphqlCall({
@@ -235,10 +246,22 @@ describe('Share list mutation:', () => {
       userId: user.id
     });
 
+    // Owner's response contain's info about sharedUsers
     expect(response).toMatchObject({
       data: {
         shareList: {
-          boolean: true
+          userToList: [
+            {
+              listId: userToListTable!.listId,
+              sharedUsers: [
+                {
+                  shared: true,
+                  email: userToShare.email,
+                  privileges: privilegeToShare
+                }
+              ]
+            }
+          ]
         }
       }
     });
@@ -278,7 +301,7 @@ describe('Share list mutation:', () => {
         shareList: {
           errors: [
             {
-              message: 'User does not have rights to share that list..'
+              message: 'User does not have the correct "owner" privilege..'
             }
           ]
         }
@@ -483,9 +506,7 @@ describe('Sort list mutation:', () => {
         sortLists: {
           user: {
             sortedListsArray: reversedListIdArray,
-            email: user.email,
             id: user.id
-            // username: user.username
           }
         }
       }
