@@ -26,4 +26,18 @@ oAuthRouter.get(
   }
 );
 
+oAuthRouter.get(
+  '/facebook',
+  passport.authenticate('facebook', { scope: 'email' })
+);
+
+oAuthRouter.get(
+  '/facebook/callback',
+  passport.authenticate('facebook', { session: false }),
+  (req, res) => {
+    req.session.userId = (req.user as any).id;
+    res.redirect(FRONT_END_URL);
+  }
+);
+
 export default oAuthRouter;

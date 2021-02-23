@@ -4,6 +4,7 @@ import passport from 'passport';
 import { googleStrategy } from './utils/googleStrategy';
 import { sessionMiddleware } from './middleware/session';
 import { twitterStrategy } from './utils/twitterStrategy';
+import { facebookStrategy } from './utils/facebookStrategy';
 
 /** Express app */
 const app = express();
@@ -13,6 +14,7 @@ app.use(sessionMiddleware);
 // Add passport for oAuth: Google | Twitter | Facebook
 passport.use(googleStrategy);
 passport.use(twitterStrategy);
+passport.use(facebookStrategy);
 
 app.use(passport.initialize());
 app.use('/auth', oAuthRouter);
