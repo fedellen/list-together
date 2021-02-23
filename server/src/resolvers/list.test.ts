@@ -490,9 +490,6 @@ describe('Sort list mutation:', () => {
     });
     const listIdArray = userToListTableArray.map((table) => table.listId);
 
-    const userBefore = await User.findOne(user.id);
-    expect(userBefore!.sortedListsArray).toBeNull();
-
     const reversedListIdArray = listIdArray.reverse();
 
     const response = await graphqlCall({
