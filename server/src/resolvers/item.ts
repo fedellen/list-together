@@ -10,11 +10,10 @@ import {
 import { logger } from '../middleware/logger';
 import { MyContext } from '../MyContext';
 
-import { Item, ItemHistory, UserToList } from '../entities';
+import { /*Item, ItemHistory,*/ UserToList } from '../entities';
 
 import { StyleItemInput } from './types/input/StyleItemsInput';
 import { AddNoteInput } from './types/input/AddNoteInput';
-import { AddItemInput } from './types/input/AddItemInput';
 import { DeleteItemsInput } from './types/input/DeleteItemsInput';
 
 import { UserToListResponse } from './types/response/UserToListResponse';
@@ -27,81 +26,12 @@ import { Topic } from './types/subscription/SubscriptionTopics';
 import { validateStringLength } from './types/validators/validateStringLength';
 import { itemRemovalCallback } from '../services/item/itemRemovalCallback';
 import { sortIntoList } from '../services/item/sortIntoList';
-import { addToSharedLists } from '../services/item/addToSharedLists';
 import { validateUserToList } from './types/validators/validateUserToList';
-import { validateAddToList } from './types/validators/validateAddToList';
 import { removeFromSharedLists } from '../services/item/removeFromSharedLists';
 import { DeleteNoteInput } from './types/input/DeleteNoteInput';
 
 @Resolver()
 export class ItemResolver {
-  @UseMiddleware(logger)
-  @Mutation(() => UserToListResponse)
-  async addItem(
-    @Arg('data') { nameInput, listId }: AddItemInput,
-    @Ctx() context: MyContext,
-    @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
-  ): Promise<UserToListResponse> {
-    const contextErrors = validateContext(context);
-    if (contextErrors) return { errors: contextErrors };
-
-    const stringLengthErrors = validateStringLength(nameInput);
-    if (stringLengthErrors) return { errors: stringLengthErrors };
-
-    const userId = context.req.session.userId;
-    const userToListTable = await UserToList.findOne({
-      where: { listId: listId, userId: userId },
-      relations: ['list', 'list.items', 'itemHistory']
-    });
-
-    const userListErrors = validateUserToList({
-      userToList: userToListTable,
-      validatePrivilege: 'add'
-    });
-    if (userListErrors) return { errors: userListErrors };
-    else if (!userToListTable)
-      throw new Error('UserList validation error on `addItem`..');
-
-    const list = userToListTable.list;
-    if (!list.items) {
-      // Initialize list
-      list.items = [Item.create({ name: nameInput })];
-    } else {
-      const addItemErrors = validateAddToList(list, nameInput);
-      // Validation for max list length and if item already exists
-      if (addItemErrors) return { errors: addItemErrors };
-      else list.items = [Item.create({ name: nameInput }), ...list.items];
-    }
-
-    // Add item to User's personal item history for auto-completion and smart-sort
-    if (!userToListTable.itemHistory) {
-      // Initialize item history
-      userToListTable.itemHistory = [ItemHistory.create({ item: nameInput })];
-    } else {
-      const existingItemInHistory = userToListTable.itemHistory.find(
-        ({ item }) => item === nameInput
-      );
-
-      if (existingItemInHistory) {
-        existingItemInHistory.timesAdded++;
-      } else {
-        userToListTable.itemHistory = [
-          ...userToListTable.itemHistory,
-          ItemHistory.create({ item: nameInput })
-        ];
-      }
-    }
-
-    // Add to sortedItems
-    const userToListTableAfterSort = sortIntoList(userToListTable, nameInput);
-    addToSharedLists(userToListTable, nameInput, publish);
-
-    // Save table to DB, cascades list updates
-    await userToListTableAfterSort.save();
-
-    return { userToList: [userToListTableAfterSort] };
-  }
-
   // Delete array of items from list
   // Items will usually be deleted in batches from front-end `deleteStrikes`
   @UseMiddleware(logger)

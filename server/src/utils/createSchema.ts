@@ -1,3 +1,4 @@
+import { AddItemResolver } from '../resolvers/item/addItem';
 import { buildSchema } from 'type-graphql';
 import { UserResolver } from '../resolvers';
 import { ListResolver } from '../resolvers';
@@ -12,7 +13,7 @@ import { pubSub } from './pubSub';
 
 export const createSchema = () =>
   buildSchema({
-    resolvers: [UserResolver, ListResolver, ItemResolver],
+    resolvers: [UserResolver, ListResolver, ItemResolver, AddItemResolver],
     validate: false,
     pubSub
   });
