@@ -9,7 +9,7 @@ import { createSchema } from './utils/createSchema';
 import { redis } from './redis';
 import http from 'http';
 import { FRONT_END_URL, __prod__ } from './constants';
-import router from './controllers/router';
+import oAuthRouter from './controllers/oAuthRouter';
 import passport from 'passport';
 import { googleStrategy } from './utils/googleStrategy';
 
@@ -78,7 +78,7 @@ const main = async () => {
       credentials: true
     }
   });
-  app.use('/auth', router);
+  app.use('/auth', oAuthRouter);
 
   const httpServer = http.createServer(app);
   apolloServer.installSubscriptionHandlers(httpServer);
