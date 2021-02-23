@@ -7,27 +7,14 @@ import {
   UserToList
 } from '../entities';
 import faker from 'faker';
-// import argon2 from 'argon2';
-import { sortIntoList } from '../utils/sortIntoList';
+import { sortIntoList } from '../services/item/sortIntoList';
 
-export const createUser = async (/*confirmed: boolean = true*/): Promise<User> => {
-  const user = {
-    // username: faker.internet.userName(),
+export const createUser = async (): Promise<User> => {
+  const user = await User.create({
     email: faker.internet.email()
-    // password: faker.internet.password(),
-    // confirmed: confirmed
-  };
-
-  // const hashedPassword = await argon2.hash(user.password);
-  const savedUser = await User.create({
-    ...user
-    // password: hashedPassword
   }).save();
 
-  // Return non-hashed password for testing
-  // savedUser.password = user.password;
-
-  return savedUser;
+  return user;
 };
 
 export const userWithList = async (lists: number = 1): Promise<User> => {
@@ -41,9 +28,12 @@ export const userWithList = async (lists: number = 1): Promise<User> => {
       userId: user.id,
       privileges: 'owner'
     }).save();
+    // Add to sorted Lists array
+    if (!user.sortedListsArray) user.sortedListsArray = [list.id];
+    else user.sortedListsArray = [list.id, ...user.sortedListsArray];
   }
 
-  return user;
+  return user.save();
 };
 
 export const userWithListAndItems = async (

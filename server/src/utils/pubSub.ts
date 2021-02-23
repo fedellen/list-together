@@ -1,5 +1,6 @@
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 
+/** Redis pubSub from `graphql-redis-subscriptions` */
 export const pubSub = new RedisPubSub({
   connection: {
     retryStrategy: (options) => {

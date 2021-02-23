@@ -25,12 +25,12 @@ import { validateContext } from './types/validators/validateContext';
 import { SubscriptionPayload } from './types/subscription/SubscriptionPayload';
 import { Topic } from './types/subscription/SubscriptionTopics';
 import { validateStringLength } from './types/validators/validateStringLength';
-import { itemRemovalCallback } from '../utils/itemRemovalCallback';
-import { sortIntoList } from '../utils/sortIntoList';
-import { addToSharedLists } from '../utils/addToSharedLists';
+import { itemRemovalCallback } from '../services/item/itemRemovalCallback';
+import { sortIntoList } from '../services/item/sortIntoList';
+import { addToSharedLists } from '../services/item/addToSharedLists';
 import { validateUserToList } from './types/validators/validateUserToList';
 import { validateAddToList } from './types/validators/validateAddToList';
-import { removeFromSharedLists } from '../utils/removeFromSharedLists';
+import { removeFromSharedLists } from '../services/item/removeFromSharedLists';
 import { DeleteNoteInput } from './types/input/DeleteNoteInput';
 
 @Resolver()

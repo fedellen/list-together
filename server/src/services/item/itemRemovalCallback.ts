@@ -1,4 +1,4 @@
-import { ItemHistory, UserToList } from '../entities';
+import { ItemHistory, UserToList } from '../../entities';
 
 /**
  *  Gathers recently deleted/striked items into an
@@ -11,39 +11,41 @@ export const itemRemovalCallback = (
   userToList: UserToList,
   itemName: string
 ) => {
-  let delay = 1000 * 5; // 5 seconds in dev
-  if (process.env.NODE_ENV === 'production') delay = 1000 * 60 * 30; // 30 minutes in prod
-  if (process.env.NODE_ENV === 'test') return; // don't run in test
+  let callbackDelay = 1000 * 5; // 5 seconds during dev
+  if (process.env.NODE_ENV === 'production') callbackDelay = 1000 * 60 * 30; // 30 minutes in prod
+  if (process.env.NODE_ENV === 'test') return; // Don't run callback in test yet
+
   setTimeout(async () => {
-    /** Get current UserToList */
+    // Get current UserToList, with itemHistory
     const currentList = await UserToList.findOne({
       where: { listId: userToList.listId, userId: userToList.userId },
       relations: ['itemHistory']
     });
 
+    // Dont run removalCallback if:
     if (!currentList) {
-      /**  UserToList table has been deleted  */
+      // UserToList table has been deleted
       return;
     } else if (!currentList.removedItems) {
-      /** removedItems has been cleared */
+      // removedItems has already been cleared
       return;
     } else if (
       currentList.removedItems.indexOf(itemName) !==
       currentList.removedItems.length - 1
     ) {
-      /** Item is no longer last on removalArray */
+      // Or the item is no longer the last index on removalArray
       return;
     }
 
     if (currentList.removedItems.length > 2) {
-      /** Only run when three or more items have been removed */
+      // Only run callback when three or more items have been removed
       const removedItemArray = currentList.removedItems;
       const arrayLengthRating = Math.round(1000 / removedItemArray.length);
 
       removedItemArray.forEach((itemRemoved) => {
         const newRemovalRating = Math.round(
           (removedItemArray.indexOf(itemRemoved) + 0.5) * arrayLengthRating
-        ).toString(); // Save number as a string in Postgres
+        ).toString(); // Save removalRating as a string in Postgres
 
         if (!currentList.itemHistory) {
           // User has no item history, initialize
@@ -59,7 +61,7 @@ export const itemRemovalCallback = (
           );
 
           if (!itemInHistory) {
-            // Item not in history, add new ItemHistory
+            // Item has no history, create new ItemHistory
             currentList.itemHistory = [
               ...currentList.itemHistory,
               ItemHistory.create({
@@ -73,10 +75,11 @@ export const itemRemovalCallback = (
               itemInHistory.removalRatingArray = [newRemovalRating];
             } else {
               if (itemInHistory.removalRatingArray.length === 10) {
-                // Only store last 10 ratings for `recent` shopping results 👍
+                // Only store last 10 ratings for recent shopping results 👍
+                // When length = 10, `shift` the first rating off the list
                 itemInHistory.removalRatingArray.shift();
               }
-              // Add new rating
+              // Add the new rating
               itemInHistory.removalRatingArray = [
                 ...itemInHistory.removalRatingArray,
                 newRemovalRating
@@ -89,9 +92,9 @@ export const itemRemovalCallback = (
 
     /**
      *  Null and save the array from top of scope to
-     *  delete removalArrays with 1 or 2 items
+     *  also delete removalArrays with 1 or 2 items
      */
     currentList.removedItems = null;
     currentList.save();
-  }, delay); // 30 minutes
+  }, callbackDelay);
 };

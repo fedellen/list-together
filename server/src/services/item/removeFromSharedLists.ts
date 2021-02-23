@@ -1,18 +1,13 @@
-import { SubscriptionPayload } from '../resolvers/types/subscription/SubscriptionPayload';
-import { UserToList } from '../entities';
+import { SubscriptionPayload } from '../../resolvers/types/subscription/SubscriptionPayload';
+import { UserToList } from '../../entities';
+import { getSharedListTables } from '../list/getSharedListTables';
 
 export const removeFromSharedLists = async (
   userToList: UserToList,
   itemNameArray: string[],
   publish: (payload: SubscriptionPayload) => Promise<void>
 ) => {
-  const allUserToListTables = await UserToList.find({
-    where: { listId: userToList.listId }
-  });
-
-  const sharedUserToListTables = allUserToListTables.filter(
-    (list) => list.userId !== userToList.userId
-  );
+  const sharedUserToListTables = await getSharedListTables(userToList);
 
   if (sharedUserToListTables.length > 0) {
     /** List has shared users, remove from their sortedItems array */
