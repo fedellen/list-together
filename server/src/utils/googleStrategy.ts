@@ -1,7 +1,8 @@
-import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
-import { User, List, UserToList } from '../entities';
+import { OAuth2Strategy } from 'passport-google-oauth';
+import { createNewUser } from '../services/user/createNewUser';
+import { User } from '../entities';
 
-export const googleStrategy = new GoogleStrategy(
+export const googleStrategy = new OAuth2Strategy(
   {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -11,26 +12,16 @@ export const googleStrategy = new GoogleStrategy(
     const { emails } = profile;
     if (emails) {
       const email = emails[0].value;
+      // Look for existing user
       let user = await User.findOne({ where: { email: email } });
       if (!user) {
         // Email was not found in the database, create a new user
-        const firstList = await List.create({
-          title: 'my-list'
-        }).save();
-        user = await User.create({
-          email: email,
-          sortedListsArray: [firstList.id]
-        }).save();
-        await UserToList.create({
-          listId: firstList.id,
-          userId: user.id,
-          privileges: 'owner',
-          list: firstList
-        }).save();
+        user = await createNewUser(email);
       }
-
+      // Return with userId to use in session callback
       return cb(null, { id: user.id });
     } else {
+      console.error('Email on Google oAuth callback could not be found..');
       return cb('Email on Google oAuth callback could not be found..');
     }
   }
