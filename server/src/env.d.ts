@@ -12,5 +12,7 @@ declare namespace NodeJS {
     FRONT_DEV_URL: string;
     GOOGLE_CLIENT_ID: string;
     GOOGLE_CLIENT_SECRET: string;
+    TWITTER_API_KEY: string;
+    TWITTER_API_SECRET: string;
   }
 }
