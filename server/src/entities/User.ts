@@ -15,29 +15,16 @@ import { UserToList } from './UserToList';
 export class User extends BaseEntity {
   @Field(() => ID)
   @PrimaryColumn('uuid')
-  id!: string;
-
-  // @Field()
-  // @Column('text')
-  // username!: string;
-
-  // @Column('text')
-  // password!: string;
-
-  // @Column('bool', { default: false })
-  // confirmed!: boolean;
+  id: string;
 
   @Field()
   @Column({ type: 'text', unique: true })
-  email!: string;
-
-  // still need to add OAuth
+  email: string;
 
   @Field(() => [String], { nullable: true })
   @Column({ type: 'simple-array', nullable: true })
   sortedListsArray: string[] | null;
 
-  // @Field(() => [UserToList])
   @OneToMany(() => UserToList, (userToList) => userToList.user)
   listConnection: UserToList[];
 
