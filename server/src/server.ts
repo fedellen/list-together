@@ -1,17 +1,12 @@
 import 'reflect-metadata';
 import 'dotenv-safe/config';
 import { ApolloServer } from 'apollo-server-express';
-import express from 'express';
 import { createConnection } from 'typeorm';
-import session from 'express-session';
-import connectRedis from 'connect-redis';
 import { createSchema } from './utils/createSchema';
-import { redis } from './redis';
 import http from 'http';
 import { FRONT_END_URL, __prod__ } from './constants';
-import oAuthRouter from './controllers/oAuthRouter';
-import passport from 'passport';
-import { googleStrategy } from './utils/googleStrategy';
+import { sessionMiddleware } from './middleware/session';
+import app from './app';
 
 // Temporarily fixes a type error from @types/express-session update
 declare module 'express-session' {
@@ -20,7 +15,8 @@ declare module 'express-session' {
   }
 }
 
-const main = async () => {
+const server = async () => {
+  // Create TypeORM connection
   await createConnection({
     type: 'postgres',
     url: process.env.DATABASE_URL,
@@ -30,15 +26,17 @@ const main = async () => {
     entities: ['dist/entities/**/*.js']
   });
 
-  /** type-graphql Schema */
+  // Create TypeGraphQL schema
   const schema = await createSchema();
 
+  // Create Apollo Server
   const apolloServer = new ApolloServer({
     schema,
     context: ({ req, res, connection }: any) => ({ req, res, connection }),
     subscriptions: {
       onConnect: (_, ws: any) => {
         return new Promise((res) =>
+          // Use redis session auth on subscriptions
           sessionMiddleware(ws.upgradeReq, {} as any, () => {
             res({ req: ws.upgradeReq });
           })
@@ -47,31 +45,7 @@ const main = async () => {
     }
   });
 
-  const app = express();
-
-  const RedisStore = connectRedis(session);
-  const sessionMiddleware = session({
-    store: new RedisStore({
-      client: redis
-    }),
-    name: process.env.COOKIE_NAME,
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: __prod__, // production ? true : false
-      maxAge: 1000 * 60 * 60 * 24 * 15 * 365, // 15 years
-      sameSite: 'strict'
-    }
-  });
-
-  app.use(sessionMiddleware);
-
-  passport.use(googleStrategy);
-  app.use(passport.initialize());
-
-  // app.set('trust proxy', 1);
+  // Add cors with credentials for session auth
   apolloServer.applyMiddleware({
     app,
     cors: {
@@ -79,26 +53,20 @@ const main = async () => {
       credentials: true
     }
   });
-  app.use('/auth', oAuthRouter);
 
+  // Handle subscriptions via httpServer
   const httpServer = http.createServer(app);
   apolloServer.installSubscriptionHandlers(httpServer);
-  // ⚠️ Pay attention to the fact that we are calling `listen` on the http server variable, and not on `app`.
+
   httpServer.listen(parseInt(process.env.PORT), () => {
     console.log(
       `🚀 Server ready at http://localhost:${process.env.PORT}${apolloServer.graphqlPath}`
     );
     console.log(
-      `🚀 Subscriptions ready at ws://localhost:${process.env.PORT}${apolloServer.subscriptionsPath}`
+      `🔥 Subscriptions ready at ws://localhost:${process.env.PORT}${apolloServer.subscriptionsPath}`
     );
   });
-
-  //   // apolloServer.subscriptionsPath
-  //   app.listen(parseInt(process.env.PORT), () =>
-  //     console.log(
-  //       `Server started on http://localhost:${process.env.PORT}${apolloServer.graphqlPath}`
-  //     )
-  //   );
-  // };
 };
-main().catch((err) => console.log(err));
+
+// Run the server 👨🏿‍💻
+server().catch((err) => console.log(err));
