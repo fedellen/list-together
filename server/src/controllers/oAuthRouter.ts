@@ -15,4 +15,15 @@ oAuthRouter.get(
   }
 );
 
+oAuthRouter.get('/twitter', passport.authenticate('twitter'));
+
+oAuthRouter.get(
+  '/twitter/callback',
+  passport.authenticate('twitter', { session: false }),
+  (req, res) => {
+    req.session.userId = (req.user as any).id;
+    res.redirect(FRONT_END_URL);
+  }
+);
+
 export default oAuthRouter;
