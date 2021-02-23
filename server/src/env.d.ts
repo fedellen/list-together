@@ -8,6 +8,8 @@ declare namespace NodeJS {
     REDIS_URL: string;
     PORT: string;
     COOKIE_NAME: string;
+    BACKEND_PROD_URL: string;
+    BACKEND_DEV_URL: string;
     FRONT_PROD_URL: string;
     FRONT_DEV_URL: string;
     GOOGLE_CLIENT_ID: string;

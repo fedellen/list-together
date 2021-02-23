@@ -1,5 +1,5 @@
 import express from 'express';
-import { FRONT_END_URL } from '../constants';
+import { FRONTEND_URL } from '../constants';
 import passport from 'passport';
 
 const oAuthRouter = express.Router();
@@ -11,7 +11,7 @@ oAuthRouter.get(
   passport.authenticate('google', { session: false }),
   (req, res) => {
     req.session.userId = (req.user as any).id;
-    res.redirect(FRONT_END_URL);
+    res.redirect(FRONTEND_URL);
   }
 );
 
@@ -22,7 +22,7 @@ oAuthRouter.get(
   passport.authenticate('twitter', { session: false }),
   (req, res) => {
     req.session.userId = (req.user as any).id;
-    res.redirect(FRONT_END_URL);
+    res.redirect(FRONTEND_URL);
   }
 );
 
@@ -36,7 +36,7 @@ oAuthRouter.get(
   passport.authenticate('facebook', { session: false }),
   (req, res) => {
     req.session.userId = (req.user as any).id;
-    res.redirect(FRONT_END_URL);
+    res.redirect(FRONTEND_URL);
   }
 );
 

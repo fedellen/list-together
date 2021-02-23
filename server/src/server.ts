@@ -4,7 +4,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { createConnection } from 'typeorm';
 import { createSchema } from './utils/createSchema';
 import http from 'http';
-import { FRONT_END_URL, __prod__ } from './constants';
+import { FRONTEND_URL, __prod__ } from './constants';
 import { sessionMiddleware } from './middleware/session';
 import app from './app';
 
@@ -49,7 +49,7 @@ const server = async () => {
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: [FRONT_END_URL],
+      origin: [FRONTEND_URL],
       credentials: true
     }
   });
