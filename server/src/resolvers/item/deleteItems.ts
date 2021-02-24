@@ -74,6 +74,16 @@ export class DeleteItemsResolver {
       userToListTable.list.items! = userToListTable.list.items!.filter(
         (item) => item.name !== itemExists.name
       );
+
+      // Add to removalArray for callback
+      if (userToListTable.removedItems) {
+        userToListTable.removedItems = [
+          ...userToListTable.removedItems,
+          itemName
+        ];
+      } else {
+        userToListTable.removedItems = [itemName];
+      }
       itemRemovalCallback(userToListTable, itemName);
     });
 
