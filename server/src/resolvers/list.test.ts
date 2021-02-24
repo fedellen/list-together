@@ -143,7 +143,7 @@ describe('Get users lists query:', () => {
 describe('Create list mutation:', () => {
   it('User with authenticated userId context can create a list', async () => {
     const userId = (await createUser()).id; // Creates user with no lists
-    const title = faker.name.title();
+    const title = faker.name.firstName();
 
     const response = await graphqlCall({
       source: createListMutation,
