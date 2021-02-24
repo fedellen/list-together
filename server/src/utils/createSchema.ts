@@ -1,9 +1,10 @@
-import { AddItemResolver } from '../resolvers/item/addItem';
 import { buildSchema } from 'type-graphql';
 import { UserResolver } from '../resolvers';
 import { ListResolver } from '../resolvers';
 import { ItemResolver } from '../resolvers';
+import { AddItemResolver } from '../resolvers/item/addItem';
 import { DeleteItemsResolver } from '../resolvers/item/deleteItems';
+import { StrikeItemResolver } from '../resolvers/item/strikeItem';
 
 // Redis PubSub
 import { pubSub } from './pubSub';
@@ -19,7 +20,8 @@ export const createSchema = () =>
       ListResolver,
       ItemResolver,
       AddItemResolver,
-      DeleteItemsResolver
+      DeleteItemsResolver,
+      StrikeItemResolver
     ],
     validate: false,
     pubSub
