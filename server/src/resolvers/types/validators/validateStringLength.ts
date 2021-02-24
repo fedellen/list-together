@@ -1,5 +1,6 @@
 import { FieldError } from '../response/FieldError';
 
+/** Validate string length is between `min` and `max` characters, default => `min:2`, `max:30` */
 export const validateStringLength = (
   string: string,
   min: number = 2,

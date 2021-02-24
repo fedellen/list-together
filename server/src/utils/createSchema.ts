@@ -3,6 +3,7 @@ import { buildSchema } from 'type-graphql';
 import { UserResolver } from '../resolvers';
 import { ListResolver } from '../resolvers';
 import { ItemResolver } from '../resolvers';
+import { DeleteItemsResolver } from '../resolvers/item/deleteItems';
 
 // Redis PubSub
 import { pubSub } from './pubSub';
@@ -13,7 +14,13 @@ import { pubSub } from './pubSub';
 
 export const createSchema = () =>
   buildSchema({
-    resolvers: [UserResolver, ListResolver, ItemResolver, AddItemResolver],
+    resolvers: [
+      UserResolver,
+      ListResolver,
+      ItemResolver,
+      AddItemResolver,
+      DeleteItemsResolver
+    ],
     validate: false,
     pubSub
   });
