@@ -1,4 +1,3 @@
-import { UserToList } from '../../entities';
 import { logger } from '../../middleware/logger';
 import { MyContext } from '../../MyContext';
 import {
@@ -13,7 +12,7 @@ import {
 import { ListResponse } from '../types/response/ListResponse';
 import { SubscriptionPayload } from '../types/subscription/SubscriptionPayload';
 import { Topic } from '../types/subscription/SubscriptionTopics';
-import { validateContext } from '../types/validators/validateContext';
+import { getUserListTable } from '../../services/list/getUserListTable';
 
 @Resolver()
 export class RenameListResolver {
@@ -26,34 +25,14 @@ export class RenameListResolver {
     @Ctx() context: MyContext,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<ListResponse> {
-    const contextError = validateContext(context);
-    if (contextError) return { errors: contextError };
-
-    const userId = context.req.session.userId;
-    const userToListTable = await UserToList.findOne({
-      where: { userId: userId, listId: listId },
-      relations: ['list']
+    const getListPayload = await getUserListTable({
+      context,
+      listId,
+      relations: ['list'],
+      validatePrivilege: 'owner'
     });
-
-    if (!userToListTable) {
-      return {
-        errors: [
-          {
-            field: 'listId',
-            message: 'User to list connection does not exist..'
-          }
-        ]
-      };
-    } else if (!userToListTable.privileges.includes('owner')) {
-      return {
-        errors: [
-          {
-            field: 'userToList',
-            message: 'User does not have rights to rename that list..'
-          }
-        ]
-      };
-    }
+    if (getListPayload.errors) return { errors: getListPayload.errors };
+    const userToListTable = getListPayload.userToList![0];
 
     userToListTable.list.title = name;
     await userToListTable.save();

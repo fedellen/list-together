@@ -4,9 +4,8 @@ import { MyContext } from '../../MyContext';
 import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 import { ShareListInput } from '../types/input/ShareListInput';
 import { UserToListResponse } from '../types/response/UserToListResponse';
-import { validateContext } from '../types/validators/validateContext';
 import { validatePrivilegeType } from '../types/validators/validatePrivilegeType';
-import { validateUserToList } from '../types/validators/validateUserToList';
+import { getUserListTable } from '../../services/list/getUserListTable';
 
 @Resolver()
 export class ShareListResolver {
@@ -14,29 +13,21 @@ export class ShareListResolver {
   @UseMiddleware(logger)
   @Mutation(() => UserToListResponse)
   async shareList(
-    @Arg('data') data: ShareListInput,
+    @Arg('data') { listId, privileges, email }: ShareListInput,
     @Ctx() context: MyContext
   ): Promise<UserToListResponse> {
-    const contextError = validateContext(context);
-    if (contextError) return { errors: contextError };
-
-    const privilegeTypeError = validatePrivilegeType(data.privileges);
-    if (privilegeTypeError) return { errors: privilegeTypeError };
-
-    const userId = context.req.session.userId;
-    const userToListTable = await UserToList.findOne({
-      where: { listId: data.listId, userId: userId }
-    });
-
-    const userListErrors = validateUserToList({
-      userToList: userToListTable,
+    const getListPayload = await getUserListTable({
+      context,
+      listId,
       validatePrivilege: 'owner'
     });
-    if (userListErrors) return { errors: userListErrors };
-    else if (!userToListTable)
-      throw new Error('UserList validation error on `shareList`..');
+    if (getListPayload.errors) return { errors: getListPayload.errors };
+    const userToListTable = getListPayload.userToList![0];
 
-    const userToShare = await User.findOne({ where: { email: data.email } });
+    const privilegeTypeError = validatePrivilegeType(privileges);
+    if (privilegeTypeError) return { errors: privilegeTypeError };
+
+    const userToShare = await User.findOne({ where: { email: email } });
     if (!userToShare) {
       return {
         errors: [
@@ -49,7 +40,7 @@ export class ShareListResolver {
     }
 
     const userAlreadyHasList = await UserToList.findOne({
-      where: { listId: data.listId, userId: userToShare.id },
+      where: { listId: listId, userId: userToShare.id },
       relations: ['list']
     });
 
@@ -65,14 +56,14 @@ export class ShareListResolver {
     }
 
     await UserToList.create({
-      listId: data.listId,
-      privileges: data.privileges,
+      listId: listId,
+      privileges: privileges,
       userId: userToShare.id,
       sortedItems: userToListTable.sortedItems
     }).save();
 
     const userToListTableWithUpdatedSharedUsers = await UserToList.findOne({
-      where: { listId: data.listId, userId: userId }
+      where: { listId: listId, userId: userToListTable.userId }
     });
     if (!userToListTableWithUpdatedSharedUsers) {
       return {

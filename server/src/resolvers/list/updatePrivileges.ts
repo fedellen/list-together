@@ -14,9 +14,8 @@ import { UpdatePrivilegesInput } from '../types/input/UpdatePrivilegesInput';
 import { UserToListResponse } from '../types/response/UserToListResponse';
 import { SubscriptionPayload } from '../types/subscription/SubscriptionPayload';
 import { Topic } from '../types/subscription/SubscriptionTopics';
-import { validateContext } from '../types/validators/validateContext';
 import { validatePrivilegeType } from '../types/validators/validatePrivilegeType';
-import { validateUserToList } from '../types/validators/validateUserToList';
+import { getUserListTable } from '../../services/list/getUserListTable';
 
 @Resolver()
 export class UpdatePrivilegesResolver {
@@ -24,27 +23,24 @@ export class UpdatePrivilegesResolver {
   @UseMiddleware(logger)
   @Mutation(() => UserToListResponse)
   async updatePrivileges(
-    @Arg('data') data: UpdatePrivilegesInput,
+    @Arg('data') { listId, email, privileges }: UpdatePrivilegesInput,
     @Ctx() context: MyContext,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<UserToListResponse> {
-    const contextError = validateContext(context);
-    if (contextError) return { errors: contextError };
-
-    const userId = context.req.session.userId;
-    const userToListTable = await UserToList.findOne({
-      where: { listId: data.listId, userId: userId }
-    });
-
-    const userListErrors = validateUserToList({
-      userToList: userToListTable,
+    const getListPayload = await getUserListTable({
+      context,
+      listId,
       validatePrivilege: 'owner'
     });
-    if (userListErrors) return { errors: userListErrors };
-    else if (!userToListTable)
-      throw new Error('UserList validation error on `shareList`..');
+    if (getListPayload.errors) return { errors: getListPayload.errors };
+    const userToListTable = getListPayload.userToList![0];
 
-    const userToUpdate = await User.findOne({ where: { email: data.email } });
+    const privilegeTypeError = privileges
+      ? validatePrivilegeType(privileges)
+      : null;
+    if (privilegeTypeError) return { errors: privilegeTypeError };
+
+    const userToUpdate = await User.findOne({ where: { email: email } });
     if (!userToUpdate) {
       return {
         errors: [
@@ -57,7 +53,7 @@ export class UpdatePrivilegesResolver {
     }
 
     const sharedUserToListTable = await UserToList.findOne({
-      where: { listId: data.listId, userId: userToUpdate.id },
+      where: { listId: listId, userId: userToUpdate.id },
       relations: ['list']
     });
     if (!sharedUserToListTable) {
@@ -72,7 +68,7 @@ export class UpdatePrivilegesResolver {
       };
     }
 
-    if (!data.privileges) {
+    if (!privileges) {
       /** If no privileges are specified, remove all access from sharedUser */
       await sharedUserToListTable.remove();
       await publish({
@@ -81,10 +77,10 @@ export class UpdatePrivilegesResolver {
         notification: `Your access to list: "${sharedUserToListTable.list.title}" has been removed`
       });
     } else {
-      const privilegeTypeError = validatePrivilegeType(data.privileges);
+      const privilegeTypeError = validatePrivilegeType(privileges);
       if (privilegeTypeError) return { errors: privilegeTypeError };
 
-      sharedUserToListTable.privileges = data.privileges;
+      sharedUserToListTable.privileges = privileges;
       await sharedUserToListTable.save();
       await publish({
         updatedListId: sharedUserToListTable?.listId,
@@ -93,7 +89,7 @@ export class UpdatePrivilegesResolver {
       });
     }
     const userToListTableWithUpdatedSharedUsers = await UserToList.findOne({
-      where: { listId: data.listId, userId: userId }
+      where: { listId: listId, userId: userToListTable.userId }
     });
     if (!userToListTableWithUpdatedSharedUsers) {
       return {

@@ -15,10 +15,6 @@ export class GetUsersListsResolver {
       relations: ['itemHistory', 'list', 'list.items']
     });
     if (getListPayload.errors) return { errors: getListPayload.errors };
-    else if (!getListPayload.userToList)
-      throw new Error(
-        'Unresolved error has occured during `getUsersList` query..'
-      );
 
     return { userToList: getListPayload.userToList };
   }

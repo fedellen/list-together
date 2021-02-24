@@ -1,10 +1,9 @@
-import { UserToList } from '../../entities';
 import { logger } from '../../middleware/logger';
 import { MyContext } from '../../MyContext';
 import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 import { StringArrayInput } from '../types/input/StringArrayInput';
 import { UserToListResponse } from '../types/response/UserToListResponse';
-import { validateContext } from '../types/validators/validateContext';
+import { getUserListTable } from '../../services/list/getUserListTable';
 
 @Resolver()
 export class SortItemsResolver {
@@ -17,28 +16,17 @@ export class SortItemsResolver {
     @Arg('listId') listId: string,
     @Ctx() context: MyContext
   ): Promise<UserToListResponse> {
-    const contextError = validateContext(context);
-    if (contextError) return { errors: contextError };
-    // Authorized user sends array of item names, and the listId
-    const userId = context.req.session.userId;
-    const userToList = await UserToList.findOne({
-      where: { listId: listId, userId: userId }
+    const getListPayload = await getUserListTable({
+      context,
+      listId
     });
-    if (!userToList) {
-      return {
-        errors: [
-          {
-            field: 'listId',
-            message: 'User to list connection does not exist..'
-          }
-        ]
-      };
-    }
+    if (getListPayload.errors) return { errors: getListPayload.errors };
+    const userToListTable = getListPayload.userToList![0];
 
     const sortedItemsArray = sortedItemsInput.stringArray;
-    userToList.sortedItems = sortedItemsArray;
+    userToListTable.sortedItems = sortedItemsArray;
 
-    await userToList.save();
-    return { userToList: [userToList] };
+    await userToListTable.save();
+    return { userToList: [userToListTable] };
   }
 }

@@ -1,11 +1,10 @@
-import { UserToList, ItemHistory } from '../../entities';
+import { ItemHistory } from '../../entities';
 import { logger } from '../../middleware/logger';
 import { MyContext } from '../../MyContext';
 import { UseMiddleware, Mutation, Arg, Ctx, Resolver } from 'type-graphql';
 import { PreferredOrderInput } from '../types/input/PreferredOrderInput';
 import { UserToListResponse } from '../types/response/UserToListResponse';
-import { validateContext } from '../types/validators/validateContext';
-import { validateUserToList } from '../types/validators/validateUserToList';
+import { getUserListTable } from '../../services/list/getUserListTable';
 
 Resolver();
 export class SubmitPreferredOrderResolver {
@@ -17,21 +16,13 @@ export class SubmitPreferredOrderResolver {
     @Arg('data') { removedItemArray, listId }: PreferredOrderInput,
     @Ctx() context: MyContext
   ): Promise<UserToListResponse> {
-    const contextError = validateContext(context);
-    if (contextError) return { errors: contextError };
-
-    const userId = context.req.session.userId;
-    const userToListTable = await UserToList.findOne({
-      where: { listId: listId, userId: userId },
+    const getListPayload = await getUserListTable({
+      context,
+      listId,
       relations: ['itemHistory']
     });
-
-    const userListErrors = validateUserToList({
-      userToList: userToListTable
-    });
-    if (userListErrors) return { errors: userListErrors };
-    else if (!userToListTable)
-      throw new Error('UserList validation error on `submitPreferredOrder`..');
+    if (getListPayload.errors) return { errors: getListPayload.errors };
+    const userToListTable = getListPayload.userToList![0];
 
     const arrayLengthRating = Math.round(1000 / removedItemArray.length);
 
