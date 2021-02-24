@@ -12,7 +12,7 @@ import { MyContext } from '../MyContext';
 
 import { /*Item, ItemHistory,*/ UserToList } from '../entities';
 
-import { StyleItemInput } from './types/input/StyleItemsInput';
+import { StrikeItemInput } from './types/input/StrikeItemInput';
 import { AddNoteInput } from './types/input/AddNoteInput';
 
 import { UserToListResponse } from './types/response/UserToListResponse';
@@ -32,8 +32,8 @@ export class ItemResolver {
   // Style items on list
   @UseMiddleware(logger)
   @Mutation(() => UserToListResponse)
-  async styleItem(
-    @Arg('data') { listId, style, itemName }: StyleItemInput,
+  async strikeItem(
+    @Arg('data') { listId, itemName }: StrikeItemInput,
     @Ctx() context: MyContext,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<UserToListResponse> {
@@ -69,23 +69,18 @@ export class ItemResolver {
       };
     }
 
-    // Style the item
-    if (style === 'bold') {
-      item.bold = !item.bold;
-    } else {
-      item.strike = !item.strike;
-      // Sort to bottom
-    }
+    // Strike the item
+    item.strike = !item.strike;
 
     if (item.strike) {
-      /** Sort striked items to the end of the list */
+      // Sort striked items to the end of the list
       if (userToListTable.sortedItems) {
         const newSortedItems = userToListTable.sortedItems.filter(
           (i) => i !== item.name
         );
         userToListTable.sortedItems = [...newSortedItems, item.name];
       }
-      /** Add to removalArray */
+      // Add to removalArray for callback
       if (userToListTable.removedItems) {
         userToListTable.removedItems = [
           ...userToListTable.removedItems,
@@ -96,17 +91,17 @@ export class ItemResolver {
       }
       itemRemovalCallback(userToListTable, item.name);
     } else {
-      /** Sort unstriked items to the end of the list */
+      // Sort unstriked items back into the list
       if (userToListTable.sortedItems) {
-        const sortedItemsWithoutUnstriked = userToListTable.sortedItems.filter(
+        const sortedListWithoutUnstrikedItem = userToListTable.sortedItems.filter(
           (i) => i !== item.name
         );
-        userToListTable.sortedItems = sortedItemsWithoutUnstriked;
+        userToListTable.sortedItems = sortedListWithoutUnstrikedItem;
         const newSortedItems = sortIntoList(userToListTable, item.name)
           .sortedItems;
         userToListTable.sortedItems = newSortedItems;
       }
-      // Item was unstriked -- remove it from removalArray
+      // Item was unstriked -- remove it from removalArray if found
       if (userToListTable.removedItems?.includes(item.name)) {
         userToListTable.removedItems = userToListTable.removedItems.filter(
           (i) => i !== item.name

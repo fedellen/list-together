@@ -21,8 +21,6 @@ describe('Get user query:', () => {
       userId: user.id
     });
 
-    console.log(JSON.stringify(response, null, 4));
-
     expect(response).toMatchObject({
       data: {
         getUser: {

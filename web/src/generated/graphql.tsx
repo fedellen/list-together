@@ -78,14 +78,12 @@ export type Item = {
   name: Scalars['String'];
   notes?: Maybe<Array<Scalars['String']>>;
   strike: Scalars['Boolean'];
-  bold: Scalars['Boolean'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   addItem: UserToListResponse;
-  deleteItems: UserToListResponse;
-  styleItem: UserToListResponse;
+  strikeItem: UserToListResponse;
   addNote: ItemResponse;
   deleteNote: ItemResponse;
   logout: Scalars['Boolean'];
@@ -97,6 +95,7 @@ export type Mutation = {
   sortLists: UserResponse;
   sortItems: UserToListResponse;
   submitPreferredOrder: UserToListResponse;
+  deleteItems: UserToListResponse;
 };
 
 
@@ -105,13 +104,8 @@ export type MutationAddItemArgs = {
 };
 
 
-export type MutationDeleteItemsArgs = {
-  data: DeleteItemsInput;
-};
-
-
-export type MutationStyleItemArgs = {
-  data: StyleItemInput;
+export type MutationStrikeItemArgs = {
+  data: StrikeItemInput;
 };
 
 
@@ -166,20 +160,19 @@ export type MutationSubmitPreferredOrderArgs = {
   data: PreferredOrderInput;
 };
 
+
+export type MutationDeleteItemsArgs = {
+  data: DeleteItemsInput;
+};
+
 export type AddItemInput = {
   listId: Scalars['String'];
   nameInput: Scalars['String'];
 };
 
-export type DeleteItemsInput = {
-  itemNameArray: Array<Scalars['String']>;
-  listId: Scalars['String'];
-};
-
-export type StyleItemInput = {
+export type StrikeItemInput = {
   listId: Scalars['String'];
   itemName: Scalars['String'];
-  style: Scalars['String'];
 };
 
 export type ItemResponse = {
@@ -239,6 +232,11 @@ export type PreferredOrderInput = {
   listId: Scalars['String'];
 };
 
+export type DeleteItemsInput = {
+  itemNameArray: Array<Scalars['String']>;
+  listId: Scalars['String'];
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   subscribeToListUpdates: UserToListResponse;
@@ -256,7 +254,7 @@ export type FieldErrorFragment = (
 
 export type ItemFragmentFragment = (
   { __typename?: 'Item' }
-  & Pick<Item, 'id' | 'name' | 'notes' | 'strike' | 'bold'>
+  & Pick<Item, 'id' | 'name' | 'notes' | 'strike'>
 );
 
 export type ItemHistoryFragmentFragment = (
@@ -390,14 +388,14 @@ export type DeleteNoteMutation = (
   ) }
 );
 
-export type StyleItemMutationVariables = Exact<{
-  data: StyleItemInput;
+export type StrikeItemMutationVariables = Exact<{
+  data: StrikeItemInput;
 }>;
 
 
-export type StyleItemMutation = (
+export type StrikeItemMutation = (
   { __typename?: 'Mutation' }
-  & { styleItem: (
+  & { strikeItem: (
     { __typename?: 'UserToListResponse' }
     & { userToList?: Maybe<Array<(
       { __typename?: 'UserToList' }
@@ -722,7 +720,6 @@ export const ItemFragmentFragmentDoc = gql`
   name
   notes
   strike
-  bold
 }
     `;
 export const ItemResponseFragmentDoc = gql`
@@ -959,9 +956,9 @@ export function useDeleteNoteMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteNoteMutationHookResult = ReturnType<typeof useDeleteNoteMutation>;
 export type DeleteNoteMutationResult = Apollo.MutationResult<DeleteNoteMutation>;
 export type DeleteNoteMutationOptions = Apollo.BaseMutationOptions<DeleteNoteMutation, DeleteNoteMutationVariables>;
-export const StyleItemDocument = gql`
-    mutation StyleItem($data: StyleItemInput!) {
-  styleItem(data: $data) {
+export const StrikeItemDocument = gql`
+    mutation StrikeItem($data: StrikeItemInput!) {
+  strikeItem(data: $data) {
     userToList {
       listId
       sortedItems
@@ -979,31 +976,31 @@ export const StyleItemDocument = gql`
   }
 }
     ${FieldErrorFragmentDoc}`;
-export type StyleItemMutationFn = Apollo.MutationFunction<StyleItemMutation, StyleItemMutationVariables>;
+export type StrikeItemMutationFn = Apollo.MutationFunction<StrikeItemMutation, StrikeItemMutationVariables>;
 
 /**
- * __useStyleItemMutation__
+ * __useStrikeItemMutation__
  *
- * To run a mutation, you first call `useStyleItemMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useStyleItemMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useStrikeItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useStrikeItemMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [styleItemMutation, { data, loading, error }] = useStyleItemMutation({
+ * const [strikeItemMutation, { data, loading, error }] = useStrikeItemMutation({
  *   variables: {
  *      data: // value for 'data'
  *   },
  * });
  */
-export function useStyleItemMutation(baseOptions?: Apollo.MutationHookOptions<StyleItemMutation, StyleItemMutationVariables>) {
-        return Apollo.useMutation<StyleItemMutation, StyleItemMutationVariables>(StyleItemDocument, baseOptions);
+export function useStrikeItemMutation(baseOptions?: Apollo.MutationHookOptions<StrikeItemMutation, StrikeItemMutationVariables>) {
+        return Apollo.useMutation<StrikeItemMutation, StrikeItemMutationVariables>(StrikeItemDocument, baseOptions);
       }
-export type StyleItemMutationHookResult = ReturnType<typeof useStyleItemMutation>;
-export type StyleItemMutationResult = Apollo.MutationResult<StyleItemMutation>;
-export type StyleItemMutationOptions = Apollo.BaseMutationOptions<StyleItemMutation, StyleItemMutationVariables>;
+export type StrikeItemMutationHookResult = ReturnType<typeof useStrikeItemMutation>;
+export type StrikeItemMutationResult = Apollo.MutationResult<StrikeItemMutation>;
+export type StrikeItemMutationOptions = Apollo.BaseMutationOptions<StrikeItemMutation, StrikeItemMutationVariables>;
 export const CreateListDocument = gql`
     mutation CreateList($title: String!) {
   createList(title: $title) {

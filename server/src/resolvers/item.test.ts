@@ -28,9 +28,9 @@ mutation DeleteItems($data: DeleteItemsInput!) {
 }
 `;
 
-const styleItemMutation = `
-mutation StyleItem($data: StyleItemInput!) {
-  styleItem(data: $data) {
+const strikeItemMutation = `
+mutation StrikeItem($data: StrikeItemInput!) {
+  strikeItem(data: $data) {
     ${userListFragment}
     ${fieldErrorFragment}
   }
@@ -418,8 +418,8 @@ describe('Delete items mutation:', () => {
   });
 });
 
-describe('Style item mutation:', () => {
-  it('User can bold and strike items from their own list', async () => {
+describe('Strike item mutation:', () => {
+  it('User can  strike items from their own list', async () => {
     const user = await userWithListAndItems();
     const userToListTable = await UserToList.findOne({
       where: { userId: user.id },
@@ -429,18 +429,17 @@ describe('Style item mutation:', () => {
     const itemNameArray = userToListTable!.list.items!.map((i) => i.name);
 
     const response = await graphqlCall({
-      source: styleItemMutation,
+      source: strikeItemMutation,
       variableValues: {
         data: {
           listId: userToListTable!.listId,
-          itemName: itemNameArray[1],
-          style: 'strike'
+          itemName: itemNameArray[1]
         }
       },
       userId: user.id
     });
 
-    const userToList: UserToList = response.data!.styleItem.userToList[0];
+    const userToList: UserToList = response.data!.strikeItem.userToList[0];
 
     // Check on response format, has strike
     expect(userToList.list.items![1]).toMatchObject({
@@ -450,36 +449,12 @@ describe('Style item mutation:', () => {
     const sortedItems: string[] = userToList.sortedItems!;
     // Item should be returned  at the end of the sorted items
     expect(sortedItems[sortedItems.length - 1]).toBe(itemNameArray[1]);
-    //   // data: {
-    //   //   styleItem: {
-    //   //     item: {
-    //   //       strike: true
-    //   //     }
-    //   //   }
-    //   // }
-    //   data: {
-    //     styleItem: {
-    //       userToList: [
-    //         {
-    //           list: {
-    //             items: [{ name: itemNameArray[1], strike: true }]
-    //           }
-    //         }
-    //       ]
-    //     }
-    //   }
-    // });
 
     const listConnectionInDatabase = await UserToList.findOne({
       where: { userId: user.id },
       relations: ['list', 'list.items']
     });
 
-    // expect(
-    //   listConnectionInDatabase!.list.items!.find(
-    //     (i) => i.name === itemNameArray[0]
-    //   )!.bold
-    // ).toBeTruthy();
     expect(
       listConnectionInDatabase!.list.items!.find(
         (i) => i.name === itemNameArray[1]
@@ -503,7 +478,7 @@ describe('Style item mutation:', () => {
   //   );
 
   //   const response = await graphqlCall({
-  //     source: styleItemMutation,
+  //     source: strikeItemMutation,
   //     variableValues: {
   //       data: {
   //         listId: listOwnerUserConnection!.listId,
@@ -517,7 +492,7 @@ describe('Style item mutation:', () => {
   //   // Check response format, has bold
   //   expect(response).toMatchObject({
   //     data: {
-  //       styleItem: {
+  //       strikeItem: {
   //         item: {
   //           bold: true
   //         }
@@ -553,18 +528,17 @@ describe('Style item mutation:', () => {
     );
 
     const response = await graphqlCall({
-      source: styleItemMutation,
+      source: strikeItemMutation,
       variableValues: {
         data: {
           listId: listOwnerUserConnection!.listId,
-          itemName: itemNameArray[2],
-          style: 'strike'
+          itemName: itemNameArray[2]
         }
       },
       userId: sharedUser.id
     });
 
-    const userToList: UserToList = response.data!.styleItem.userToList[0];
+    const userToList: UserToList = response.data!.strikeItem.userToList[0];
 
     // Check on response format, has strike
     expect(userToList.list.items![2]).toMatchObject({
@@ -600,12 +574,11 @@ describe('Style item mutation:', () => {
     );
 
     const response = await graphqlCall({
-      source: styleItemMutation,
+      source: strikeItemMutation,
       variableValues: {
         data: {
           listId: listOwnerUserConnection!.listId,
-          itemName: itemNameArray[1],
-          style: 'strike'
+          itemName: itemNameArray[1]
         }
       },
       userId: sharedUser.id
@@ -614,7 +587,7 @@ describe('Style item mutation:', () => {
     // Check response format, has bold
     expect(response).toMatchObject({
       data: {
-        styleItem: {
+        strikeItem: {
           errors: [
             {
               field: 'privileges',

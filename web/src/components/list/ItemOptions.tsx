@@ -1,7 +1,7 @@
 import {
   useDeleteItemsMutation,
   useSortItemsMutation,
-  useStyleItemMutation
+  useStrikeItemMutation
 } from 'src/generated/graphql';
 import { useStateValue } from '../../state/state';
 import { OptionAction } from '../../types';
@@ -31,7 +31,7 @@ export const ItemOptions = () => {
   const currentPrivileges = useCurrentPrivileges();
 
   const [deleteItems] = useDeleteItemsMutation();
-  const [styleItem] = useStyleItemMutation();
+  const [strikeItem] = useStrikeItemMutation();
   const [sortItems] = useSortItemsMutation();
 
   const [mutationLoading, setMutationLoading] = useState(false);
@@ -74,23 +74,22 @@ export const ItemOptions = () => {
       setMutationLoading(false);
     } else if (optionAction === 'boldItem' || optionAction === 'strikeItem') {
       try {
-        /** Use `styleItem` mutation */
-        const { data } = await styleItem({
+        /** Use `strikeItem` mutation */
+        const { data } = await strikeItem({
           variables: {
             data: {
               itemName: itemName,
-              listId: currentListId,
-              style: optionAction === 'boldItem' ? 'bold' : 'strike'
+              listId: currentListId
             }
           }
         });
-        if (data?.styleItem.errors) {
-          errorNotifaction(data.styleItem.errors, dispatch);
+        if (data?.strikeItem.errors) {
+          errorNotifaction(data.strikeItem.errors, dispatch);
         } else {
           resetActiveItem(dispatch);
         }
       } catch (err) {
-        console.error(`Error on styleItem mutation: ${err}`);
+        console.error(`Error on strikeItem mutation: ${err}`);
       }
       setMutationLoading(false);
     } else if (

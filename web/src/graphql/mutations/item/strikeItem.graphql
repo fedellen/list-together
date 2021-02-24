@@ -1,5 +1,5 @@
-mutation StyleItem($data: StyleItemInput!) {
-  styleItem(data: $data) {
+mutation StrikeItem($data: StrikeItemInput!) {
+  strikeItem(data: $data) {
     userToList {
       listId
       sortedItems
