@@ -50,7 +50,6 @@ describe('Update Privileges mutation:', () => {
       userId: user.id
     });
 
-    console.log(JSON.stringify(response, null, 4));
     // Owner's response contain's info about sharedUsers
     expect(response).toMatchObject({
       data: {
