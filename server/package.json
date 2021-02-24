@@ -1,7 +1,8 @@
 {
   "name": "grocery-app-backend",
+  "author": "fedellen, Derek Sonnenberg",
+  "license": "MIT",
   "version": "1.0.0",
-  "description": "",
   "main": "server.ts",
   "scripts": {
     "build": "tsc --build --clean",
@@ -11,11 +12,7 @@
     "test": "jest --runInBand --detectOpenHandles --forceExit",
     "gen-env": "gen-env-types .env -o src/env.d.ts -e ."
   },
-  "keywords": [],
-  "author": "fedellen",
-  "license": "MIT",
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.2",
     "@types/connect-redis": "^0.0.15",
     "@types/cors": "^2.8.8",
     "@types/express-session": "^1.17.3",
@@ -23,7 +20,6 @@
     "@types/ioredis": "^4.17.8",
     "@types/jest": "^26.0.16",
     "@types/node": "^8.0.29",
-    "@types/nodemailer": "^6.4.0",
     "@types/passport": "^1.0.6",
     "@types/passport-facebook": "^2.1.10",
     "@types/passport-google-oauth": "^1.0.41",
@@ -41,7 +37,6 @@
   },
   "dependencies": {
     "apollo-server-express": "^2.19.0",
-    "argon2": "^0.27.0",
     "connect-redis": "^5.0.0",
     "dotenv-safe": "^8.2.0",
     "express-session": "^1.17.1",
@@ -49,7 +44,6 @@
     "graphql-redis-subscriptions": "^2.3.1",
     "graphql-subscriptions": "^1.1.0",
     "ioredis": "^4.19.2",
-    "nodemailer": "^6.4.17",
     "passport": "^0.4.1",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth": "^2.0.0",
