@@ -4,7 +4,6 @@ export const userFragment = `
 {
   user {
     id
-    username
     email
     sortedListsArray
   }

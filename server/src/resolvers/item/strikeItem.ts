@@ -31,7 +31,7 @@ export class StrikeItemResolver {
       context,
       listId,
       relations: ['list', 'list.items'],
-      validatePrivilege: 'delete',
+      validatePrivilege: 'strike',
       validateItemsExist: true
     });
     if (getListPayload.errors) return { errors: getListPayload.errors };

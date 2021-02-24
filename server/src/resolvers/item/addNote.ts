@@ -29,7 +29,7 @@ export class AddNoteResolver {
     const getListPayload = await getUserListTable({
       context,
       listId,
-      relations: ['itemHistory', 'list', 'list.items'],
+      relations: ['list', 'list.items'],
       validatePrivilege: 'add',
       validateItemsExist: true
     });
