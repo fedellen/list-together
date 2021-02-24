@@ -18,7 +18,7 @@ import { SubscriptionPayload } from '../types/subscription/SubscriptionPayload';
 import { Topic } from '../types/subscription/SubscriptionTopics';
 import { validateContext } from '../types/validators/validateContext';
 import { validateUserToList } from '../types/validators/validateUserToList';
-import { itemRemovalCallback } from 'src/services/item/itemRemovalCallback';
+import { itemRemovalCallback } from '../../services/item/itemRemovalCallback';
 
 @Resolver()
 export class DeleteItemsResolver {
