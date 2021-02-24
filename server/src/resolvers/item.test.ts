@@ -96,7 +96,6 @@ describe('Add item mutation:', () => {
       {
         name: itemName,
         strike: false,
-        bold: false,
         notes: null
       }
     ]);

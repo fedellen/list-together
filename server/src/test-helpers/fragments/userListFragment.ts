@@ -15,7 +15,6 @@ export const userListFragment = `
         name
         notes
         strike
-        bold
       }
     }
   }
