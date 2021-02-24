@@ -1,35 +1,25 @@
-import { UserToList } from '../../entities';
 import { logger } from '../../middleware/logger';
 import { MyContext } from '../../MyContext';
 import { Ctx, Query, Resolver, UseMiddleware } from 'type-graphql';
 import { UserToListResponse } from '../types/response/UserToListResponse';
-import { validateContext } from '../types/validators/validateContext';
+import { getUserListTable } from '../../services/list/getUserListTable';
 
 @Resolver()
 export class GetUsersListsResolver {
   @UseMiddleware(logger)
   @Query(() => UserToListResponse)
   async getUsersLists(@Ctx() context: MyContext): Promise<UserToListResponse> {
-    // Gets only the specified user's lists
-    const errors = validateContext(context);
-    if (errors) return { errors };
-
-    const userToList = await UserToList.find({
-      where: { userId: context.req.session.userId },
-      relations: ['list', 'list.items', 'itemHistory']
+    // Gets all of the logged in user's lists
+    const getListPayload = await getUserListTable({
+      context: context,
+      relations: ['itemHistory', 'list', 'list.items']
     });
+    if (getListPayload.errors) return { errors: getListPayload.errors };
+    else if (!getListPayload.userToList)
+      throw new Error(
+        'Unresolved error has occured during `getUsersList` query..'
+      );
 
-    if (!userToList) {
-      return {
-        errors: [
-          {
-            field: 'userId',
-            message: 'Could not find any lists for that userId..'
-          }
-        ]
-      };
-    }
-
-    return { userToList };
+    return { userToList: getListPayload.userToList };
   }
 }
