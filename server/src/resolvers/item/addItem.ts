@@ -1,4 +1,4 @@
-import { UserToList, Item, ItemHistory } from '../../entities';
+import { Item, ItemHistory } from '../../entities';
 import { logger } from '../../middleware/logger';
 import { MyContext } from '../../MyContext';
 import { addToSharedLists } from '../../services/item/addToSharedLists';
@@ -17,9 +17,8 @@ import { UserToListResponse } from '../types/response/UserToListResponse';
 import { SubscriptionPayload } from '../types/subscription/SubscriptionPayload';
 import { Topic } from '../types/subscription/SubscriptionTopics';
 import { validateAddToList } from '../types/validators/validateAddToList';
-import { validateContext } from '../types/validators/validateContext';
 import { validateStringLength } from '../types/validators/validateStringLength';
-import { validateUserToList } from '../types/validators/validateUserToList';
+import { getUserListTable } from '../../services/list/getUserListTable';
 
 @Resolver()
 export class AddItemResolver {
@@ -30,33 +29,25 @@ export class AddItemResolver {
     @Ctx() context: MyContext,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<UserToListResponse> {
-    const contextErrors = validateContext(context);
-    if (contextErrors) return { errors: contextErrors };
-
-    const stringLengthErrors = validateStringLength(nameInput);
-    if (stringLengthErrors) return { errors: stringLengthErrors };
-
-    const userId = context.req.session.userId;
-    const userToListTable = await UserToList.findOne({
-      where: { listId: listId, userId: userId },
-      relations: ['list', 'list.items', 'itemHistory']
-    });
-
-    const userListErrors = validateUserToList({
-      userToList: userToListTable,
+    const getListPayload = await getUserListTable({
+      context,
+      listId,
+      relations: ['itemHistory', 'list', 'list.items'],
       validatePrivilege: 'add'
     });
-    if (userListErrors) return { errors: userListErrors };
-    else if (!userToListTable)
-      // UserToList should be valid if no errors
-      throw new Error('UserList validation error on `addItem`..');
+    if (getListPayload.errors) return { errors: getListPayload.errors };
+    const userToListTable = getListPayload.userToList![0];
+
+    // Validate string length between 2-30
+    const stringLengthErrors = validateStringLength(nameInput);
+    if (stringLengthErrors) return { errors: stringLengthErrors };
 
     const list = userToListTable.list;
     if (!list.items) {
       // Initialize list with first item
       list.items = [Item.create({ name: nameInput })];
     } else {
-      // Validation for max list length and if item already exists
+      // Validate for max list length and if item already exists on list
       const addItemErrors = validateAddToList(list, nameInput);
       if (addItemErrors) return { errors: addItemErrors };
       // Add item to the list
@@ -67,7 +58,7 @@ export class AddItemResolver {
       userToListTable.removedItems &&
       userToListTable.removedItems.includes(nameInput)
     ) {
-      // Delete re-added items from removedItems array if item deleted recently
+      // Delete re-added items from removedItems callback array if item deleted recently
       userToListTable.removedItems = userToListTable.removedItems.filter(
         (i) => i !== nameInput
       );
@@ -92,8 +83,9 @@ export class AddItemResolver {
       }
     }
 
-    // Add to sortedItems
+    // Add to user's sortedItems
     const userToListTableAfterSort = sortIntoList(userToListTable, nameInput);
+    // Send promise to add to and update shared lists
     addToSharedLists(userToListTable, nameInput, publish);
 
     // Save table to DB, cascades list updates

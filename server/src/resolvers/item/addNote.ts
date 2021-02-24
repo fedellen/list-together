@@ -1,4 +1,3 @@
-import { UserToList } from '../../entities';
 import { logger } from '../../middleware/logger';
 import { MyContext } from '../../MyContext';
 import {
@@ -14,9 +13,8 @@ import { AddNoteInput } from '../types/input/AddNoteInput';
 import { ItemResponse } from '../types/response/ItemResponse';
 import { SubscriptionPayload } from '../types/subscription/SubscriptionPayload';
 import { Topic } from '../types/subscription/SubscriptionTopics';
-import { validateContext } from '../types/validators/validateContext';
 import { validateStringLength } from '../types/validators/validateStringLength';
-import { validateUserToList } from '../types/validators/validateUserToList';
+import { getUserListTable } from '../../services/list/getUserListTable';
 
 @Resolver()
 export class AddNoteResolver {
@@ -28,28 +26,20 @@ export class AddNoteResolver {
     @Ctx() context: MyContext,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<ItemResponse> {
-    const errors = validateContext(context);
-    if (errors) return { errors };
-
-    const stringLengthErrors = validateStringLength(itemName);
-    if (stringLengthErrors) return { errors: stringLengthErrors };
-
-    const userId = context.req.session.userId;
-    const userToListTable = await UserToList.findOne({
-      where: { listId: listId, userId: userId },
-      relations: ['list', 'list.items']
-    });
-
-    const userListErrors = validateUserToList({
-      userToList: userToListTable,
+    const getListPayload = await getUserListTable({
+      context,
+      listId,
+      relations: ['itemHistory', 'list', 'list.items'],
       validatePrivilege: 'add',
       validateItemsExist: true
     });
-    if (userListErrors) return { errors: userListErrors };
-    else if (!userToListTable || !userToListTable.list.items)
-      throw new Error('UserList validation error on `addNote`..');
+    if (getListPayload.errors) return { errors: getListPayload.errors };
+    const userToListTable = getListPayload.userToList![0];
 
-    const item = userToListTable.list.items.find(
+    const stringLengthErrors = validateStringLength(note);
+    if (stringLengthErrors) return { errors: stringLengthErrors };
+
+    const item = userToListTable.list.items!.find(
       ({ name }) => name === itemName
     );
     if (!item) {
@@ -90,7 +80,7 @@ export class AddNoteResolver {
     }
 
     await item.save();
-    publish({ updatedListId: listId, userIdToExclude: userId });
+    publish({ updatedListId: listId, userIdToExclude: userToListTable.userId });
     return { item };
   }
 }

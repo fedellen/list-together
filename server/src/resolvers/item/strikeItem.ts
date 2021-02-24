@@ -1,4 +1,3 @@
-import { UserToList } from '../../entities';
 import { logger } from '../../middleware/logger';
 import { MyContext } from '../../MyContext';
 import { itemRemovalCallback } from '../../services/item/itemRemovalCallback';
@@ -16,8 +15,7 @@ import { StrikeItemInput } from '../types/input/StrikeItemInput';
 import { UserToListResponse } from '../types/response/UserToListResponse';
 import { SubscriptionPayload } from '../types/subscription/SubscriptionPayload';
 import { Topic } from '../types/subscription/SubscriptionTopics';
-import { validateContext } from '../types/validators/validateContext';
-import { validateUserToList } from '../types/validators/validateUserToList';
+import { getUserListTable } from '../../services/list/getUserListTable';
 
 @Resolver()
 export class StrikeItemResolver {
@@ -29,25 +27,17 @@ export class StrikeItemResolver {
     @Ctx() context: MyContext,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<UserToListResponse> {
-    const errors = validateContext(context);
-    if (errors) return { errors };
-
-    const userId = context.req.session.userId;
-    const userToListTable = await UserToList.findOne({
-      where: { listId: listId, userId: userId },
-      relations: ['list', 'list.items']
-    });
-
-    const userListErrors = validateUserToList({
-      userToList: userToListTable,
-      validatePrivilege: 'strike',
+    const getListPayload = await getUserListTable({
+      context,
+      listId,
+      relations: ['list', 'list.items'],
+      validatePrivilege: 'delete',
       validateItemsExist: true
     });
-    if (userListErrors) return { errors: userListErrors };
-    else if (!userToListTable || !userToListTable.list.items)
-      throw new Error('UserList validation error on `strikeItems`..');
+    if (getListPayload.errors) return { errors: getListPayload.errors };
+    const userToListTable = getListPayload.userToList![0];
 
-    const item = userToListTable.list.items.find(
+    const item = userToListTable.list.items!.find(
       ({ name }) => name === itemName
     );
     if (!item) {
@@ -102,7 +92,10 @@ export class StrikeItemResolver {
     }
 
     await userToListTable.save();
-    await publish({ updatedListId: listId, userIdToExclude: userId });
+    await publish({
+      updatedListId: listId,
+      userIdToExclude: userToListTable.userId
+    });
     return { userToList: [userToListTable] };
   }
 }

@@ -1,4 +1,3 @@
-import { UserToList } from '../../entities';
 import { logger } from '../../middleware/logger';
 import { MyContext } from '../../MyContext';
 import { removeFromSharedLists } from '../../services/item/removeFromSharedLists';
@@ -16,9 +15,8 @@ import { FieldError } from '../types/response/FieldError';
 import { UserToListResponse } from '../types/response/UserToListResponse';
 import { SubscriptionPayload } from '../types/subscription/SubscriptionPayload';
 import { Topic } from '../types/subscription/SubscriptionTopics';
-import { validateContext } from '../types/validators/validateContext';
-import { validateUserToList } from '../types/validators/validateUserToList';
 import { itemRemovalCallback } from '../../services/item/itemRemovalCallback';
+import { getUserListTable } from '../../services/list/getUserListTable';
 
 @Resolver()
 export class DeleteItemsResolver {
@@ -31,23 +29,15 @@ export class DeleteItemsResolver {
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>,
     @Ctx() context: MyContext
   ): Promise<UserToListResponse> {
-    const errors = validateContext(context);
-    if (errors) return { errors };
-
-    const userId = context.req.session.userId;
-    const userToListTable = await UserToList.findOne({
-      where: { listId: listId, userId: userId },
-      relations: ['list', 'list.items']
-    });
-
-    const userListErrors = validateUserToList({
-      userToList: userToListTable,
+    const getListPayload = await getUserListTable({
+      context,
+      listId,
+      relations: ['list', 'list.items'],
       validatePrivilege: 'delete',
       validateItemsExist: true
     });
-    if (userListErrors) return { errors: userListErrors };
-    else if (!userToListTable || !userToListTable.list.items)
-      throw new Error('UserList validation error on `deleteItems`..');
+    if (getListPayload.errors) return { errors: getListPayload.errors };
+    const userToListTable = getListPayload.userToList![0];
 
     // Store each error, continue deleting items in the case of conflicts
     let deleteErrors: FieldError[] = [];
