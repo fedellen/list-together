@@ -53,40 +53,42 @@ export class AddItemResolver {
 
     const list = userToListTable.list;
     if (!list.items) {
-      // Initialize list
+      // Initialize list with first item
       list.items = [Item.create({ name: nameInput })];
     } else {
-      const addItemErrors = validateAddToList(list, nameInput);
       // Validation for max list length and if item already exists
+      const addItemErrors = validateAddToList(list, nameInput);
       if (addItemErrors) return { errors: addItemErrors };
+      // Add item to the list
       else list.items = [Item.create({ name: nameInput }), ...list.items];
     }
 
-    // Add item to User's personal item history for auto-completion and smart-sort
-    if (!userToListTable.itemHistory) {
-      // Initialize item history
-      userToListTable.itemHistory = [ItemHistory.create({ item: nameInput })];
-    } else {
-      const existingItemInHistory = userToListTable.itemHistory.find(
-        ({ item }) => item === nameInput
+    if (
+      userToListTable.removedItems &&
+      userToListTable.removedItems.includes(nameInput)
+    ) {
+      // Delete re-added items from removedItems array if item deleted recently
+      userToListTable.removedItems = userToListTable.removedItems.filter(
+        (i) => i !== nameInput
       );
-
-      if (existingItemInHistory) {
-        existingItemInHistory.timesAdded++;
+    } else {
+      // Add item to User's personal item history for auto-completion and smart-sort
+      if (!userToListTable.itemHistory) {
+        // Initialize item history
+        userToListTable.itemHistory = [ItemHistory.create({ item: nameInput })];
       } else {
-        userToListTable.itemHistory = [
-          ...userToListTable.itemHistory,
-          ItemHistory.create({ item: nameInput })
-        ];
-      }
-    }
-
-    // Delete re-added items from removedItems array if item deleted recently
-    if (userToListTable.removedItems) {
-      if (userToListTable.removedItems.includes(nameInput)) {
-        userToListTable.removedItems = userToListTable.removedItems.filter(
-          (i) => i !== nameInput
+        const existingItemInHistory = userToListTable.itemHistory.find(
+          ({ item }) => item === nameInput
         );
+
+        if (existingItemInHistory) {
+          existingItemInHistory.timesAdded++;
+        } else {
+          userToListTable.itemHistory = [
+            ...userToListTable.itemHistory,
+            ItemHistory.create({ item: nameInput })
+          ];
+        }
       }
     }
 
