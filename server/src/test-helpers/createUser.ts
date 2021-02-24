@@ -61,6 +61,18 @@ export const userWithListAndItems = async (
   return user;
 };
 
+export const userWithListAndOneItemWithNote = async (): Promise<User> => {
+  const user = await userWithListAndItems(1);
+  const userToListTable = await UserToList.findOne({
+    where: { userId: user.id },
+    relations: ['list', 'list.items']
+  });
+  const newNote = faker.name.firstName();
+  userToListTable!.list.items![0].notes = [newNote];
+  await userToListTable!.save();
+  return user;
+};
+
 export const createUserWithSharedPriv = async (
   listId: string,
   privileges: UserPrivileges

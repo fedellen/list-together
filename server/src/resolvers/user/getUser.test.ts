@@ -1,5 +1,5 @@
-import { userWithList } from '../test-helpers/createUser';
-import { graphqlCall } from '../test-helpers/graphqlCall';
+import { userWithList } from '../../test-helpers/createUser';
+import { graphqlCall } from '../../test-helpers/graphqlCall';
 
 const getUserQuery = `
 query GetUser {
