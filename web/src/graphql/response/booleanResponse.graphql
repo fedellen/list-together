@@ -1,6 +1,6 @@
-fragment booleanResponse on BooleanResponse {
-  boolean
-  errors {
-    ...fieldError
-  }
-}
+# fragment booleanResponse on BooleanResponse {
+#   boolean
+#   errors {
+#     ...fieldError
+#   }
+# }

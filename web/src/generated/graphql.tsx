@@ -15,15 +15,8 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  getUser?: Maybe<User>;
   getUsersLists: UserToListResponse;
-};
-
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID'];
-  email: Scalars['String'];
-  sortedListsArray?: Maybe<Array<Scalars['String']>>;
+  getUser?: Maybe<User>;
 };
 
 export type UserToListResponse = {
@@ -80,27 +73,39 @@ export type Item = {
   strike: Scalars['Boolean'];
 };
 
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID'];
+  email: Scalars['String'];
+  sortedListsArray?: Maybe<Array<Scalars['String']>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addItem: UserToListResponse;
+  deleteItems: UserToListResponse;
   strikeItem: UserToListResponse;
   addNote: ItemResponse;
   deleteNote: ItemResponse;
-  logout: Scalars['Boolean'];
   createList: UserToListResponse;
-  shareList: UserToListResponse;
-  updatePrivileges: UserToListResponse;
-  deleteList: BooleanResponse;
+  deleteList: UserResponse;
   renameList: ListResponse;
-  sortLists: UserResponse;
+  shareList: UserToListResponse;
   sortItems: UserToListResponse;
   submitPreferredOrder: UserToListResponse;
-  deleteItems: UserToListResponse;
+  updatePrivileges: UserToListResponse;
+  logout: Scalars['Boolean'];
+  sortLists: UserResponse;
 };
 
 
 export type MutationAddItemArgs = {
   data: AddItemInput;
+};
+
+
+export type MutationDeleteItemsArgs = {
+  data: DeleteItemsInput;
 };
 
 
@@ -124,16 +129,6 @@ export type MutationCreateListArgs = {
 };
 
 
-export type MutationShareListArgs = {
-  data: ShareListInput;
-};
-
-
-export type MutationUpdatePrivilegesArgs = {
-  data: UpdatePrivilegesInput;
-};
-
-
 export type MutationDeleteListArgs = {
   listId: Scalars['String'];
 };
@@ -145,8 +140,8 @@ export type MutationRenameListArgs = {
 };
 
 
-export type MutationSortListsArgs = {
-  data: StringArrayInput;
+export type MutationShareListArgs = {
+  data: ShareListInput;
 };
 
 
@@ -161,13 +156,23 @@ export type MutationSubmitPreferredOrderArgs = {
 };
 
 
-export type MutationDeleteItemsArgs = {
-  data: DeleteItemsInput;
+export type MutationUpdatePrivilegesArgs = {
+  data: UpdatePrivilegesInput;
+};
+
+
+export type MutationSortListsArgs = {
+  data: StringArrayInput;
 };
 
 export type AddItemInput = {
   listId: Scalars['String'];
   nameInput: Scalars['String'];
+};
+
+export type DeleteItemsInput = {
+  itemNameArray: Array<Scalars['String']>;
+  listId: Scalars['String'];
 };
 
 export type StrikeItemInput = {
@@ -193,22 +198,10 @@ export type DeleteNoteInput = {
   listId: Scalars['String'];
 };
 
-export type ShareListInput = {
-  listId: Scalars['String'];
-  email: Scalars['String'];
-  privileges: Scalars['String'];
-};
-
-export type UpdatePrivilegesInput = {
-  listId: Scalars['String'];
-  email: Scalars['String'];
-  privileges?: Maybe<Scalars['String']>;
-};
-
-export type BooleanResponse = {
-  __typename?: 'BooleanResponse';
+export type UserResponse = {
+  __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
-  boolean?: Maybe<Scalars['Boolean']>;
+  user?: Maybe<User>;
 };
 
 export type ListResponse = {
@@ -217,10 +210,10 @@ export type ListResponse = {
   list?: Maybe<List>;
 };
 
-export type UserResponse = {
-  __typename?: 'UserResponse';
-  errors?: Maybe<Array<FieldError>>;
-  user?: Maybe<User>;
+export type ShareListInput = {
+  listId: Scalars['String'];
+  email: Scalars['String'];
+  privileges: Scalars['String'];
 };
 
 export type StringArrayInput = {
@@ -232,9 +225,10 @@ export type PreferredOrderInput = {
   listId: Scalars['String'];
 };
 
-export type DeleteItemsInput = {
-  itemNameArray: Array<Scalars['String']>;
+export type UpdatePrivilegesInput = {
   listId: Scalars['String'];
+  email: Scalars['String'];
+  privileges?: Maybe<Scalars['String']>;
 };
 
 export type Subscription = {
@@ -436,8 +430,8 @@ export type DeleteListMutationVariables = Exact<{
 export type DeleteListMutation = (
   { __typename?: 'Mutation' }
   & { deleteList: (
-    { __typename?: 'BooleanResponse' }
-    & BooleanResponseFragment
+    { __typename?: 'UserResponse' }
+    & UserResponseFragment
   ) }
 );
 
@@ -599,15 +593,6 @@ export type GetUsersListsQuery = (
   ) }
 );
 
-export type BooleanResponseFragment = (
-  { __typename?: 'BooleanResponse' }
-  & Pick<BooleanResponse, 'boolean'>
-  & { errors?: Maybe<Array<(
-    { __typename?: 'FieldError' }
-    & FieldErrorFragment
-  )>> }
-);
-
 export type ItemResponseFragment = (
   { __typename?: 'ItemResponse' }
   & { item?: Maybe<(
@@ -700,26 +685,18 @@ export const UserListWithHistoryFragmentDoc = gql`
   }
 }
     ${ItemHistoryFragmentFragmentDoc}`;
-export const FieldErrorFragmentDoc = gql`
-    fragment fieldError on FieldError {
-  field
-  message
-}
-    `;
-export const BooleanResponseFragmentDoc = gql`
-    fragment booleanResponse on BooleanResponse {
-  boolean
-  errors {
-    ...fieldError
-  }
-}
-    ${FieldErrorFragmentDoc}`;
 export const ItemFragmentFragmentDoc = gql`
     fragment itemFragment on Item {
   id
   name
   notes
   strike
+}
+    `;
+export const FieldErrorFragmentDoc = gql`
+    fragment fieldError on FieldError {
+  field
+  message
 }
     `;
 export const ItemResponseFragmentDoc = gql`
@@ -1036,10 +1013,10 @@ export type CreateListMutationOptions = Apollo.BaseMutationOptions<CreateListMut
 export const DeleteListDocument = gql`
     mutation DeleteList($listId: String!) {
   deleteList(listId: $listId) {
-    ...booleanResponse
+    ...userResponse
   }
 }
-    ${BooleanResponseFragmentDoc}`;
+    ${UserResponseFragmentDoc}`;
 export type DeleteListMutationFn = Apollo.MutationFunction<DeleteListMutation, DeleteListMutationVariables>;
 
 /**
