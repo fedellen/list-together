@@ -1,5 +1,5 @@
 import { Item, useDeleteNoteMutation } from 'src/generated/graphql';
-import useCurrentPrivileges from 'src/hooks/useCurrentPrivileges';
+import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
 import { useStateValue } from 'src/state/state';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';

@@ -7,8 +7,8 @@ import {
   useGetUsersListsQuery,
   useRenameListMutation
 } from 'src/generated/graphql';
-import useCurrentMostCommonWords from 'src/hooks/useCurrentMostCommonWords';
-import useCurrentSortedItems from 'src/hooks/useCurrentSortedItems';
+import useCurrentMostCommonWords from 'src/hooks/fragments/useCurrentMostCommonWords';
+import useCurrentSortedItems from 'src/hooks/fragments/useCurrentSortedItems';
 import useKeyPress from 'src/hooks/useKeyPress';
 import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';

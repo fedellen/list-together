@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react';
 import { useDeleteItemsMutation } from 'src/generated/graphql';
-import useCurrentPrivileges from 'src/hooks/useCurrentPrivileges';
+import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
 import useKeyPress from 'src/hooks/useKeyPress';
 import { useStateValue } from 'src/state/state';
 import { openModal, sendNotification } from 'src/utils/dispatchActions';

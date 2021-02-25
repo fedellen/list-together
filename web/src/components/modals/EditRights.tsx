@@ -4,12 +4,12 @@ import { closeModal } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import PrivilegeButton from '../shared/PrivilegeButton';
 import { UserPrivileges } from 'src/types';
-import useCurrentListName from 'src/hooks/useCurrentListName';
+import useCurrentListName from 'src/hooks/fragments/useCurrentListName';
 import {
   SharedUsers,
   useUpdatePrivilegesMutation
 } from 'src/generated/graphql';
-import useCurrentSharedUsers from 'src/hooks/useCurrentSharedUsers';
+import useCurrentSharedUsers from 'src/hooks/fragments/useCurrentSharedUsers';
 import LeftArrowIcon from '../svg/list/LeftArrowIcon';
 import RightArrowIcon from '../svg/list/RightArrowIcon';
 
@@ -110,17 +110,12 @@ export default function EditRights() {
       <PrivilegeButton privilege={privilege} setPrivilege={setPrivilege} />
       <div className="grid grid-cols-2 w-full gap-6 items-center justify-items-center px-4">
         <button
-          type="submit"
           className="button-secondary"
           onClick={() => closeModal(dispatch)}
         >
           Cancel
         </button>
-        <button
-          type="submit"
-          className="button"
-          onClick={() => handleUpdatePrivileges()}
-        >
+        <button className="button" onClick={() => handleUpdatePrivileges()}>
           Update
         </button>
         <button

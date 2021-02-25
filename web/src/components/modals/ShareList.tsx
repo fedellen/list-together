@@ -5,7 +5,7 @@ import { closeModal, sendNotification } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import PrivilegeButton from '../shared/PrivilegeButton';
 import { UserPrivileges } from 'src/types';
-import useCurrentListName from 'src/hooks/useCurrentListName';
+import useCurrentListName from 'src/hooks/fragments/useCurrentListName';
 import useKeyPress from 'src/hooks/useKeyPress';
 
 export default function ShareList() {

@@ -1,8 +1,6 @@
 import { useStateValue } from 'src/state/state';
-import CreateUser from './form/CreateUser';
 import DemoList from './DemoList';
 import HomePage from './HomePage';
-import Login from './form/Login';
 import UsersLists from './list/UsersLists';
 
 /**
@@ -18,10 +16,6 @@ export default function BodyContent() {
         return <UsersLists />;
       case 'home':
         return <HomePage />;
-      case 'login':
-        return <Login />;
-      case 'createUser':
-        return <CreateUser />;
       case 'demo':
         return <DemoList />;
       default:

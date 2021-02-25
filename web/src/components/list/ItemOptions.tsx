@@ -19,8 +19,8 @@ import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import { arrayMove } from 'src/utils/arrayMove';
 import IconButton from '../shared/IconButton';
 import useKeyPress from 'src/hooks/useKeyPress';
-import useCurrentSortedItems from 'src/hooks/useCurrentSortedItems';
-import useCurrentPrivileges from 'src/hooks/useCurrentPrivileges';
+import useCurrentSortedItems from 'src/hooks/fragments/useCurrentSortedItems';
+import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
 import { useEffect, useState } from 'react';
 
 /** Modal for displaying user's item options when an item is clicked */

@@ -1,5 +1,4 @@
 import { useStateValue } from 'src/state/state';
-// import { Menu } from './Menu';
 import Modal from './Modal';
 import RemoveList from './RemoveList';
 import SingleInput from '../form/SingleInput';
