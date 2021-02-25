@@ -23,10 +23,17 @@ export default function useFragment({
   const apolloClient = useApolloClient();
   const [{ currentUserId, currentListId }] = useStateValue();
 
+  let idField: string;
+  if (fragmentField[0] === 'User') {
+    idField = `${fragmentField[0]}:${currentUserId}`;
+  } else if (fragmentField[0] === 'List') {
+    idField = `${fragmentField[0]}:${currentListId}`;
+  } else {
+    idField = `${fragmentField[0]}:{"listId":"${currentListId}"}`;
+  }
+
   const fragment: UseFragmentPayload = apolloClient.readFragment({
-    id: `${fragmentField[0]}:${
-      fragmentField[0] === 'User' ? currentUserId : currentListId
-    }`,
+    id: idField,
     fragment: gql`
       fragment ${fragmentField[1]} on ${fragmentField[0]} {
         ${fragmentField[1]}
