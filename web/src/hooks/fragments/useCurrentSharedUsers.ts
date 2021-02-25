@@ -1,19 +1,11 @@
-import { useApolloClient, gql } from '@apollo/client';
 import { SharedUsers, UserToList } from 'src/generated/graphql';
-import { useStateValue } from 'src/state/state';
+import useFragment from '../useFragment';
 
-export default function useCurrentSharedUsers(): SharedUsers[] | null {
-  const apolloClient = useApolloClient();
-  const [{ currentListId }] = useStateValue();
+export default function useCurrentSharedUsers(): SharedUsers[] {
+  const userToListFragment = useFragment({
+    fragmentField: ['UserToList', 'sharedUsers']
+  }) as UserToList | null;
 
-  const userListFrag: UserToList | null = apolloClient.readFragment({
-    id: `UserToList:{"listId":"${currentListId}"}`,
-    fragment: gql`
-      fragment CurrentSharedUsers on UserToList {
-        sharedUsers
-      }
-    `
-  });
-
-  return userListFrag ? userListFrag.sharedUsers : null;
+  if (!userToListFragment || !userToListFragment.sharedUsers) return [];
+  return userToListFragment.sharedUsers;
 }

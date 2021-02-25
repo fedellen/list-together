@@ -9,7 +9,7 @@ type UseFragmentArgs = {
 type UseFragmentPayload = User | UserToList | List | null;
 
 type FragmentFields =
-  | ['User', 'sortedLists']
+  | ['User', 'sortedListsArray']
   | ['List', 'title']
   | ['UserToList', 'sortedItems']
   | ['UserToList', 'mostCommonWords']

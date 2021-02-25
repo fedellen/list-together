@@ -1,21 +1,11 @@
-import { useApolloClient, gql } from '@apollo/client';
 import { UserToList } from 'src/generated/graphql';
-import { useStateValue } from 'src/state/state';
+import useFragment from '../useFragment';
 
-export default function useCurrentSortedItems(): string[] | null {
-  const apolloClient = useApolloClient();
-  const [{ currentListId }] = useStateValue();
+export default function useCurrentSortedItems(): string[] {
+  const userToListFragment = useFragment({
+    fragmentField: ['UserToList', 'sortedItems']
+  }) as UserToList | null;
 
-  const userListFrag: UserToList | null = apolloClient.readFragment({
-    id: `UserToList:{"listId":"${currentListId}"}`,
-    fragment: gql`
-      fragment CurrentSortedItems on UserToList {
-        sortedItems
-      }
-    `
-  });
-
-  return userListFrag && userListFrag.sortedItems
-    ? userListFrag.sortedItems
-    : null;
+  if (!userToListFragment || !userToListFragment.sortedItems) return [];
+  return userToListFragment.sortedItems;
 }
