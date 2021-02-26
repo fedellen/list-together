@@ -5,6 +5,7 @@ import SingleInput from '../form/SingleInput';
 import { useGetUsersListsQuery } from 'src/generated/graphql';
 import ShareList from './ShareList';
 import EditRights from './EditRights';
+import AddItem from '../form/AddItem';
 
 /** Handles logic for displaying current modal */
 
@@ -20,14 +21,14 @@ export default function CurrentModal() {
 
   /** Uses `addItem` for default values */
   let modalTitle = <h2>Add Item</h2>;
-  let component = <SingleInput />;
+  let component = <AddItem />;
 
   if (modalState.type === 'addNote') {
     modalTitle = <h2>Add Note</h2>;
-    // component = <SingleInput />
+    component = <SingleInput />;
   } else if (modalState.type === 'createList') {
     modalTitle = <h2>Create New List</h2>;
-    // component = <SingleInput />
+    component = <SingleInput />;
   } else if (modalState.type === 'renameList') {
     modalTitle = currentListName ? (
       <h2>
@@ -54,7 +55,7 @@ export default function CurrentModal() {
   } else if (modalState.type === 'shareList') {
     modalTitle = <h2>Share List</h2>;
     component = <ShareList />;
-  } else if (modalState.type === 'editRights') {
+  } else if (modalState.type === 'updatePrivileges') {
     modalTitle = <h2>Edit Rights</h2>;
     component = <EditRights />;
   }

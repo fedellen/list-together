@@ -25,7 +25,7 @@ import { useEffect, useState } from 'react';
 
 /** Modal for displaying user's item options when an item is clicked */
 export const ItemOptions = () => {
-  const [{ currentListId, activeItem: itemName }, dispatch] = useStateValue();
+  const [{ currentListId, activeItem }, dispatch] = useStateValue();
   // const listContext = useContext(ListContext);
   const currentSortedItems = useCurrentSortedItems();
   const currentPrivileges = useCurrentPrivileges();
@@ -36,6 +36,7 @@ export const ItemOptions = () => {
 
   const [mutationLoading, setMutationLoading] = useState(false);
 
+  const itemName = activeItem[0];
   if (!itemName) {
     sendNotification(dispatch, [
       `Error: ItemOptions was opened without itemName: ${itemName}  `
@@ -53,7 +54,7 @@ export const ItemOptions = () => {
 
     if (optionAction === 'addNote') {
       openModal(dispatch, 'addNote', itemName);
-      dispatch({ type: 'SET_ACTIVE_ITEM', payload: '' });
+      dispatch({ type: 'SET_ACTIVE_ITEM', payload: ['', ''] });
     } else if (optionAction === 'deleteItem') {
       try {
         /** Use `deleteItems` mutation */
@@ -176,7 +177,8 @@ export const ItemOptions = () => {
   const escapeKeyPressed = useKeyPress('Escape');
   useEffect(() => {
     // Close item Modal
-    if (escapeKeyPressed) dispatch({ type: 'SET_ACTIVE_ITEM', payload: '' });
+    if (escapeKeyPressed)
+      dispatch({ type: 'SET_ACTIVE_ITEM', payload: ['', ''] });
   });
 
   const style = 'item-option';

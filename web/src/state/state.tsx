@@ -7,8 +7,8 @@ export type State = {
   currentUserId: string;
   /** ID for the actively displayed list */
   currentListId: string;
-  /** Name of clicked item for displaying `ItemOptions` */
-  activeItem: string;
+  /** Contains [itemName, itemId] when an item is clicked on */
+  activeItem: [string, string];
   /** Contains [itemName, noteContent] when a note is clicked on */
   activeNote: [string, string];
   /** Current list displays arrows for sorting when `Move List` option is active */
@@ -32,7 +32,7 @@ export type State = {
 const initialState: State = {
   currentUserId: '',
   currentListId: '',
-  activeItem: '',
+  activeItem: ['', ''],
   activeNote: ['', ''],
   moveList: false,
   optionsOpen: false,

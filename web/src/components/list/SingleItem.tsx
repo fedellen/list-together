@@ -43,15 +43,17 @@ export default function SingleItem({ item }: SingleItemProps) {
   };
 
   /** activeItem contains item name as string when the user has clicked on an item */
-  const isItemActive = activeItem === item.name ? ' active' : '';
+  const isItemActive = activeItem[0] === item.name ? ' active' : '';
   const isStriked = item.strike ? ' strike' : '';
   const hasActiveNote = activeNote[0] === item.name;
+
+  console.log('`SingleItem` render');
 
   return (
     <li className="item-container">
       <button
         onClick={() =>
-          dispatch({ type: 'SET_ACTIVE_ITEM', payload: item.name })
+          dispatch({ type: 'SET_ACTIVE_ITEM', payload: [item.name, item.id] })
         }
         className={`item-button${isStriked}${isItemActive}`}
       >

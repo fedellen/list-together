@@ -21,7 +21,7 @@ export default function SideMenu() {
   const [deleteItems, { loading: deleteLoading }] = useDeleteItemsMutation();
 
   const sideMenuActive =
-    activeItem === '' && !optionsOpen && modalState.active === false;
+    activeItem[0] === '' && !optionsOpen && modalState.active === false;
 
   const currentPrivileges = useCurrentPrivileges();
   const hasStrikedItems =

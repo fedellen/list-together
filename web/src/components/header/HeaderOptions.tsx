@@ -123,7 +123,7 @@ export const HeaderOptions = () => {
       )}
       {currentListPrivileges === 'owner' && hasSharedLists && (
         <IconButton
-          onClick={() => openModal(dispatch, 'editRights')}
+          onClick={() => openModal(dispatch, 'updatePrivileges')}
           text="Edit Rights"
           style="header-option-button"
           icon={<EditRightsIcon />}

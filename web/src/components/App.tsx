@@ -34,13 +34,13 @@ export default function App() {
   }
 
   const handleClick = () => {
-    if (activeItem !== '') {
+    if (activeItem[0] !== '') {
       resetActiveItem(dispatch);
     }
     if (optionsOpen) {
       dispatch({ type: 'TOGGLE_OPTIONS' });
     }
-    if (activeNote !== ['', '']) {
+    if (activeNote[0] !== '') {
       dispatch({ type: 'SET_ACTIVE_NOTE', payload: ['', ''] });
     }
   };
