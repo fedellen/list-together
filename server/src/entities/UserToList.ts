@@ -50,10 +50,15 @@ export class UserToList extends BaseEntity {
   @Field(() => [String], { nullable: true })
   mostCommonWords(@Root() parent: UserToList): string[] | null {
     if (!parent.itemHistory) return null;
+    // Sort by times added
     const sortedHistory = parent.itemHistory.sort(
       (a, b) => b.timesAdded - a.timesAdded
     );
-    return sortedHistory.map((history) => history.item);
+    // Remove items already on list
+    const itemsNotOnList = sortedHistory.filter(
+      (history) => !parent.sortedItems?.includes(history.item)
+    );
+    return itemsNotOnList.map((history) => history.item);
   }
 
   /** Overly complicated sharedUsers field for list owners to manage privileges */
