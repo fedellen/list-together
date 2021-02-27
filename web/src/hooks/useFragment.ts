@@ -13,6 +13,7 @@ type UseFragmentPayload = User | UserToList | List | null;
 type FragmentFields =
   | ['User', 'sortedListsArray']
   | ['List', 'title']
+  | ['List', 'items']
   | ['Item', 'notes']
   | ['UserToList', 'sortedItems']
   | ['UserToList', 'mostCommonWords']
@@ -38,18 +39,14 @@ export default function useFragment({
     }
   }, []);
 
-  const fragment: UseFragmentPayload = useMemo(
-    () =>
-      apolloClient.readFragment({
-        id: idField,
-        fragment: gql`
+  const fragment: UseFragmentPayload = apolloClient.readFragment({
+    id: idField,
+    fragment: gql`
       fragment ${fragmentField[1]} on ${fragmentField[0]} {
         ${fragmentField[1]}
       }
     `
-      }),
-    []
-  );
+  });
 
   return fragment;
 }
