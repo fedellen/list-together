@@ -9,7 +9,7 @@ export default function ErrorNotification() {
   if (errorMessage === '') return null;
 
   return (
-    <div className="fixed bottom-6 left-6 p-6 text-md font-semibold w-52  bg-indigo-300 rounded-lg shadow-md z-50">
+    <div className="fixed bottom-6 left-6 p-6 text-lg font-semibold w-72  bg-indigo-300 rounded-lg shadow-md z-50">
       {errorMessage}
     </div>
   );

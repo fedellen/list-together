@@ -45,10 +45,21 @@ export type Action =
   | {
       type: 'SET_USER';
       payload: string;
+    }
+  | {
+      type: 'CLEAR_STATE';
     };
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
+    case 'CLEAR_STATE':
+      return {
+        ...state,
+        modalState: { active: false },
+        activeNote: ['', ''],
+        activeItem: ['', ''],
+        optionsOpen: false
+      };
     case 'TOGGLE_MODAL':
       return {
         ...state,

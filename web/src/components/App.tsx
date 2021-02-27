@@ -6,7 +6,6 @@ import ErrorNotification from './modals/ErrorNotification';
 import { useStateValue } from 'src/state/state';
 import { useEffect } from 'react';
 import BodyContent from './BodyContent';
-import { resetActiveItem } from 'src/utils/dispatchActions';
 import LoadingSplash from './shared/LoadingSplash';
 
 export default function App() {
@@ -35,13 +34,13 @@ export default function App() {
 
   const handleClick = () => {
     if (activeItem[0] !== '') {
-      resetActiveItem(dispatch);
+      dispatch({ type: 'CLEAR_STATE' });
     }
     if (optionsOpen) {
-      dispatch({ type: 'TOGGLE_OPTIONS' });
+      dispatch({ type: 'CLEAR_STATE' });
     }
     if (activeNote[0] !== '') {
-      dispatch({ type: 'SET_ACTIVE_NOTE', payload: ['', ''] });
+      dispatch({ type: 'CLEAR_STATE' });
     }
   };
 
