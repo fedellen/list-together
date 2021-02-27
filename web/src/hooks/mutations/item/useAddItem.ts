@@ -4,7 +4,7 @@ import { useStateValue } from 'src/state/state';
 import delayedFunction from 'src/utils/delayedFunction';
 import { sendNotification, closeModal } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
-import useCurrentSortedItems from '../fragments/useCurrentSortedItems';
+import useCurrentSortedItems from '../../fragments/useCurrentSortedItems';
 
 export default function useAddItem() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);

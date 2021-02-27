@@ -23,14 +23,13 @@ export type OptionAction =
   | 'sortItemDown';
 
 export type ModalTypes =
-  | 'menu'
   | 'addItem'
   | 'createList'
   | 'renameList'
   | 'addNote'
   | 'shareList'
   | 'removeList'
-  | 'editRights';
+  | 'updatePrivileges';
 
 export type CurrentListContext = {
   /** Current UserPrivileges to determine which options to show */
