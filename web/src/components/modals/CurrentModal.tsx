@@ -1,25 +1,21 @@
 import { useStateValue } from 'src/state/state';
 import Modal from './Modal';
 import RemoveList from './RemoveList';
-import { useGetUsersListsQuery } from 'src/generated/graphql';
 import ShareList from './ShareList';
 import EditRights from './EditRights';
 import AddItem from './AddItem';
 import AddNote from './AddNote';
 import CreateList from './CreateList';
 import RenameList from './RenameList';
+import useCurrentListName from 'src/hooks/fragments/useCurrentListName';
 
 /** Handles logic for displaying current modal */
 
 export default function CurrentModal() {
-  const [{ modalState, currentListId }] = useStateValue();
-  const { data } = useGetUsersListsQuery({ notifyOnNetworkStatusChange: true });
-
+  const [{ modalState }] = useStateValue();
   if (!modalState.active) return null;
 
-  const currentListName = data?.getUsersLists.userToList?.find(
-    (list) => list.listId === currentListId
-  )?.list.title;
+  const currentListName = useCurrentListName();
 
   /** Uses `addItem` for default values */
   let modalTitle = <h2>Add Item</h2>;
@@ -41,12 +37,7 @@ export default function CurrentModal() {
       <h2>Rename current list?</h2>
     );
     component = <RenameList />;
-  }
-  // else if (modalState.type === 'menu') {
-  //   modalTitle = <h2>Menu</h2>;
-  //   component = <Menu />;
-  // }
-  else if (modalState.type === 'removeList') {
+  } else if (modalState.type === 'removeList') {
     modalTitle = (
       <h2>
         Confirm
