@@ -1,44 +1,32 @@
 import { useMemo, useState } from 'react';
 import useCurrentMostCommonWords from 'src/hooks/fragments/useCurrentMostCommonWords';
-import useCurrentSortedItems from 'src/hooks/fragments/useCurrentSortedItems';
-import useAddItem from 'src/hooks/mutations/useAddItem';
+import useAddItem from 'src/hooks/mutations/item/useAddItem';
 import useKeyPress from 'src/hooks/useKeyPress';
 import Button from '../styled/Button';
 import AutoCompleteItems from './AutoCompleteItems';
 
 export default function AddItem({}) {
   const [textValue, setTextValue] = useState('');
-  const [handleAdd] = useAddItem();
+  const [handleAdd, submit] = useAddItem();
 
-  const currentItemsArray = useCurrentSortedItems();
   const mostCommonWords = useCurrentMostCommonWords();
-
-  const commonWordsWithoutCurrentItems = useMemo(
-    // Items not on the list
-    () => mostCommonWords?.filter((word) => !currentItemsArray?.includes(word)),
-    [mostCommonWords, currentItemsArray]
-  );
 
   const autoCompleteList = useMemo(
     // Items that match the text value
-    () =>
-      commonWordsWithoutCurrentItems?.filter(
+    () => {
+      const filteredWords = mostCommonWords?.filter(
         (word) => word.toLowerCase().indexOf(textValue.toLowerCase()) !== -1
-      ),
-    [commonWordsWithoutCurrentItems, textValue]
-  );
-
-  const displayedWords = useMemo(
-    () =>
-      autoCompleteList.length > 20
-        ? autoCompleteList.slice(0, 20)
-        : autoCompleteList,
-    [autoCompleteList]
+      );
+      return filteredWords.length > 20
+        ? filteredWords.slice(0, 20)
+        : filteredWords;
+    },
+    [mostCommonWords, textValue]
   );
 
   /** Keyboard submit */
   const submitKeyPress = useKeyPress('Enter');
-  if (submitKeyPress) handleAdd(textValue);
+  if (submitKeyPress && !submit) handleAdd(textValue);
 
   return (
     <div className="single-input">
@@ -48,11 +36,15 @@ export default function AddItem({}) {
         placeholder="Enter item name"
         autoFocus
       />
-      <Button text="Submit" onClick={() => handleAdd(textValue)} />
+      <Button
+        text="Submit"
+        onClick={() => handleAdd(textValue)}
+        isLoading={submit}
+      />
       {autoCompleteList.length > 0 && (
         <AutoCompleteItems
           handleAdd={handleAdd}
-          filteredWords={displayedWords}
+          filteredWords={autoCompleteList}
         />
       )}
     </div>

@@ -1,11 +1,13 @@
 import { useStateValue } from 'src/state/state';
 import Modal from './Modal';
 import RemoveList from './RemoveList';
-import SingleInput from '../form/SingleInput';
 import { useGetUsersListsQuery } from 'src/generated/graphql';
 import ShareList from './ShareList';
 import EditRights from './EditRights';
-import AddItem from '../form/AddItem';
+import AddItem from './AddItem';
+import AddNote from './AddNote';
+import CreateList from './CreateList';
+import RenameList from './RenameList';
 
 /** Handles logic for displaying current modal */
 
@@ -25,10 +27,10 @@ export default function CurrentModal() {
 
   if (modalState.type === 'addNote') {
     modalTitle = <h2>Add Note</h2>;
-    component = <SingleInput />;
+    component = <AddNote />;
   } else if (modalState.type === 'createList') {
     modalTitle = <h2>Create New List</h2>;
-    component = <SingleInput />;
+    component = <CreateList />;
   } else if (modalState.type === 'renameList') {
     modalTitle = currentListName ? (
       <h2>
@@ -38,7 +40,7 @@ export default function CurrentModal() {
     ) : (
       <h2>Rename current list?</h2>
     );
-    // component = <SingleInput />
+    component = <RenameList />;
   }
   // else if (modalState.type === 'menu') {
   //   modalTitle = <h2>Menu</h2>;

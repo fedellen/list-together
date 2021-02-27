@@ -7,12 +7,9 @@ export default function AutoCompleteItems({
   filteredWords,
   handleAdd
 }: AutoCompleteItemsProps) {
-  if (filteredWords.length < 1) return null;
-  const displayedWords = filteredWords.slice(0, 20);
-
   return (
     <div className="flex flex-wrap gap-2 h-32 overflow-y-scroll items-start  justify-start ">
-      {displayedWords.map((word) => (
+      {filteredWords.map((word) => (
         <button
           key={word}
           onClick={() => handleAdd(word)}
