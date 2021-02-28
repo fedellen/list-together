@@ -10,7 +10,7 @@ List Together is a simple, modern list app built with family sharing capabilitie
 
 - Create and Manage Lists
 - Add, Strike, and Delete, Items
-- Easily Share Lists via
+- Easily Share Lists
 - Auto Complete
 - Smart Sort
 - Simple oAuth Sign-up / Login
