@@ -10,8 +10,15 @@ export type ToggleItemState = {
   type: 'options' | 'addNote' | 'deleteItem';
 };
 
-/** Side menu states determine what happens when clicking on items */
-export type SideMenuState = 'shop' | 'add' | 'review';
+export type ListState =
+  | ['item', ItemState]
+  | ['note', NoteState]
+  | ['modal', ModalState]
+  | 'options'
+  | 'side';
+
+export type ItemState = { id: string; name: string };
+export type NoteState = { item: string; note: string };
 
 /** Actions to take from user clicking on `ItemOptions` modal buttons */
 export type OptionAction =

@@ -1,4 +1,4 @@
-import { AppState, ModalState, SideMenuState } from 'src/types';
+import { AppState, ItemState, ModalState, NoteState } from 'src/types';
 import { State } from './state';
 
 export type Action =
@@ -19,7 +19,7 @@ export type Action =
     }
   | {
       type: 'SET_SIDE_MENU_STATE';
-      payload: SideMenuState;
+      payload: 'add' | 'review';
     }
   | {
       type: 'SET_ERROR_MESSAGE';
@@ -30,11 +30,11 @@ export type Action =
     }
   | {
       type: 'SET_ACTIVE_ITEM';
-      payload: [string, string];
+      payload: ItemState;
     }
   | {
       type: 'SET_ACTIVE_NOTE';
-      payload: [string, string];
+      payload: NoteState;
     }
   | {
       type: 'TOGGLE_OPTIONS';
@@ -55,32 +55,19 @@ export const reducer = (state: State, action: Action): State => {
     case 'CLEAR_STATE':
       return {
         ...state,
-        modalState: { active: false },
-        activeNote: ['', ''],
-        activeItem: ['', ''],
-        optionsOpen: false
+        listState: 'side'
       };
     case 'TOGGLE_MODAL':
       return {
         ...state,
-        modalState: action.payload,
-        activeNote: ['', ''],
-        activeItem: ['', ''],
-        optionsOpen: false
+        listState: ['modal', action.payload]
       };
     case 'SET_LIST':
       return {
         ...state,
         sideMenuState: 'add',
-        activeNote: ['', ''],
-        activeItem: ['', ''],
-        optionsOpen: false,
+        listState: 'side',
         currentListId: action.payload
-      };
-    case 'CLEAR_LIST':
-      return {
-        ...state,
-        currentListId: ''
       };
     case 'SET_SIDE_MENU_STATE':
       return {
@@ -105,28 +92,22 @@ export const reducer = (state: State, action: Action): State => {
     case 'SET_ACTIVE_ITEM':
       return {
         ...state,
-        optionsOpen: false,
-        activeNote: ['', ''],
-        activeItem: action.payload
+        listState: ['item', action.payload]
       };
     case 'SET_ACTIVE_NOTE':
       return {
         ...state,
-        optionsOpen: false,
-        activeItem: ['', ''],
-        activeNote: action.payload
+        listState: ['note', action.payload]
       };
     case 'TOGGLE_OPTIONS':
       return {
         ...state,
-        activeItem: ['', ''],
-        modalState: { active: false },
-        optionsOpen: !state.optionsOpen
+        listState: 'options'
       };
     case 'TOGGLE_MOVE_LISTS':
       return {
         ...state,
-        optionsOpen: false,
+        listState: 'side',
         moveList: !state.moveList
       };
     case 'SET_USER':

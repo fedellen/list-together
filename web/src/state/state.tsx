@@ -1,5 +1,6 @@
 import { createContext, Dispatch, useContext, useReducer } from 'react';
-import { AppState, ModalState, SideMenuState } from 'src/types';
+import { AppState } from 'src/types';
+import { ListState } from '../types';
 import { Action } from './reducer';
 
 export type State = {
@@ -7,39 +8,28 @@ export type State = {
   currentUserId: string;
   /** ID for the actively displayed list */
   currentListId: string;
-  /** Contains [itemName, itemId] when an item is clicked on */
-  activeItem: [string, string];
-  /** Contains [itemName, noteContent] when a note is clicked on */
-  activeNote: [string, string];
   /** Current list displays arrows for sorting when `Move List` option is active */
   moveList: boolean;
-  /** Header Options clicked on? */
-  optionsOpen: boolean;
-  /** Currently displayed modal */
-  modalState: ModalState;
   /** List currently in `review` view or `add` view */
-  sideMenuState: SideMenuState;
+  sideMenuState: 'review' | 'add';
   /** Error notification to display in `ErrorMessage` modal */
   errorMessage: string;
   /** State for handling logged out visitors */
   appState: AppState;
+  /** State for handling which active list modals to show */
+  listState: ListState;
 };
-
-// ListState = 'item' | 'note' | 'modal' | 'options' | 'side'
 
 // modal || itemMenu || noteDelete || optionsOpen || sideMenuState
 
 const initialState: State = {
   currentUserId: '',
   currentListId: '',
-  activeItem: ['', ''],
-  activeNote: ['', ''],
   moveList: false,
-  optionsOpen: false,
-  modalState: { active: false },
   sideMenuState: 'add',
   errorMessage: '',
-  appState: 'home'
+  appState: 'home',
+  listState: 'side'
 };
 
 export const StateContext = createContext<[State, Dispatch<Action>]>([
