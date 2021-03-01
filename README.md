@@ -2,11 +2,11 @@
 
 # Fullstack TypeScript React Grocery List App
 
-## **🗒 List Together**
+### **List Together**
 
 List Together is a simple, modern list app built with family sharing capabilities.
 
-## **🚀 Features**
+### **🚀 Features**
 
 - Create and Manage Lists
 - Add, Strike, and Delete, Items
