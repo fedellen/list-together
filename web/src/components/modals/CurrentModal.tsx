@@ -12,20 +12,23 @@ import useCurrentListName from 'src/hooks/fragments/useCurrentListName';
 /** Handles logic for displaying current modal */
 
 export default function CurrentModal() {
-  const [{ modalState }] = useStateValue();
+  const [{ listState }] = useStateValue();
   const currentListName = useCurrentListName();
+
+  if (listState[0] !== 'modal') return null;
+  const modalType = listState[1].type;
 
   /** Uses `addItem` for default values */
   let modalTitle = <h2>Add Item</h2>;
   let component = <AddItem />;
 
-  if (modalState.type === 'addNote') {
+  if (modalType === 'addNote') {
     modalTitle = <h2>Add Note</h2>;
     component = <AddNote />;
-  } else if (modalState.type === 'createList') {
+  } else if (modalType === 'createList') {
     modalTitle = <h2>Create New List</h2>;
     component = <CreateList />;
-  } else if (modalState.type === 'renameList') {
+  } else if (modalType === 'renameList') {
     modalTitle = currentListName ? (
       <h2>
         Rename list:
@@ -35,7 +38,7 @@ export default function CurrentModal() {
       <h2>Rename current list?</h2>
     );
     component = <RenameList />;
-  } else if (modalState.type === 'removeList') {
+  } else if (modalType === 'removeList') {
     modalTitle = (
       <h2>
         Confirm
@@ -43,10 +46,10 @@ export default function CurrentModal() {
       </h2>
     );
     component = <RemoveList />;
-  } else if (modalState.type === 'shareList') {
+  } else if (modalType === 'shareList') {
     modalTitle = <h2>Share List</h2>;
     component = <ShareList />;
-  } else if (modalState.type === 'updatePrivileges') {
+  } else if (modalType === 'updatePrivileges') {
     modalTitle = <h2>Edit Rights</h2>;
     component = <EditRights />;
   }

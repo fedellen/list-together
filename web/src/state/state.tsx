@@ -29,7 +29,7 @@ const initialState: State = {
   sideMenuState: 'add',
   errorMessage: '',
   appState: 'home',
-  listState: 'side'
+  listState: ['side']
 };
 
 export const StateContext = createContext<[State, Dispatch<Action>]>([

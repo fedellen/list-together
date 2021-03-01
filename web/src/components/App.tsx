@@ -5,14 +5,12 @@ import CurrentModal from './modals/CurrentModal';
 import ErrorNotification from './modals/ErrorNotification';
 import { useStateValue } from 'src/state/state';
 import { useEffect } from 'react';
-import BodyContent from './BodyContent';
 import LoadingSplash from './shared/LoadingSplash';
+import UsersLists from './list/UsersLists';
+import HomePage from './HomePage';
 
 export default function App() {
-  const [
-    { appState, activeItem, activeNote, optionsOpen, modalState, errorMessage },
-    dispatch
-  ] = useStateValue();
+  const [{ appState, listState, errorMessage }, dispatch] = useStateValue();
   const { data, loading: userDataLoading, error } = useGetUserQuery({
     fetchPolicy: 'cache-and-network'
   });
@@ -33,13 +31,7 @@ export default function App() {
   }
 
   const handleClick = () => {
-    if (activeItem[0] !== '') {
-      dispatch({ type: 'CLEAR_STATE' });
-    }
-    if (optionsOpen) {
-      dispatch({ type: 'CLEAR_STATE' });
-    }
-    if (activeNote[0] !== '') {
+    if (listState !== ['side']) {
       dispatch({ type: 'CLEAR_STATE' });
     }
   };
@@ -52,10 +44,18 @@ export default function App() {
         onClick={handleClick}
         className="absolute inset-0 z-0"
       />
-      {modalState.active && <CurrentModal />}
+      {listState[0] === 'modal' && <CurrentModal />}
       {errorMessage && <ErrorNotification />}
       <Header />
-      {userDataLoading && !data ? <LoadingSplash /> : <BodyContent />}
+      {userDataLoading && !data ? (
+        <LoadingSplash />
+      ) : appState === 'list' ? (
+        /** User is logged in: */
+        <UsersLists />
+      ) : (
+        /** User is logged out: */
+        <HomePage />
+      )}
       <Footer />
     </div>
   );

@@ -14,8 +14,8 @@ export type ListState =
   | ['item', ItemState]
   | ['note', NoteState]
   | ['modal', ModalState]
-  | 'options'
-  | 'side';
+  | ['options']
+  | ['side'];
 
 export type ItemState = { id: string; name: string };
 export type NoteState = { item: string; note: string };

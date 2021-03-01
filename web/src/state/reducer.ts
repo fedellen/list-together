@@ -55,7 +55,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'CLEAR_STATE':
       return {
         ...state,
-        listState: 'side'
+        listState: ['side']
       };
     case 'TOGGLE_MODAL':
       return {
@@ -66,7 +66,7 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         sideMenuState: 'add',
-        listState: 'side',
+        listState: ['side'],
         currentListId: action.payload
       };
     case 'SET_SIDE_MENU_STATE':
@@ -102,12 +102,12 @@ export const reducer = (state: State, action: Action): State => {
     case 'TOGGLE_OPTIONS':
       return {
         ...state,
-        listState: 'options'
+        listState: ['options']
       };
     case 'TOGGLE_MOVE_LISTS':
       return {
         ...state,
-        listState: 'side',
+        listState: ['side'],
         moveList: !state.moveList
       };
     case 'SET_USER':
