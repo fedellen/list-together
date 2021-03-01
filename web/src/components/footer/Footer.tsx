@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import KofiWidget from './KofiWidget';
 import PixelPajamaWidget from './PixelPajamaWidget';
 import SocialMediaButtons from './SocialMediaButtons';
 
-export default function Footer() {
+const Footer = memo(function Footer() {
   return (
     <section id="footer">
       <KofiWidget />
@@ -10,4 +11,5 @@ export default function Footer() {
       <PixelPajamaWidget />
     </section>
   );
-}
+});
+export default Footer;

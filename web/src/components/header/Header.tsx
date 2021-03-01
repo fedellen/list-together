@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import HeaderMenu from './HeaderMenu';
 
-export default function Header({}) {
+const Header = memo(function Header({}) {
   return (
     <header id="header">
       <div id="header-container">
@@ -9,8 +10,8 @@ export default function Header({}) {
           Together
         </h2>
         <HeaderMenu />
-        {/* <MenuIcon /> */}
       </div>
     </header>
   );
-}
+});
+export default Header;
