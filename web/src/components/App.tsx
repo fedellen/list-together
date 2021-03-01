@@ -10,7 +10,7 @@ import LoadingSplash from './shared/LoadingSplash';
 
 export default function App() {
   const [
-    { appState, activeItem, activeNote, optionsOpen },
+    { appState, activeItem, activeNote, optionsOpen, modalState, errorMessage },
     dispatch
   ] = useStateValue();
   const { data, loading: userDataLoading, error } = useGetUserQuery({
@@ -52,8 +52,8 @@ export default function App() {
         onClick={handleClick}
         className="absolute inset-0 z-0"
       />
-      <CurrentModal />
-      <ErrorNotification />
+      {modalState.active && <CurrentModal />}
+      {errorMessage && <ErrorNotification />}
       <Header />
       {userDataLoading && !data ? <LoadingSplash /> : <BodyContent />}
       <Footer />

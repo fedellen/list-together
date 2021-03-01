@@ -13,8 +13,6 @@ import useCurrentListName from 'src/hooks/fragments/useCurrentListName';
 
 export default function CurrentModal() {
   const [{ modalState }] = useStateValue();
-  if (!modalState.active) return null;
-
   const currentListName = useCurrentListName();
 
   /** Uses `addItem` for default values */
