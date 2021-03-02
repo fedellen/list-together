@@ -31,7 +31,7 @@ export default function App() {
   }
 
   const handleClick = () => {
-    if (listState !== ['side']) {
+    if (listState[0] !== 'side') {
       dispatch({ type: 'CLEAR_STATE' });
     }
   };
@@ -51,7 +51,11 @@ export default function App() {
         <LoadingSplash />
       ) : appState === 'list' ? (
         /** User is logged in: */
-        <UsersLists />
+        <UsersLists
+          sortedListsArray={
+            data?.getUser?.sortedListsArray ? data.getUser.sortedListsArray : []
+          }
+        />
       ) : (
         /** User is logged out: */
         <HomePage />

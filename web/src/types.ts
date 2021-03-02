@@ -38,15 +38,6 @@ export type ModalTypes =
   | 'removeList'
   | 'updatePrivileges';
 
-export type CurrentListContext = {
-  /** Current UserPrivileges to determine which options to show */
-  privileges: UserPrivileges;
-  /** To use in `sortItems` mutation */
-  sortedItems: string[];
-  /** List has strikethroughs? */
-  strikedItems: string[];
-};
-
 /** State for which page to show */
 export type AppState = 'home' | 'login' | 'createUser' | 'demo' | 'list';
 
