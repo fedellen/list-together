@@ -1,26 +1,27 @@
 import { memo } from 'react';
 import { Item } from 'src/generated/graphql';
 import { Action } from 'src/state/reducer';
-import { useStateValue } from 'src/state/state';
+import { NoteState } from 'src/types';
 import { ItemOptions } from './ItemOptions';
 import Note from './Note';
 
 type SingleItemProps = {
   item: Item;
   activeItem: string;
+  activeNote: NoteState | null;
   dispatch: React.Dispatch<Action>;
+  userCanDeleteNotes: boolean;
 };
 
 const SingleItem = memo(function SingleItem({
   item,
-  activeItem
+  activeItem,
+  activeNote,
+  dispatch,
+  userCanDeleteNotes
 }: SingleItemProps) {
-  const [, dispatch] = useStateValue();
-
-  /** listState[1] contains item name as string when activeItem is true */
   const isItemActive = activeItem === item.name ? ' active' : '';
   const isStriked = item.strike ? ' strike' : '';
-
   return (
     <li className="item-container">
       <button
@@ -42,6 +43,9 @@ const SingleItem = memo(function SingleItem({
               item={item.name}
               key={note}
               note={note}
+              activeNote={activeNote}
+              userCanDeleteNotes={userCanDeleteNotes}
+              dispatch={dispatch}
               isStriked={isStriked}
             />
           ))}

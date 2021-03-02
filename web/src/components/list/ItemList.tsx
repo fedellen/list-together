@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { List } from 'src/generated/graphql';
+import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
 import { useStateValue } from 'src/state/state';
 import SideMenu from './SideMenu';
 import SingleItem from './SingleItem';
@@ -13,6 +14,7 @@ type ItemListProps = {
 
 export default function ItemList({ list, sortedItems }: ItemListProps) {
   const [{ listState, sideMenuState }, dispatch] = useStateValue();
+  const currentPrivileges = useCurrentPrivileges();
 
   const orderedItems = useMemo(
     () =>
@@ -41,6 +43,10 @@ export default function ItemList({ list, sortedItems }: ItemListProps) {
             <SingleItem
               item={i}
               activeItem={listState[0] === 'item' ? listState[1].name : ''}
+              activeNote={listState[0] === 'note' ? listState[1] : null}
+              userCanDeleteNotes={
+                currentPrivileges === 'owner' || currentPrivileges === 'delete'
+              }
               dispatch={dispatch}
               key={i.name}
             />

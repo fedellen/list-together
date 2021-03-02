@@ -1,21 +1,26 @@
-import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
-import { useStateValue } from 'src/state/state';
+import { memo } from 'react';
+import { Action } from 'src/state/reducer';
+import { NoteState } from 'src/types';
 import DeleteNoteButton from './DeleteNoteButton';
 
 type NoteProps = {
   item: string;
   note: string;
-  /** To contain " strike" when `true` */
   isStriked: string;
+  /** Some minor prop drilling to avoid re-rending lots of potential notes 😎 */
+  activeNote: NoteState | null;
+  dispatch: React.Dispatch<Action>;
+  userCanDeleteNotes: boolean;
 };
 
-export default function Note({ note, isStriked, item }: NoteProps) {
-  const [{ activeNote }, dispatch] = useStateValue();
-
-  const currentPrivileges = useCurrentPrivileges();
-  const userCanDeleteNotes: boolean =
-    currentPrivileges === 'owner' || currentPrivileges === 'delete';
-
+const Note = memo(function Note({
+  note,
+  isStriked,
+  item,
+  activeNote,
+  dispatch,
+  userCanDeleteNotes
+}: NoteProps) {
   return (
     <li className="note" key={note}>
       {/** Note with togglable delete button */}
@@ -23,18 +28,20 @@ export default function Note({ note, isStriked, item }: NoteProps) {
         <>
           <button
             className={`note-button${isStriked}${
-              activeNote[1] === note ? ' text-indigo-700' : ''
+              activeNote && activeNote[1].note === note
+                ? ' text-indigo-700'
+                : ''
             }`}
             onClick={() =>
               dispatch({
                 type: 'SET_ACTIVE_NOTE',
-                payload: [item, note]
+                payload: { item, note }
               })
             }
           >
             {note}
           </button>
-          {activeNote[1] === note && <DeleteNoteButton />}
+          {activeNote && activeNote[1].note === note && <DeleteNoteButton />}
         </>
       ) : (
         /** Note without togglable delete button */
@@ -42,4 +49,5 @@ export default function Note({ note, isStriked, item }: NoteProps) {
       )}
     </li>
   );
-}
+});
+export default Note;
