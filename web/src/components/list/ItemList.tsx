@@ -1,34 +1,34 @@
-import { useContext } from 'react';
+import { useMemo } from 'react';
 import { List } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
-import { sendNotification } from 'src/utils/dispatchActions';
 import SideMenu from './SideMenu';
 import SingleItem from './SingleItem';
-import { ListContext } from './UsersLists';
 
 type ItemListProps = {
   /** Current list being displayed */
   list: List;
-  // sortedItems: string[];
+  /** Sorted items array for current list */
+  sortedItems: string[];
 };
 
-export default function ItemList({ list }: ItemListProps) {
-  const [{ sideMenuState }, dispatch] = useStateValue();
-  const listContext = useContext(ListContext);
-  if (!listContext) {
-    sendNotification(dispatch, [
-      '`ItemList` has been opened without ListContext..'
-    ]);
-    return null;
-  }
-  const sortedItems = listContext.sortedItems;
+export default function ItemList({ list, sortedItems }: ItemListProps) {
+  const [{ listState, sideMenuState }, dispatch] = useStateValue();
 
-  /** Sort the current item data based on User's sorted preferences */
-  const orderedItems = list.items?.map((itemArray) => itemArray);
-  orderedItems?.sort((a, b) => {
-    return sortedItems.indexOf(a.name) - sortedItems.indexOf(b.name);
-  });
-  const strikedItems = orderedItems?.filter((item) => item.strike === true);
+  const orderedItems = useMemo(
+    () =>
+      list.items
+        ?.map((itemArray) => itemArray)
+        .sort(
+          (a, b) => sortedItems.indexOf(a.name) - sortedItems.indexOf(b.name)
+        ),
+
+    [list, sortedItems]
+  );
+
+  const strikedItems = useMemo(
+    () => orderedItems?.filter((item) => item.strike === true),
+    [orderedItems]
+  );
 
   /** Display only striked items in `review` mode, else display all items */
   const displayItems = sideMenuState === 'review' ? strikedItems : orderedItems;
@@ -38,13 +38,23 @@ export default function ItemList({ list }: ItemListProps) {
       {list.items && list.items.length > 0 ? (
         <ul>
           {displayItems?.map((i) => (
-            <SingleItem item={i} key={i.name} />
+            <SingleItem
+              item={i}
+              activeItem={listState[0] === 'item' ? listState[1].name : ''}
+              dispatch={dispatch}
+              key={i.name}
+            />
           ))}
         </ul>
       ) : (
         <span>This list is empty ✍🏾</span>
       )}
-      <SideMenu />
+      {listState[0] === 'side' ? (
+        <SideMenu />
+      ) : (
+        /** Render div with same height for smoother UX */
+        <div className="h-32 xl:h-36" />
+      )}
     </div>
   );
 }

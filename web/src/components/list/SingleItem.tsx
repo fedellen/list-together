@@ -1,24 +1,34 @@
+import { memo } from 'react';
 import { Item } from 'src/generated/graphql';
+import { Action } from 'src/state/reducer';
 import { useStateValue } from 'src/state/state';
 import { ItemOptions } from './ItemOptions';
 import Note from './Note';
 
 type SingleItemProps = {
   item: Item;
+  activeItem: string;
+  dispatch: React.Dispatch<Action>;
 };
 
-export default function SingleItem({ item }: SingleItemProps) {
-  const [{ activeItem }, dispatch] = useStateValue();
+const SingleItem = memo(function SingleItem({
+  item,
+  activeItem
+}: SingleItemProps) {
+  const [, dispatch] = useStateValue();
 
-  /** activeItem contains item name as string when the user has clicked on an item */
-  const isItemActive = activeItem[0] === item.name ? ' active' : '';
+  /** listState[1] contains item name as string when activeItem is true */
+  const isItemActive = activeItem === item.name ? ' active' : '';
   const isStriked = item.strike ? ' strike' : '';
 
   return (
     <li className="item-container">
       <button
         onClick={() =>
-          dispatch({ type: 'SET_ACTIVE_ITEM', payload: [item.name, item.id] })
+          dispatch({
+            type: 'SET_ACTIVE_ITEM',
+            payload: { name: item.name, id: item.id }
+          })
         }
         className={`item-button${isStriked}${isItemActive}`}
       >
@@ -39,4 +49,5 @@ export default function SingleItem({ item }: SingleItemProps) {
       )}
     </li>
   );
-}
+});
+export default SingleItem;

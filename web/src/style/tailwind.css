@@ -248,7 +248,7 @@
   /** Side Menu */
 
   #side-menu {
-    @apply sticky ml-auto xl:mx-auto bottom-2 flex gap-3 p-4 justify-center z-10;
+    @apply sticky h-32 xl:h-36  ml-auto xl:mx-auto bottom-2 flex gap-3 p-4 justify-center z-10;
   }
   .side-menu-button {
     @apply icon-button rounded-full shadow-md text-gray-700 bg-indigo-300 hover:bg-indigo-400   hover-grow-blue gap-1 px-3 py-4;
