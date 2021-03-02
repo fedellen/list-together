@@ -1,40 +1,58 @@
-// import { useApolloClient } from '@apollo/client';
-import React from 'react';
-import { useGetUserQuery, useGetUsersListsQuery } from 'src/generated/graphql';
+import { memo } from 'react';
 import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
+import { Action } from 'src/state/reducer';
 import { useStateValue } from 'src/state/state';
 import { openModal, setAppState } from 'src/utils/dispatchActions';
 import IconButton from '../shared/IconButton';
 import LoginIcon from '../svg/headerMenu/LoginIcon';
 import NewListIcon from '../svg/headerMenu/NewListIcon';
-import NewUserIcon from '../svg/headerMenu/NewUserIcon';
 import OptionsIcon from '../svg/headerMenu/OptionsIcon';
 import ShareIcon from '../svg/headerMenu/ShareIcon';
 import SmartSortIcon from '../svg/headerMenu/SmartSortIcon';
 import { HeaderOptions } from './HeaderOptions';
 
 export default function HeaderMenu() {
-  const [{ optionsOpen }, dispatch] = useStateValue();
+  const [
+    { listState, currentUserId, currentListId },
+    dispatch
+  ] = useStateValue();
 
-  const { data: userData } = useGetUserQuery({
-    notifyOnNetworkStatusChange: true
-  });
-  const { data: userListData } = useGetUsersListsQuery({
-    notifyOnNetworkStatusChange: true
-  });
-
+  const optionsOpen = listState[0] === 'options';
   const isOwner = useCurrentPrivileges() === 'owner';
+  const userExist = currentUserId !== '';
+  const listExist = currentListId !== '';
 
-  const userExist = userData?.getUser?.email;
-  let listExist = false;
-  if (userListData?.getUsersLists.userToList) {
-    if (userListData.getUsersLists.userToList.length > 0) {
-      listExist = true;
-    }
-  }
+  return (
+    <HeaderMenuWithContext
+      userExist={userExist}
+      listExist={listExist}
+      optionsOpen={optionsOpen}
+      isOwner={isOwner}
+      dispatch={dispatch}
+    />
+  );
+}
 
-  const style = 'header-button';
-  // Needs to know when user exists, and if list exists
+type HeaderMenuContextProps = {
+  userExist: boolean;
+  listExist: boolean;
+  optionsOpen: boolean;
+  isOwner: boolean;
+  dispatch: React.Dispatch<Action>;
+};
+
+/**
+ * Wrap rendering conditionals in memo providing
+ * context as props to avoid re-rendering logic needlessly
+ */
+const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
+  userExist,
+  listExist,
+  optionsOpen,
+  isOwner,
+  dispatch
+}: HeaderMenuContextProps) {
+  const iconButtonStyle = 'header-button';
   return (
     <div id="header-menu">
       {optionsOpen && <HeaderOptions />}
@@ -44,7 +62,7 @@ export default function HeaderMenu() {
             icon={<NewListIcon />}
             text="New List"
             onClick={() => openModal(dispatch, 'createList')}
-            style={style}
+            style={iconButtonStyle}
           />
           {listExist && (
             <>
@@ -53,20 +71,20 @@ export default function HeaderMenu() {
                   icon={<ShareIcon />}
                   text="Share"
                   onClick={() => openModal(dispatch, 'shareList')}
-                  style={style}
+                  style={iconButtonStyle}
                 />
               )}
               <IconButton
                 onClick={() => console.log('')}
                 text="Smart Sort"
-                style={style}
+                style={iconButtonStyle}
                 icon={<SmartSortIcon />}
               />
               <IconButton
                 icon={<OptionsIcon />}
                 text="Options"
                 onClick={() => dispatch({ type: 'TOGGLE_OPTIONS' })}
-                style={style}
+                style={iconButtonStyle}
                 active={optionsOpen}
               />
             </>
@@ -74,20 +92,18 @@ export default function HeaderMenu() {
         </>
       ) : (
         <>
+          {/**
+           * Todo: This will be the darkmode toggle button for logged out users
+           * Logged in users will have the darkmode toggle in `HeaderOptions`
+           */}
           <IconButton
             icon={<LoginIcon />}
-            text="Login"
+            text="Dark Mode"
             onClick={() => setAppState(dispatch, 'login')}
-            style={style}
-          />
-          <IconButton
-            icon={<NewUserIcon />}
-            text="New User"
-            onClick={() => setAppState(dispatch, 'createUser')}
-            style={style}
+            style={iconButtonStyle}
           />
         </>
       )}
     </div>
   );
-}
+});
