@@ -3,11 +3,13 @@ import { useStateValue } from 'src/state/state';
 import useFragment from '../useFragment';
 
 export default function useItemsNotes(): string[] {
-  const [{ activeItem }] = useStateValue();
+  const [{ listState }] = useStateValue();
+  if (listState[0] !== 'item') return [];
+  const itemId = listState[1].id;
 
   const itemFragment = useFragment({
     fragmentField: ['Item', 'notes'],
-    id: activeItem[1]
+    id: itemId
   }) as Item | null;
 
   if (!itemFragment || !itemFragment.notes) return [];

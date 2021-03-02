@@ -8,10 +8,17 @@ import useItemsNotes from '../../fragments/useItemsNotes';
 
 export default function useAddNote() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
-  const [{ modalState, currentListId }, dispatch] = useStateValue();
+  const [{ listState, currentListId }, dispatch] = useStateValue();
   const activeItemsNotes = useItemsNotes();
   const [addNote] = useAddNoteMutation();
+
   const sendMutation = useCallback(async (note: string) => {
+    if (listState[0] !== 'modal' || !listState[1].itemName) {
+      sendNotification(dispatch, [
+        'Error: Cannot sendMutation in `useDeleteNotes`, there is no active note or itemName in `listState`..'
+      ]);
+      return;
+    }
     if (mutationSubmiting) return;
     /**
      *  Add Note Mutation
@@ -30,16 +37,15 @@ export default function useAddNote() {
         'Item length must contain 30 characters or less..'
       ]);
       return;
-    } else if (!modalState.itemName) {
-      return;
     }
+
     {
       setMutationSubmiting(true);
       try {
         const { data } = await addNote({
           variables: {
             data: {
-              itemName: modalState.itemName,
+              itemName: listState[1].itemName,
               note: note,
               listId: currentListId
             }
