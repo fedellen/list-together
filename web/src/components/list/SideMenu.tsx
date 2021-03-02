@@ -1,34 +1,17 @@
-import { useContext, useEffect } from 'react';
-import { useDeleteItemsMutation } from 'src/generated/graphql';
+import { useEffect } from 'react';
 import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
+import useStrikedItems from 'src/hooks/fragments/useStrikedItems';
+import useDeleteItems from 'src/hooks/mutations/item/useDeleteItems';
 import useKeyPress from 'src/hooks/useKeyPress';
 import { useStateValue } from 'src/state/state';
-import { openModal, sendNotification } from 'src/utils/dispatchActions';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { openModal } from 'src/utils/dispatchActions';
 import IconButton from '../shared/IconButton';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
-import LoadingIcon from '../svg/list/LoadingIcon';
 import AddItemIcon from '../svg/sideMenu/AddItemIcon';
 import ReviewListIcon from '../svg/sideMenu/ReviewListIcon';
-import { ListContext } from './UsersLists';
 
 export default function SideMenu() {
-  const [
-    { modalState, activeItem, optionsOpen, sideMenuState, currentListId },
-    dispatch
-  ] = useStateValue();
-  const listContext = useContext(ListContext);
-  const [deleteItems, { loading: deleteLoading }] = useDeleteItemsMutation();
-
-  const sideMenuActive =
-    activeItem[0] === '' && !optionsOpen && modalState.active === false;
-
-  const currentPrivileges = useCurrentPrivileges();
-  const hasStrikedItems =
-    listContext && listContext.strikedItems.length > 0 ? true : false;
-  const userCanDelete =
-    currentPrivileges === 'delete' || currentPrivileges === 'owner';
-  const userCanAdd = currentPrivileges !== 'read';
+  const [{ sideMenuState }, dispatch] = useStateValue();
 
   const handleAddItemClick = () => {
     dispatch({
@@ -37,30 +20,12 @@ export default function SideMenu() {
     });
   };
 
+  const [deleteItems, deleteItemsSubmitting] = useDeleteItems();
+  const strikedItems = useStrikedItems();
   /** Use `deleteItems` mutation on all striked items */
-  const handleDeleteAllClick = async () => {
-    if (!listContext || listContext.strikedItems.length < 1) {
-      sendNotification(dispatch, ['List has no striked items to remove..']);
-    } else {
-      try {
-        const { data } = await deleteItems({
-          variables: {
-            data: {
-              itemNameArray: listContext.strikedItems,
-              listId: currentListId
-            }
-          }
-        });
-        if (data?.deleteItems.errors) {
-          errorNotifaction(data.deleteItems.errors, dispatch);
-        } else {
-          dispatch({ type: 'SET_SIDE_MENU_STATE', payload: 'add' });
-          sendNotification(dispatch, ['All striked items have been deleted']);
-        }
-      } catch (err) {
-        console.error(`Error on Delete Item mutation: ${err}`);
-      }
-    }
+  const handleDeleteAllClick = () => {
+    if (deleteItemsSubmitting) return;
+    deleteItems(strikedItems);
   };
 
   const handleReviewClick = () => {
@@ -81,19 +46,18 @@ export default function SideMenu() {
 
   const addKeyPress = useKeyPress('a');
   useEffect(() => {
-    if (sideMenuActive && sideMenuState === 'add' && addKeyPress && userCanAdd)
+    if (sideMenuState === 'add' && addKeyPress && userCanAdd)
       handleAddItemClick();
   }, [addKeyPress]);
 
   const deleteAllKeyPress = useKeyPress('d');
   useEffect(() => {
-    if (sideMenuActive && sideMenuState === 'review' && deleteAllKeyPress)
-      handleDeleteAllClick();
+    if (sideMenuState === 'review' && deleteAllKeyPress) handleDeleteAllClick();
   }, [deleteAllKeyPress]);
 
   const reviewKeyPress = useKeyPress('r');
   useEffect(() => {
-    if (sideMenuActive && hasStrikedItems && userCanDelete && reviewKeyPress) {
+    if (hasStrikedItems && userCanDelete && reviewKeyPress) {
       if (sideMenuState === 'add') {
         handleReviewClick();
       } else if (sideMenuState === 'review') {
@@ -104,25 +68,26 @@ export default function SideMenu() {
 
   const newListKeyPress = useKeyPress('n');
   useEffect(() => {
-    if (sideMenuActive && newListKeyPress) openModal(dispatch, 'createList');
+    if (newListKeyPress) openModal(dispatch, 'createList');
   }, [newListKeyPress]);
+
+  /** Determine current list privileges to conditionally render buttons */
+  const currentPrivileges = useCurrentPrivileges();
+  const userCanDelete =
+    currentPrivileges === 'delete' || currentPrivileges === 'owner';
+  const userCanAdd = currentPrivileges !== 'read';
 
   const style = 'side-menu-button';
   const largeScreen = window.innerWidth > 1024;
+  const hasStrikedItems = strikedItems.length > 0;
 
   return (
-    <div
-      id="side-menu"
-      /** Do not show SideMenu when another menu is open */
-      className={
-        !sideMenuActive ? 'opacity-0 pointer-events-none' : 'opacity-100'
-      }
-    >
+    <div id="side-menu">
       {sideMenuState === 'review' ? (
         <>
           {/** Review strikes mode */}
           <IconButton
-            icon={deleteLoading ? <LoadingIcon /> : <DeleteIcon />}
+            icon={<DeleteIcon />}
             onClick={handleDeleteAllClick}
             text={`Delete All${largeScreen ? ' (D)' : ''}`}
             style={style}
@@ -136,6 +101,7 @@ export default function SideMenu() {
         </>
       ) : (
         <>
+          {/** Add to list mode */}
           {hasStrikedItems && userCanDelete && (
             <IconButton
               icon={<ReviewListIcon />}
