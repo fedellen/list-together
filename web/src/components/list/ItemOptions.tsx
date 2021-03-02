@@ -1,152 +1,63 @@
-import {
-  useDeleteItemsMutation,
-  useSortItemsMutation,
-  useStrikeItemMutation
-} from 'src/generated/graphql';
 import { useStateValue } from '../../state/state';
 import { OptionAction } from '../../types';
-import { errorNotifaction } from 'src/utils/errorNotification';
-import {
-  openModal,
-  resetActiveItem,
-  sendNotification
-} from 'src/utils/dispatchActions';
+import { sendNotification } from 'src/utils/dispatchActions';
 import StrikeIcon from '../svg/itemOptions/StrikeIcon';
 import NoteIcon from '../svg/itemOptions/NoteIcon';
 import UpArrowIcon from '../svg/itemOptions/UpArrowIcon';
 import DownArrowIcon from '../svg/itemOptions/DownArrowIcon';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
-import { arrayMove } from 'src/utils/arrayMove';
 import IconButton from '../shared/IconButton';
 import useKeyPress from 'src/hooks/useKeyPress';
-import useCurrentSortedItems from 'src/hooks/fragments/useCurrentSortedItems';
 import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import useDeleteItems from 'src/hooks/mutations/item/useDeleteItems';
+import useStrikeItem from 'src/hooks/mutations/item/useStrikeItem';
+import useSortItems from 'src/hooks/mutations/list/useSortItems';
 
 /** Modal for displaying user's item options when an item is clicked */
 export const ItemOptions = () => {
-  const [{ currentListId, activeItem }, dispatch] = useStateValue();
-  // const listContext = useContext(ListContext);
-  const currentSortedItems = useCurrentSortedItems();
-  const currentPrivileges = useCurrentPrivileges();
+  const [{ listState }, dispatch] = useStateValue();
 
-  const [deleteItems] = useDeleteItemsMutation();
-  const [strikeItem] = useStrikeItemMutation();
-  const [sortItems] = useSortItemsMutation();
+  const [deleteItems, deleteSubmitting] = useDeleteItems();
+  const [strikeItem, strikeSubmitting] = useStrikeItem();
+  const [sortItems, sortSubmitting] = useSortItems();
 
-  const [mutationLoading, setMutationLoading] = useState(false);
-
-  const itemName = activeItem[0];
-  if (!itemName) {
+  if (listState[0] !== 'item') {
     sendNotification(dispatch, [
-      `Error: ItemOptions was opened without itemName: ${itemName}  `
+      'Item options opened without active item in `listState`..'
     ]);
     return null;
   }
+  const itemName = listState[1].name;
+
+  const mutationLoading =
+    deleteSubmitting || strikeSubmitting || sortSubmitting;
 
   /** When option button is clicked */
-  const handleOptionAction = async (optionAction: OptionAction) => {
+  const handleOptionAction = (optionAction: OptionAction) => {
     /** Don't run new mutation if a request is already loading */
     if (mutationLoading) {
       return;
     }
-    setMutationLoading(true);
-
     if (optionAction === 'addNote') {
-      openModal(dispatch, 'addNote', itemName);
-      dispatch({ type: 'SET_ACTIVE_ITEM', payload: ['', ''] });
+      dispatch({
+        type: 'TOGGLE_MODAL',
+        payload: { type: 'addNote', itemName: itemName, active: true }
+      });
     } else if (optionAction === 'deleteItem') {
-      try {
-        /** Use `deleteItems` mutation */
-        const { data } = await deleteItems({
-          variables: {
-            data: {
-              itemNameArray: [itemName],
-              listId: currentListId
-            }
-          }
-        });
-        if (data?.deleteItems.errors) {
-          errorNotifaction(data.deleteItems.errors, dispatch);
-        }
-      } catch (err) {
-        console.error(`Error on Delete Item mutation: ${err}`);
-      }
-      setMutationLoading(false);
-    } else if (optionAction === 'boldItem' || optionAction === 'strikeItem') {
-      try {
-        /** Use `strikeItem` mutation */
-        const { data } = await strikeItem({
-          variables: {
-            data: {
-              itemName: itemName,
-              listId: currentListId
-            }
-          }
-        });
-        if (data?.strikeItem.errors) {
-          errorNotifaction(data.strikeItem.errors, dispatch);
-        } else {
-          resetActiveItem(dispatch);
-        }
-      } catch (err) {
-        console.error(`Error on strikeItem mutation: ${err}`);
-      }
-      setMutationLoading(false);
+      deleteItems([itemName]);
+    } else if (optionAction === 'strikeItem') {
+      strikeItem(itemName);
     } else if (
       optionAction === 'sortItemUp' ||
       optionAction === 'sortItemDown'
     ) {
-      if (!currentSortedItems) {
-        sendNotification(dispatch, [
-          'There has been an error reading your sorted items from the cache..'
-        ]);
-        return;
-      }
-
-      const currentListIndex = currentSortedItems.indexOf(itemName);
-      const delta = optionAction === 'sortItemUp' ? -1 : 1;
-
-      if (currentListIndex < 1 && delta === -1) {
-        // if up clicked and already on top of list
-        sendNotification(dispatch, [
-          'That item is already at the top of the list..'
-        ]);
-      } else if (
-        currentListIndex > currentSortedItems.length - 2 &&
-        delta === 1
-      ) {
-        // if down clicked and already on bottom of list
-        sendNotification(dispatch, [
-          'That item is already at the bottom of the list..'
-        ]);
-      } else {
-        const newSortedItemsArray = arrayMove(
-          currentSortedItems,
-          currentListIndex,
-          currentListIndex + delta
-        );
-
-        try {
-          /** Use `sortItems` mutation */
-          const { data } = await sortItems({
-            variables: {
-              data: {
-                stringArray: newSortedItemsArray
-              },
-              listId: currentListId
-            }
-          });
-          if (data?.sortItems.errors) {
-            errorNotifaction(data.sortItems.errors, dispatch);
-          }
-        } catch (err) {
-          console.error(`Error on sortItem mutation: ${err}`);
-        }
-        setMutationLoading(false);
-      }
+      sortItems(itemName, optionAction);
     }
   };
+
+  const currentPrivileges = useCurrentPrivileges();
+
   const userCanAdd = currentPrivileges !== 'read';
   const userCanStrike =
     currentPrivileges !== 'read' && currentPrivileges !== 'add';
@@ -177,9 +88,8 @@ export const ItemOptions = () => {
   const escapeKeyPressed = useKeyPress('Escape');
   useEffect(() => {
     // Close item Modal
-    if (escapeKeyPressed)
-      dispatch({ type: 'SET_ACTIVE_ITEM', payload: ['', ''] });
-  });
+    if (escapeKeyPressed) dispatch({ type: 'CLEAR_STATE' });
+  }, [escapeKeyPressed]);
 
   const style = 'item-option';
   return (
