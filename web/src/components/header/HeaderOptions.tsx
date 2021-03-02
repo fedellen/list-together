@@ -5,17 +5,13 @@ import RenameListIcon from '../svg/headerOptions/RenameListIcon';
 import SaveOrderIcon from '../svg/headerOptions/SaveOrderIcon';
 import EditRightsIcon from '../svg/headerOptions/EditRightsIcon';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
-import {
-  useLogoutUserMutation,
-  useSubmitPreferredOrderMutation
-} from 'src/generated/graphql';
-import { useApolloClient } from '@apollo/client';
 import { useStateValue } from 'src/state/state';
-import { openModal, sendNotification } from 'src/utils/dispatchActions';
+import { openModal } from 'src/utils/dispatchActions';
 import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
 import useCurrentSharedUsers from 'src/hooks/fragments/useCurrentSharedUsers';
 import useCurrentSortedItems from 'src/hooks/fragments/useCurrentSortedItems';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import useLogout from 'src/hooks/mutations/user/useLogout';
+import useSubmitPreferredOrder from 'src/hooks/mutations/list/useSubmitPreferredOrder';
 
 /** Modal for displaying user's list options when header menu is clicked */
 export const HeaderOptions = () => {
@@ -24,69 +20,18 @@ export const HeaderOptions = () => {
   const currentListPrivileges = useCurrentPrivileges();
   const currentSharedLists = useCurrentSharedUsers();
   const currentSortedItems = useCurrentSortedItems();
-  if (!currentListPrivileges || !currentSharedLists) return null;
 
-  const hasSharedLists = currentSharedLists[0].shared;
+  const hasSharedLists = currentSharedLists[0]?.shared;
   const userHasLists = currentListId !== '';
+  const userCanRename = currentListPrivileges !== 'read';
 
-  /** logout mutation */
-  const apolloClient = useApolloClient();
-  const [logout, { loading: logoutLoading }] = useLogoutUserMutation();
-  const handleLogout = async () => {
-    if (!logoutLoading) {
-      try {
-        await logout();
-        // await apolloClient.clearStore();
-        await apolloClient.resetStore();
-        dispatch({ type: 'TOGGLE_OPTIONS' });
-        dispatch({ type: 'SET_APP_STATE', payload: 'home' });
-      } catch (err) {
-        console.error('Error on logout mutation: ', err);
-      }
-    }
-  };
+  const [logout, logoutSubmitting] = useLogout();
+  const [saveOrder, saveOrderSubmitting] = useSubmitPreferredOrder();
 
-  /** submitPreferredOrder mutation */
-  const [
-    submitPreferredOrder,
-    { loading: submitOrderLoading }
-  ] = useSubmitPreferredOrderMutation();
-  const handleSaveOrder = async () => {
-    if (!submitOrderLoading) {
-      if (!currentSortedItems) {
-        sendNotification(dispatch, [
-          'There has been an error handling list data on `Save Order`'
-        ]);
-      } else {
-        try {
-          const { data } = await submitPreferredOrder({
-            variables: {
-              data: {
-                listId: currentListId,
-                removedItemArray: currentSortedItems
-              }
-            }
-          });
-          if (data?.submitPreferredOrder.errors) {
-            errorNotifaction(data.submitPreferredOrder.errors, dispatch);
-          } else {
-            sendNotification(dispatch, [
-              'Your preferred order of all items currently on the list has been saved.'
-            ]);
-            dispatch({ type: 'TOGGLE_OPTIONS' });
-          }
-        } catch (err) {
-          console.error('Error on Submit Preferred Order mutation: ', err);
-        }
-      }
-    }
-  };
+  const mutationSubmitting = logoutSubmitting || saveOrderSubmitting;
 
   return (
-    <div
-      id="header-options"
-      className="grid absolute grid-cols-3 rounded-lg gap-2 z-30 mt-16 bg-gray-300 shadow-lg p-3 md:mr-10 lg:mr-16 xl:mr-24"
-    >
+    <div id="header-options">
       {userHasLists && (
         <IconButton
           onClick={() => dispatch({ type: 'TOGGLE_MOVE_LISTS' })}
@@ -97,7 +42,7 @@ export const HeaderOptions = () => {
           autoFocus={true}
         />
       )}
-      {currentListPrivileges !== 'read' && (
+      {userCanRename && (
         <IconButton
           onClick={() => openModal(dispatch, 'renameList')}
           text="Rename List"
@@ -107,7 +52,7 @@ export const HeaderOptions = () => {
       )}
       {userHasLists && currentSortedItems && (
         <IconButton
-          onClick={() => handleSaveOrder()}
+          onClick={() => (!mutationSubmitting ? saveOrder() : null)}
           text="Save Order"
           style="header-option-button"
           icon={<SaveOrderIcon />}
@@ -130,7 +75,7 @@ export const HeaderOptions = () => {
         />
       )}
       <IconButton
-        onClick={() => handleLogout()}
+        onClick={() => (!mutationSubmitting ? logout() : null)}
         text="Logout"
         style="header-option-button"
         icon={<LogoutIcon />}

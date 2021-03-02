@@ -137,6 +137,10 @@
 
   /** Header Options */
 
+  #header-options {
+    @apply grid absolute grid-cols-3 rounded-lg gap-2 z-30 mt-16 bg-gray-300 shadow-lg p-3 md:mr-10 lg:mr-16 xl:mr-24;
+  }
+
   .header-option-button {
     @apply icon-button  rounded-lg bg-indigo-300 hover:bg-indigo-400 hover:text-indigo-800  shadow-md text-gray-700 p-2;
   }

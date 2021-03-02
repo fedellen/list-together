@@ -57,15 +57,14 @@ export default function useSortItems() {
             errorNotifaction(data.sortItems.errors, dispatch);
             delayedFunction(() => setMutationSubmiting(false));
           } else {
-            // Delay for only .5 sec on success
-            delayedFunction(() => setMutationSubmiting(false), 500);
+            setMutationSubmiting(false);
           }
         } catch (err) {
           console.error(`Error on sortItem mutation: ${err}`);
         }
       }
     },
-    []
+    [mutationSubmiting, currentSortedItems]
   );
 
   return [sendMutation, mutationSubmiting] as const;

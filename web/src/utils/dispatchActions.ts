@@ -6,8 +6,7 @@ import { AppState, ModalTypes } from '../types';
 
 export const closeModal = (dispatch: (value: Action) => void) => {
   dispatch({
-    type: 'TOGGLE_MODAL',
-    payload: { active: false }
+    type: 'CLEAR_STATE'
   });
 };
 
@@ -40,7 +39,6 @@ export const setNewList = (
   closeModal(dispatch);
   dispatch({
     type: 'SET_LIST',
-    // Postgres only saves as `UserPrivileges` type
     payload: list.listId
   });
 };
