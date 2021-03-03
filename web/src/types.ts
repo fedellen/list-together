@@ -10,6 +10,15 @@ export type ToggleItemState = {
   type: 'options' | 'addNote' | 'deleteItem';
 };
 
+export type UndoState =
+  | ['addItem', { itemName: string; listId: string }]
+  | ['addNote', { note: string; itemName: string; listId: string }]
+  | ['deleteItems', { itemNameArray: string[]; listId: string }]
+  | ['deleteNote', { note: string; itemName: string; listId: string }]
+  | ['strikeItem', { itemName: string; listId: string }]
+  | ['sortItems', { listId: string; previousItemArray: string[] }]
+  | ['sortLists', { previousListArray: string[] }];
+
 export type ListState =
   | ['item', ItemState]
   | ['note', NoteState]

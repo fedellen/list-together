@@ -1,5 +1,5 @@
 import { createContext, Dispatch, useContext, useReducer } from 'react';
-import { AppState } from 'src/types';
+import { AppState, UndoState } from 'src/types';
 import { ListState } from '../types';
 import { Action } from './reducer';
 
@@ -18,9 +18,11 @@ export type State = {
   appState: AppState;
   /** State for handling which active list modals to show */
   listState: ListState;
+  /** Contains all mutations not redone since startup, for undo functionality */
+  undoState: UndoState[];
+  /** Contains mutations that have been undone, to be emptied when new mutation occurs */
+  redoState: UndoState[];
 };
-
-// modal || itemMenu || noteDelete || optionsOpen || sideMenuState
 
 const initialState: State = {
   currentUserId: '',
@@ -29,7 +31,9 @@ const initialState: State = {
   sideMenuState: 'add',
   errorMessage: '',
   appState: 'home',
-  listState: ['side']
+  listState: ['side'],
+  undoState: [],
+  redoState: []
 };
 
 export const StateContext = createContext<[State, Dispatch<Action>]>([

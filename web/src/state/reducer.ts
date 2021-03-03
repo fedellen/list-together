@@ -1,4 +1,10 @@
-import { AppState, ItemState, ModalState, NoteState } from 'src/types';
+import {
+  AppState,
+  ItemState,
+  ModalState,
+  NoteState,
+  UndoState
+} from 'src/types';
 import { State } from './state';
 
 export type Action =
@@ -48,6 +54,16 @@ export type Action =
     }
   | {
       type: 'CLEAR_STATE';
+    }
+  | {
+      type: 'ADD_TO_UNDO';
+      payload: UndoState;
+    }
+  | {
+      type: 'UNDO_MUTATION';
+    }
+  | {
+      type: 'REDO_MUTATION';
     };
 
 export const reducer = (state: State, action: Action): State => {
@@ -116,6 +132,38 @@ export const reducer = (state: State, action: Action): State => {
         currentUserId: action.payload,
         appState: 'list'
       };
+    case 'ADD_TO_UNDO':
+      return {
+        ...state,
+        undoState: [...state.undoState, action.payload]
+      };
+    case 'UNDO_MUTATION':
+      return {
+        ...state,
+        /** Add last undo to redo state */
+        redoState: [
+          ...state.redoState,
+          state.undoState[state.undoState.length - 1]
+        ],
+        /** Filter last index off of undo array */
+        undoState: state.undoState.filter(
+          (_, index) => index < state.undoState.length - 1
+        )
+      };
+    case 'REDO_MUTATION':
+      return {
+        ...state,
+        /** Add last redo to undo state */
+        undoState: [
+          ...state.undoState,
+          state.undoState[state.undoState.length - 1]
+        ],
+        /** Filter last index off of redoState array */
+        redoState: state.redoState.filter(
+          (_, index) => index < state.redoState.length - 1
+        )
+      };
+
     default:
       return state;
   }

@@ -40,6 +40,7 @@ export default function RemoveList() {
 
   return (
     <div className="remove-confirmation">
+      <p>This action cannot be undone.</p>
       <span>{`" ${currentListName} "`}</span>
       <button onClick={() => closeModal(dispatch)} className="button-secondary">
         Cancel
