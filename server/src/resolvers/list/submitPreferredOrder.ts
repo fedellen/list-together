@@ -19,7 +19,7 @@ export class SubmitPreferredOrderResolver {
     const getListPayload = await getUserListTable({
       context,
       listId,
-      relations: ['itemHistory']
+      relations: ['itemHistory', 'list', 'list.items']
     });
     if (getListPayload.errors) return { errors: getListPayload.errors };
     const userToListTable = getListPayload.userToList![0];
