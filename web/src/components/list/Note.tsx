@@ -28,9 +28,7 @@ const Note = memo(function Note({
         <>
           <button
             className={`note-button${isStriked}${
-              activeNote && activeNote[1].note === note
-                ? ' text-indigo-700'
-                : ''
+              activeNote && activeNote.note === note ? ' text-indigo-700' : ''
             }`}
             onClick={() =>
               dispatch({
@@ -41,7 +39,7 @@ const Note = memo(function Note({
           >
             {note}
           </button>
-          {activeNote && activeNote[1].note === note && <DeleteNoteButton />}
+          {activeNote && activeNote.note === note && <DeleteNoteButton />}
         </>
       ) : (
         /** Note without togglable delete button */
