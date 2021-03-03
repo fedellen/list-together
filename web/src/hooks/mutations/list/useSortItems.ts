@@ -15,7 +15,6 @@ export default function useSortItems() {
   const sendMutation = useCallback(
     async (itemName: string, direction: 'sortItemUp' | 'sortItemDown') => {
       if (mutationSubmiting) return;
-      setMutationSubmiting(true);
       /**
        *  Sort Items Mutation
        */
@@ -37,6 +36,7 @@ export default function useSortItems() {
           'That item is already at the bottom of the list..'
         ]);
       } else {
+        setMutationSubmiting(true);
         const newSortedItemsArray = arrayMove(
           currentSortedItems,
           currentListIndex,
@@ -57,7 +57,8 @@ export default function useSortItems() {
             errorNotifaction(data.sortItems.errors, dispatch);
             delayedFunction(() => setMutationSubmiting(false));
           } else {
-            setMutationSubmiting(false);
+            // Delay for only .05 sec on success
+            delayedFunction(() => setMutationSubmiting(false), 50);
           }
         } catch (err) {
           console.error(`Error on sortItem mutation: ${err}`);
