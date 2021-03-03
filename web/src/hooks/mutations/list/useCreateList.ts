@@ -1,12 +1,16 @@
 import { useState, useCallback } from 'react';
-import { useCreateListMutation } from 'src/generated/graphql';
+import {
+  useCreateListMutation,
+  useGetUsersListsQuery
+} from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import delayedFunction from 'src/utils/delayedFunction';
-import { sendNotification, closeModal } from 'src/utils/dispatchActions';
+import { sendNotification } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
 
 export default function useCreateList() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
+  const { refetch } = useGetUsersListsQuery({ skip: true });
   const [, dispatch] = useStateValue();
   const [createList] = useCreateListMutation();
   const sendMutation = useCallback(async (title: string) => {
@@ -16,7 +20,6 @@ export default function useCreateList() {
      */
 
     // Front-end validation for `createList`
-
     if (title.length < 2) {
       sendNotification(dispatch, [
         'List title length must contain 2 or more characters..'
@@ -39,10 +42,9 @@ export default function useCreateList() {
           errorNotifaction(data.createList.errors, dispatch);
           delayedFunction(() => setMutationSubmiting(false));
         } else {
-          // const newListId = data?.createList.userToList?.
-          // if ()
-          // dispatch({ type: 'SET_LIST', payload: data?.createList.userToList[0].listId });
-          closeModal(dispatch);
+          await refetch();
+          const newListId = data?.createList.userToList?.listId;
+          dispatch({ type: 'SET_LIST', payload: newListId ? newListId : '' });
         }
       } catch (err) {
         console.error(`Error on Create list mutation: ${err}`);

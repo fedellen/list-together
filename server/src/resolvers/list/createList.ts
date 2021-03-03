@@ -2,19 +2,19 @@ import { User, UserToList, List } from '../../entities';
 import { logger } from '../../middleware/logger';
 import { MyContext } from '../../MyContext';
 import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
-import { UserToListResponse } from '../types/response/UserToListResponse';
 import { validateContext } from '../types/validators/validateContext';
 import { validateStringLength } from '../types/validators/validateStringLength';
+import { UserWithListResponse } from '../types/response/UserWithListResponse';
 
 @Resolver()
 export class CreateListResolver {
   // Create a list
   @UseMiddleware(logger)
-  @Mutation(() => UserToListResponse)
+  @Mutation(() => UserWithListResponse)
   async createList(
     @Arg('title') title: string,
     @Ctx() context: MyContext
-  ): Promise<UserToListResponse> {
+  ): Promise<UserWithListResponse> {
     const errors = validateContext(context);
     if (errors) return { errors };
 
@@ -71,6 +71,6 @@ export class CreateListResolver {
     }
     await user.save();
 
-    return { userToList: [userToList] };
+    return { userToList: userToList, user: user };
   }
 }

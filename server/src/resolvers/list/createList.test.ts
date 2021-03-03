@@ -9,6 +9,10 @@ const createListMutation = `
 mutation CreateList($title: String!) {
   createList (title: $title) {
     ${userListFragment}
+    user {
+      id
+      sortedListsArray
+    }
     ${fieldErrorFragment}
   }
 }
@@ -28,13 +32,15 @@ describe('Create list mutation:', () => {
     expect(response).toMatchObject({
       data: {
         createList: {
-          userToList: [
-            {
-              list: {
-                title: title
-              }
+          userToList: {
+            list: {
+              title: title
             }
-          ]
+          },
+          user: {
+            sortedListsArray: [response.data?.createList.userToList.listId],
+            id: userId
+          }
         }
       }
     });
