@@ -40,6 +40,7 @@ export type UserToList = {
   itemHistory?: Maybe<Array<ItemHistory>>;
   mostCommonWords?: Maybe<Array<Scalars['String']>>;
   sharedUsers: Array<SharedUsers>;
+  smartSortedItems: Array<Scalars['String']>;
   sortedItems?: Maybe<Array<Scalars['String']>>;
   list: List;
 };
@@ -277,7 +278,7 @@ export type UserFragmentFragment = (
 
 export type UserListFragmentFragment = (
   { __typename?: 'UserToList' }
-  & Pick<UserToList, 'userId' | 'listId' | 'privileges' | 'mostCommonWords' | 'sortedItems'>
+  & Pick<UserToList, 'userId' | 'listId' | 'privileges' | 'mostCommonWords' | 'smartSortedItems' | 'sortedItems'>
   & { sharedUsers: Array<(
     { __typename?: 'SharedUsers' }
     & Pick<SharedUsers, 'shared' | 'email' | 'privileges'>
@@ -736,6 +737,7 @@ export const UserListFragmentFragmentDoc = gql`
   listId
   privileges
   mostCommonWords
+  smartSortedItems
   sharedUsers {
     shared
     email

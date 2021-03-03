@@ -61,8 +61,10 @@ export class UserToList extends BaseEntity {
     return itemsNotOnList.map((history) => history.item);
   }
 
-  /** Overly complicated sharedUsers field for list owners to manage privileges */
-  /** Also handles whether or not the user should subscribe to the list for updates */
+  /**
+   *  Overly complicated sharedUsers field for list owners to manage privileges
+   *  Also handles whether or not the user should subscribe to the list for updates
+   */
   @Field(() => [SharedUsers])
   async sharedUsers(@Root() parent: UserToList): Promise<SharedUsers[]> {
     const sharedUserLists = (
@@ -93,6 +95,33 @@ export class UserToList extends BaseEntity {
       })
     );
     return sharedUserEmailsWithPrivileges;
+  }
+
+  /** Array of currently `smartSortable` items 😎 */
+  @Field(() => [String])
+  smartSortedItems(@Root() parent: UserToList): string[] {
+    const itemArray = parent.list.items;
+    const itemHistory = parent.itemHistory;
+    if (!itemHistory) return [];
+    const sortedArray = itemArray
+      ?.sort((a, b) => {
+        const aInHistory = itemHistory?.find(
+          (history) => history.item === a.name
+        );
+        const aRating = a.strike
+          ? 1000
+          : aInHistory?.removalRating(aInHistory) || 500;
+        const bInHistory = itemHistory?.find(
+          (history) => history.item === b.name
+        );
+        const bRating = b.strike
+          ? 1000
+          : bInHistory?.removalRating(bInHistory) || 500;
+        return aRating - bRating;
+      })
+      .map((i) => i.name);
+    if (!sortedArray) return [];
+    return sortedArray;
   }
 
   // Front-end will send a sorted string array to store

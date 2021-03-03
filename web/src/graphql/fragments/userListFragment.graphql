@@ -3,6 +3,7 @@ fragment userListFragment on UserToList {
   listId
   privileges
   mostCommonWords
+  smartSortedItems
   sharedUsers {
     shared
     email

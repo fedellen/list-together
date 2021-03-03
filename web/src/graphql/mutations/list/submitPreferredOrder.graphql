@@ -2,6 +2,7 @@ mutation SubmitPreferredOrder($data: PreferredOrderInput!) {
   submitPreferredOrder(data: $data) {
     userToList {
       listId
+      smartSortedItems
       itemHistory {
         id
         removalRating
