@@ -40,11 +40,9 @@ This app also features some limited offline functionality. Users can install the
 - Undo functionality 🔥
 - Add Smart Sort feature to the front-end
 - Setup dark-mode hook and design the dark version
-- Wrap more logic in useMemo, and custom hooks
 - Fix `AddItem` modal's bounciness with `AutoComplete`
-- Simplify complex components causing performance issues
 - Write out unit tests for critical front-end components
-- Research and implement more testing methods for front-end
+- Research and implement more testing methods for front-end / intergration testing
 - Determine `if (!online)` for PWA offline list query viewing
 - Manually test the offline functionality of the production React build
 - Setup Docker for the backend, learn Dokku for deployment
@@ -58,7 +56,6 @@ This app also features some limited offline functionality. Users can install the
 ## **🐞 Known Bugs**
 
 - Shared list subscription delay on list data, not notification
-- Delete items clears itemID causing SideMenu to remain closed
 - ...otherBugsProbably
 
 ## **💽 Backend made with:**

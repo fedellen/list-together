@@ -30,20 +30,15 @@ export default function App() {
     return <div>Major error in App component: {JSON.stringify(error)}</div>;
   }
 
-  const handleClick = () => {
-    if (listState[0] !== 'side') {
-      dispatch({ type: 'CLEAR_STATE' });
-    }
-  };
-
   return (
     <div id="app">
       {/** clickLayer handles closing menus/modals at zindex: 0 */}
-      <div
-        id="clickLayer"
-        onClick={handleClick}
-        className="absolute inset-0 z-0"
-      />
+      {listState[0] !== 'side' && (
+        <div
+          id="clickLayer"
+          onClick={() => dispatch({ type: 'CLEAR_STATE' })}
+        />
+      )}
       {listState[0] === 'modal' && <CurrentModal />}
       {errorMessage && <ErrorNotification />}
       <Header />

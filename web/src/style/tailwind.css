@@ -59,6 +59,11 @@
     @apply text-2xl sm:text-3xl lg:text-4xl font-extrabold font-heading;
   }
 
+  /** z-0 clickLayer for catching `CLEAR_STATE` clicks */
+  #clickLayer {
+    @apply fixed inset-0 z-0;
+  }
+
   /** Shared icon-button styles for SideMenu / HeaderMenu / HeaderOptions */
   .icon-button {
     @apply flex flex-col gap-0 items-center justify-center text-xxs font-bold z-20;
