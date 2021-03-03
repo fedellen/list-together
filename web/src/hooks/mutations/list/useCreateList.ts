@@ -28,6 +28,7 @@ export default function useCreateList() {
       ]);
       return;
     } else {
+      setMutationSubmiting(true);
       try {
         const { data } = await createList({
           variables: {
