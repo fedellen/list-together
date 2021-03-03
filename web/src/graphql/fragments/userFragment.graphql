@@ -1,5 +1,4 @@
 fragment userFragment on User {
   id
-  email
   sortedListsArray
 }

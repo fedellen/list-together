@@ -42,6 +42,7 @@ This app also features some limited offline functionality. Users can install the
 - Add Smart Sort feature to the front-end
 - Setup dark-mode hook and design the dark version
 - Fix `AddItem` modal's bounciness with `AutoComplete`
+- Standardize modal styling `RenameList` and `RemoveList` with `ShareList`
 - Write out unit tests for critical front-end components
 - Research and implement more testing methods for front-end / intergration testing
 - Determine `if (!online)` for PWA offline list query viewing
@@ -52,11 +53,13 @@ This app also features some limited offline functionality. Users can install the
 ## **🤔 Possible todos after release**
 
 - Implement offline mutation capabilties for Apollo Client
+- Convert callbacks to Redis to prevent them from being cancelled
 - Add an `./app` directory with a React Native version of List Together
 
 ## **🐞 Known Bugs**
 
 - Shared list subscription delay on list data, not notification
+- App reverts to "Add your first list!" when deleting any list
 - ...otherBugsProbably
 
 ## **💽 Backend made with:**
