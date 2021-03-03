@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
+import useSortItems from 'src/hooks/mutations/list/useSortItems';
 import { Action } from 'src/state/reducer';
 import { useStateValue } from 'src/state/state';
 import { openModal, setAppState } from 'src/utils/dispatchActions';
@@ -17,6 +18,13 @@ export default function HeaderMenu() {
     dispatch
   ] = useStateValue();
 
+  const [smartSort, smartSortSubmitting] = useSortItems();
+
+  const handleSmartSort = () => {
+    if (smartSortSubmitting) return;
+    smartSort('', 'smartSort');
+  };
+
   const optionsOpen = listState[0] === 'options';
   const isOwner = useCurrentPrivileges() === 'owner';
   const userExist = currentUserId !== '';
@@ -29,6 +37,7 @@ export default function HeaderMenu() {
       optionsOpen={optionsOpen}
       isOwner={isOwner}
       dispatch={dispatch}
+      smartSort={handleSmartSort}
     />
   );
 }
@@ -39,6 +48,7 @@ type HeaderMenuContextProps = {
   optionsOpen: boolean;
   isOwner: boolean;
   dispatch: React.Dispatch<Action>;
+  smartSort: () => void;
 };
 
 /**
@@ -50,7 +60,8 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
   listExist,
   optionsOpen,
   isOwner,
-  dispatch
+  dispatch,
+  smartSort
 }: HeaderMenuContextProps) {
   const iconButtonStyle = 'header-button';
   return (
@@ -75,7 +86,7 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
                 />
               )}
               <IconButton
-                onClick={() => console.log('')}
+                onClick={() => smartSort()}
                 text="Smart Sort"
                 style={iconButtonStyle}
                 icon={<SmartSortIcon />}

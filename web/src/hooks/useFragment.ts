@@ -16,6 +16,7 @@ type FragmentFields =
   | ['List', 'items']
   | ['Item', 'notes']
   | ['UserToList', 'sortedItems']
+  | ['UserToList', 'smartSortedItems']
   | ['UserToList', 'mostCommonWords']
   | ['UserToList', 'sharedUsers']
   | ['UserToList', 'privileges'];
@@ -37,7 +38,7 @@ export default function useFragment({
     } /*if (fragmentField[0] === 'Item')*/ else {
       return `${fragmentField[0]}:${id}`;
     }
-  }, []);
+  }, [fragmentField]);
 
   const fragment: UseFragmentPayload = apolloClient.readFragment({
     id: idField,
