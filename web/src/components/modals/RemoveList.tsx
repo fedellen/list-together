@@ -11,7 +11,9 @@ import useCurrentListName from 'src/hooks/fragments/useCurrentListName';
 export default function RemoveList() {
   const [{ currentListId }, dispatch] = useStateValue();
   const { refetch: refetchLists } = useGetUsersListsQuery({ skip: true });
-  const { refetch: refetchUser } = useGetUserQuery({ skip: true });
+  const { data: userData, refetch: refetchUser } = useGetUserQuery({
+    skip: true
+  });
 
   const currentListName = useCurrentListName();
 
@@ -28,9 +30,9 @@ export default function RemoveList() {
         } else {
           await refetchUser();
           await refetchLists();
-          console.log('clearing that list mon');
-          dispatch({ type: 'CLEAR_LIST' });
-          closeModal(dispatch);
+          const sortedListsArray = userData?.getUser?.sortedListsArray;
+          const newListId = sortedListsArray ? sortedListsArray[0] : '';
+          dispatch({ type: 'SET_LIST', payload: newListId });
         }
       } catch (err) {
         console.error('Error in Remove List mutation : ', err);

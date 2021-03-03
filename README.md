@@ -37,7 +37,6 @@ This app also features some limited offline functionality. Users can install the
 
 ## **👨🏿‍💻 Todos before release**
 
-- Handle delete list state update
 - Undo functionality 🔥
 - Add Smart Sort feature to the front-end
 - Setup dark-mode hook and design the dark version
@@ -59,7 +58,6 @@ This app also features some limited offline functionality. Users can install the
 ## **🐞 Known Bugs**
 
 - Shared list subscription delay on list data, not notification
-- App reverts to "Add your first list!" when deleting any list
 - ...otherBugsProbably
 
 ## **💽 Backend made with:**

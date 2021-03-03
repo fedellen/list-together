@@ -77,7 +77,6 @@ export type Item = {
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
-  email: Scalars['String'];
   sortedListsArray?: Maybe<Array<Scalars['String']>>;
 };
 
@@ -88,7 +87,7 @@ export type Mutation = {
   strikeItem: UserToListResponse;
   addNote: ItemResponse;
   deleteNote: ItemResponse;
-  createList: UserToListResponse;
+  createList: UserWithListResponse;
   deleteList: UserResponse;
   renameList: ListResponse;
   shareList: UserToListResponse;
@@ -199,6 +198,13 @@ export type DeleteNoteInput = {
   listId: Scalars['String'];
 };
 
+export type UserWithListResponse = {
+  __typename?: 'UserWithListResponse';
+  errors?: Maybe<Array<FieldError>>;
+  user?: Maybe<User>;
+  userToList?: Maybe<UserToList>;
+};
+
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -273,7 +279,7 @@ export type ListPartialFragment = (
 
 export type UserFragmentFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'email' | 'sortedListsArray'>
+  & Pick<User, 'id' | 'sortedListsArray'>
 );
 
 export type UserListFragmentFragment = (
@@ -418,8 +424,8 @@ export type CreateListMutationVariables = Exact<{
 export type CreateListMutation = (
   { __typename?: 'Mutation' }
   & { createList: (
-    { __typename?: 'UserToListResponse' }
-    & UserListResponseFragment
+    { __typename?: 'UserWithListResponse' }
+    & UserWithListResponseFragment
   ) }
 );
 
@@ -529,7 +535,7 @@ export type SubmitPreferredOrderMutation = (
     { __typename?: 'UserToListResponse' }
     & { userToList?: Maybe<Array<(
       { __typename?: 'UserToList' }
-      & Pick<UserToList, 'listId'>
+      & Pick<UserToList, 'listId' | 'smartSortedItems'>
       & { itemHistory?: Maybe<Array<(
         { __typename?: 'ItemHistory' }
         & Pick<ItemHistory, 'id' | 'removalRating'>
@@ -633,6 +639,20 @@ export type UserResponseFragment = (
   & { user?: Maybe<(
     { __typename?: 'User' }
     & UserFragmentFragment
+  )>, errors?: Maybe<Array<(
+    { __typename?: 'FieldError' }
+    & FieldErrorFragment
+  )>> }
+);
+
+export type UserWithListResponseFragment = (
+  { __typename?: 'UserWithListResponse' }
+  & { user?: Maybe<(
+    { __typename?: 'User' }
+    & UserFragmentFragment
+  )>, userToList?: Maybe<(
+    { __typename?: 'UserToList' }
+    & UserListFragmentFragment
   )>, errors?: Maybe<Array<(
     { __typename?: 'FieldError' }
     & FieldErrorFragment
@@ -768,7 +788,6 @@ ${FieldErrorFragmentDoc}`;
 export const UserFragmentFragmentDoc = gql`
     fragment userFragment on User {
   id
-  email
   sortedListsArray
 }
     `;
@@ -782,6 +801,21 @@ export const UserResponseFragmentDoc = gql`
   }
 }
     ${UserFragmentFragmentDoc}
+${FieldErrorFragmentDoc}`;
+export const UserWithListResponseFragmentDoc = gql`
+    fragment userWithListResponse on UserWithListResponse {
+  user {
+    ...userFragment
+  }
+  userToList {
+    ...userListFragment
+  }
+  errors {
+    ...fieldError
+  }
+}
+    ${UserFragmentFragmentDoc}
+${UserListFragmentFragmentDoc}
 ${FieldErrorFragmentDoc}`;
 export const AddItemDocument = gql`
     mutation AddItem($data: AddItemInput!) {
@@ -983,10 +1017,10 @@ export type StrikeItemMutationOptions = Apollo.BaseMutationOptions<StrikeItemMut
 export const CreateListDocument = gql`
     mutation CreateList($title: String!) {
   createList(title: $title) {
-    ...userListResponse
+    ...userWithListResponse
   }
 }
-    ${UserListResponseFragmentDoc}`;
+    ${UserWithListResponseFragmentDoc}`;
 export type CreateListMutationFn = Apollo.MutationFunction<CreateListMutation, CreateListMutationVariables>;
 
 /**
@@ -1207,6 +1241,7 @@ export const SubmitPreferredOrderDocument = gql`
   submitPreferredOrder(data: $data) {
     userToList {
       listId
+      smartSortedItems
       itemHistory {
         id
         removalRating
