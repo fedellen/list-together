@@ -30,7 +30,7 @@ export class StrikeItemResolver {
     const getListPayload = await getUserListTable({
       context,
       listId,
-      relations: ['list', 'list.items'],
+      relations: ['list', 'list.items', 'itemHistory'],
       validatePrivilege: 'strike',
       validateItemsExist: true
     });

@@ -400,7 +400,7 @@ export type StrikeItemMutation = (
     { __typename?: 'UserToListResponse' }
     & { userToList?: Maybe<Array<(
       { __typename?: 'UserToList' }
-      & Pick<UserToList, 'listId' | 'sortedItems'>
+      & Pick<UserToList, 'listId' | 'sortedItems' | 'smartSortedItems'>
       & { list: (
         { __typename?: 'List' }
         & Pick<List, 'id'>
@@ -975,6 +975,7 @@ export const StrikeItemDocument = gql`
     userToList {
       listId
       sortedItems
+      smartSortedItems
       list {
         id
         items {

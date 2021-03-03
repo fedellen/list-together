@@ -3,6 +3,7 @@ mutation StrikeItem($data: StrikeItemInput!) {
     userToList {
       listId
       sortedItems
+      smartSortedItems
       list {
         id
         items {
