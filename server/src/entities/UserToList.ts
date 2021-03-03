@@ -124,6 +124,10 @@ export class UserToList extends BaseEntity {
     return sortedArray;
   }
 
+  /** Recently added items to be used by undo functionality in the backend */
+  @Column({ type: 'simple-array', nullable: true })
+  recentlyAddedItems: string[] | null;
+
   // Front-end will send a sorted string array to store
   @Field(() => [String], { nullable: true })
   @Column({ type: 'simple-array', nullable: true })
