@@ -21,7 +21,7 @@ export const recentlyAddedCallback = (
   itemName: string
 ) => {
   let callbackDelay = 1000 * 5; // 5 seconds during dev
-  if (process.env.NODE_ENV === 'production') callbackDelay = 1000 * 60 * 30; // 30 minutes in prod
+  if (process.env.NODE_ENV === 'production') callbackDelay = 1000 * 60 * 10; // 30 minutes in prod
   if (process.env.NODE_ENV === 'test') return; // Don't run callbacks in test yet
 
   setTimeout(async () => {
@@ -37,10 +37,14 @@ export const recentlyAddedCallback = (
     } else if (!currentList.recentlyAddedItems) {
       // recentlyAddedItems has already been cleared?
       return;
+    } else if (!currentList.recentlyAddedItems.includes(itemName)) {
+      // Item already removed (has been undone)
+      return;
     }
     currentList.recentlyAddedItems = currentList.recentlyAddedItems.filter(
-      (i) => i === itemName
+      (i) => i !== itemName
     );
-    currentList.save();
+
+    await currentList.save();
   }, callbackDelay);
 };

@@ -73,7 +73,7 @@ export class DeleteItemsResolver {
           (history) => history.item === itemName
         );
         /** Item should be in history if on recentlyAddedItems */
-        if (!itemInHistory) {
+        if (!itemInHistory || !userToListTable.itemHistory) {
           const error = {
             field: 'itemHistory',
             message:
@@ -83,9 +83,11 @@ export class DeleteItemsResolver {
           return;
         }
         if (itemInHistory.timesAdded === 1) {
-          await itemInHistory.remove();
+          userToListTable.itemHistory = userToListTable.itemHistory?.filter(
+            (history) => history.item !== itemName
+          );
         } else {
-          itemInHistory.timesAdded = itemInHistory.timesAdded - 1;
+          itemInHistory.timesAdded--;
         }
         userToListTable.recentlyAddedItems = userToListTable.recentlyAddedItems.filter(
           (i) => i !== itemName
@@ -105,6 +107,8 @@ export class DeleteItemsResolver {
     });
 
     removeFromSharedLists(userToListTable, itemNameArray, publish);
+
+    console.log(JSON.stringify(userToListTable, null, 4));
 
     await userToListTable.save();
     return {
