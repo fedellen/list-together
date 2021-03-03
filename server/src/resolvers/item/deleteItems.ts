@@ -32,7 +32,7 @@ export class DeleteItemsResolver {
     const getListPayload = await getUserListTable({
       context,
       listId,
-      relations: ['list', 'list.items'],
+      relations: ['list', 'list.items', 'itemHistory'],
       validatePrivilege: 'delete',
       validateItemsExist: true
     });
@@ -65,16 +65,43 @@ export class DeleteItemsResolver {
         (item) => item.name !== itemExists.name
       );
 
-      // Add to removalArray for callback
-      if (userToListTable.removedItems) {
-        userToListTable.removedItems = [
-          ...userToListTable.removedItems,
-          itemName
-        ];
+      if (
+        userToListTable.recentlyAddedItems &&
+        userToListTable.recentlyAddedItems.includes(itemName)
+      ) {
+        const itemInHistory = userToListTable.itemHistory?.find(
+          (history) => history.item === itemName
+        );
+        /** Item should be in history if on recentlyAddedItems */
+        if (!itemInHistory) {
+          const error = {
+            field: 'itemHistory',
+            message:
+              'Error: Recently added item has no itemHistory for `deleteItems`'
+          };
+          deleteErrors = [...deleteErrors, error];
+          return;
+        }
+        if (itemInHistory.timesAdded === 1) {
+          await itemInHistory.remove();
+        } else {
+          itemInHistory.timesAdded = itemInHistory.timesAdded - 1;
+        }
+        userToListTable.recentlyAddedItems = userToListTable.recentlyAddedItems.filter(
+          (i) => i !== itemName
+        );
       } else {
-        userToListTable.removedItems = [itemName];
+        // Add to removalArray for callback
+        if (userToListTable.removedItems) {
+          userToListTable.removedItems = [
+            ...userToListTable.removedItems,
+            itemName
+          ];
+        } else {
+          userToListTable.removedItems = [itemName];
+        }
+        itemRemovalCallback(userToListTable, itemName);
       }
-      itemRemovalCallback(userToListTable, itemName);
     });
 
     removeFromSharedLists(userToListTable, itemNameArray, publish);

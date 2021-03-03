@@ -19,6 +19,7 @@ import { Topic } from '../types/subscription/SubscriptionTopics';
 import { validateAddToList } from '../types/validators/validateAddToList';
 import { validateStringLength } from '../types/validators/validateStringLength';
 import { getUserListTable } from '../../services/list/getUserListTable';
+import { recentlyAddedCallback } from '../../services/item/recentlyAddedCallback';
 
 @Resolver()
 export class AddItemResolver {
@@ -82,6 +83,18 @@ export class AddItemResolver {
         }
       }
     }
+
+    /** Also add the new item to the recentlyAddedItems field */
+    if (!userToListTable.recentlyAddedItems) {
+      userToListTable.recentlyAddedItems = [nameInput];
+    } else {
+      userToListTable.recentlyAddedItems = [
+        ...userToListTable.recentlyAddedItems,
+        nameInput
+      ];
+    }
+    // Trigger callback to remove recently added item
+    recentlyAddedCallback(userToListTable, nameInput);
 
     // Add to user's sortedItems
     const userToListTableAfterSort = sortIntoList(userToListTable, nameInput);
