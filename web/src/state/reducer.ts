@@ -63,6 +63,9 @@ export type Action =
       type: 'UNDO_MUTATION';
     }
   | {
+      type: 'REMOVE_UNDO';
+    }
+  | {
       type: 'REDO_MUTATION';
     };
 
@@ -136,6 +139,11 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         undoState: [...state.undoState, action.payload]
+      };
+    case 'REMOVE_UNDO':
+      return {
+        ...state,
+        undoState: state.undoState.filter((_, index) => index > 0)
       };
     case 'UNDO_MUTATION':
       return {
