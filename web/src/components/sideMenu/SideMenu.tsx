@@ -8,6 +8,7 @@ import IconButton from '../shared/IconButton';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import AddItemIcon from '../svg/sideMenu/AddItemIcon';
 import ReviewListIcon from '../svg/sideMenu/ReviewListIcon';
+import RedoButton from './RedoButton';
 import UndoButton from './UndoButton';
 
 type SideMenuProps = {
@@ -86,6 +87,7 @@ export default function SideMenu({ strikedItems }: SideMenuProps) {
 
   return (
     <div id="side-menu">
+      <RedoButton />
       <UndoButton />
       {sideMenuState === 'review' ? (
         <>
