@@ -56,7 +56,9 @@ export default function ItemList({ list, sortedItems }: ItemListProps) {
         <span>This list is empty ✍🏾</span>
       )}
       {listState[0] === 'side' ? (
-        <SideMenu />
+        <SideMenu
+          strikedItems={strikedItems ? strikedItems.map((i) => i.name) : []}
+        />
       ) : (
         /** Render div with same height for smoother UX */
         <div className="h-32 xl:h-36" />

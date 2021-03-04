@@ -38,7 +38,6 @@ This app also features some limited offline functionality. Users can install the
 ## **👨🏿‍💻 Todos before release**
 
 - Undo functionality 🔥
-- Add Smart Sort feature to the front-end
 - Setup dark-mode hook and design the dark version
 - Fix `AddItem` modal's bounciness with `AutoComplete`
 - Standardize modal styling `RenameList` and `RemoveList` with `ShareList`

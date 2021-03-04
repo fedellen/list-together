@@ -27,6 +27,7 @@ export default function useDeleteItems() {
         errorNotifaction(data.deleteItems.errors, dispatch);
         delayedFunction(() => setMutationSubmiting(false));
       } else {
+        dispatch({ type: 'SET_SIDE_MENU_STATE', payload: 'add' });
         dispatch({ type: 'CLEAR_STATE' });
       }
     } catch (err) {

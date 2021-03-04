@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
-import useStrikedItems from 'src/hooks/fragments/useStrikedItems';
 import useDeleteItems from 'src/hooks/mutations/item/useDeleteItems';
 import useKeyPress from 'src/hooks/useKeyPress';
 import { useStateValue } from 'src/state/state';
@@ -10,7 +9,11 @@ import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import AddItemIcon from '../svg/sideMenu/AddItemIcon';
 import ReviewListIcon from '../svg/sideMenu/ReviewListIcon';
 
-export default function SideMenu() {
+type SideMenuProps = {
+  strikedItems: string[];
+};
+
+export default function SideMenu({ strikedItems }: SideMenuProps) {
   const [{ sideMenuState }, dispatch] = useStateValue();
 
   const handleAddItemClick = () => {
@@ -21,7 +24,6 @@ export default function SideMenu() {
   };
 
   const [deleteItems, deleteItemsSubmitting] = useDeleteItems();
-  const strikedItems = useStrikedItems();
   /** Use `deleteItems` mutation on all striked items */
   const handleDeleteAllClick = () => {
     if (deleteItemsSubmitting) return;

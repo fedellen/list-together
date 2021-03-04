@@ -13,7 +13,6 @@ type UseFragmentPayload = User | UserToList | List | null;
 type FragmentFields =
   | ['User', 'sortedListsArray']
   | ['List', 'title']
-  | ['List', 'items']
   | ['Item', 'notes']
   | ['UserToList', 'sortedItems']
   | ['UserToList', 'smartSortedItems']
