@@ -4,9 +4,9 @@ import useCurrentSmartSortedItems from 'src/hooks/fragments/useCurrentSmartSorte
 import useCurrentSortedItems from 'src/hooks/fragments/useCurrentSortedItems';
 import { useStateValue } from 'src/state/state';
 import { arrayMove } from 'src/utils/arrayMove';
-import delayedFunction from 'src/utils/delayedFunction';
 import { sendNotification } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
+import useDelayedFunction from 'src/hooks/useDelayedFunction';
 
 export default function useSortItems() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
@@ -14,6 +14,9 @@ export default function useSortItems() {
   const currentSortedItems = useCurrentSortedItems();
   const currentSmartSortedItems = useCurrentSmartSortedItems();
   const [sortItems] = useSortItemsMutation();
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmiting(false);
+  });
   const sendMutation = useCallback(
     async (
       itemName: string,
@@ -60,7 +63,6 @@ export default function useSortItems() {
           ]);
           return;
         } else {
-          setMutationSubmiting(true);
           newSortedItemsArray = arrayMove(
             currentSortedItems,
             currentListIndex,
@@ -70,6 +72,7 @@ export default function useSortItems() {
       }
 
       try {
+        setMutationSubmiting(true);
         /** Use `sortItems` mutation */
         const { data } = await sortItems({
           variables: {
@@ -81,10 +84,10 @@ export default function useSortItems() {
         });
         if (data?.sortItems.errors) {
           errorNotifaction(data.sortItems.errors, dispatch);
-          delayedFunction(() => setMutationSubmiting(false));
+          mutationCooldown();
         } else {
           // Delay for only .05 sec on success
-          delayedFunction(() => setMutationSubmiting(false), 50);
+          mutationCooldown(50);
         }
       } catch (err) {
         console.error(`Error on sortItem mutation: ${err}`);

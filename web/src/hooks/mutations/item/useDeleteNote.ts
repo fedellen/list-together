@@ -1,14 +1,16 @@
 import { useState, useCallback } from 'react';
 import { useDeleteNoteMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
-import delayedFunction from 'src/utils/delayedFunction';
 import { sendNotification } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
-
+import useDelayedFunction from 'src/hooks/useDelayedFunction';
 export default function useDeleteNote() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
   const [{ currentListId, listState }, dispatch] = useStateValue();
   const [deleteNote] = useDeleteNoteMutation();
+  const mutationCooldown = useDelayedFunction(() =>
+    setMutationSubmiting(false)
+  );
 
   const sendMutation = useCallback(async () => {
     if (listState[0] !== 'note') {
@@ -33,7 +35,7 @@ export default function useDeleteNote() {
       });
       if (data?.deleteNote.errors) {
         errorNotifaction(data.deleteNote.errors, dispatch);
-        delayedFunction(() => setMutationSubmiting(false));
+        mutationCooldown();
       } else {
         dispatch({ type: 'CLEAR_STATE' });
       }

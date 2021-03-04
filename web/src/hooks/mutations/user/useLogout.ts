@@ -10,15 +10,13 @@ export default function useLogout() {
   const [logout] = useLogoutUserMutation();
 
   const sendMutation = useCallback(async () => {
-    console.log('hey');
     if (mutationSubmiting) return;
-    setMutationSubmiting(true);
     /**
      *  Logout Mutation
      */
     try {
       await logout();
-      // await apolloClient.clearStore();
+      // await apolloClient.clearStore(); // Might need this when persisting cache
       await apolloClient.resetStore();
       dispatch({ type: 'CLEAR_STATE' });
       dispatch({ type: 'SET_USER', payload: '' });

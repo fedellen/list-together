@@ -4,15 +4,18 @@ import {
   useGetUsersListsQuery
 } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
-import delayedFunction from 'src/utils/delayedFunction';
 import { sendNotification } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
+import useDelayedFunction from 'src/hooks/useDelayedFunction';
 
 export default function useCreateList() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
   const { refetch } = useGetUsersListsQuery({ skip: true });
   const [, dispatch] = useStateValue();
   const [createList] = useCreateListMutation();
+  const mutationCooldown = useDelayedFunction(() =>
+    setMutationSubmiting(false)
+  );
   const sendMutation = useCallback(async (title: string) => {
     if (mutationSubmiting) return;
     /**
@@ -40,7 +43,7 @@ export default function useCreateList() {
         });
         if (data?.createList.errors) {
           errorNotifaction(data.createList.errors, dispatch);
-          delayedFunction(() => setMutationSubmiting(false));
+          mutationCooldown();
         } else {
           await refetch();
           const newListId = data?.createList.userToList?.listId;

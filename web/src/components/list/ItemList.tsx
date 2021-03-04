@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { List } from 'src/generated/graphql';
 import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
 import { useStateValue } from 'src/state/state';
-import SideMenu from './SideMenu';
+import SideMenu from '../sideMenu/SideMenu';
 import SingleItem from './SingleItem';
 
 type ItemListProps = {

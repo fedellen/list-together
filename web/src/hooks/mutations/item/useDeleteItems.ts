@@ -1,13 +1,17 @@
 import { useState, useCallback } from 'react';
 import { useDeleteItemsMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
-import delayedFunction from 'src/utils/delayedFunction';
 import { errorNotifaction } from 'src/utils/errorNotification';
+import useDelayedFunction from 'src/hooks/useDelayedFunction';
 
 export default function useDeleteItems() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
   const [{ currentListId }, dispatch] = useStateValue();
   const [deleteItems] = useDeleteItemsMutation();
+  const mutationCooldown = useDelayedFunction(() =>
+    setMutationSubmiting(false)
+  );
+
   const sendMutation = useCallback(async (itemNames: string[]) => {
     if (mutationSubmiting) return;
     /**
@@ -25,7 +29,7 @@ export default function useDeleteItems() {
       });
       if (data?.deleteItems.errors) {
         errorNotifaction(data.deleteItems.errors, dispatch);
-        delayedFunction(() => setMutationSubmiting(false));
+        mutationCooldown();
       } else {
         dispatch({ type: 'SET_SIDE_MENU_STATE', payload: 'add' });
         dispatch({ type: 'CLEAR_STATE' });

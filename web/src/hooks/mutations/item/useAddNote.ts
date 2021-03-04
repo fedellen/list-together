@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useAddNoteMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
-import delayedFunction from 'src/utils/delayedFunction';
-import { sendNotification, closeModal } from 'src/utils/dispatchActions';
+import useDelayedFunction from 'src/hooks/useDelayedFunction';
+import { sendNotification } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
 import useItemsNotes from '../../fragments/useItemsNotes';
 
@@ -11,6 +11,9 @@ export default function useAddNote() {
   const [{ listState, currentListId }, dispatch] = useStateValue();
   const activeItemsNotes = useItemsNotes();
   const [addNote] = useAddNoteMutation();
+  const mutationCooldown = useDelayedFunction(() =>
+    setMutationSubmiting(false)
+  );
 
   const sendMutation = useCallback(async (note: string) => {
     if (listState[0] !== 'modal' || !listState[1].itemName) {
@@ -53,9 +56,9 @@ export default function useAddNote() {
         });
         if (data?.addNote.errors) {
           errorNotifaction(data.addNote.errors, dispatch);
-          delayedFunction(() => setMutationSubmiting(false));
+          mutationCooldown();
         } else {
-          closeModal(dispatch);
+          dispatch({ type: 'CLEAR_STATE' });
         }
       } catch (err) {
         console.error('Error on Add Note mutation: ', err);

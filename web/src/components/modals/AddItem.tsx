@@ -21,7 +21,7 @@ export default function AddItem({}) {
         ? filteredWords.slice(0, 20)
         : filteredWords;
     },
-    [mostCommonWords, textValue]
+    [textValue]
   );
 
   /** Keyboard submit */

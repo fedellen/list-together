@@ -2,14 +2,16 @@ import { useState, useCallback } from 'react';
 import { useSubmitPreferredOrderMutation } from 'src/generated/graphql';
 import useCurrentSortedItems from 'src/hooks/fragments/useCurrentSortedItems';
 import { useStateValue } from 'src/state/state';
-import delayedFunction from 'src/utils/delayedFunction';
 import { sendNotification } from 'src/utils/dispatchActions';
 import { errorNotifaction } from 'src/utils/errorNotification';
-
+import useDelayedFunction from 'src/hooks/useDelayedFunction';
 export default function useSubmitPreferredOrder() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
   const [{ currentListId }, dispatch] = useStateValue();
   const currentSortedItems = useCurrentSortedItems();
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmiting(false);
+  });
 
   const [submitPreferredOrder] = useSubmitPreferredOrderMutation();
   const sendMutation = useCallback(async () => {
@@ -30,7 +32,7 @@ export default function useSubmitPreferredOrder() {
       });
       if (data?.submitPreferredOrder.errors) {
         errorNotifaction(data.submitPreferredOrder.errors, dispatch);
-        delayedFunction(() => setMutationSubmiting(false));
+        mutationCooldown();
       } else {
         sendNotification(dispatch, [
           'Your preferred order of all items currently on the list has been saved.'
