@@ -20,10 +20,9 @@ import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 
 export default function UndoButton() {
   const [{ undoState }, dispatch] = useStateValue();
-  const [mutationSubmitting, setMutationSubmitting] = useState(false);
-  const mutationCooldown = useDelayedFunction(() => {
-    setMutationSubmitting(false);
-  });
+
+  const undoKeyboardButton = useKeyPress('u', 'z');
+
   if (undoState.length < 1) return null;
 
   const nextUndo = undoState[undoState.length - 1];
@@ -35,9 +34,7 @@ export default function UndoButton() {
         <WithAddItem
           nextUndo={nextUndo}
           dispatch={dispatch}
-          mutationSubmitting={mutationSubmitting}
-          setMutationSubmitting={setMutationSubmitting}
-          mutationCooldown={mutationCooldown}
+          keyboardSubmit={undoKeyboardButton}
         />
       );
       break;
@@ -47,9 +44,7 @@ export default function UndoButton() {
         <WithAddNote
           nextUndo={nextUndo}
           dispatch={dispatch}
-          setMutationSubmitting={setMutationSubmitting}
-          mutationSubmitting={mutationSubmitting}
-          mutationCooldown={mutationCooldown}
+          keyboardSubmit={undoKeyboardButton}
         />
       );
       break;
@@ -59,9 +54,7 @@ export default function UndoButton() {
         <WithDeleteItems
           nextUndo={nextUndo}
           dispatch={dispatch}
-          setMutationSubmitting={setMutationSubmitting}
-          mutationSubmitting={mutationSubmitting}
-          mutationCooldown={mutationCooldown}
+          keyboardSubmit={undoKeyboardButton}
         />
       );
       break;
@@ -71,9 +64,7 @@ export default function UndoButton() {
         <WithDeleteNote
           nextUndo={nextUndo}
           dispatch={dispatch}
-          setMutationSubmitting={setMutationSubmitting}
-          mutationSubmitting={mutationSubmitting}
-          mutationCooldown={mutationCooldown}
+          keyboardSubmit={undoKeyboardButton}
         />
       );
       break;
@@ -83,9 +74,7 @@ export default function UndoButton() {
         <WithSortItems
           nextUndo={nextUndo}
           dispatch={dispatch}
-          setMutationSubmitting={setMutationSubmitting}
-          mutationSubmitting={mutationSubmitting}
-          mutationCooldown={mutationCooldown}
+          keyboardSubmit={undoKeyboardButton}
         />
       );
       break;
@@ -95,9 +84,7 @@ export default function UndoButton() {
         <WithSortLists
           nextUndo={nextUndo}
           dispatch={dispatch}
-          setMutationSubmitting={setMutationSubmitting}
-          mutationSubmitting={mutationSubmitting}
-          mutationCooldown={mutationCooldown}
+          keyboardSubmit={undoKeyboardButton}
         />
       );
       break;
@@ -107,9 +94,7 @@ export default function UndoButton() {
         <WithStrikeItem
           nextUndo={nextUndo}
           dispatch={dispatch}
-          setMutationSubmitting={setMutationSubmitting}
-          mutationSubmitting={mutationSubmitting}
-          mutationCooldown={mutationCooldown}
+          keyboardSubmit={undoKeyboardButton}
         />
       );
       break;
@@ -121,18 +106,19 @@ export default function UndoButton() {
 type WithMutationProps = {
   nextUndo: UndoState;
   dispatch: React.Dispatch<Action>;
-  mutationSubmitting: boolean;
-  setMutationSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
-  mutationCooldown: (delay?: number) => void;
+
+  keyboardSubmit: boolean;
 };
 
 function WithAddItem({
   nextUndo,
   dispatch,
-  mutationSubmitting,
-  mutationCooldown,
-  setMutationSubmitting
+  keyboardSubmit
 }: WithMutationProps) {
+  const [mutationSubmitting, setMutationSubmitting] = useState(false);
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmitting(false);
+  });
   const [addItem, { loading }] = useAddItemMutation();
   if (nextUndo[0] !== 'deleteItems') return null;
   const { listId, itemNameArray } = nextUndo[1];
@@ -150,6 +136,7 @@ function WithAddItem({
       mutationCooldown(500);
     }
   };
+  if (keyboardSubmit && !mutationSubmitting) handleMutation();
   return (
     <UndoButtonInner
       useMutationHook={handleMutation}
@@ -161,10 +148,12 @@ function WithAddItem({
 function WithAddNote({
   nextUndo,
   dispatch,
-  mutationSubmitting,
-  mutationCooldown,
-  setMutationSubmitting
+  keyboardSubmit
 }: WithMutationProps) {
+  const [mutationSubmitting, setMutationSubmitting] = useState(false);
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmitting(false);
+  });
   const [addNote, { loading }] = useAddNoteMutation();
   if (nextUndo[0] !== 'deleteNote') return null;
   const { note, listId, itemName } = nextUndo[1];
@@ -182,6 +171,7 @@ function WithAddNote({
       mutationCooldown(500);
     }
   };
+  if (keyboardSubmit && !mutationSubmitting) handleMutation();
   return (
     <UndoButtonInner
       useMutationHook={handleMutation}
@@ -193,10 +183,12 @@ function WithAddNote({
 function WithDeleteItems({
   nextUndo,
   dispatch,
-  mutationSubmitting,
-  mutationCooldown,
-  setMutationSubmitting
+  keyboardSubmit
 }: WithMutationProps) {
+  const [mutationSubmitting, setMutationSubmitting] = useState(false);
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmitting(false);
+  });
   const [deleteItems, { loading }] = useDeleteItemsMutation();
   if (nextUndo[0] !== 'addItem') return null;
   const { listId, itemName } = nextUndo[1];
@@ -223,6 +215,7 @@ function WithDeleteItems({
       mutationCooldown(500);
     }
   };
+  if (keyboardSubmit && !mutationSubmitting) handleMutation();
   return (
     <UndoButtonInner
       useMutationHook={handleMutation}
@@ -234,10 +227,12 @@ function WithDeleteItems({
 function WithDeleteNote({
   nextUndo,
   dispatch,
-  mutationSubmitting,
-  mutationCooldown,
-  setMutationSubmitting
+  keyboardSubmit
 }: WithMutationProps) {
+  const [mutationSubmitting, setMutationSubmitting] = useState(false);
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmitting(false);
+  });
   const [deleteNote, { loading }] = useDeleteNoteMutation();
   if (nextUndo[0] !== 'addNote') return null;
   const { note, listId, itemName } = nextUndo[1];
@@ -255,6 +250,7 @@ function WithDeleteNote({
       mutationCooldown(500);
     }
   };
+  if (keyboardSubmit && !mutationSubmitting) handleMutation();
   return (
     <UndoButtonInner
       useMutationHook={handleMutation}
@@ -266,10 +262,12 @@ function WithDeleteNote({
 function WithSortItems({
   nextUndo,
   dispatch,
-  mutationSubmitting,
-  mutationCooldown,
-  setMutationSubmitting
+  keyboardSubmit
 }: WithMutationProps) {
+  const [mutationSubmitting, setMutationSubmitting] = useState(false);
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmitting(false);
+  });
   const [sortItems, { loading }] = useSortItemsMutation();
   if (nextUndo[0] !== 'sortItems') return null;
   const { listId, previousItemArray } = nextUndo[1];
@@ -287,6 +285,7 @@ function WithSortItems({
       mutationCooldown(500);
     }
   };
+  if (keyboardSubmit && !mutationSubmitting) handleMutation();
   return (
     <UndoButtonInner
       useMutationHook={handleMutation}
@@ -298,10 +297,12 @@ function WithSortItems({
 function WithSortLists({
   nextUndo,
   dispatch,
-  mutationSubmitting,
-  mutationCooldown,
-  setMutationSubmitting
+  keyboardSubmit
 }: WithMutationProps) {
+  const [mutationSubmitting, setMutationSubmitting] = useState(false);
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmitting(false);
+  });
   const [sortLists, { loading }] = useSortListsMutation();
   if (nextUndo[0] !== 'sortLists') return null;
   const { previousListArray } = nextUndo[1];
@@ -319,6 +320,7 @@ function WithSortLists({
       mutationCooldown(500);
     }
   };
+  if (keyboardSubmit && !mutationSubmitting) handleMutation();
   return (
     <UndoButtonInner
       useMutationHook={handleMutation}
@@ -330,10 +332,12 @@ function WithSortLists({
 function WithStrikeItem({
   nextUndo,
   dispatch,
-  mutationSubmitting,
-  mutationCooldown,
-  setMutationSubmitting
+  keyboardSubmit
 }: WithMutationProps) {
+  const [mutationSubmitting, setMutationSubmitting] = useState(false);
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmitting(false);
+  });
   const [strikeItem, { loading }] = useStrikeItemMutation();
   if (nextUndo[0] !== 'strikeItem') return null;
   const { listId, itemName } = nextUndo[1];
@@ -351,6 +355,7 @@ function WithStrikeItem({
       mutationCooldown(500);
     }
   };
+  if (keyboardSubmit && !mutationSubmitting) handleMutation();
   return (
     <UndoButtonInner
       useMutationHook={handleMutation}
@@ -364,14 +369,8 @@ type UndoButtonInnerProps = {
   mutationSubmitting: boolean;
 };
 
-function UndoButtonInner({
-  useMutationHook,
-  mutationSubmitting
-}: UndoButtonInnerProps) {
+function UndoButtonInner({ useMutationHook }: UndoButtonInnerProps) {
   const largeScreen = window.innerWidth > 1024;
-
-  const undoKeyboardButton = useKeyPress('u', 'z');
-  if (undoKeyboardButton && !mutationSubmitting) useMutationHook();
 
   return (
     <IconButton
