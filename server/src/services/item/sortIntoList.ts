@@ -25,7 +25,11 @@ export const sortIntoList = (
         // Convert rating (1-1000) into decimal, then multiply by length to find index
         userToList.sortedItems.length * (itemRating / 1000)
       );
-      userToList.sortedItems.splice(indexToInsert, 0, itemName);
+      userToList.sortedItems = userToList.sortedItems.splice(
+        indexToInsert,
+        0,
+        itemName
+      );
     }
   }
   return userToList;

@@ -26,7 +26,7 @@ export class AddItemResolver {
   @UseMiddleware(logger)
   @Mutation(() => UserToListResponse)
   async addItem(
-    @Arg('data') { nameInput, listId }: AddItemInput,
+    @Arg('data') { nameInput: nameInputArray, listId }: AddItemInput,
     @Ctx() context: MyContext,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<UserToListResponse> {
@@ -40,70 +40,75 @@ export class AddItemResolver {
     const userToListTable = getListPayload.userToList![0];
 
     // Validate string length between 2-30
-    const stringLengthErrors = validateStringLength(nameInput);
-    if (stringLengthErrors) return { errors: stringLengthErrors };
 
     const list = userToListTable.list;
-    if (!list.items) {
-      // Initialize list with first item
-      list.items = [Item.create({ name: nameInput })];
-    } else {
-      // Validate for max list length and if item already exists on list
-      const addItemErrors = validateAddToList(list, nameInput);
-      if (addItemErrors) return { errors: addItemErrors };
-      // Add item to the list
-      else list.items = [Item.create({ name: nameInput }), ...list.items];
-    }
+    for (const itemName of nameInputArray) {
+      const stringLengthErrors = validateStringLength(itemName);
+      if (stringLengthErrors) return { errors: stringLengthErrors };
 
-    if (
-      userToListTable.removedItems &&
-      userToListTable.removedItems.includes(nameInput)
-    ) {
-      // Delete re-added items from removedItems callback array if item deleted recently
-      userToListTable.removedItems = userToListTable.removedItems.filter(
-        (i) => i !== nameInput
-      );
-    } else {
-      // Add item to User's personal item history for auto-completion and smart-sort
-      if (!userToListTable.itemHistory) {
-        // Initialize item history
-        userToListTable.itemHistory = [ItemHistory.create({ item: nameInput })];
+      if (!list.items) {
+        // Initialize list with first item
+        list.items = [Item.create({ name: itemName })];
       } else {
-        const existingItemInHistory = userToListTable.itemHistory.find(
-          ({ item }) => item === nameInput
+        // Validate for max list length and if item already exists on list
+        const addItemErrors = validateAddToList(list, itemName);
+        if (addItemErrors) return { errors: addItemErrors };
+        // Add item to the list
+        else list.items = [Item.create({ name: itemName }), ...list.items];
+      }
+      if (
+        userToListTable.removedItems &&
+        userToListTable.removedItems.includes(itemName)
+      ) {
+        // Delete re-added items from removedItems callback array if item deleted recently
+        userToListTable.removedItems = userToListTable.removedItems.filter(
+          (i) => i !== itemName
         );
-
-        if (existingItemInHistory) {
-          existingItemInHistory.timesAdded++;
-        } else {
+      } else {
+        // Add item to User's personal item history for auto-completion and smart-sort
+        if (!userToListTable.itemHistory) {
+          // Initialize item history
           userToListTable.itemHistory = [
-            ...userToListTable.itemHistory,
-            ItemHistory.create({ item: nameInput })
+            ItemHistory.create({ item: itemName })
           ];
+        } else {
+          const existingItemInHistory = userToListTable.itemHistory.find(
+            ({ item }) => item === itemName
+          );
+
+          if (existingItemInHistory) {
+            existingItemInHistory.timesAdded++;
+          } else {
+            userToListTable.itemHistory = [
+              ...userToListTable.itemHistory,
+              ItemHistory.create({ item: itemName })
+            ];
+          }
         }
       }
+
+      /** Also add the new item to the recentlyAddedItems field */
+      if (!userToListTable.recentlyAddedItems) {
+        userToListTable.recentlyAddedItems = [itemName];
+      } else {
+        userToListTable.recentlyAddedItems = [
+          ...userToListTable.recentlyAddedItems,
+          itemName
+        ];
+      }
+      // Trigger callback to remove recently added item
+      recentlyAddedCallback(userToListTable, itemName);
+
+      // Add to user's sortedItems
+      sortIntoList(userToListTable, itemName);
+      addToSharedLists(userToListTable, itemName, publish);
     }
 
-    /** Also add the new item to the recentlyAddedItems field */
-    if (!userToListTable.recentlyAddedItems) {
-      userToListTable.recentlyAddedItems = [nameInput];
-    } else {
-      userToListTable.recentlyAddedItems = [
-        ...userToListTable.recentlyAddedItems,
-        nameInput
-      ];
-    }
-    // Trigger callback to remove recently added item
-    recentlyAddedCallback(userToListTable, nameInput);
-
-    // Add to user's sortedItems
-    const userToListTableAfterSort = sortIntoList(userToListTable, nameInput);
     // Send promise to add to and update shared lists
-    addToSharedLists(userToListTable, nameInput, publish);
 
     // Save table to DB, cascades list updates
-    await userToListTableAfterSort.save();
+    await userToListTable.save();
 
-    return { userToList: [userToListTableAfterSort] };
+    return { userToList: [userToListTable] };
   }
 }

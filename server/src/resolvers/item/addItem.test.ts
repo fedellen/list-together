@@ -27,7 +27,7 @@ describe('Add item mutation:', () => {
       variableValues: {
         data: {
           listId: userToListTable!.listId,
-          nameInput: itemName
+          nameInput: [itemName]
         }
       },
       userId: user.id
@@ -93,7 +93,7 @@ describe('Add item mutation:', () => {
       variableValues: {
         data: {
           listId: allUserLists[0].listId,
-          nameInput: itemName
+          nameInput: [itemName]
         }
       },
       userId: undefined

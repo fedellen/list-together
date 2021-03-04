@@ -5,6 +5,6 @@ export class AddItemInput {
   @Field()
   listId: string;
 
-  @Field()
-  nameInput: string;
+  @Field(() => [String])
+  nameInput: string[];
 }

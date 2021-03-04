@@ -167,7 +167,7 @@ export type MutationSortListsArgs = {
 
 export type AddItemInput = {
   listId: Scalars['String'];
-  nameInput: Scalars['String'];
+  nameInput: Array<Scalars['String']>;
 };
 
 export type DeleteItemsInput = {
