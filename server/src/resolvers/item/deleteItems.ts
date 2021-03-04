@@ -108,8 +108,6 @@ export class DeleteItemsResolver {
 
     removeFromSharedLists(userToListTable, itemNameArray, publish);
 
-    console.log(JSON.stringify(userToListTable, null, 4));
-
     await userToListTable.save();
     return {
       userToList: [userToListTable],

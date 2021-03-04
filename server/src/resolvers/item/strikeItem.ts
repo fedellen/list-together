@@ -79,9 +79,8 @@ export class StrikeItemResolver {
           (i) => i !== item.name
         );
         userToListTable.sortedItems = sortedListWithoutUnstrikedItem;
-        const newSortedItems = sortIntoList(userToListTable, item.name)
-          .sortedItems;
-        userToListTable.sortedItems = newSortedItems;
+
+        userToListTable.sortedItems = sortIntoList(userToListTable, item.name);
       }
       // Item was unstriked -- remove it from removalArray if found
       if (userToListTable.removedItems?.includes(item.name)) {

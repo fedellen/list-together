@@ -5,8 +5,8 @@ export const sortIntoList = (
   /** UserToList with `itemHistory` */
   userToList: UserToList,
   itemName: string
-): UserToList => {
-  if (!userToList.sortedItems) {
+): string[] => {
+  if (!userToList.sortedItems || userToList.sortedItems.length < 1) {
     // UserToList has no sortedItems array, initialize
     userToList.sortedItems = [itemName];
   } else {
@@ -25,12 +25,17 @@ export const sortIntoList = (
         // Convert rating (1-1000) into decimal, then multiply by length to find index
         userToList.sortedItems.length * (itemRating / 1000)
       );
-      userToList.sortedItems = userToList.sortedItems.splice(
-        indexToInsert,
-        0,
-        itemName
+
+      // Advanced filter mechanics incoming
+      const itemsBefore = userToList.sortedItems.filter(
+        (_, index) => index < indexToInsert
       );
+      const itemsAfter = userToList.sortedItems.filter(
+        (_, index) => index >= indexToInsert
+      );
+
+      userToList.sortedItems = [...itemsBefore, itemName, ...itemsAfter]; // 🔥
     }
   }
-  return userToList;
+  return userToList.sortedItems;
 };

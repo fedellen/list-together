@@ -55,7 +55,7 @@ export const userWithListAndItems = async (
       userToListTable!.list.items = [newItem];
     }
     // Add to sorted items
-    userToListTable = sortIntoList(userToListTable!, newItem.name);
+    userToListTable!.sortedItems = sortIntoList(userToListTable!, newItem.name);
   }
   await userToListTable!.save();
   return user;

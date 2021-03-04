@@ -15,7 +15,8 @@ export const addToSharedLists = async (
     // List has shared users, add to their lists
     await Promise.all(
       sharedUserToListTables.map(async (table) => {
-        await sortIntoList(table, itemName).save();
+        table.sortedItems = sortIntoList(table, itemName);
+        await table.save();
       })
     );
     // Notify all logged in users

@@ -100,7 +100,7 @@ export class AddItemResolver {
       recentlyAddedCallback(userToListTable, itemName);
 
       // Add to user's sortedItems
-      sortIntoList(userToListTable, itemName);
+      userToListTable.sortedItems = sortIntoList(userToListTable, itemName);
       addToSharedLists(userToListTable, itemName, publish);
     }
 
