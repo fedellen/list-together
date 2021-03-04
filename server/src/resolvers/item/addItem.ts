@@ -42,19 +42,24 @@ export class AddItemResolver {
     // Validate string length between 2-30
 
     const list = userToListTable.list;
+    const striked = nameInputArray.length > 1;
     for (const itemName of nameInputArray) {
       const stringLengthErrors = validateStringLength(itemName);
       if (stringLengthErrors) return { errors: stringLengthErrors };
 
       if (!list.items) {
         // Initialize list with first item
-        list.items = [Item.create({ name: itemName })];
+        list.items = [Item.create({ name: itemName, strike: striked })];
       } else {
         // Validate for max list length and if item already exists on list
         const addItemErrors = validateAddToList(list, itemName);
         if (addItemErrors) return { errors: addItemErrors };
         // Add item to the list
-        else list.items = [Item.create({ name: itemName }), ...list.items];
+        else
+          list.items = [
+            Item.create({ name: itemName, strike: striked }),
+            ...list.items
+          ];
       }
       if (
         userToListTable.removedItems &&
@@ -100,7 +105,18 @@ export class AddItemResolver {
       recentlyAddedCallback(userToListTable, itemName);
 
       // Add to user's sortedItems
-      userToListTable.sortedItems = sortIntoList(userToListTable, itemName);
+      if (striked) {
+        if (!userToListTable.sortedItems) {
+          userToListTable.sortedItems = [itemName];
+        } else {
+          userToListTable.sortedItems = [
+            ...userToListTable.sortedItems,
+            itemName
+          ];
+        }
+      } else {
+        userToListTable.sortedItems = sortIntoList(userToListTable, itemName);
+      }
       addToSharedLists(userToListTable, itemName, publish);
     }
 
