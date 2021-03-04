@@ -15,7 +15,7 @@ type UsersListsProps = {
 export default function UsersLists({ sortedListsArray }: UsersListsProps) {
   const [{ currentListId }, dispatch] = useStateValue();
 
-  const { data, loading, error, refetch } = useGetUsersListsQuery({});
+  const { data, loading, error /*, refetch*/ } = useGetUsersListsQuery({});
   const usersLists = data?.getUsersLists?.userToList?.map((list) => list);
 
   /** Initialize current list when data is initialized or list id is cleared */
@@ -44,18 +44,21 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
     const errorString = `There has been an unhandled error while loading your list data: ${error.message}`;
     console.error(errorString);
     return <div>There has been an unhandled error: {errorString}</div>;
-  } else if (!sortedLists) {
-    console.log('sortedLists', sortedLists);
-    /** List periodically fails to fetch upon login, refetch() seems to correct this issue */
-    refetch();
-    return <LoadingSplash />;
   }
+  // else if (!sortedLists) {
+  //   console.log('sortedLists', sortedLists);
+  //   /** List periodically fails to fetch upon login, refetch() seems to correct this issue */
+  //   refetch();
+  //   return <LoadingSplash />;
+  // }
 
-  const currentList = sortedLists.find((list) => list.listId === currentListId);
+  const currentList = sortedLists?.find(
+    (list) => list.listId === currentListId
+  );
 
   return (
     <section id="users-lists" className="content">
-      {currentList ? (
+      {currentList && sortedLists ? (
         <>
           <ScrollingLists lists={sortedLists} />
           <ItemList
