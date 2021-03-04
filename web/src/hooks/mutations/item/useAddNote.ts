@@ -58,6 +58,17 @@ export default function useAddNote() {
           errorNotifaction(data.addNote.errors, dispatch);
           mutationCooldown();
         } else {
+          dispatch({
+            type: 'ADD_TO_UNDO',
+            payload: [
+              'addNote',
+              {
+                itemName: listState[1].itemName,
+                note: note,
+                listId: currentListId
+              }
+            ]
+          });
           dispatch({ type: 'CLEAR_STATE' });
         }
       } catch (err) {

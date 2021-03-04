@@ -31,6 +31,10 @@ export default function useStrikeItem() {
         errorNotifaction(data.strikeItem.errors, dispatch);
         mutationCooldown();
       } else {
+        dispatch({
+          type: 'ADD_TO_UNDO',
+          payload: ['strikeItem', { itemName: item, listId: currentListId }]
+        });
         dispatch({ type: 'CLEAR_STATE' });
       }
     } catch (err) {

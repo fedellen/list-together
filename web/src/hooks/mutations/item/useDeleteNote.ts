@@ -37,6 +37,17 @@ export default function useDeleteNote() {
         errorNotifaction(data.deleteNote.errors, dispatch);
         mutationCooldown();
       } else {
+        dispatch({
+          type: 'ADD_TO_UNDO',
+          payload: [
+            'deleteNote',
+            {
+              itemName: listState[1].item,
+              note: listState[1].note,
+              listId: currentListId
+            }
+          ]
+        });
         dispatch({ type: 'CLEAR_STATE' });
       }
     } catch (err) {

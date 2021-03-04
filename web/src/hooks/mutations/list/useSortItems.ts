@@ -27,6 +27,7 @@ export default function useSortItems() {
        *  Sort Items Mutation
        */
 
+      const previousSortedItems = currentSortedItems;
       let newSortedItemsArray: string[];
       if (direction === 'smartSort') {
         newSortedItemsArray = currentSmartSortedItems;
@@ -86,6 +87,13 @@ export default function useSortItems() {
           errorNotifaction(data.sortItems.errors, dispatch);
           mutationCooldown();
         } else {
+          dispatch({
+            type: 'ADD_TO_UNDO',
+            payload: [
+              'sortItems',
+              { previousItemArray: previousSortedItems, listId: currentListId }
+            ]
+          });
           // Delay for only .05 sec on success
           mutationCooldown(50);
         }

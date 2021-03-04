@@ -31,6 +31,16 @@ export default function useDeleteItems() {
         errorNotifaction(data.deleteItems.errors, dispatch);
         mutationCooldown();
       } else {
+        dispatch({
+          type: 'ADD_TO_UNDO',
+          payload: [
+            'deleteItems',
+            {
+              itemNameArray: itemNames,
+              listId: currentListId
+            }
+          ]
+        });
         dispatch({ type: 'SET_SIDE_MENU_STATE', payload: 'add' });
         dispatch({ type: 'CLEAR_STATE' });
       }

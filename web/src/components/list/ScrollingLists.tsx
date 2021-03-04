@@ -76,6 +76,10 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
       if (data?.sortLists.errors) {
         errorNotifaction(data.sortLists.errors, dispatch);
       } else {
+        dispatch({
+          type: 'ADD_TO_UNDO',
+          payload: ['sortLists', { previousListArray: sortedListIdArray }]
+        });
         scrollContainerToChildList(moveToIndex);
       }
     } catch (err) {
