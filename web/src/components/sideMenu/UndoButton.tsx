@@ -204,7 +204,7 @@ function WithDeleteItems({
         sendNotification(dispatch, [
           'Could not complete Undo action, that item has already been removed..'
         ]);
-        dispatch({ type: 'REMOVE_UNDO' });
+        dispatch({ type: 'REMOVE_UNDO', payload: -1 });
         mutationCooldown(500); // .5 sec delay
       } else {
         errorNotifaction(errors, dispatch);

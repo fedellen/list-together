@@ -64,9 +64,11 @@ export type Action =
     }
   | {
       type: 'REMOVE_UNDO';
+      payload: number;
     }
   | {
       type: 'REMOVE_REDO';
+      payload: number;
     }
   | {
       type: 'REDO_MUTATION';
@@ -146,12 +148,24 @@ export const reducer = (state: State, action: Action): State => {
     case 'REMOVE_UNDO':
       return {
         ...state,
-        undoState: state.undoState.filter((_, index) => index > 0)
+        undoState:
+          /** -1 removes last undo on array, or `nextUndo` */
+          action.payload === -1
+            ? state.undoState.filter(
+                (_, index) => index !== state.undoState.length - 1
+              )
+            : state.undoState.filter((_, index) => index !== action.payload)
       };
     case 'REMOVE_REDO':
       return {
         ...state,
-        redoState: state.redoState.filter((_, index) => index > 0)
+        redoState:
+          /** -1 removes last redo on array, or `nextRedo` */
+          action.payload === -1
+            ? state.redoState.filter(
+                (_, index) => index !== state.redoState.length - 1
+              )
+            : state.redoState.filter((_, index) => index !== action.payload)
       };
     case 'UNDO_MUTATION':
       return {

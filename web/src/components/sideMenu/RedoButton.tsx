@@ -204,7 +204,7 @@ function WithDeleteItems({
         sendNotification(dispatch, [
           'Could not complete Redo action, that item has already been removed..'
         ]);
-        dispatch({ type: 'REMOVE_REDO' });
+        dispatch({ type: 'REMOVE_REDO', payload: -1 }); // -1 removes last on array
         mutationCooldown(500); // .5 sec delay
       } else {
         errorNotifaction(errors, dispatch);
