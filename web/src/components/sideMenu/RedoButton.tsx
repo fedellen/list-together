@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import {
   useAddItemMutation,
   useAddNoteMutation,
@@ -21,7 +21,20 @@ import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 export default function RedoButton() {
   const [{ redoState }, dispatch] = useStateValue();
 
-  const redoKeyboardButton = useKeyPress('y');
+  /** Keyboard access for redo, .5 sec cooldown on key presses */
+  const redoKey = useKeyPress('y');
+  const keyCooldown = useDelayedFunction(() => {
+    setKeyboardCooldown(false);
+  });
+  const useKeyCooldown = () => {
+    setKeyboardCooldown(true);
+    keyCooldown(500);
+  };
+  const [keyboardCooldown, setKeyboardCooldown] = useState(false);
+  let redoKeyboardButton = false;
+  if (redoKey && !keyboardCooldown) {
+    redoKeyboardButton = true;
+  }
 
   if (redoState.length < 1) return null;
 
@@ -35,6 +48,7 @@ export default function RedoButton() {
           nextRedo={nextRedo}
           dispatch={dispatch}
           keyboardSubmit={redoKeyboardButton}
+          useKeyCooldown={useKeyCooldown}
         />
       );
       break;
@@ -45,6 +59,7 @@ export default function RedoButton() {
           nextRedo={nextRedo}
           dispatch={dispatch}
           keyboardSubmit={redoKeyboardButton}
+          useKeyCooldown={useKeyCooldown}
         />
       );
       break;
@@ -55,6 +70,7 @@ export default function RedoButton() {
           nextRedo={nextRedo}
           dispatch={dispatch}
           keyboardSubmit={redoKeyboardButton}
+          useKeyCooldown={useKeyCooldown}
         />
       );
       break;
@@ -65,6 +81,7 @@ export default function RedoButton() {
           nextRedo={nextRedo}
           dispatch={dispatch}
           keyboardSubmit={redoKeyboardButton}
+          useKeyCooldown={useKeyCooldown}
         />
       );
       break;
@@ -75,6 +92,7 @@ export default function RedoButton() {
           nextRedo={nextRedo}
           dispatch={dispatch}
           keyboardSubmit={redoKeyboardButton}
+          useKeyCooldown={useKeyCooldown}
         />
       );
       break;
@@ -85,6 +103,7 @@ export default function RedoButton() {
           nextRedo={nextRedo}
           dispatch={dispatch}
           keyboardSubmit={redoKeyboardButton}
+          useKeyCooldown={useKeyCooldown}
         />
       );
       break;
@@ -95,6 +114,7 @@ export default function RedoButton() {
           nextRedo={nextRedo}
           dispatch={dispatch}
           keyboardSubmit={redoKeyboardButton}
+          useKeyCooldown={useKeyCooldown}
         />
       );
       break;
@@ -106,14 +126,15 @@ export default function RedoButton() {
 type WithMutationProps = {
   nextRedo: UndoState;
   dispatch: React.Dispatch<Action>;
-
+  useKeyCooldown: () => void;
   keyboardSubmit: boolean;
 };
 
 function WithAddItem({
   nextRedo,
   dispatch,
-  keyboardSubmit
+  keyboardSubmit,
+  useKeyCooldown
 }: WithMutationProps) {
   const [mutationSubmitting, setMutationSubmitting] = useState(false);
   const mutationCooldown = useDelayedFunction(() => {
@@ -136,7 +157,12 @@ function WithAddItem({
       mutationCooldown(500);
     }
   };
-  if (keyboardSubmit && !mutationSubmitting) handleMutation();
+  useEffect(() => {
+    if (keyboardSubmit && !mutationSubmitting) {
+      useKeyCooldown();
+      handleMutation();
+    }
+  }, [keyboardSubmit]);
   return (
     <RedoButtonInner
       useMutationHook={handleMutation}
@@ -148,7 +174,8 @@ function WithAddItem({
 function WithAddNote({
   nextRedo,
   dispatch,
-  keyboardSubmit
+  keyboardSubmit,
+  useKeyCooldown
 }: WithMutationProps) {
   const [mutationSubmitting, setMutationSubmitting] = useState(false);
   const mutationCooldown = useDelayedFunction(() => {
@@ -171,7 +198,12 @@ function WithAddNote({
       mutationCooldown(500);
     }
   };
-  if (keyboardSubmit && !mutationSubmitting) handleMutation();
+  useEffect(() => {
+    if (keyboardSubmit && !mutationSubmitting) {
+      useKeyCooldown();
+      handleMutation();
+    }
+  }, [keyboardSubmit]);
   return (
     <RedoButtonInner
       useMutationHook={handleMutation}
@@ -183,7 +215,8 @@ function WithAddNote({
 function WithDeleteItems({
   nextRedo,
   dispatch,
-  keyboardSubmit
+  keyboardSubmit,
+  useKeyCooldown
 }: WithMutationProps) {
   const [mutationSubmitting, setMutationSubmitting] = useState(false);
   const mutationCooldown = useDelayedFunction(() => {
@@ -215,7 +248,12 @@ function WithDeleteItems({
       mutationCooldown(500);
     }
   };
-  if (keyboardSubmit && !mutationSubmitting) handleMutation();
+  useEffect(() => {
+    if (keyboardSubmit && !mutationSubmitting) {
+      useKeyCooldown();
+      handleMutation();
+    }
+  }, [keyboardSubmit]);
   return (
     <RedoButtonInner
       useMutationHook={handleMutation}
@@ -227,7 +265,8 @@ function WithDeleteItems({
 function WithDeleteNote({
   nextRedo,
   dispatch,
-  keyboardSubmit
+  keyboardSubmit,
+  useKeyCooldown
 }: WithMutationProps) {
   const [mutationSubmitting, setMutationSubmitting] = useState(false);
   const mutationCooldown = useDelayedFunction(() => {
@@ -250,7 +289,12 @@ function WithDeleteNote({
       mutationCooldown(500);
     }
   };
-  if (keyboardSubmit && !mutationSubmitting) handleMutation();
+  useEffect(() => {
+    if (keyboardSubmit && !mutationSubmitting) {
+      useKeyCooldown();
+      handleMutation();
+    }
+  }, [keyboardSubmit]);
   return (
     <RedoButtonInner
       useMutationHook={handleMutation}
@@ -262,7 +306,8 @@ function WithDeleteNote({
 function WithSortItems({
   nextRedo,
   dispatch,
-  keyboardSubmit
+  keyboardSubmit,
+  useKeyCooldown
 }: WithMutationProps) {
   const [mutationSubmitting, setMutationSubmitting] = useState(false);
   const mutationCooldown = useDelayedFunction(() => {
@@ -285,7 +330,12 @@ function WithSortItems({
       mutationCooldown(500);
     }
   };
-  if (keyboardSubmit && !mutationSubmitting) handleMutation();
+  useEffect(() => {
+    if (keyboardSubmit && !mutationSubmitting) {
+      useKeyCooldown();
+      handleMutation();
+    }
+  }, [keyboardSubmit]);
   return (
     <RedoButtonInner
       useMutationHook={handleMutation}
@@ -297,7 +347,8 @@ function WithSortItems({
 function WithSortLists({
   nextRedo,
   dispatch,
-  keyboardSubmit
+  keyboardSubmit,
+  useKeyCooldown
 }: WithMutationProps) {
   const [mutationSubmitting, setMutationSubmitting] = useState(false);
   const mutationCooldown = useDelayedFunction(() => {
@@ -320,7 +371,12 @@ function WithSortLists({
       mutationCooldown(500);
     }
   };
-  if (keyboardSubmit && !mutationSubmitting) handleMutation();
+  useEffect(() => {
+    if (keyboardSubmit && !mutationSubmitting) {
+      useKeyCooldown();
+      handleMutation();
+    }
+  }, [keyboardSubmit]);
   return (
     <RedoButtonInner
       useMutationHook={handleMutation}
@@ -332,7 +388,8 @@ function WithSortLists({
 function WithStrikeItem({
   nextRedo,
   dispatch,
-  keyboardSubmit
+  keyboardSubmit,
+  useKeyCooldown
 }: WithMutationProps) {
   const [mutationSubmitting, setMutationSubmitting] = useState(false);
   const mutationCooldown = useDelayedFunction(() => {
@@ -355,7 +412,12 @@ function WithStrikeItem({
       mutationCooldown(500);
     }
   };
-  if (keyboardSubmit && !mutationSubmitting) handleMutation();
+  useEffect(() => {
+    if (keyboardSubmit && !mutationSubmitting) {
+      useKeyCooldown();
+      handleMutation();
+    }
+  }, [keyboardSubmit]);
   return (
     <RedoButtonInner
       useMutationHook={handleMutation}
