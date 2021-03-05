@@ -1,5 +1,6 @@
 // import { useStateValue } from 'src/state/state';
 import SignInButton from './shared/SignInButton';
+import HomePageIllustration from './svg/list/HomePageIllustration';
 
 /** Landing page for visitors while not logged in */
 
@@ -11,6 +12,7 @@ export default function HomePage() {
       <section className="">
         {/** Hero image splash background */}
         <div className="content h-screen flex flex-col justify-center ">
+          <HomePageIllustration />
           <h1 className="max-w-xl">Sharable Grocery List App For Families</h1>
           <div className="flex flex-wrap gap-4 mt-12 items-center">
             <SignInButton type="google" />
