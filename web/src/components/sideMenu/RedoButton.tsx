@@ -15,7 +15,7 @@ import { useStateValue } from 'src/state/state';
 import { UndoState } from 'src/types';
 import { sendNotification } from 'src/utils/dispatchActions';
 import IconButton from '../shared/IconButton';
-import DeleteIcon from '../svg/itemOptions/DeleteIcon';
+import RedoButtonIcon from '../svg/sideMenu/RedoButtonIcon';
 
 export default function RedoButton() {
   const [{ redoState }, dispatch] = useStateValue();
@@ -461,7 +461,7 @@ function RedoButtonInner({ useMutationHook }: RedoButtonInnerProps) {
 
   return (
     <IconButton
-      icon={<DeleteIcon />}
+      icon={<RedoButtonIcon />}
       onClick={useMutationHook}
       text={`Redo${largeScreen ? ' (Y)' : ''}`}
       style="side-menu-button"

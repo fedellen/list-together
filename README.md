@@ -12,7 +12,7 @@ List Together is a simple, modern list app built with family sharing capabilitie
 - Add, Strike, and Delete, Items
 - Easily Share Lists
 - Auto Complete
-- Undo / Redo Capabilities
+- Undo Capabilities
 - Smart Sort
 - Simple oAuth Sign-up / Login
 - Responsive Mobile Design
@@ -38,24 +38,22 @@ In addition, owners of a list can choose to limit the privileges they want that 
 
 This app also features some limited offline functionality. Users can install the app locally as a PWA. When in offline mode, they can view their last available list queries from the cache. Interacting with the lists does not work offline.
 
-## **👨🏿‍💻 Todos before release**
+## **👨🏿‍💻 Todo before release**
 
-- `SideMenu` rendered in an array to prevent buttons from shifting
-- Check undo / redo conditions from state, handle conflicts
 - Setup dark-mode hook and design the dark version
 - Fix `AddItem` modal's bounciness with `AutoComplete`
 - Standardize modal styling `RenameList` and `RemoveList` with `ShareList`
-- Write out unit tests for critical front-end components
+- Write out unit tests for critical front-end components / logic
 - Research and implement more testing methods for front-end / integration testing
 - Determine `if (!online)` for PWA offline list query viewing
 - Manually test the offline functionality of the production React build
 - Setup Docker for the backend, learn Dokku for deployment
 - Clear out remaining bugs
 
-## **🤔 Possible todos after release**
+## **🤔 Possibly todo after release**
 
 - Implement offline mutation capabilities for Apollo Client
-- Convert callbacks to Redis to prevent them from being cancelled
+- Convert server callbacks to Redis to prevent them from being cancelled
 - Add an `./app` directory with a React Native version of List Together
 
 ## **🐞 Known Bugs**

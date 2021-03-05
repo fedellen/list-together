@@ -15,7 +15,7 @@ import { useStateValue } from 'src/state/state';
 import { UndoState } from 'src/types';
 import { sendNotification } from 'src/utils/dispatchActions';
 import IconButton from '../shared/IconButton';
-import DeleteIcon from '../svg/itemOptions/DeleteIcon';
+import UndoButtonIcon from '../svg/sideMenu/UndoButtonIcon';
 
 export default function UndoButton() {
   const [{ undoState }, dispatch] = useStateValue();
@@ -461,7 +461,7 @@ function UndoButtonInner({ useMutationHook }: UndoButtonInnerProps) {
 
   return (
     <IconButton
-      icon={<DeleteIcon />}
+      icon={<UndoButtonIcon />}
       onClick={useMutationHook}
       text={`Undo${largeScreen ? ' (Z)' : ''}`}
       style="side-menu-button"
