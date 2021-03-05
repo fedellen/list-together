@@ -29,6 +29,7 @@ export default function useSortItems() {
 
       const previousSortedItems = currentSortedItems;
       let newSortedItemsArray: string[];
+      let newIndex = -1;
       if (direction === 'smartSort') {
         newSortedItemsArray = currentSmartSortedItems;
         if (!newSortedItemsArray) {
@@ -69,6 +70,7 @@ export default function useSortItems() {
             currentListIndex,
             currentListIndex + delta
           );
+          newIndex = currentListIndex + delta;
         }
       }
 
@@ -94,6 +96,14 @@ export default function useSortItems() {
               { previousItemArray: previousSortedItems, listId: currentListId }
             ]
           });
+          if (newIndex !== -1) {
+            const ul = window.document.getElementById('list-container')
+              ?.children[0];
+            ul?.children[newIndex].scrollIntoView({
+              behavior: 'smooth',
+              block: 'center'
+            });
+          }
           // Delay for only .05 sec on success
           mutationCooldown(50);
         }

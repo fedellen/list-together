@@ -124,6 +124,9 @@
   #header {
     @apply bg-gray-200 border-indigo-700 border-t-4 shadow-md sticky top-0 z-40;
   }
+  #header h2 {
+    @apply text-left;
+  }
   #header-container {
     @apply container py-3 flex justify-between items-center;
   }

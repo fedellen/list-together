@@ -34,7 +34,10 @@ export const HeaderOptions = () => {
     <div id="header-options">
       {userHasLists && (
         <IconButton
-          onClick={() => dispatch({ type: 'TOGGLE_MOVE_LISTS' })}
+          onClick={() => {
+            window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+            dispatch({ type: 'TOGGLE_MOVE_LISTS' });
+          }}
           text={moveList ? 'End Move' : 'Move Lists'}
           style="header-option-button"
           icon={<MoveListIcon />}
