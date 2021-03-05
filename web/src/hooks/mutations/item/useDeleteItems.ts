@@ -6,7 +6,7 @@ import useDelayedFunction from 'src/hooks/useDelayedFunction';
 
 export default function useDeleteItems() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
-  const [{ currentListId, undoState, redoState }, dispatch] = useStateValue();
+  const [{ currentListId }, dispatch] = useStateValue();
   const [deleteItems] = useDeleteItemsMutation();
   const mutationCooldown = useDelayedFunction(() =>
     setMutationSubmiting(false)
@@ -17,28 +17,6 @@ export default function useDeleteItems() {
     /**
      *  Delete Items Mutation
      */
-    /** Index of item on undoState? */
-    let itemOnUndo: number | null = null;
-    /** Index of item on redoState? */
-    let itemOnRedo: number | null = null;
-    for (const undo of undoState) {
-      if (
-        undo[0] === 'addItem' &&
-        undo[1].listId === currentListId &&
-        undo[1].itemName === itemNames[0]
-      ) {
-        itemOnUndo = undoState.indexOf(undo);
-      }
-    }
-    for (const redo of redoState) {
-      if (
-        redo[0] === 'deleteItems' &&
-        redo[1].listId === currentListId &&
-        itemNames[0] === redo[1].itemNameArray[0]
-      ) {
-        itemOnRedo = redoState.indexOf(redo);
-      }
-    }
     setMutationSubmiting(true);
     try {
       const { data } = await deleteItems({
@@ -53,22 +31,17 @@ export default function useDeleteItems() {
         errorNotification(data.deleteItems.errors, dispatch);
         mutationCooldown();
       } else {
-        if (itemOnUndo) {
-          dispatch({ type: 'REMOVE_UNDO', payload: itemOnUndo });
-        } else if (itemOnRedo) {
-          dispatch({ type: 'REMOVE_REDO', payload: itemOnRedo });
-        } else {
-          dispatch({
-            type: 'ADD_TO_UNDO',
-            payload: [
-              'deleteItems',
-              {
-                itemNameArray: itemNames,
-                listId: currentListId
-              }
-            ]
-          });
-        }
+        dispatch({
+          type: 'ADD_TO_UNDO',
+          payload: [
+            'deleteItems',
+            {
+              itemNameArray: itemNames,
+              listId: currentListId
+            }
+          ]
+        });
+        mutationCooldown();
         dispatch({ type: 'SET_SIDE_MENU_STATE', payload: 'add' });
         dispatch({ type: 'CLEAR_STATE' });
       }

@@ -14,7 +14,6 @@ import { Action } from 'src/state/reducer';
 import { useStateValue } from 'src/state/state';
 import { UndoState } from 'src/types';
 import { sendNotification } from 'src/utils/dispatchActions';
-import { errorNotification } from 'src/utils/errorNotification';
 import IconButton from '../shared/IconButton';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 
@@ -28,7 +27,7 @@ export default function RedoButton() {
   });
   const useKeyCooldown = () => {
     setKeyboardCooldown(true);
-    keyCooldown(500);
+    keyCooldown(100); // .1sec cooldown
   };
   const [keyboardCooldown, setKeyboardCooldown] = useState(false);
   let redoKeyboardButton = false;
@@ -149,9 +148,14 @@ function WithAddItem({
     const { data } = await addItem({
       variables: { data: { listId, nameInput: [itemName] } }
     });
-    if (data?.addItem.errors) {
-      errorNotification(data.addItem.errors, dispatch);
-      mutationCooldown();
+    const errors = data?.addItem.errors;
+    if (errors) {
+      console.log(errors);
+      sendNotification(dispatch, [
+        'Could not complete Redo action, an unexpected error has occurred..'
+      ]);
+      dispatch({ type: 'REMOVE_REDO' });
+      mutationCooldown(500); // .5 sec delay
     } else {
       dispatch({ type: 'REDO_MUTATION' });
       mutationCooldown(500);
@@ -190,9 +194,14 @@ function WithAddNote({
     const { data } = await addNote({
       variables: { data: { note, listId, itemName } }
     });
-    if (data?.addNote.errors) {
-      errorNotification(data.addNote.errors, dispatch);
-      mutationCooldown();
+    const errors = data?.addNote.errors;
+    if (errors) {
+      console.log(errors);
+      sendNotification(dispatch, [
+        'Could not complete Redo action, that item or note no longer exists on this list..'
+      ]);
+      dispatch({ type: 'REMOVE_REDO' });
+      mutationCooldown(500); // .5 sec delay
     } else {
       dispatch({ type: 'REDO_MUTATION' });
       mutationCooldown(500);
@@ -233,16 +242,12 @@ function WithDeleteItems({
     });
     const errors = data?.deleteItems.errors;
     if (errors) {
-      if (errors[0].field === 'itemName') {
-        sendNotification(dispatch, [
-          'Could not complete Redo action, that item has already been removed..'
-        ]);
-        dispatch({ type: 'REMOVE_REDO', payload: -1 }); // -1 removes last on array
-        mutationCooldown(500); // .5 sec delay
-      } else {
-        errorNotification(errors, dispatch);
-        mutationCooldown();
-      }
+      console.log(errors);
+      sendNotification(dispatch, [
+        'Could not complete Redo action, item(s) no longer exist on this list..'
+      ]);
+      dispatch({ type: 'REMOVE_REDO' });
+      mutationCooldown(500); // .5 sec delay
     } else {
       dispatch({ type: 'REDO_MUTATION' });
       mutationCooldown(500);
@@ -281,9 +286,14 @@ function WithDeleteNote({
     const { data } = await deleteNote({
       variables: { data: { note, listId, itemName } }
     });
-    if (data?.deleteNote.errors) {
-      errorNotification(data.deleteNote.errors, dispatch);
-      mutationCooldown();
+    const errors = data?.deleteNote.errors;
+    if (errors) {
+      console.log(errors);
+      sendNotification(dispatch, [
+        'Could not complete Redo action, item or note no longer exist on this list..'
+      ]);
+      dispatch({ type: 'REMOVE_REDO' });
+      mutationCooldown(500); // .5 sec delay
     } else {
       dispatch({ type: 'REDO_MUTATION' });
       mutationCooldown(500);
@@ -322,9 +332,14 @@ function WithSortItems({
     const { data } = await sortItems({
       variables: { data: { stringArray: previousItemArray }, listId }
     });
-    if (data?.sortItems.errors) {
-      errorNotification(data.sortItems.errors, dispatch);
-      mutationCooldown();
+    const errors = data?.sortItems.errors;
+    if (errors) {
+      console.log(errors);
+      sendNotification(dispatch, [
+        'Could not complete Redo action, an unexpected error has occurred..'
+      ]);
+      dispatch({ type: 'REMOVE_REDO' });
+      mutationCooldown(500); // .5 sec delay
     } else {
       dispatch({ type: 'REDO_MUTATION' });
       mutationCooldown(500);
@@ -363,9 +378,14 @@ function WithSortLists({
     const { data } = await sortLists({
       variables: { data: { stringArray: previousListArray } }
     });
-    if (data?.sortLists.errors) {
-      errorNotification(data.sortLists.errors, dispatch);
-      mutationCooldown();
+    const errors = data?.sortLists.errors;
+    if (errors) {
+      console.log(errors);
+      sendNotification(dispatch, [
+        'Could not complete Redo action, an unexpected error has occurred..'
+      ]);
+      dispatch({ type: 'REMOVE_REDO' });
+      mutationCooldown(500); // .5 sec delay
     } else {
       dispatch({ type: 'REDO_MUTATION' });
       mutationCooldown(500);
@@ -404,9 +424,14 @@ function WithStrikeItem({
     const { data } = await strikeItem({
       variables: { data: { listId, itemName } }
     });
-    if (data?.strikeItem.errors) {
-      errorNotification(data.strikeItem.errors, dispatch);
-      mutationCooldown();
+    const errors = data?.strikeItem.errors;
+    if (errors) {
+      console.log(errors);
+      sendNotification(dispatch, [
+        'Could not complete Redo action, that item no longer exists on this list..'
+      ]);
+      dispatch({ type: 'REMOVE_REDO' });
+      mutationCooldown(500); // .5 sec delay
     } else {
       dispatch({ type: 'REDO_MUTATION' });
       mutationCooldown(500);

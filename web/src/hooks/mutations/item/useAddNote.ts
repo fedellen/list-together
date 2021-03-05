@@ -8,10 +8,7 @@ import useItemsNotes from '../../fragments/useItemsNotes';
 
 export default function useAddNote() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
-  const [
-    { listState, currentListId, undoState, redoState },
-    dispatch
-  ] = useStateValue();
+  const [{ listState, currentListId }, dispatch] = useStateValue();
   const activeItemsNotes = useItemsNotes();
   const [addNote] = useAddNoteMutation();
   const mutationCooldown = useDelayedFunction(() =>
@@ -29,30 +26,7 @@ export default function useAddNote() {
     /**
      *  Add Note Mutation
      */
-    /** Index of item on undoState? */
-    let itemOnUndo: number | null = null;
-    /** Index of item on redoState? */
-    let itemOnRedo: number | null = null;
-    for (const undo of undoState) {
-      if (
-        undo[0] === 'deleteNote' &&
-        undo[1].listId === currentListId &&
-        undo[1].itemName === listState[1].itemName &&
-        undo[1].note === note
-      ) {
-        itemOnUndo = undoState.indexOf(undo);
-      }
-    }
-    for (const redo of redoState) {
-      if (
-        redo[0] === 'deleteNote' &&
-        redo[1].listId === currentListId &&
-        redo[1].itemName === listState[1].itemName &&
-        redo[1].note === note
-      ) {
-        itemOnRedo = redoState.indexOf(redo);
-      }
-    }
+
     // Front-end validation for `addNote`
     if (activeItemsNotes.includes(note)) {
       sendNotification(dispatch, [`That item already includes "${note}"..`]);
@@ -85,23 +59,18 @@ export default function useAddNote() {
           errorNotification(data.addNote.errors, dispatch);
           mutationCooldown();
         } else {
-          if (itemOnUndo) {
-            dispatch({ type: 'REMOVE_UNDO', payload: itemOnUndo });
-          } else if (itemOnRedo) {
-            dispatch({ type: 'REMOVE_REDO', payload: itemOnRedo });
-          } else {
-            dispatch({
-              type: 'ADD_TO_UNDO',
-              payload: [
-                'addNote',
-                {
-                  itemName: listState[1].itemName,
-                  note: note,
-                  listId: currentListId
-                }
-              ]
-            });
-          }
+          dispatch({
+            type: 'ADD_TO_UNDO',
+            payload: [
+              'addNote',
+              {
+                itemName: listState[1].itemName,
+                note: note,
+                listId: currentListId
+              }
+            ]
+          });
+
           dispatch({ type: 'CLEAR_STATE' });
         }
       } catch (err) {
