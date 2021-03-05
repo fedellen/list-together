@@ -9,6 +9,7 @@ export default function useDelayedFunction(delayedFunction: () => void) {
   }, []);
 
   const useDelay = (delay = 2000) => {
+    if (!componentIsMounted.current) return;
     setDelay(delay);
     setDelayEffect(true);
   };
