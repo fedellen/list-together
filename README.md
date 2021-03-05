@@ -12,6 +12,7 @@ List Together is a simple, modern list app built with family sharing capabilitie
 - Add, Strike, and Delete, Items
 - Easily Share Lists
 - Auto Complete
+- Undo / Redo Capabilities
 - Smart Sort
 - Simple oAuth Sign-up / Login
 - Responsive Mobile Design
@@ -23,6 +24,8 @@ Each user can create up to 25 lists. Lists can be renamed, removed, or shared to
 
 Lists can store up to 300 items each. Users with access to a list can add items, strike items, and/or delete items. Each user can also sort the order the items for their own unique display.
 
+Most list actions are stored locally to be used in the `Undo` feature. Users can conveniently undo or redo these actions to revert the list back to their preferred state.
+
 Striking items will immediately sort to the bottom on the list. Un-striking will attempt to sort the item back into the list. While a list has striked items, users can enter `Review` mode to view only their striked items. `Review` mode can be used to immediately delete all striked items.
 
 Items on the lists can be sorted manually, or by using the `SmartSort` feature. As the history of your lists grow, `SmartSort` will remember the order in which your items have previously been removed.
@@ -31,18 +34,19 @@ By default, this option will try to sort your list into the route you take throu
 
 Users can easily share their lists with friends via email address. The shared user must first create an account for the server to accept it as a sharable email address.
 
-In addition, owners of a list can choose to limit the privileges they want that shared user to have. Available Privilege levels include `read`, `add`, `strike`, and `full`. This feature is intended to protect your list from being cleared out accidently by younger family members or friends but still allowing them access to add items or read the list.
+In addition, owners of a list can choose to limit the privileges they want that shared user to have. Available Privilege levels include `read`, `add`, `strike`, and `full`. This feature is intended to protect your list from being cleared out accidentally by younger family members or friends but still allowing them access to add items or read the list.
 
 This app also features some limited offline functionality. Users can install the app locally as a PWA. When in offline mode, they can view their last available list queries from the cache. Interacting with the lists does not work offline.
 
 ## **👨🏿‍💻 Todos before release**
 
-- Undo functionality 🔥
+- `SideMenu` rendered in an array to prevent buttons from shifting
+- Check undo / redo conditions from state, handle conflicts
 - Setup dark-mode hook and design the dark version
 - Fix `AddItem` modal's bounciness with `AutoComplete`
 - Standardize modal styling `RenameList` and `RemoveList` with `ShareList`
 - Write out unit tests for critical front-end components
-- Research and implement more testing methods for front-end / intergration testing
+- Research and implement more testing methods for front-end / integration testing
 - Determine `if (!online)` for PWA offline list query viewing
 - Manually test the offline functionality of the production React build
 - Setup Docker for the backend, learn Dokku for deployment
@@ -50,7 +54,7 @@ This app also features some limited offline functionality. Users can install the
 
 ## **🤔 Possible todos after release**
 
-- Implement offline mutation capabilties for Apollo Client
+- Implement offline mutation capabilities for Apollo Client
 - Convert callbacks to Redis to prevent them from being cancelled
 - Add an `./app` directory with a React Native version of List Together
 
@@ -71,7 +75,7 @@ This app also features some limited offline functionality. Users can install the
 
 As a work in progress, the server has not yet been hosted anywhere. Before production I do intend to add Docker into the workflow with Dokku in particular.
 
-For now, to install and test the app locally you will first need to setup Postgresql and Redis on your system. You will also need to provide a .env file with the appropriate fields filled in. Afterwards, install and run the the server in development mode with:
+For now, to install and test the app locally you will first need to setup Postgres and Redis on your system. You will also need to provide a .env file with the appropriate fields filled in. Afterwards, install and run the the server in development mode with:
 
 ```
 cd ./server && yarn install && yarn dev
@@ -83,7 +87,7 @@ When making changes to the code in development mode you'll need to open another 
 yarn watch
 ```
 
-Before comitting any changes to the backend be sure to test the resolvers by running:
+Before committing any changes to the backend be sure to test the resolvers by running:
 
 ```
 yarn test
@@ -123,8 +127,8 @@ npx create-react-app my-app --template cra-template-pwa-typescript
 
 List Together is a project I've created to upgrade our personal grocery list routine. I used this opportunity to expand my knowledge of React with TypeScript.
 
-TypeScript was the hardest part of my recent webdev learning journey. Whenever I encounter something frustrating and difficult, I've always attempted to meet that problem head on. Therefore, I decided to create a full stack application using as much TypeScript as I possibly could.
+TypeScript was the hardest part of my recent web-dev learning journey. Whenever I encounter something frustrating and difficult, I've always attempted to meet that problem head on. Therefore, I decided to create a full stack application using as much TypeScript as I possibly could.
 
-Now I can absoultely say that TypeScript is no longer difficult for me. As expected, I now prefer it over plain JavaScript as it provides much more information. After about a week of using TypeScript regularly it became an extremely useful tool. There was a certain moment where I stopped struggling against the compiler and started working **with** the compiler.
+Now I can absolutely say that TypeScript is no longer difficult for me. As expected, I now prefer it over plain JavaScript as it provides much more information. After about a week of using TypeScript regularly it became an extremely useful tool. There was a certain moment where I stopped struggling against the compiler and started working **with** the compiler.
 
-After attempting several different offline-first with Apollo Client methods, I struggled to get offline mutations to work consistently enough to include this feature. Rather than starting over with a stack that includes more robust offline functionality, I decidied to finish this app with Apollo and skip offline mutations for now.
+After attempting several different offline-first with Apollo Client methods, I struggled to get offline mutations to work consistently enough to include this feature. Rather than starting over with a stack that includes more robust offline functionality, I decided to finish this app with Apollo and skip offline mutations for now.
