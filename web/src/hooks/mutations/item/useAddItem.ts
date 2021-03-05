@@ -32,13 +32,18 @@ export default function useAddItem() {
     for (const undo of undoState) {
       if (
         undo[0] === 'deleteItems' &&
+        undo[1].listId === listId &&
         undo[1].itemNameArray.includes(itemName)
       ) {
         itemOnUndo = undoState.indexOf(undo);
       }
     }
     for (const redo of redoState) {
-      if (redo[0] === 'addItem' && itemName === redo[1].itemName) {
+      if (
+        redo[0] === 'addItem' &&
+        redo[1].listId === listId &&
+        itemName === redo[1].itemName
+      ) {
         itemOnRedo = redoState.indexOf(redo);
       }
     }
