@@ -8,7 +8,10 @@ import useCurrentSortedItems from '../../fragments/useCurrentSortedItems';
 
 export default function useAddItem() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
-  const [{ currentListId: listId }, dispatch] = useStateValue();
+  const [
+    { currentListId: listId, undoState, redoState },
+    dispatch
+  ] = useStateValue();
   const currentSortedItems = useCurrentSortedItems();
   const mutationCooldown = useDelayedFunction(() =>
     setMutationSubmiting(false)
@@ -21,6 +24,24 @@ export default function useAddItem() {
      */
     const itemName = item;
     if (!itemName) return;
+
+    /** Index of item on undoState? */
+    let itemOnUndo: number | null = null;
+    /** Index of item on redoState? */
+    let itemOnRedo: number | null = null;
+    for (const undo of undoState) {
+      if (
+        undo[0] === 'deleteItems' &&
+        undo[1].itemNameArray.includes(itemName)
+      ) {
+        itemOnUndo = undoState.indexOf(undo);
+      }
+    }
+    for (const redo of redoState) {
+      if (redo[0] === 'addItem' && itemName === redo[1].itemName) {
+        itemOnRedo = redoState.indexOf(redo);
+      }
+    }
     // Front-end validation for `addItem`
     if (currentSortedItems.includes(itemName)) {
       sendNotification(dispatch, [
@@ -53,10 +74,16 @@ export default function useAddItem() {
           errorNotifaction(data.addItem.errors, dispatch);
           mutationCooldown();
         } else {
-          dispatch({
-            type: 'ADD_TO_UNDO',
-            payload: ['addItem', { itemName, listId }]
-          });
+          if (itemOnUndo) {
+            dispatch({ type: 'REMOVE_UNDO', payload: itemOnUndo });
+          } else if (itemOnRedo) {
+            dispatch({ type: 'REMOVE_REDO', payload: itemOnRedo });
+          } else {
+            dispatch({
+              type: 'ADD_TO_UNDO',
+              payload: ['addItem', { itemName, listId }]
+            });
+          }
           dispatch({ type: 'CLEAR_STATE' });
         }
       } catch (err) {
