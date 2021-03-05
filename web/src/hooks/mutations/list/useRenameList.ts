@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useRenameListMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { sendNotification, closeModal } from 'src/utils/dispatchActions';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { errorNotification } from 'src/utils/errorNotification';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
 
 export default function useRenameList() {
@@ -38,7 +38,7 @@ export default function useRenameList() {
           }
         });
         if (data?.renameList.errors) {
-          errorNotifaction(data.renameList.errors, dispatch);
+          errorNotification(data.renameList.errors, dispatch);
           mutationCooldown();
         } else {
           closeModal(dispatch);

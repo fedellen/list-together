@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useStrikeItemMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { errorNotification } from 'src/utils/errorNotification';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
 
 export default function useStrikeItem() {
@@ -28,7 +28,7 @@ export default function useStrikeItem() {
         }
       });
       if (data?.strikeItem.errors) {
-        errorNotifaction(data.strikeItem.errors, dispatch);
+        errorNotification(data.strikeItem.errors, dispatch);
         mutationCooldown();
       } else {
         dispatch({

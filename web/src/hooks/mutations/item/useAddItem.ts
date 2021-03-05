@@ -3,7 +3,7 @@ import { useAddItemMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
 import { sendNotification } from 'src/utils/dispatchActions';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { errorNotification } from 'src/utils/errorNotification';
 import useCurrentSortedItems from '../../fragments/useCurrentSortedItems';
 
 export default function useAddItem() {
@@ -71,7 +71,7 @@ export default function useAddItem() {
           }
         });
         if (data?.addItem.errors) {
-          errorNotifaction(data.addItem.errors, dispatch);
+          errorNotification(data.addItem.errors, dispatch);
           mutationCooldown();
         } else {
           if (itemOnUndo) {

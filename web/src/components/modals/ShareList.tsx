@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useShareListMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { closeModal, sendNotification } from 'src/utils/dispatchActions';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { errorNotification } from 'src/utils/errorNotification';
 import PrivilegeButton from '../shared/PrivilegeButton';
 import { UserPrivileges } from 'src/types';
 import useCurrentListName from 'src/hooks/fragments/useCurrentListName';
@@ -31,7 +31,7 @@ export default function ShareList() {
           }
         });
         if (data?.shareList.errors) {
-          errorNotifaction(data.shareList.errors, dispatch);
+          errorNotification(data.shareList.errors, dispatch);
           setTimeout(() => setSubmit(false), 2000);
         } else {
           closeModal(dispatch);

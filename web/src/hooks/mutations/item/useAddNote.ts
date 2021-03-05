@@ -3,7 +3,7 @@ import { useAddNoteMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
 import { sendNotification } from 'src/utils/dispatchActions';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { errorNotification } from 'src/utils/errorNotification';
 import useItemsNotes from '../../fragments/useItemsNotes';
 
 export default function useAddNote() {
@@ -55,7 +55,7 @@ export default function useAddNote() {
           }
         });
         if (data?.addNote.errors) {
-          errorNotifaction(data.addNote.errors, dispatch);
+          errorNotification(data.addNote.errors, dispatch);
           mutationCooldown();
         } else {
           dispatch({

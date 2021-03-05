@@ -2,7 +2,7 @@ import { Action } from 'src/state/reducer';
 import { FieldError } from '../generated/graphql';
 
 let timeoutId: ReturnType<typeof setTimeout>;
-export const errorNotifaction = (
+export const errorNotification = (
   errors: FieldError[],
   dispatch: (value: Action) => void
 ) => {

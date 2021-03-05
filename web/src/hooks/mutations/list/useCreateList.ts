@@ -5,7 +5,7 @@ import {
 } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { sendNotification } from 'src/utils/dispatchActions';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { errorNotification } from 'src/utils/errorNotification';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
 
 export default function useCreateList() {
@@ -42,7 +42,7 @@ export default function useCreateList() {
           }
         });
         if (data?.createList.errors) {
-          errorNotifaction(data.createList.errors, dispatch);
+          errorNotification(data.createList.errors, dispatch);
           mutationCooldown();
         } else {
           await refetch();

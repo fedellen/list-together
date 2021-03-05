@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { errorNotification } from 'src/utils/errorNotification';
 import PrivilegeButton from '../shared/PrivilegeButton';
 import { UserPrivileges } from 'src/types';
 import useCurrentListName from 'src/hooks/fragments/useCurrentListName';
@@ -70,7 +70,7 @@ export default function EditRights() {
           }
         });
         if (data?.updatePrivileges.errors) {
-          errorNotifaction(data.updatePrivileges.errors, dispatch);
+          errorNotification(data.updatePrivileges.errors, dispatch);
         } else {
           closeModal(dispatch);
         }

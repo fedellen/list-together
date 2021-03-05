@@ -5,7 +5,7 @@ import {
 } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { errorNotification } from 'src/utils/errorNotification';
 import useCurrentListName from 'src/hooks/fragments/useCurrentListName';
 
 export default function RemoveList() {
@@ -26,7 +26,7 @@ export default function RemoveList() {
       try {
         const { data } = await removeList();
         if (data?.deleteList.errors) {
-          errorNotifaction(data.deleteList.errors, dispatch);
+          errorNotification(data.deleteList.errors, dispatch);
         } else {
           await refetchUser();
           await refetchLists();

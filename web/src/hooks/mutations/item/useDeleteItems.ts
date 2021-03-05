@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useDeleteItemsMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { errorNotification } from 'src/utils/errorNotification';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
 
 export default function useDeleteItems() {
@@ -28,7 +28,7 @@ export default function useDeleteItems() {
         }
       });
       if (data?.deleteItems.errors) {
-        errorNotifaction(data.deleteItems.errors, dispatch);
+        errorNotification(data.deleteItems.errors, dispatch);
         mutationCooldown();
       } else {
         dispatch({

@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useDeleteNoteMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { sendNotification } from 'src/utils/dispatchActions';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { errorNotification } from 'src/utils/errorNotification';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
 export default function useDeleteNote() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
@@ -34,7 +34,7 @@ export default function useDeleteNote() {
         }
       });
       if (data?.deleteNote.errors) {
-        errorNotifaction(data.deleteNote.errors, dispatch);
+        errorNotification(data.deleteNote.errors, dispatch);
         mutationCooldown();
       } else {
         dispatch({

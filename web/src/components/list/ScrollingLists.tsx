@@ -8,7 +8,7 @@ import { useStateValue } from 'src/state/state';
 import { ArrowIconDirection } from 'src/types';
 import { arrayMove } from 'src/utils/arrayMove';
 import { sendNotification, setNewList } from 'src/utils/dispatchActions';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { errorNotification } from 'src/utils/errorNotification';
 import LeftArrowIcon from '../svg/list/LeftArrowIcon';
 import RightArrowIcon from '../svg/list/RightArrowIcon';
 
@@ -74,7 +74,7 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
         }
       });
       if (data?.sortLists.errors) {
-        errorNotifaction(data.sortLists.errors, dispatch);
+        errorNotification(data.sortLists.errors, dispatch);
       } else {
         dispatch({
           type: 'ADD_TO_UNDO',

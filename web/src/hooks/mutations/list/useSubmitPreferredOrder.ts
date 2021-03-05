@@ -3,7 +3,7 @@ import { useSubmitPreferredOrderMutation } from 'src/generated/graphql';
 import useCurrentSortedItems from 'src/hooks/fragments/useCurrentSortedItems';
 import { useStateValue } from 'src/state/state';
 import { sendNotification } from 'src/utils/dispatchActions';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { errorNotification } from 'src/utils/errorNotification';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
 export default function useSubmitPreferredOrder() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
@@ -31,7 +31,7 @@ export default function useSubmitPreferredOrder() {
         }
       });
       if (data?.submitPreferredOrder.errors) {
-        errorNotifaction(data.submitPreferredOrder.errors, dispatch);
+        errorNotification(data.submitPreferredOrder.errors, dispatch);
         mutationCooldown();
       } else {
         sendNotification(dispatch, [

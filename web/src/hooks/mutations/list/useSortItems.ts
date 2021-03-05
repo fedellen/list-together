@@ -5,7 +5,7 @@ import useCurrentSortedItems from 'src/hooks/fragments/useCurrentSortedItems';
 import { useStateValue } from 'src/state/state';
 import { arrayMove } from 'src/utils/arrayMove';
 import { sendNotification } from 'src/utils/dispatchActions';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { errorNotification } from 'src/utils/errorNotification';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
 
 export default function useSortItems() {
@@ -84,7 +84,7 @@ export default function useSortItems() {
           }
         });
         if (data?.sortItems.errors) {
-          errorNotifaction(data.sortItems.errors, dispatch);
+          errorNotification(data.sortItems.errors, dispatch);
           mutationCooldown();
         } else {
           dispatch({

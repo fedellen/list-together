@@ -14,7 +14,7 @@ import { Action } from 'src/state/reducer';
 import { useStateValue } from 'src/state/state';
 import { UndoState } from 'src/types';
 import { sendNotification } from 'src/utils/dispatchActions';
-import { errorNotifaction } from 'src/utils/errorNotification';
+import { errorNotification } from 'src/utils/errorNotification';
 import IconButton from '../shared/IconButton';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 
@@ -129,7 +129,7 @@ function WithAddItem({
       variables: { data: { listId, nameInput: itemNameArray } }
     });
     if (data?.addItem.errors) {
-      errorNotifaction(data.addItem.errors, dispatch);
+      errorNotification(data.addItem.errors, dispatch);
       mutationCooldown();
     } else {
       dispatch({ type: 'UNDO_MUTATION' });
@@ -164,7 +164,7 @@ function WithAddNote({
       variables: { data: { note, listId, itemName } }
     });
     if (data?.addNote.errors) {
-      errorNotifaction(data.addNote.errors, dispatch);
+      errorNotification(data.addNote.errors, dispatch);
       mutationCooldown();
     } else {
       dispatch({ type: 'UNDO_MUTATION' });
@@ -207,7 +207,7 @@ function WithDeleteItems({
         dispatch({ type: 'REMOVE_UNDO', payload: -1 });
         mutationCooldown(500); // .5 sec delay
       } else {
-        errorNotifaction(errors, dispatch);
+        errorNotification(errors, dispatch);
         mutationCooldown();
       }
     } else {
@@ -243,7 +243,7 @@ function WithDeleteNote({
       variables: { data: { note, listId, itemName } }
     });
     if (data?.deleteNote.errors) {
-      errorNotifaction(data.deleteNote.errors, dispatch);
+      errorNotification(data.deleteNote.errors, dispatch);
       mutationCooldown();
     } else {
       dispatch({ type: 'UNDO_MUTATION' });
@@ -278,7 +278,7 @@ function WithSortItems({
       variables: { data: { stringArray: previousItemArray }, listId }
     });
     if (data?.sortItems.errors) {
-      errorNotifaction(data.sortItems.errors, dispatch);
+      errorNotification(data.sortItems.errors, dispatch);
       mutationCooldown();
     } else {
       dispatch({ type: 'UNDO_MUTATION' });
@@ -313,7 +313,7 @@ function WithSortLists({
       variables: { data: { stringArray: previousListArray } }
     });
     if (data?.sortLists.errors) {
-      errorNotifaction(data.sortLists.errors, dispatch);
+      errorNotification(data.sortLists.errors, dispatch);
       mutationCooldown();
     } else {
       dispatch({ type: 'UNDO_MUTATION' });
@@ -348,7 +348,7 @@ function WithStrikeItem({
       variables: { data: { listId, itemName } }
     });
     if (data?.strikeItem.errors) {
-      errorNotifaction(data.strikeItem.errors, dispatch);
+      errorNotification(data.strikeItem.errors, dispatch);
       mutationCooldown();
     } else {
       dispatch({ type: 'UNDO_MUTATION' });
