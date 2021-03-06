@@ -25,10 +25,10 @@ export const HeaderOptions = () => {
   const userHasLists = currentListId !== '';
   const userCanRename = currentListPrivileges !== 'read';
 
-  const [logout, logoutSubmitting] = useLogout();
+  const [logout] = useLogout();
   const [saveOrder, saveOrderSubmitting] = useSubmitPreferredOrder();
 
-  const mutationSubmitting = logoutSubmitting || saveOrderSubmitting;
+  const mutationSubmitting = saveOrderSubmitting;
 
   return (
     <div id="header-options">
