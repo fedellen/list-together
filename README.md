@@ -53,6 +53,7 @@ This app also features some limited offline functionality. Users can install the
 ## **🤔 Possibly todo after release**
 
 - Implement offline mutation capabilities for Apollo Client
+- Add test user creation from front-to-back without Passport APIs for a better dev environment
 - Convert server callbacks to Redis to prevent them from being cancelled
 - Add an `./app` directory with a React Native version of List Together
 
@@ -74,6 +75,8 @@ This app also features some limited offline functionality. Users can install the
 As a work in progress, the server has not yet been hosted anywhere. Before production I do intend to add Docker into the workflow with Dokku in particular.
 
 For now, to install and test the app locally you will first need to setup Postgres and Redis on your system. You will also need to provide a .env file with the appropriate fields filled in. Afterwards, install and run the the server in development mode with:
+
+In the .env file you will need to provide at least one method for logging in via Passport
 
 ```
 cd ./server && yarn install && yarn dev
