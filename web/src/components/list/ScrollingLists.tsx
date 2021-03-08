@@ -107,14 +107,17 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
     setNewData(false);
   }
 
+  const moreThanOneList = lists.length > 1;
   return (
     <div className="scrolling-lists">
-      <button
-        className="list-arrow-button"
-        onClick={() => handleArrowClick('left')}
-      >
-        <LeftArrowIcon />
-      </button>
+      {moreThanOneList && (
+        <button
+          className="list-arrow-button"
+          onClick={() => handleArrowClick('left')}
+        >
+          <LeftArrowIcon />
+        </button>
+      )}
 
       <ul ref={scrollingList}>
         {lists.map((userList) => (
@@ -146,12 +149,14 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
           </li>
         ))}
       </ul>
-      <button
-        className="list-arrow-button"
-        onClick={() => handleArrowClick('right')}
-      >
-        <RightArrowIcon />
-      </button>
+      {moreThanOneList && (
+        <button
+          className="list-arrow-button"
+          onClick={() => handleArrowClick('right')}
+        >
+          <RightArrowIcon />
+        </button>
+      )}
     </div>
   );
 }
