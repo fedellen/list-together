@@ -40,11 +40,9 @@ This app also features some limited offline functionality. Users can install the
 
 ## **👨🏿‍💻 Todo before release**
 
-- Setup dark-mode hook and design the dark version
+- Design the dark version
 - Fix `AddItem` modal's bounciness with `AutoComplete`
 - Standardize modal styling `RenameList` and `RemoveList` with `ShareList`
-- Write out unit tests for critical front-end components / logic
-- Research and implement more testing methods for front-end / integration testing
 - Determine `if (!online)` for PWA offline list query viewing
 - Manually test the offline functionality of the production React build
 - Setup Docker for the backend, learn Dokku for deployment
@@ -54,6 +52,7 @@ This app also features some limited offline functionality. Users can install the
 
 - Implement offline mutation capabilities for Apollo Client
 - Add test user creation from front-to-back without Passport APIs for a better dev environment
+- Implement testing on front-end / research end to end testing
 - Convert server callbacks to Redis to prevent them from being cancelled
 - Add an `./app` directory with a React Native version of List Together
 
