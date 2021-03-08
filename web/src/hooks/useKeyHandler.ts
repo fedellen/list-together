@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import useDelayedFunction from './useDelayedFunction';
 
-type keyPair = {
+export type KeyPair = {
   /**
    * Array of keyValues to trigger the provided callback function
    * Key value examples: 'a', 'b', 'y', 'Enter', 'Escape' ...
@@ -32,7 +32,7 @@ type keyPair = {
  *
  */
 
-export const useKeyHandler = (keyPairs: keyPair[]) => {
+export const useKeyHandler = (keyPairs: KeyPair[]) => {
   const [cooldown, setCooldown] = useState(false);
   const triggerCooldownCallback = useDelayedFunction(() => setCooldown(false));
 

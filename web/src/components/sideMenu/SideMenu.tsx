@@ -1,9 +1,8 @@
-import { useEffect } from 'react';
 import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
 import useDeleteItems from 'src/hooks/mutations/item/useDeleteItems';
-import useKeyPress from 'src/hooks/useKeyPress';
 import { useStateValue } from 'src/state/state';
 import { openModal } from 'src/utils/dispatchActions';
+import { KeyPair, useKeyHandler } from '../../hooks/useKeyHandler';
 import IconButton from '../shared/IconButton';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import AddItemIcon from '../svg/sideMenu/AddItemIcon';
@@ -46,35 +45,6 @@ export default function SideMenu({ strikedItems }: SideMenuProps) {
     });
   };
 
-  /** Keyboard events while Side Menu is active */
-
-  const addKeyPress = useKeyPress('a');
-  useEffect(() => {
-    if (sideMenuState === 'add' && addKeyPress && userCanAdd)
-      handleAddItemClick();
-  }, [addKeyPress]);
-
-  const deleteAllKeyPress = useKeyPress('d');
-  useEffect(() => {
-    if (sideMenuState === 'review' && deleteAllKeyPress) handleDeleteAllClick();
-  }, [deleteAllKeyPress]);
-
-  const reviewKeyPress = useKeyPress('r');
-  useEffect(() => {
-    if (hasStrikedItems && userCanDelete && reviewKeyPress) {
-      if (sideMenuState === 'add') {
-        handleReviewClick();
-      } else if (sideMenuState === 'review') {
-        handleReturnClick();
-      }
-    }
-  }, [reviewKeyPress]);
-
-  const newListKeyPress = useKeyPress('n');
-  useEffect(() => {
-    if (newListKeyPress) openModal(dispatch, 'createList');
-  }, [newListKeyPress]);
-
   /** Determine current list privileges to conditionally render buttons */
   const currentPrivileges = useCurrentPrivileges();
   const userCanDelete =
@@ -84,6 +54,38 @@ export default function SideMenu({ strikedItems }: SideMenuProps) {
   const style = 'side-menu-button';
   const largeScreen = window.innerWidth > 1024;
   const hasStrikedItems = strikedItems.length > 0;
+
+  /** Keyboard events while Side Menu is active */
+
+  let keysToHandle: KeyPair[] = [
+    { keyValues: ['n'], callback: () => openModal(dispatch, 'createList') }
+  ];
+
+  if (userCanAdd && sideMenuState === 'add') {
+    keysToHandle = [
+      ...keysToHandle,
+      { keyValues: ['a'], callback: () => handleAddItemClick() }
+    ];
+  }
+
+  if (sideMenuState === 'review') {
+    keysToHandle = [
+      ...keysToHandle,
+      { keyValues: ['d'], callback: () => handleDeleteAllClick() }
+    ];
+  }
+  if (hasStrikedItems && userCanDelete) {
+    keysToHandle = [
+      ...keysToHandle,
+      {
+        keyValues: ['r'],
+        callback: () =>
+          sideMenuState === 'add' ? handleReviewClick() : handleReturnClick()
+      }
+    ];
+  }
+
+  useKeyHandler(keysToHandle);
 
   return (
     <div id="side-menu">
