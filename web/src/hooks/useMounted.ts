@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-/** Returns true if the component is mounted */
+/** Contains true if the component is mounted */
 export const useMounted = (): React.MutableRefObject<boolean> => {
   // On component mount, set to true
   const componentIsMounted = useRef(true);
