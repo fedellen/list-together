@@ -1,9 +1,10 @@
 import { memo } from 'react';
 import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
 import useSortItems from 'src/hooks/mutations/list/useSortItems';
+import useDarkMode from 'src/hooks/useDarkMode';
 import { Action } from 'src/state/reducer';
 import { useStateValue } from 'src/state/state';
-import { openModal, setAppState } from 'src/utils/dispatchActions';
+import { openModal } from 'src/utils/dispatchActions';
 import IconButton from '../shared/IconButton';
 import LoginIcon from '../svg/headerMenu/LoginIcon';
 import NewListIcon from '../svg/headerMenu/NewListIcon';
@@ -25,6 +26,8 @@ export default function HeaderMenu() {
     smartSort('', 'smartSort');
   };
 
+  const toggleDarkMode = useDarkMode();
+
   const optionsOpen = listState[0] === 'options';
   const isOwner = useCurrentPrivileges() === 'owner';
   const userExist = currentUserId !== '';
@@ -38,6 +41,7 @@ export default function HeaderMenu() {
       isOwner={isOwner}
       dispatch={dispatch}
       smartSort={handleSmartSort}
+      toggleDarkMode={toggleDarkMode}
     />
   );
 }
@@ -49,6 +53,7 @@ type HeaderMenuContextProps = {
   isOwner: boolean;
   dispatch: React.Dispatch<Action>;
   smartSort: () => void;
+  toggleDarkMode: () => void;
 };
 
 /**
@@ -61,8 +66,10 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
   optionsOpen,
   isOwner,
   dispatch,
-  smartSort
+  smartSort,
+  toggleDarkMode
 }: HeaderMenuContextProps) {
+  const smallScreen = window.innerWidth < 400;
   const iconButtonStyle = 'header-button';
   return (
     <div id="header-menu">
@@ -77,7 +84,7 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
           />
           {listExist && (
             <>
-              {isOwner && (
+              {isOwner && !smallScreen && (
                 <IconButton
                   icon={<ShareIcon />}
                   text="Share"
@@ -92,9 +99,19 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
                 icon={<SmartSortIcon />}
               />
               <IconButton
+                icon={<LoginIcon />}
+                text="Dark Mode"
+                onClick={() => toggleDarkMode()}
+                style={iconButtonStyle}
+              />
+              <IconButton
                 icon={<OptionsIcon />}
                 text="Options"
-                onClick={() => dispatch({ type: 'TOGGLE_OPTIONS' })}
+                onClick={() =>
+                  dispatch({
+                    type: optionsOpen ? 'CLEAR_STATE' : 'TOGGLE_OPTIONS'
+                  })
+                }
                 style={iconButtonStyle}
                 active={optionsOpen}
               />
@@ -103,14 +120,10 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
         </>
       ) : (
         <>
-          {/**
-           * Todo: This will be the darkmode toggle button for logged out users
-           * Logged in users will have the darkmode toggle in `HeaderOptions`
-           */}
           <IconButton
             icon={<LoginIcon />}
             text="Dark Mode"
-            onClick={() => setAppState(dispatch, 'login')}
+            onClick={() => toggleDarkMode()}
             style={iconButtonStyle}
           />
         </>

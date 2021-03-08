@@ -10,7 +10,7 @@
 
 @layer base {
   body {
-    @apply bg-gray-300 text-gray-700 font-body;
+    @apply bg-gray-300 dark:bg-gray-800  text-gray-700 font-body;
   }
 
   /* Shared `hover-grow` effects */

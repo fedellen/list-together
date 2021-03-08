@@ -12,6 +12,7 @@ import useCurrentSharedUsers from 'src/hooks/fragments/useCurrentSharedUsers';
 import useCurrentSortedItems from 'src/hooks/fragments/useCurrentSortedItems';
 import useLogout from 'src/hooks/mutations/user/useLogout';
 import useSubmitPreferredOrder from 'src/hooks/mutations/list/useSubmitPreferredOrder';
+import ShareIcon from '../svg/headerMenu/ShareIcon';
 
 /** Modal for displaying user's list options when header menu is clicked */
 export const HeaderOptions = () => {
@@ -29,6 +30,8 @@ export const HeaderOptions = () => {
   const [saveOrder, saveOrderSubmitting] = useSubmitPreferredOrder();
 
   const mutationSubmitting = saveOrderSubmitting;
+
+  const smallScreen = window.innerWidth < 400;
 
   return (
     <div id="header-options">
@@ -75,6 +78,14 @@ export const HeaderOptions = () => {
           text="Edit Rights"
           style="header-option-button"
           icon={<EditRightsIcon />}
+        />
+      )}
+      {smallScreen && currentListPrivileges === 'owner' && (
+        <IconButton
+          icon={<ShareIcon />}
+          text="Share"
+          onClick={() => openModal(dispatch, 'shareList')}
+          style={'header-option-button'}
         />
       )}
       <IconButton
