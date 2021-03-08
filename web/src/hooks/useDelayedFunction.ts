@@ -1,28 +1,31 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useMounted } from './useMounted';
 
-export default function useDelayedFunction(delayedFunction: () => void) {
-  const componentIsMounted = useRef(true);
+/** Takes a function and returns the trigger function */
+export default function useDelay(delayedFunction: () => void) {
+  const componentIsMounted = useMounted();
+  const [delay, setDelay] = useState(100); // 100ms default
+
+  const [delayEffect, setDelayEffect] = useState(false);
   useEffect(() => {
-    return () => {
-      componentIsMounted.current = false;
-    };
-  }, []);
+    if (!delayEffect || !componentIsMounted) return;
+    setDelayEffect(false);
 
-  const useDelay = (delay = 2000) => {
-    if (!componentIsMounted.current) return;
+    setTimeout(() => {
+      if (!componentIsMounted) return;
+      else {
+        // Run the delayed function if still mounted
+        delayedFunction();
+      }
+    }, delay);
+  }, [delayEffect, delayedFunction, delay, componentIsMounted]);
+
+  /** Triggers function after specified delay. Default is 100ms */
+  const sendDelay = (delay = 100) => {
+    if (!componentIsMounted) return;
     setDelay(delay);
     setDelayEffect(true);
   };
-  const [delay, setDelay] = useState(2000);
-  const [delayEffect, setDelayEffect] = useState(false);
-  useEffect(() => {
-    if (!delayEffect) return;
-    setDelayEffect(false);
-    setTimeout(() => {
-      if (!componentIsMounted.current) return;
-      else delayedFunction();
-    }, delay);
-  }, [delayEffect]);
 
-  return useDelay;
+  return sendDelay;
 }
