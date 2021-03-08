@@ -7,12 +7,11 @@ import UpArrowIcon from '../svg/itemOptions/UpArrowIcon';
 import DownArrowIcon from '../svg/itemOptions/DownArrowIcon';
 import DeleteIcon from '../svg/itemOptions/DeleteIcon';
 import IconButton from '../shared/IconButton';
-import useKeyPress from 'src/hooks/useKeyPress';
 import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
-import { useEffect } from 'react';
 import useDeleteItems from 'src/hooks/mutations/item/useDeleteItems';
 import useStrikeItem from 'src/hooks/mutations/item/useStrikeItem';
 import useSortItems from 'src/hooks/mutations/list/useSortItems';
+import { useKeyHandler } from 'src/hooks/useKeyHandler';
 
 /** Modal for displaying user's item options when an item is clicked */
 export const ItemOptions = () => {
@@ -66,30 +65,32 @@ export const ItemOptions = () => {
 
   /** Keyboard access for mutations */
 
-  const moveUpKeyPressed = useKeyPress('ArrowUp');
-  if (moveUpKeyPressed && !mutationLoading) handleOptionAction('sortItemUp');
-
-  const moveDownKeyPressed = useKeyPress('ArrowDown');
-  if (moveDownKeyPressed && !mutationLoading)
-    handleOptionAction('sortItemDown');
-
-  const strikeKeyPressed = userCanStrike && useKeyPress('s');
-  if (strikeKeyPressed && !mutationLoading) handleOptionAction('strikeItem');
-
-  const deleteKeyPressed = userCanDelete && useKeyPress('d');
-  if (deleteKeyPressed && !mutationLoading) handleOptionAction('deleteItem');
-
-  const noteKeyPressed = userCanAdd && useKeyPress('n');
-  useEffect(() => {
-    // Note key press results in an immediate dispatch, wrap in a useEffect
-    if (noteKeyPressed && !mutationLoading) handleOptionAction('addNote');
-  }, [noteKeyPressed]);
-
-  const escapeKeyPressed = useKeyPress('Escape');
-  useEffect(() => {
-    // Close item Modal
-    if (escapeKeyPressed) dispatch({ type: 'CLEAR_STATE' });
-  }, [escapeKeyPressed]);
+  useKeyHandler([
+    {
+      keyValues: ['ArrowUp'],
+      callback: () => handleOptionAction('sortItemUp')
+    },
+    {
+      keyValues: ['ArrowDown'],
+      callback: () => handleOptionAction('sortItemDown')
+    },
+    {
+      keyValues: ['s'],
+      callback: () => handleOptionAction('strikeItem')
+    },
+    {
+      keyValues: ['d'],
+      callback: () => handleOptionAction('deleteItem')
+    },
+    {
+      keyValues: ['n'],
+      callback: () => handleOptionAction('addNote')
+    },
+    {
+      keyValues: ['Escape'],
+      callback: () => dispatch({ type: 'CLEAR_STATE' })
+    }
+  ]);
 
   const style = 'item-option';
   return (
