@@ -1,6 +1,7 @@
 // import { useStateValue } from 'src/state/state';
 import SignInButton from './shared/SignInButton';
 import HomePageIllustration from './svg/list/HomePageIllustration';
+import TeamIllustration from './svg/list/TeamIllustration';
 import GitHubIcon from './svg/social/GitHubIcon';
 import KofiIcon from './svg/social/KofiIcon';
 
@@ -9,7 +10,7 @@ import KofiIcon from './svg/social/KofiIcon';
 export default function HomePage() {
   return (
     <div id="home">
-      <section className="">
+      <section>
         {/** Hero image splash background */}
         <div className="content grid grid-cols-1 lg:grid-cols-2 lg:gap-24 items-center justify-center justify-items-center ">
           <HomePageIllustration />
@@ -115,7 +116,7 @@ export default function HomePage() {
               forks are more than welcome. Information on how to contribute can
               be found at the{' '}
               <a
-                className="home-link "
+                className="home-link"
                 href="https://github.com/fedellen/list-together"
               >
                 project&rsquo;s repo.
@@ -146,41 +147,46 @@ export default function HomePage() {
       </section>
 
       <section>
-        <div className="content  flex flex-col justify-center gap-4">
-          <h2>About Pixel Pajama Studios</h2>
-          <p>
-            Pixel Pajama Studios is a tiny indie design and development studio
-            based in Minnesota, USA. Co-Founders{' '}
-            <a
-              href="https://pixelpajamastudios.com/abonbon.html"
-              className="home-link"
-            >
-              Bonnie K Thompson (abonbon)
-            </a>{' '}
-            and{' '}
-            <a
-              href="https://pixelpajamastudios.com/fedellen.html"
-              className="home-link"
-            >
-              Derek R Sonnenberg (fedellen)
-            </a>{' '}
-            began their pixel art journey in mid-2018. The idea to turn their
-            art into games emerged shortly after. Pixel Pajama Studios has
-            released two indie games:{' '}
-            <a
-              href="https://pixelpajamastudios.com/astraldefense.html"
-              className="home-link"
-            >
-              Astral Defense,{' '}
-            </a>
-            and{' '}
-            <a
-              href="https://pixelpajamastudios.com/sonarsmash.html"
-              className="home-link"
-            >
-              Sonar Smash.
-            </a>{' '}
-          </p>
+        <div className="content xl:flex xl:gap-40">
+          <div>
+            <h2>About Pixel Pajama Studios</h2>
+            <p>
+              Pixel Pajama Studios is a tiny indie design and development studio
+              based in Minnesota, USA. Co-Founders{' '}
+              <a
+                href="https://pixelpajamastudios.com/abonbon.html"
+                className="home-link"
+              >
+                Bonnie K Thompson (abonbon)
+              </a>{' '}
+              and{' '}
+              <a
+                href="https://pixelpajamastudios.com/fedellen.html"
+                className="home-link"
+              >
+                Derek R Sonnenberg (fedellen)
+              </a>{' '}
+              began their pixel art journey in mid-2018. The idea to turn their
+              art into games emerged shortly after. Pixel Pajama Studios has
+              released two indie games:{' '}
+              <a
+                href="https://pixelpajamastudios.com/astraldefense.html"
+                className="home-link"
+              >
+                Astral Defense,{' '}
+              </a>
+              and{' '}
+              <a
+                href="https://pixelpajamastudios.com/sonarsmash.html"
+                className="home-link"
+              >
+                Sonar Smash.
+              </a>{' '}
+            </p>
+          </div>
+          <div className="w-64 sm:w-80 md:w-96 my-4 flex-shrink-0 mx-auto mt-12 md:mt-16 lg:mt-20">
+            <TeamIllustration />
+          </div>
         </div>
       </section>
     </div>
