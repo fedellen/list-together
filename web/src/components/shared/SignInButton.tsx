@@ -9,7 +9,7 @@ type SignInButtonProps = {
 
 export default function SignInButton({ type }: SignInButtonProps) {
   const authLink = `http://localhost:4000/auth/${type}`;
-  // Capitalize function
+  // Capitalized first letter function
   const buttonText = type.replace(/^\w/, (c) => c.toUpperCase());
 
   let IconComponent: ReactNode;
@@ -31,11 +31,15 @@ export default function SignInButton({ type }: SignInButtonProps) {
 
   return (
     <a
-      className={`z-10 w-56 py-3 px-6 flex items-center rounded-full shadow-md bg-${color} text-gray-200 text-sm font-bold hover:bg-${hoverColor}`}
+      className={`z-10  p-3  sm:px-6  flex items-center rounded-full shadow-md bg-${color} text-gray-200 text-xxs font-bold hover:bg-${hoverColor}`}
       href={authLink}
     >
-      <div className="w-5 mr-4">{IconComponent}</div>
-      <span>Sign in with {buttonText}</span>
+      <div className="w-6 sm:mr-4">{IconComponent}</div>
+      <span className="hidden sm:block">
+        {buttonText}
+        <br />
+        Sign in
+      </span>
     </a>
   );
 }

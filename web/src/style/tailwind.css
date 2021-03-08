@@ -52,11 +52,15 @@
   }
 
   h1 {
-    @apply text-5xl md:text-6xl font-extrabold font-heading;
+    @apply mt-4 max-w-xl text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-extrabold font-heading;
   }
 
   h2 {
-    @apply text-2xl sm:text-3xl lg:text-4xl font-extrabold font-heading;
+    @apply text-lg sm:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-extrabold font-heading;
+  }
+
+  p {
+    @apply mt-4 lg:mt-8 xl:mt-12 text-xs sm:text-sm md:text-base xl:text-lg 2xl:text-xl opacity-80;
   }
 
   /** z-0 clickLayer for catching `CLEAR_STATE` clicks */
@@ -93,6 +97,10 @@
 
   .text-label {
     @apply absolute -mt-4 ml-4 text-xs font-bold;
+  }
+
+  .home-link {
+    @apply text-indigo-700 hover:text-indigo-500 font-extrabold;
   }
 
   /** Shared form styles for Login / CreateUser / ChangePassword */
@@ -181,6 +189,11 @@
 
   .content {
     @apply container py-4;
+  }
+
+  /** HomePage */
+  #home section {
+    @apply py-8 sm:py-12 md:py-24 lg:py-36 xl:py-40 px-2;
   }
 
   /** Scrolling lists component */

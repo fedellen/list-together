@@ -1,7 +1,11 @@
 export default function KofiIcon() {
   // SVG Icon for https://ko-fi.com
   return (
-    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className="shadow-md rounded-full"
+      viewBox="0 0 64 64"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <g fill="none" transform="matrix(1.9656019 0 0 1.9656019 0 -.0000006)">
         <circle cx="16.280001" cy="16.280001" fill="#29abe0" r="16.280001" />
         <path

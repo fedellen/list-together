@@ -12,7 +12,9 @@ export default function PixelPajamaWidget() {
             <a href="https://pixelpajamastudios.com/privacy.html">Privacy</a>
           </li>
           <li className="text-link">
-            <a href="https://pixelpajamastudios.com/support.html">Support</a>
+            <a href="https://github.com/fedellen/list-together/issues">
+              Report Bug
+            </a>
           </li>
         </ul>
         <a className="text-link" href="https://pixelpajamastudios.com">

@@ -1,7 +1,7 @@
 export default function HomePageIllustration() {
   /** Illustration from https://undraw.co titled: "Collaboration" */
   return (
-    <div className="w-96 my-4">
+    <div className="w-64 sm:w-80 md:w-96 my-4">
       {' '}
       <svg
         id="aba92bf9-15c7-4666-a277-8a6e60b3ba94"
