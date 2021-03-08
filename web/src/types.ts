@@ -10,6 +10,8 @@ export type ToggleItemState = {
   type: 'options' | 'addNote' | 'deleteItem';
 };
 
+export type Theme = 'light' | 'dark';
+
 export type UndoState =
   | ['addItem', { itemName: string; listId: string }]
   | ['addNote', { note: string; itemName: string; listId: string }]

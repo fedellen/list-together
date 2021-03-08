@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Theme } from '../types';
 
 const initialTheme = (): Theme => {
   if (typeof window !== 'undefined' && window.localStorage) {
@@ -14,8 +15,6 @@ const initialTheme = (): Theme => {
   }
   return 'light';
 };
-
-type Theme = 'light' | 'dark';
 
 export default function useDarkMode() {
   const [theme, setTheme] = useState<Theme>(initialTheme);
@@ -33,5 +32,5 @@ export default function useDarkMode() {
     applyTheme(theme);
   }, [theme]);
 
-  return () => setTheme(theme === 'dark' ? 'light' : 'dark');
+  return [theme, setTheme] as const;
 }
