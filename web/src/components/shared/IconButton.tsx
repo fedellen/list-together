@@ -11,6 +11,7 @@ type IconButtonProps = {
     | 'item-option';
   active?: boolean;
   autoFocus?: boolean;
+  moreStyles?: string;
 };
 
 export default function IconButton({
@@ -18,13 +19,16 @@ export default function IconButton({
   icon,
   text,
   style,
+  moreStyles,
   active,
   autoFocus = false
 }: IconButtonProps) {
   return (
     <button
       autoFocus={autoFocus}
-      className={`${style}${active ? ' active' : ''}`}
+      className={`${style}${active ? ' active' : ''}${
+        moreStyles ? moreStyles : ''
+      }`}
       onClick={onClick}
     >
       {icon}

@@ -74,7 +74,6 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
   theme,
   toggleDarkMode
 }: HeaderMenuContextProps) {
-  const smallScreen = window.innerWidth < 400;
   const iconButtonStyle = 'header-button';
   const isDark = theme === 'dark';
   return (
@@ -90,12 +89,13 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
           />
           {listExist && (
             <>
-              {isOwner && !smallScreen && (
+              {isOwner && (
                 <IconButton
                   icon={<ShareIcon />}
                   text="Share"
                   onClick={() => openModal(dispatch, 'shareList')}
                   style={iconButtonStyle}
+                  moreStyles=" hidden sm:flex"
                 />
               )}
               <IconButton
