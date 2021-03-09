@@ -10,40 +10,38 @@ import KofiIcon from './svg/social/KofiIcon';
 export default function HomePage() {
   return (
     <div id="home">
-      <section>
+      <section id="landing">
         {/** Hero image splash background */}
-        <div className="content grid grid-cols-1 lg:grid-cols-2 lg:gap-24 items-center justify-center justify-items-center ">
-          <HomePageIllustration />
-          <div className="flex flex-col justify-center">
-            <h1 className="">Sharable Grocery List App For Families</h1>
-            <p>
-              List Together is a simple, modern list app built with sharing
-              capabilities. Completely free to use and{' '}
-              <a
-                className="home-link"
-                href="https://github.com/fedellen/list-together"
-              >
-                open source.
-              </a>
-            </p>
-            <span className="mb-2 ml-2 mt-8  lg:mt-12 xl:mt-16 text-xxs font-bold">
-              Easy Login / Sign up :
-            </span>
-            <div className="flex flex-wrap gap-4 items-center">
-              <SignInButton type="google" />
-              <SignInButton type="twitter" />
-              <SignInButton type="facebook" />
-            </div>
+        <HomePageIllustration />
+        <div className="flex flex-col justify-center">
+          <h1 className="">Sharable Grocery List App For Families</h1>
+          <p>
+            List Together is a simple, modern list app built with sharing
+            capabilities. Completely free to use and{' '}
+            <a
+              className="home-link"
+              href="https://github.com/fedellen/list-together"
+            >
+              open source.
+            </a>
+          </p>
+          <span className="text-label mb-2 ml-2 mt-8  lg:mt-12 xl:mt-16">
+            Easy Login / Sign up :
+          </span>
+          <div className="flex flex-wrap gap-4 items-center">
+            <SignInButton type="google" />
+            <SignInButton type="twitter" />
+            <SignInButton type="facebook" />
           </div>
         </div>
       </section>
 
-      <section id="features-crud" className="py-24 bg-gray-400">
-        <div className="lg:flex lg:items-center lg:gap-36 content">
+      <section className="bg-alt">
+        <div className="home-content">
           <div className="w-64 h-64 lg:flex-shrink-0 bg-gray-300">
             Gif/Mp4 in action
           </div>
-          <div className="py-8 ">
+          <div>
             <h2>Simple, modern, functional.</h2>
             <p>
               List Together provides an easy to use interface to create and
@@ -54,12 +52,12 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section id="features-share" className="py-24 bg-gray-300">
-        <div className="lg:flex lg:items-center lg:gap-36 content">
+      <section>
+        <div className="home-content">
           <div className="w-64 h-64 lg:flex-shrink-0 bg-gray-400">
             Gif/Mp4 in action
           </div>
-          <div className="py-8 lg:order-first">
+          <div className="lg:order-first">
             <h2>Share and Collaborate</h2>
             <p>
               Users can easily share their lists with friends via email address.
@@ -71,14 +69,14 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section id="features-share" className="py-24 bg-gray-400">
-        <div className="lg:flex lg:items-center lg:gap-36 content">
+      <section className="bg-alt">
+        <div className="home-content">
           <div className="w-64 h-64 lg:flex-shrink-0 bg-gray-300">
             Gif/Mp4 in action
           </div>
-          <div className="py-8 ">
+          <div>
             <h2>Simple, modern, functional.</h2>
-            <p className="mt-4">
+            <p>
               List Together provides an easy to use interface to create and
               manage your lists. Clicking or tapping on items will allow users
               to add, strike, and delete item&rsquo;s from their list.
@@ -87,8 +85,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="login" className="bg-gray-300">
-        <div className="content xl:flex xl:gap-20">
+      <section>
+        <div className="home-content-xl">
           <div>
             <h2>Easy Login / Sign-up</h2>
             <p>
@@ -106,8 +104,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-gray-400">
-        <div className="content xl:flex xl:gap-40">
+      <section className="bg-alt">
+        <div className="home-content-xl">
           <div>
             <h2>Open Source</h2>
             <p>
@@ -147,7 +145,7 @@ export default function HomePage() {
       </section>
 
       <section>
-        <div className="content xl:flex xl:gap-40">
+        <div className="home-content-xl">
           <div>
             <h2>About Pixel Pajama Studios</h2>
             <p>
@@ -184,7 +182,7 @@ export default function HomePage() {
               </a>{' '}
             </p>
           </div>
-          <div className="w-64 sm:w-80 md:w-96 my-4 flex-shrink-0 mx-auto mt-12 md:mt-16 lg:mt-20">
+          <div className="team-illustration">
             <TeamIllustration />
           </div>
         </div>

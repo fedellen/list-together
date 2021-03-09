@@ -13,6 +13,32 @@
     @apply bg-gray-300 dark:bg-gray-800  text-gray-700 dark:text-gray-400 font-body;
   }
 
+  input {
+    @apply py-4 px-6 text-lg placeholder-gray-500 bg-gray-200 dark:bg-gray-700 shadow-md rounded-full w-full outline-none;
+  }
+  h1 {
+    @apply mt-4 max-w-xl text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-extrabold font-heading;
+  }
+
+  h2 {
+    @apply text-lg sm:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-extrabold font-heading;
+  }
+
+  p {
+    @apply mt-4 lg:mt-8 xl:mt-12 text-xs sm:text-sm md:text-base xl:text-lg 2xl:text-xl opacity-80;
+  }
+
+  /** Button styles */
+  .button-shared {
+    @apply flex z-10 py-2 px-6 rounded-full font-semibold md:text-lg;
+  }
+  .button {
+    @apply button-shared bg-indigo-300 hover:bg-indigo-400 shadow-md;
+  }
+  .button-secondary {
+    @apply button-shared hover:bg-indigo-300 hover:shadow-md;
+  }
+
   /* Shared `hover-grow` effects */
 
   .hover-grow {
@@ -37,32 +63,6 @@
     @apply bg-gray-400 rounded-lg shadow-md  hover:bg-gray-500;
   }
 
-  input {
-    @apply py-4 px-6 text-lg placeholder-gray-500 bg-gray-200 dark:bg-gray-700 shadow-md rounded-full w-full outline-none;
-  }
-
-  .button-shared {
-    @apply flex z-10 py-2 px-6 rounded-full font-semibold md:text-lg;
-  }
-  .button {
-    @apply button-shared bg-indigo-300 hover:bg-indigo-400 shadow-md;
-  }
-  .button-secondary {
-    @apply button-shared hover:bg-indigo-300 hover:shadow-md;
-  }
-
-  h1 {
-    @apply mt-4 max-w-xl text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-extrabold font-heading;
-  }
-
-  h2 {
-    @apply text-lg sm:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-extrabold font-heading;
-  }
-
-  p {
-    @apply mt-4 lg:mt-8 xl:mt-12 text-xs sm:text-sm md:text-base xl:text-lg 2xl:text-xl opacity-80;
-  }
-
   /** z-0 clickLayer for catching `CLEAR_STATE` clicks */
   #clickLayer {
     @apply fixed inset-0 z-0;
@@ -71,20 +71,6 @@
   /** Shared icon-button styles for SideMenu / HeaderMenu / HeaderOptions */
   .icon-button {
     @apply flex flex-col gap-0 items-center justify-center text-xxs font-bold z-20;
-  }
-
-  /** Special multi-button to choose which privilege to share with users */
-  .privilege-button {
-    @apply mb-2 sm:mb-4 text-xxs grid grid-cols-4 items-center justify-center rounded-full font-semibold shadow-md w-full;
-  }
-  .privilege-button button {
-    @apply flex justify-center font-semibold bg-indigo-300 border-indigo-500 hover:bg-indigo-400 text-gray-600 transition-all duration-200;
-  }
-  .privilege-button button.active {
-    @apply bg-indigo-500 text-indigo-900;
-  }
-  .privilege-button div {
-    @apply w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 flex flex-col m-1 p-1 sm:p-2 md:p-3 gap-1 md:gap-2;
   }
 
   #notification {
@@ -170,7 +156,7 @@
   /** Item options */
 
   #item-options-container {
-    @apply grid absolute grid-rows-2 grid-flow-col z-20 right-2 sm:right-auto sm:ml-20  mt-2 gap-2;
+    @apply grid absolute grid-rows-2 grid-flow-col z-20 right-2 sm:right-auto sm:ml-20 mt-2 gap-2;
   }
   .item-option {
     @apply icon-button bg-indigo-300 dark:bg-indigo-900 rounded-lg shadow-md hover:bg-indigo-400 dark:hover:bg-indigo-800 py-2 px-4;
@@ -188,8 +174,27 @@
   }
 
   /** HomePage */
-  #home section {
-    @apply py-8 sm:py-12 md:py-24 lg:py-36 xl:py-40 px-2;
+
+  #landing {
+    @apply py-4 sm:py-6 md:py-12 lg:py-24 xl:py-32 container grid grid-cols-1 lg:grid-cols-2 lg:gap-24 items-center justify-center justify-items-center;
+  }
+  #home section:not(:first-child) {
+    @apply py-8 sm:py-12 md:py-16 lg:py-24 xl:py-36 px-2;
+  }
+  .bg-alt {
+    @apply bg-gray-400 dark:bg-gray-900;
+  }
+  .home-content {
+    @apply xl:flex xl:items-center xl:gap-40 content;
+  }
+  .home-content-xl {
+    @apply xl:flex xl:items-center xl:gap-40 content;
+  }
+  .landing-illustration {
+    @apply w-64 sm:w-80 md:w-96;
+  }
+  .team-illustration {
+    @apply w-64 sm:w-80 md:w-96 my-4 flex-shrink-0 mx-auto  mt-12 md:mt-16 lg:mt-20;
   }
 
   /** Scrolling lists component */
@@ -253,7 +258,6 @@
   .strike {
     @apply line-through;
   }
-
   .item-button.strike.active {
     @apply line-through;
   }
@@ -264,7 +268,7 @@
     @apply flex;
   }
   .note-button {
-    @apply ml-8 rounded-full text-lg font-bold italic opacity-70 hover:text-indigo-700 dark:text-indigo-600;
+    @apply ml-8 rounded-full text-lg font-bold italic opacity-70 hover:text-indigo-700 dark:hover:text-indigo-600;
   }
   .delete-note {
     @apply ml-4 w-8 h-8 hover:text-red-700 z-10;
@@ -322,6 +326,20 @@
   }
   .auto-complete-items {
     @apply flex flex-wrap gap-2 max-h-40  overflow-y-scroll;
+  }
+
+  /** Special multi-button to choose which privilege to share with users */
+  .privilege-button {
+    @apply mb-2 sm:mb-4 text-xxs grid grid-cols-4 items-center justify-center rounded-full font-semibold shadow-md w-full;
+  }
+  .privilege-button button {
+    @apply flex justify-center font-semibold bg-indigo-300 border-indigo-500 hover:bg-indigo-400 text-gray-600 transition-all duration-200;
+  }
+  .privilege-button button.active {
+    @apply bg-indigo-500 text-indigo-900;
+  }
+  .privilege-button div {
+    @apply w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 flex flex-col m-1 p-1 sm:p-2 md:p-3 gap-1 md:gap-2;
   }
 
   /*===================================================\
