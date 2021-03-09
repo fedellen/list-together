@@ -87,7 +87,7 @@ export default function EditRights() {
         <CurrentListTitle />
         <button
           onClick={() => handleUpdatePrivileges(true)}
-          className=" rounded-full font-bold px-6 py-2 text-xs  bg-red-400  hover:bg-red-500"
+          className="button-alert"
         >
           Remove <br />
           All Access
@@ -97,14 +97,14 @@ export default function EditRights() {
       <span className="text-label mt-4">
         Shared User&lsquo;s Email Address:
       </span>
-      <div className="flex gap-2 items-center mb-4 ">
+      <div className="flex gap-2 items-center mb-4">
         <button
           className="move-list-button"
           onClick={() => handleArrowClick('left')}
         >
           <LeftArrowIcon />
         </button>
-        <span className="shared-email text-xs sm:text-sm md:text-base lg:text-lg font-bold overflow-x-auto ">
+        <span className="shared-email text-xs sm:text-sm p-2  lg:text-base font-bold overflow-x-auto ">
           {sharedUser?.email}
         </span>
         <button

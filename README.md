@@ -41,9 +41,8 @@ This app also features some limited offline functionality. Users can install the
 ## **👨🏿‍💻 Todo before release**
 
 - Design the dark version
-- Fix `AddItem` modal's bounciness with `AutoComplete`
-- Standardize modal styling `RenameList` and `RemoveList` with `ShareList`
-- Determine `if (!online)` for PWA offline list query viewing
+- Setup better subscription system for notifying users of newly shared lists
+- Determine `if (!online)` for PWA offline list query viewing (Possibly with subscription)
 - Manually test the offline functionality of the production React build
 - Setup Docker for the backend, learn Dokku for deployment
 - Clear out remaining bugs
