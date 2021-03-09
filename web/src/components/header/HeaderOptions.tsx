@@ -31,8 +31,6 @@ export const HeaderOptions = () => {
 
   const mutationSubmitting = saveOrderSubmitting;
 
-  const smallScreen = window.innerWidth < 400;
-
   return (
     <div id="header-options">
       {userHasLists && (
@@ -80,12 +78,13 @@ export const HeaderOptions = () => {
           icon={<EditRightsIcon />}
         />
       )}
-      {smallScreen && currentListPrivileges === 'owner' && (
+      {currentListPrivileges === 'owner' && (
         <IconButton
           icon={<ShareIcon />}
           text="Share"
           onClick={() => openModal(dispatch, 'shareList')}
           style={'header-option-button'}
+          moreStyles=" sm:hidden"
         />
       )}
       <IconButton
