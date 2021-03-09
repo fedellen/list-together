@@ -10,7 +10,7 @@
 
 @layer base {
   body {
-    @apply bg-gray-300 dark:bg-gray-900  text-gray-700 dark:text-gray-300 font-body;
+    @apply bg-gray-300 dark:bg-gray-800  text-gray-700 dark:text-gray-400 font-body;
   }
 
   /* Shared `hover-grow` effects */
@@ -38,7 +38,7 @@
   }
 
   input {
-    @apply py-4 px-6 text-lg placeholder-gray-500 bg-gray-200 dark:bg-gray-700 shadow-md rounded-full w-full outline-none max-w-xs;
+    @apply py-4 px-6 text-lg placeholder-gray-500 bg-gray-200 dark:bg-gray-700 shadow-md rounded-full w-full outline-none;
   }
 
   .button-shared {
@@ -75,7 +75,7 @@
 
   /** Special multi-button to choose which privilege to share with users */
   .privilege-button {
-    @apply text-xxs grid grid-cols-4 items-center justify-center rounded-full font-semibold shadow-md w-full;
+    @apply mb-2 sm:mb-4 text-xxs grid grid-cols-4 items-center justify-center rounded-full font-semibold shadow-md w-full;
   }
   .privilege-button button {
     @apply flex justify-center font-semibold bg-indigo-300 border-indigo-500 hover:bg-indigo-400 text-gray-600 transition-all duration-200;
@@ -91,16 +91,23 @@
     @apply fixed bottom-6 left-6 p-6 font-semibold w-60 lg:w-72 bg-indigo-300 rounded-lg shadow-md z-50;
   }
 
+  /** CurrentListTitle  */
+
+  .current-list-title {
+    @apply flex flex-col my-4 sm:my-6 gap-2;
+  }
+
   .list-title {
-    @apply text-2xl md:text-3xl col-span-2 font-extrabold py-2 px-4 underline text-indigo-700;
+    @apply text-base md:text-lg font-extrabold underline text-indigo-700 dark:text-indigo-600;
   }
 
   .text-label {
-    @apply absolute -mt-4 ml-4 text-xs font-bold;
+    @apply text-xs font-bold;
   }
 
+  /** Link on home-page */
   .home-link {
-    @apply text-indigo-700 hover:text-indigo-500 font-extrabold;
+    @apply text-indigo-700 dark:text-indigo-600 hover:text-indigo-500 font-extrabold;
   }
 
   /** Shared form styles for Login / CreateUser / ChangePassword */
@@ -114,15 +121,8 @@
     @apply mt-4;
   }
 
-  .single-input {
-    @apply flex flex-col w-full justify-center items-center gap-8 md:gap-10 sm:px-2 md:px-4;
-  }
-
-  .remove-confirmation {
-    @apply grid grid-cols-2 gap-10 mt-2 text-lg;
-  }
-  .remove-confirmation span {
-    @apply text-2xl md:text-3xl col-span-2 text-center font-extrabold;
+  .remove-warning {
+    @apply my-8 md:my-10 text-center font-bold;
   }
 
   /*===================================================\
@@ -130,7 +130,7 @@
   \====================================================*/
 
   #header {
-    @apply bg-gray-200 dark:bg-gray-800 border-indigo-700 border-t-4 shadow-md sticky top-0 z-40;
+    @apply bg-gray-200 dark:bg-gray-900 border-indigo-700 border-t-4 shadow-md sticky top-0 z-40;
   }
   #header h2 {
     @apply text-left;
@@ -146,10 +146,10 @@
   }
 
   .header-button {
-    @apply icon-button text-gray-600  hover:text-indigo-700;
+    @apply icon-button  hover:text-indigo-700;
   }
   .header-button.active {
-    @apply text-indigo-700;
+    @apply text-indigo-700 dark:text-indigo-600;
   }
   .header-button svg {
     @apply w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 pb-1;
@@ -177,7 +177,7 @@
     @apply grid absolute grid-rows-2 grid-flow-col z-20 right-2 sm:right-auto sm:ml-20  mt-2 gap-2;
   }
   .item-option {
-    @apply icon-button bg-indigo-300 rounded-lg shadow-md hover:bg-indigo-400 hover:text-indigo-800  py-2 px-4;
+    @apply icon-button bg-indigo-300 dark:bg-indigo-900 rounded-lg shadow-md hover:bg-indigo-400 dark:hover:bg-indigo-800 py-2 px-4;
   }
   .item-option svg {
     @apply w-9 h-9;
@@ -206,7 +206,7 @@
   }
   /** Container for displaying lists */
   .scrolling-lists ul {
-    @apply overflow-x-auto whitespace-nowrap flex  bg-gray-200 dark:bg-gray-800 rounded-lg px-2 shadow-md w-full z-10;
+    @apply overflow-x-auto whitespace-nowrap flex  bg-gray-200 dark:bg-gray-900 rounded-lg px-2 shadow-md w-full z-10;
   }
   .scrolling-lists li {
     @apply flex flex-row items-center justify-center;
@@ -216,11 +216,11 @@
     @apply text-2xl py-2 border-t-4 text-gray-500 font-bold justify-center items-center flex;
   }
   .list-button.active {
-    @apply text-indigo-700 border-indigo-600 font-extrabold;
+    @apply text-indigo-700 dark:text-indigo-600 border-indigo-600 font-extrabold;
   }
   /** Toggleable buttons for sorting lists left and right */
   .move-list-button {
-    @apply w-9 p-3 hover:text-indigo-700;
+    @apply w-9 p-3 hover:text-indigo-700 dark:text-indigo-600;
   }
   .list-button span {
     @apply p-3 mx-4;
@@ -229,7 +229,7 @@
   /** User's item list */
 
   #list-container {
-    @apply my-4 pt-4 bg-gray-200 dark:bg-gray-800 shadow-md flex-col flex rounded-lg;
+    @apply my-4 pt-4 bg-gray-200 dark:bg-gray-900 shadow-md flex-col flex rounded-lg;
   }
   /** The list with items  */
   #list-container > ul {
@@ -246,10 +246,10 @@
     @apply flex flex-col items-start gap-1;
   }
   .item-button {
-    @apply text-2xl font-semibold  px-2 break-all text-left z-10 hover:text-indigo-700;
+    @apply text-2xl font-semibold  px-2 break-all text-left z-10 hover:text-indigo-700 dark:hover:text-indigo-600;
   }
   .item-button.active {
-    @apply underline text-indigo-700 font-extrabold;
+    @apply underline text-indigo-700 dark:text-indigo-600 font-extrabold;
   }
 
   /** Shared strike class */
@@ -268,7 +268,7 @@
     @apply flex;
   }
   .note-button {
-    @apply ml-8 rounded-full text-lg font-bold italic opacity-70 hover:text-indigo-700;
+    @apply ml-8 rounded-full text-lg font-bold italic opacity-70 hover:text-indigo-700 dark:text-indigo-600;
   }
   .delete-note {
     @apply ml-4 w-8 h-8 hover:text-red-700 z-10;
@@ -280,35 +280,52 @@
     @apply sticky h-32 xl:h-36  ml-auto xl:mx-auto bottom-2 flex gap-3 p-4 justify-center z-10;
   }
   .side-menu-button {
-    @apply icon-button rounded-full shadow-md text-gray-700 bg-indigo-300 hover:bg-indigo-400   hover-grow-blue gap-1 px-3 py-4;
+    @apply icon-button rounded-full shadow-md bg-indigo-300 hover:bg-indigo-400 dark:hover:bg-indigo-800  dark:bg-indigo-900 gap-1 px-3 py-4 hover-grow;
   }
   .side-menu-button svg {
     @apply w-8  h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14;
   }
 
-  /** Modal  */
+  /*===================================================\
+  |                      Modal                        |
+  \====================================================*/
+
   .modal-container {
     @apply fixed inset-0 items-center justify-center flex z-20 top-20;
   }
-
   .modal {
-    @apply bg-gray-300 dark:bg-gray-800 w-full sm:w-3/4 md:w-1/2 lg:w-2/5 xl:w-2/6 2xl:w-3/12  rounded-lg flex flex-col py-6 md:py-8 px-6 md:px-8 gap-4 md:gap-6 shadow-md mx-6 z-50 justify-center items-center;
+    @apply bg-gray-300 dark:bg-gray-900 w-full sm:w-3/4 md:w-1/2 lg:w-2/5 xl:w-2/6 2xl:w-3/12  rounded-lg flex flex-col py-6 md:py-8 px-6 md:px-8 gap-4 md:gap-6 lg:gap-8 shadow-md mx-6 z-50 justify-center items-center;
   }
-
   .modal-overlay {
     @apply bg-black opacity-60 absolute inset-0;
   }
 
   .modal-header {
-    @apply flex justify-between mb-2 sm:mb-4 gap-12 items-start w-full;
+    @apply flex justify-between gap-12 items-start w-full;
   }
-
   .modal-header h2 {
     @apply text-2xl sm:text-3xl;
   }
-
   .modal-header button {
-    @apply text-2xl sm:text-3xl font-heading font-bold hover:text-indigo-700 dark:hover:text-indigo-500 outline-none;
+    @apply text-2xl sm:text-3xl font-heading font-bold hover:text-indigo-700 dark:text-indigo-600 dark:hover:text-indigo-500 outline-none;
+  }
+
+  .modal-component {
+    @apply flex flex-col w-full;
+  }
+  .modal-component input {
+    @apply mb-4 sm:mb-6 mx-auto;
+  }
+  .modal-buttons {
+    @apply flex w-full justify-between sm:px-4 md:px-8;
+  }
+
+  /** Auto-complete from `AddItem` modal  */
+  .auto-complete {
+    @apply h-40 mt-8 sm:mt-10 flex justify-center items-center text-xs md:text-sm;
+  }
+  .auto-complete-items {
+    @apply flex flex-wrap gap-2 max-h-40  overflow-y-scroll;
   }
 
   /*===================================================\
