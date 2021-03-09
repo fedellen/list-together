@@ -94,11 +94,11 @@
   /** CurrentListTitle  */
 
   .current-list-title {
-    @apply flex flex-col my-4 sm:my-6 gap-2;
+    @apply flex flex-col mb-4 sm:mb-6 gap-2;
   }
 
   .list-title {
-    @apply text-base md:text-lg font-extrabold underline text-indigo-700 dark:text-indigo-600;
+    @apply text-base sm:text-lg md:text-xl font-extrabold underline text-indigo-700 dark:text-indigo-600;
   }
 
   .text-label {
@@ -119,10 +119,6 @@
   }
   .form button {
     @apply mt-4;
-  }
-
-  .remove-warning {
-    @apply my-8 md:my-10 text-center font-bold;
   }
 
   /*===================================================\
@@ -317,7 +313,7 @@
     @apply mb-4 sm:mb-6 mx-auto;
   }
   .modal-buttons {
-    @apply flex w-full justify-between sm:px-4 md:px-8;
+    @apply flex w-full justify-between md:px-4;
   }
 
   /** Auto-complete from `AddItem` modal  */

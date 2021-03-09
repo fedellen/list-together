@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useStateValue } from 'src/state/state';
 import { closeModal } from 'src/utils/dispatchActions';
 import { errorNotification } from 'src/utils/errorNotification';
@@ -12,6 +12,7 @@ import {
 import useCurrentSharedUsers from 'src/hooks/fragments/useCurrentSharedUsers';
 import LeftArrowIcon from '../svg/list/LeftArrowIcon';
 import RightArrowIcon from '../svg/list/RightArrowIcon';
+import CurrentListTitle from '../shared/CurrentListTitle';
 
 export default function EditRights() {
   const [{ currentListId }, dispatch] = useStateValue();
@@ -81,23 +82,29 @@ export default function EditRights() {
   };
 
   return (
-    <div className="flex flex-col items-start justify-center gap-8 ">
-      <div className="flex mt-4">
-        <span className="text-label">List Title:</span>
-        <span className="list-title">{currentListName}</span>
+    <div className="modal-component gap-1 mt-3 sm:mt-4">
+      <div className="flex flex-wrap justify-between items-center gap-x-4">
+        <CurrentListTitle />
+        <button
+          onClick={() => handleUpdatePrivileges(true)}
+          className=" rounded-full font-bold px-6 py-2 text-xs  bg-red-400  hover:bg-red-500"
+        >
+          Remove <br />
+          All Access
+        </button>
       </div>
 
-      <div className="flex gap-2 items-center ">
-        <span className="text-label mb-10">
-          Shared User&lsquo;s Email Address:
-        </span>
+      <span className="text-label mt-4">
+        Shared User&lsquo;s Email Address:
+      </span>
+      <div className="flex gap-2 items-center mb-4 ">
         <button
           className="move-list-button"
           onClick={() => handleArrowClick('left')}
         >
           <LeftArrowIcon />
         </button>
-        <span className="shared-email text-xs sm:text-sm md:text-base lg:text-lg font-bold ">
+        <span className="shared-email text-xs sm:text-sm md:text-base lg:text-lg font-bold overflow-x-auto ">
           {sharedUser?.email}
         </span>
         <button
@@ -107,6 +114,7 @@ export default function EditRights() {
           <RightArrowIcon />
         </button>
       </div>
+
       <PrivilegeButton privilege={privilege} setPrivilege={setPrivilege} />
       <div className="grid grid-cols-2 w-full gap-6 items-center justify-items-center px-4">
         <button
@@ -118,12 +126,11 @@ export default function EditRights() {
         <button className="button" onClick={() => handleUpdatePrivileges()}>
           Update
         </button>
-        <button
-          onClick={() => handleUpdatePrivileges(true)}
-          className="col-span-2 button-secondary hover:bg-red-400"
-        >
-          Remove All Access
-        </button>
+        {/* <ModalButtons
+          primaryClick={() => handleUpdatePrivileges(true)}
+          secondaryClick={() => dispatch({ type: 'CLEAR_STATE' })}
+          buttonText="Add"
+        /> */}
       </div>
     </div>
   );

@@ -4,9 +4,9 @@ import {
   useGetUsersListsQuery
 } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
-import { closeModal } from 'src/utils/dispatchActions';
 import { errorNotification } from 'src/utils/errorNotification';
-import useCurrentListName from 'src/hooks/fragments/useCurrentListName';
+import ModalButtons from './ModalButtons';
+import CurrentListTitle from '../shared/CurrentListTitle';
 
 export default function RemoveList() {
   const [{ currentListId }, dispatch] = useStateValue();
@@ -14,8 +14,6 @@ export default function RemoveList() {
   const { data: userData, refetch: refetchUser } = useGetUserQuery({
     skip: true
   });
-
-  const currentListName = useCurrentListName();
 
   const [removeList, { loading }] = useDeleteListMutation({
     variables: { listId: currentListId }
@@ -41,15 +39,17 @@ export default function RemoveList() {
   };
 
   return (
-    <div className="remove-confirmation">
-      <p>This action cannot be undone.</p>
-      <span>{`" ${currentListName} "`}</span>
-      <button onClick={() => closeModal(dispatch)} className="button-secondary">
-        Cancel
-      </button>
-      <button onClick={() => handleRemoveList()} className="button">
-        Remove
-      </button>
+    <div className="modal-component">
+      <CurrentListTitle />
+      <span className="mb-6 text-center font-bold">
+        This action cannot be undone!
+      </span>
+
+      <ModalButtons
+        primaryClick={() => handleRemoveList()}
+        secondaryClick={() => dispatch({ type: 'CLEAR_LIST' })}
+        buttonText="Remove"
+      />
     </div>
   );
 }

@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import useRenameList from 'src/hooks/mutations/list/useRenameList';
 import useKeyPress from 'src/hooks/useKeyPress';
-import Button from '../styled/Button';
+import { useStateValue } from 'src/state/state';
+import CurrentListTitle from '../shared/CurrentListTitle';
+import ModalButtons from './ModalButtons';
 
 export default function RenameList() {
+  const [, dispatch] = useStateValue();
   const [textValue, setTextValue] = useState('');
   const [handleAdd, submit] = useRenameList();
 
@@ -12,17 +15,18 @@ export default function RenameList() {
   if (submitKeyPress && !submit) handleAdd(textValue);
 
   return (
-    <div className="single-input">
+    <div className="modal-component">
+      <CurrentListTitle />
       <input
         onChange={(e) => setTextValue(e.target.value)}
         value={textValue}
         placeholder="Enter new list title"
         autoFocus
       />
-      <Button
-        text="Submit"
-        onClick={() => handleAdd(textValue)}
-        isLoading={submit}
+      <ModalButtons
+        buttonText="Rename"
+        primaryClick={() => handleAdd(textValue)}
+        secondaryClick={() => dispatch({ type: 'CLEAR_STATE' })}
       />
     </div>
   );

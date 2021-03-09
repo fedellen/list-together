@@ -7,67 +7,54 @@ import AddItem from './AddItem';
 import AddNote from './AddNote';
 import CreateList from './CreateList';
 import RenameList from './RenameList';
-import useCurrentListName from 'src/hooks/fragments/useCurrentListName';
 import { ReactNode } from 'react';
 
 /** Handles logic for displaying current modal */
 
 export default function CurrentModal() {
   const [{ listState }] = useStateValue();
-  const currentListName = useCurrentListName();
 
   if (listState[0] !== 'modal') return null;
   const modalType = listState[1].type;
 
   /** Uses `addItem` for default values */
-  let modalTitle: ReactNode;
+  let modalTitle: string;
   let component: ReactNode;
 
   switch (modalType) {
     case 'addItem':
-      modalTitle = <h2>Add Item</h2>;
+      modalTitle = 'Add Item';
       component = <AddItem />;
       break;
 
     case 'addNote':
-      modalTitle = <h2>Add Note</h2>;
+      modalTitle = 'Add Note';
       component = <AddNote />;
       break;
 
     case 'createList':
-      modalTitle = <h2>Create New List</h2>;
+      modalTitle = 'Create New List';
       component = <CreateList />;
       break;
 
     case 'renameList':
-      modalTitle = currentListName ? (
-        <h2>
-          Rename list:
-          <br /> {currentListName}?
-        </h2>
-      ) : (
-        <h2>Rename current list?</h2>
-      );
+      modalTitle = 'Rename list';
+
       component = <RenameList />;
       break;
 
     case 'removeList':
-      modalTitle = (
-        <h2>
-          Confirm
-          <br /> Remove List
-        </h2>
-      );
+      modalTitle = 'Remove List';
       component = <RemoveList />;
       break;
 
     case 'shareList':
-      modalTitle = <h2>Share List</h2>;
+      modalTitle = 'Share List';
       component = <ShareList />;
       break;
 
     case 'updatePrivileges':
-      modalTitle = <h2>Edit Rights</h2>;
+      modalTitle = 'Edit Rights';
       component = <EditRights />;
       break;
 

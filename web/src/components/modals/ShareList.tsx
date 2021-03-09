@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useShareListMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { closeModal, sendNotification } from 'src/utils/dispatchActions';
 import { errorNotification } from 'src/utils/errorNotification';
 import PrivilegeButton from '../shared/PrivilegeButton';
 import { UserPrivileges } from 'src/types';
-import useCurrentListName from 'src/hooks/fragments/useCurrentListName';
 import useKeyPress from 'src/hooks/useKeyPress';
+import ModalButtons from './ModalButtons';
+import CurrentListTitle from '../shared/CurrentListTitle';
 
 export default function ShareList() {
   const [{ currentListId }, dispatch] = useStateValue();
@@ -46,37 +47,25 @@ export default function ShareList() {
   if (submitKeyPress && !submit) handleShareList();
 
   const [email, setEmail] = useState(''); // Email input field
-  const currentListName = useCurrentListName();
 
   return (
-    <div className="flex flex-col items-start gap-10 max-w-xs md:max-w-sm">
-      <div className="flex mt-4">
-        <span className="text-label">List Title:</span>
-        <span className="list-title">{currentListName}</span>
-      </div>
+    <div className="modal-component mt-3 gap-1 sm:mt-4">
+      <CurrentListTitle />
 
-      <div className="flex flex-col w-full">
-        <span className="text-label">User&lsquo;s Email Address:</span>
-        <input
-          name="email"
-          type="email"
-          placeholder="email address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
+      <span className="text-label">User&lsquo;s Email Address:</span>
+      <input
+        name="email"
+        type="email"
+        placeholder="email address"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
       <PrivilegeButton privilege={privilege} setPrivilege={setPrivilege} />
-      <div className="flex w-full justify-between px-4">
-        <button
-          onClick={() => closeModal(dispatch)}
-          className="button-secondary"
-        >
-          Cancel
-        </button>
-        <button onClick={() => handleShareList()} className="button">
-          Share
-        </button>
-      </div>
+      <ModalButtons
+        primaryClick={() => handleShareList()}
+        secondaryClick={() => dispatch({ type: 'CLEAR_STATE' })}
+        buttonText="Add"
+      />
     </div>
   );
 }

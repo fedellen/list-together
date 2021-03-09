@@ -8,12 +8,12 @@ export default function AutoCompleteItems({
   handleAdd
 }: AutoCompleteItemsProps) {
   return (
-    <div className="flex flex-wrap gap-2 h-32 overflow-y-scroll items-start  justify-start ">
+    <div className="auto-complete-items">
       {filteredWords.map((word) => (
         <button
           key={word}
           onClick={() => handleAdd(word)}
-          className="text-sm bg-gray-200 font-bold p-3 rounded-full shadow-md hover:bg-indigo-300 "
+          className=" bg-gray-200 font-bold p-2 px-4 rounded-full shadow-md hover:bg-indigo-300"
         >
           {word}
         </button>
