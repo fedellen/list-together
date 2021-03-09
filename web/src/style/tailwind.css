@@ -209,10 +209,10 @@
   }
 
   .list-button {
-    @apply text-2xl py-2 border-t-4 text-gray-500 font-bold justify-center items-center flex;
+    @apply text-2xl py-2 border-t-4 text-gray-500 dark:border-gray-900 hover:text-indigo-700 dark:hover:text-indigo-600 opacity-90 font-bold justify-center items-center flex;
   }
   .list-button.active {
-    @apply text-indigo-700 dark:text-indigo-600 border-indigo-600 font-extrabold;
+    @apply text-indigo-700 dark:text-indigo-600 border-indigo-600 font-extrabold opacity-100;
   }
   /** Toggleable buttons for sorting lists left and right */
   .move-list-button {
