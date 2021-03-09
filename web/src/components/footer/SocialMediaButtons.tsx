@@ -6,7 +6,7 @@ import YoutubeIcon from '../svg/social/YoutubeIcon';
 
 export default function SocialMediaButtons() {
   return (
-    <div id="social-icons" className="">
+    <div id="social-icons">
       <a href="https://twitter.com/PixelPajamas">
         <TwitterIcon />
       </a>

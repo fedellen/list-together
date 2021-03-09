@@ -329,14 +329,14 @@
   \====================================================*/
 
   #footer {
-    @apply container flex flex-wrap justify-evenly gap-8 justify-items-center items-center
-    p-4 text-gray-600 text-sm sm:text-base font-semibold;
+    @apply container flex flex-wrap justify-around gap-9 justify-items-center items-center
+    pb-6 text-gray-500  text-sm sm:text-base font-semibold;
   }
 
   /* Kofi Widget */
 
   #kofi-widget {
-    @apply grid items-center text-gray-500 grid-flow-col gap-2 hover-grow-orange;
+    @apply grid items-center grid-flow-col gap-2 hover-grow-orange;
   }
   #kofi-widget span {
     @apply leading-6 text-right hidden sm:block;
@@ -357,10 +357,10 @@
   /* PPJS Widget - links and logo */
 
   #ppjs-widget {
-    @apply flex flex-wrap justify-center gap-7;
+    @apply flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6;
   }
   #ppjs-widget div {
-    @apply flex flex-col gap-2 justify-center items-center underline opacity-80 font-semibold;
+    @apply flex flex-col gap-2 justify-center items-center underline;
   }
   #ppjs-widget ul {
     @apply flex gap-6;
@@ -369,6 +369,6 @@
     @apply hover-grow-orange;
   }
   #ppjs-mug {
-    @apply rounded-full w-14 sm:w-16 lg:w-24 lg:ml-4 shadow-md hover-grow;
+    @apply flex-shrink-0 rounded-full w-14 sm:w-16 xl:w-24 shadow-md hover-grow;
   }
 }
