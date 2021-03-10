@@ -6,6 +6,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.scroller {
+  /** Firefox scrollbar color  */
+  scrollbar-color: #9ca3af #6b7280;
+}
+
 /** Get ready for some tailwind styles 👍 */
 
 @layer base {
@@ -77,8 +82,9 @@
     @apply flex flex-col gap-0 items-center justify-center text-xxs font-bold z-20;
   }
 
+  /** Notification pop-ups / Error messages */
   #notification {
-    @apply fixed bottom-6 left-6 p-6 font-semibold w-60 lg:w-72 bg-indigo-300 rounded-lg shadow-md z-50;
+    @apply fixed bottom-6 left-6 p-6 font-semibold w-60 lg:w-72 bg-indigo-300 dark:bg-indigo-900 rounded-lg shadow-md z-50;
   }
 
   /** CurrentListTitle  */
@@ -211,7 +217,7 @@
   }
   /** Container for displaying lists */
   .scrolling-lists ul {
-    @apply overflow-x-auto whitespace-nowrap flex  bg-gray-200 dark:bg-gray-900 rounded-lg px-2 shadow-md w-full z-10;
+    @apply scroller overflow-x-auto whitespace-nowrap flex  bg-gray-200 dark:bg-gray-900 rounded-lg px-2 shadow-md w-full z-10;
   }
   .scrolling-lists li {
     @apply flex flex-row items-center justify-center;
