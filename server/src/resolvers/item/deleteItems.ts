@@ -41,6 +41,7 @@ export class DeleteItemsResolver {
 
     // Store each error, continue deleting items in the case of conflicts
     let deleteErrors: FieldError[] = [];
+    let deletesToShare: string[] = [];
     itemNameArray.forEach(async (itemName) => {
       const itemExists = userToListTable.list.items!.find(
         ({ name }) => name === itemName
@@ -61,10 +62,12 @@ export class DeleteItemsResolver {
           (item) => item !== itemExists.name
         );
       }
-      userToListTable.list.items! = userToListTable.list.items!.filter(
+      deletesToShare = [...deletesToShare, itemExists.name];
+      userToListTable.list.items = userToListTable.list.items!.filter(
         (item) => item.name !== itemExists.name
       );
 
+      // Check if on `recentlyAddedItems` (Undo or Manual Undo)
       if (
         userToListTable.recentlyAddedItems &&
         userToListTable.recentlyAddedItems.includes(itemName)
@@ -106,9 +109,8 @@ export class DeleteItemsResolver {
       }
     });
 
-    removeFromSharedLists(userToListTable, itemNameArray, publish);
-
     await userToListTable.save();
+    removeFromSharedLists(userToListTable, deletesToShare, publish);
     return {
       userToList: [userToListTable],
       errors: deleteErrors.length > 0 ? deleteErrors : undefined

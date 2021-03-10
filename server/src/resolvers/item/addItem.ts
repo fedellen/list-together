@@ -117,13 +117,15 @@ export class AddItemResolver {
       } else {
         userToListTable.sortedItems = sortIntoList(userToListTable, itemName);
       }
-      addToSharedLists(userToListTable, itemName, publish);
     }
 
     // Send promise to add to and update shared lists
 
     // Save table to DB, cascades list updates
     await userToListTable.save();
+    for (const itemName of nameInputArray) {
+      addToSharedLists(userToListTable, itemName, publish);
+    }
 
     return { userToList: [userToListTable] };
   }

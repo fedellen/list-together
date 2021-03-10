@@ -1,13 +1,9 @@
-import { useRef, useState } from 'react';
-import {
-  UserToList,
-  useSortListsMutation,
-  useUpdateListSubscription
-} from 'src/generated/graphql';
+import { useRef } from 'react';
+import { UserToList, useSortListsMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { ArrowIconDirection } from 'src/types';
 import { arrayMove } from 'src/utils/arrayMove';
-import { sendNotification, setNewList } from 'src/utils/dispatchActions';
+import { setNewList } from 'src/utils/dispatchActions';
 import { errorNotification } from 'src/utils/errorNotification';
 import LeftArrowIcon from '../svg/list/LeftArrowIcon';
 import RightArrowIcon from '../svg/list/RightArrowIcon';
@@ -86,26 +82,6 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
       console.error(`Error on sortItem mutation: ${err}`);
     }
   };
-
-  /** State for awaiting subsciption's data to load any new notifications */
-  const [newData, setNewData] = useState(false);
-  /** Only subscribe to list IDs that have shared users, can be empty [] */
-  const listIdsToShare = lists
-    .filter((userList) => userList.sharedUsers[0].shared === true)
-    .map((userList) => userList.listId);
-
-  /** Component renders when we have the lists, use subscription */
-  const { data, loading } = useUpdateListSubscription({
-    variables: { listIdArray: listIdsToShare },
-    onSubscriptionData: () => setNewData(true)
-  });
-  if (!loading && data && newData) {
-    const notifications = data.subscribeToListUpdates.notifications;
-    if (notifications) {
-      sendNotification(dispatch, notifications);
-    }
-    setNewData(false);
-  }
 
   const moreThanOneList = lists.length > 1;
   return (

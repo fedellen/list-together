@@ -1,8 +1,11 @@
-import { useGetUsersListsQuery } from '../../generated/graphql';
+import {
+  useGetUsersListsQuery,
+  useUpdateListSubscription
+} from '../../generated/graphql';
 import ItemList from './ItemList';
 import { useStateValue } from 'src/state/state';
 import ScrollingLists from './ScrollingLists';
-import { openModal } from 'src/utils/dispatchActions';
+import { openModal, sendNotification } from 'src/utils/dispatchActions';
 import { useEffect } from 'react';
 import LoadingSplash from '../shared/LoadingSplash';
 import { useMemo } from 'react';
@@ -15,7 +18,7 @@ type UsersListsProps = {
 export default function UsersLists({ sortedListsArray }: UsersListsProps) {
   const [{ currentListId }, dispatch] = useStateValue();
 
-  const { data, loading, error /*, refetch*/ } = useGetUsersListsQuery({});
+  const { data, loading, error } = useGetUsersListsQuery({});
   const usersLists = data?.getUsersLists?.userToList?.map((list) => list);
 
   /** Initialize current list when data is initialized or list id is cleared */
@@ -38,6 +41,25 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
     [sortedListsArray, usersLists]
   );
 
+  /** Only subscribe to list IDs that have shared users, can be empty [] */
+  const listIdsToShare = sortedLists
+    ? sortedLists
+        .filter((userList) => userList.sharedUsers[0].shared === true)
+        .map((userList) => userList.listId)
+    : [];
+
+  /** Component renders when we have the lists, use subscription */
+
+  useUpdateListSubscription({
+    variables: { listIdArray: listIdsToShare },
+    onSubscriptionData: ({ subscriptionData }) => {
+      const notifications =
+        subscriptionData.data?.subscribeToListUpdates.notifications;
+      if (notifications) {
+        sendNotification(dispatch, notifications);
+      }
+    }
+  });
   if (loading && !sortedLists) {
     return <LoadingSplash />;
   } else if (!sortedLists && error) {
@@ -45,12 +67,6 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
     console.error(errorString);
     return <div>There has been an unhandled error: {errorString}</div>;
   }
-  // else if (!sortedLists) {
-  //   console.log('sortedLists', sortedLists);
-  //   /** List periodically fails to fetch upon login, refetch() seems to correct this issue */
-  //   refetch();
-  //   return <LoadingSplash />;
-  // }
 
   const currentList = sortedLists?.find(
     (list) => list.listId === currentListId
