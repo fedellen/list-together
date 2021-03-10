@@ -1,11 +1,21 @@
 import { UserToList, User } from '../../entities';
 import { logger } from '../../middleware/logger';
 import { MyContext } from '../../MyContext';
-import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Publisher,
+  PubSub,
+  Resolver,
+  UseMiddleware
+} from 'type-graphql';
 import { ShareListInput } from '../types/input/ShareListInput';
 import { UserToListResponse } from '../types/response/UserToListResponse';
 import { validatePrivilegeType } from '../types/validators/validatePrivilegeType';
 import { getUserListTable } from '../../services/list/getUserListTable';
+import { SubscriptionPayload } from '../types/subscription/SubscriptionPayload';
+import { Topic } from '../types/subscription/SubscriptionTopics';
 
 @Resolver()
 export class ShareListResolver {
@@ -14,11 +24,13 @@ export class ShareListResolver {
   @Mutation(() => UserToListResponse)
   async shareList(
     @Arg('data') { listId, privileges, email }: ShareListInput,
+    @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>,
     @Ctx() context: MyContext
   ): Promise<UserToListResponse> {
     const getListPayload = await getUserListTable({
       context,
       listId,
+      relations: ['list'],
       validatePrivilege: 'owner'
     });
     if (getListPayload.errors) return { errors: getListPayload.errors };
@@ -76,6 +88,11 @@ export class ShareListResolver {
         ]
       };
     }
+    publish({
+      updatedListId: listId,
+      userIdToShare: userToShare.id,
+      notification: `You have a newly shared list: ${userToListTable.list.title} `
+    });
 
     return { userToList: [userToListTableWithUpdatedSharedUsers] };
   }

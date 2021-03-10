@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMounted } from './useMounted';
 
+/** Takes function to run, returns `sendDelay` callback trigger */
 export default function useDelayedFunction(delayedFunction: () => void) {
   const componentIsMounted = useMounted();
 

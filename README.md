@@ -40,7 +40,7 @@ This app also features some limited offline functionality. Users can install the
 
 ## **👨🏿‍💻 Todo before release**
 
-- Setup better subscription system for notifying users of newly shared lists
+- On-mount cooldown for all keyboard usage in modals
 - Determine `if (!online)` for PWA offline list query viewing (Possibly with subscription)
 - Manually test the offline functionality of the production React build
 - Setup Docker for the backend, learn Dokku for deployment
@@ -56,6 +56,7 @@ This app also features some limited offline functionality. Users can install the
 
 ## **🐞 Known Bugs**
 
+- sortedLists and sortedItems data inconsistencies
 - ...someBugsProbably
 
 ## **💽 Backend made with:**

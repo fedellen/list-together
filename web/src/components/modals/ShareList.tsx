@@ -11,6 +11,7 @@ import CurrentListTitle from '../shared/CurrentListTitle';
 
 export default function ShareList() {
   const [{ currentListId }, dispatch] = useStateValue();
+  const [email, setEmail] = useState(''); // Email input field
   const [shareList] = useShareListMutation({});
   /** State for handling the `PrivilegeButton` */
   const [privilege, setPrivilege] = useState<UserPrivileges>('delete');
@@ -45,8 +46,6 @@ export default function ShareList() {
   /** Keyboard submit */
   const submitKeyPress = useKeyPress('Enter');
   if (submitKeyPress && !submit) handleShareList();
-
-  const [email, setEmail] = useState(''); // Email input field
 
   return (
     <div className="modal-component mt-3 gap-1 sm:mt-4">

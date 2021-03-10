@@ -18,7 +18,7 @@ type UsersListsProps = {
 export default function UsersLists({ sortedListsArray }: UsersListsProps) {
   const [{ currentListId }, dispatch] = useStateValue();
 
-  const { data, loading, error } = useGetUsersListsQuery({});
+  const { data, loading, error, refetch } = useGetUsersListsQuery({});
   const usersLists = data?.getUsersLists?.userToList?.map((list) => list);
 
   /** Initialize current list when data is initialized or list id is cleared */
@@ -56,6 +56,9 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
       const notifications =
         subscriptionData.data?.subscribeToListUpdates.notifications;
       if (notifications) {
+        if (notifications[0].includes('You have a newly shared list')) {
+          refetch();
+        }
         sendNotification(dispatch, notifications);
       }
     }
