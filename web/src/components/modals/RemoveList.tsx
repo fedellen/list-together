@@ -41,9 +41,7 @@ export default function RemoveList() {
   return (
     <div className="modal-component">
       <CurrentListTitle />
-      <span className="mb-6 text-center font-bold">
-        This action cannot be undone!
-      </span>
+      <span className="mb-6 font-bold">This action cannot be undone!</span>
 
       <ModalButtons
         primaryClick={() => handleRemoveList()}

@@ -45,7 +45,7 @@
     @apply button-shared bg-indigo-300 dark:bg-indigo-900 dark:hover:bg-indigo-800  hover:bg-indigo-400 shadow-md;
   }
   .button-secondary {
-    @apply button-shared hover:bg-indigo-300 hover:shadow-md;
+    @apply button-shared hover:bg-indigo-300 dark:hover:bg-indigo-900 hover:shadow-md;
   }
 
   /* Shared `hover-grow` effects */
@@ -90,11 +90,11 @@
   /** CurrentListTitle  */
 
   .current-list-title {
-    @apply flex flex-col mb-4 sm:mb-6 gap-2;
+    @apply flex flex-wrap mb-4 sm:mb-6 gap-2 items-center;
   }
 
   .list-title {
-    @apply text-base sm:text-lg md:text-xl font-extrabold underline text-indigo-700 dark:text-indigo-600;
+    @apply text-base mb-1 sm:text-lg md:text-xl font-extrabold underline text-indigo-700 dark:text-indigo-600;
   }
 
   .text-label {
@@ -336,6 +336,10 @@
   }
   .auto-complete-items {
     @apply flex flex-wrap gap-2 max-h-40  overflow-y-scroll;
+  }
+
+  .auto-complete-items button {
+    @apply bg-gray-200 dark:bg-gray-800 dark:hover:bg-indigo-900 font-bold p-2 px-4 rounded-full shadow-md hover:bg-indigo-300;
   }
 
   /** Special multi-button to choose which privilege to share with users */

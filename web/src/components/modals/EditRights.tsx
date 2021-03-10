@@ -38,6 +38,8 @@ export default function EditRights() {
     }
   }
 
+  const moreThanOneSharedUser = currentSharedUsers.length > 1;
+
   const handleArrowClick = (direction: 'left' | 'right') => {
     if (sharedUser) {
       const currentIndex = currentSharedUsers.indexOf(sharedUser);
@@ -98,21 +100,25 @@ export default function EditRights() {
         Shared User&lsquo;s Email Address:
       </span>
       <div className="flex gap-2 items-center mb-4">
-        <button
-          className="move-list-button"
-          onClick={() => handleArrowClick('left')}
-        >
-          <LeftArrowIcon />
-        </button>
+        {moreThanOneSharedUser && (
+          <button
+            className="move-list-button"
+            onClick={() => handleArrowClick('left')}
+          >
+            <LeftArrowIcon />
+          </button>
+        )}
         <span className="shared-email text-xs sm:text-sm p-2  lg:text-base font-bold overflow-x-auto ">
           {sharedUser?.email}
         </span>
-        <button
-          className="move-list-button "
-          onClick={() => handleArrowClick('right')}
-        >
-          <RightArrowIcon />
-        </button>
+        {moreThanOneSharedUser && (
+          <button
+            className="move-list-button "
+            onClick={() => handleArrowClick('right')}
+          >
+            <RightArrowIcon />
+          </button>
+        )}
       </div>
 
       <PrivilegeButton privilege={privilege} setPrivilege={setPrivilege} />
