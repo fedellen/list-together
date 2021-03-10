@@ -16,6 +16,7 @@ import { UserToListResponse } from '../types/response/UserToListResponse';
 import { SubscriptionPayload } from '../types/subscription/SubscriptionPayload';
 import { Topic } from '../types/subscription/SubscriptionTopics';
 import { getUserListTable } from '../../services/list/getUserListTable';
+import { strikeOnSharedLists } from '../../services/item/strikeOnSharedLists';
 
 @Resolver()
 export class StrikeItemResolver {
@@ -91,10 +92,7 @@ export class StrikeItemResolver {
     }
 
     await userToListTable.save();
-    await publish({
-      updatedListId: listId,
-      userIdToExclude: userToListTable.userId
-    });
+    strikeOnSharedLists(userToListTable, item.name, item.strike, publish);
     return { userToList: [userToListTable] };
   }
 }
