@@ -11,9 +11,12 @@ import HomePage from './HomePage';
 
 export default function App() {
   const [{ appState, listState, errorMessage }, dispatch] = useStateValue();
-  const { data, loading: userDataLoading, error } = useGetUserQuery({
-    // fetchPolicy: 'cache-and-network'
-  });
+  const { data, loading: userDataLoading, error, refetch } = useGetUserQuery();
+
+  /** Get user on mount */
+  useEffect(() => {
+    refetch();
+  }, []);
 
   /** Send to list if user is logged in  */
   useEffect(() => {

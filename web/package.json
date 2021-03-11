@@ -55,7 +55,7 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "local:prod": "http-server build --cors -a 'localhost'",
+    "local:prod": "http-server build -p 3000 --cors -a 'localhost'",
     "eject": "react-scripts eject",
     "watch:css": "postcss ./src/style/tailwind.css -o ./src/style/main.css",
     "codegen": "graphql-codegen --config codegen.yml"

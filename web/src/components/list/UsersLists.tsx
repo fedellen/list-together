@@ -21,6 +21,11 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
   const { data, loading, error, refetch } = useGetUsersListsQuery({});
   const usersLists = data?.getUsersLists?.userToList?.map((list) => list);
 
+  /** Get lists on mount */
+  useEffect(() => {
+    refetch();
+  }, []);
+
   /** Initialize current list when data is initialized or list id is cleared */
   useEffect(() => {
     if (sortedListsArray.length > 0) {
@@ -48,8 +53,7 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
         .map((userList) => userList.listId)
     : [];
 
-  /** Component renders when we have the lists, use subscription */
-
+  /** Connect for notifications and updates to subscribed lists */
   useUpdateListSubscription({
     variables: { listIdArray: listIdsToShare },
     onSubscriptionData: ({ subscriptionData }) => {

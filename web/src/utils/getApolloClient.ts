@@ -7,7 +7,7 @@ import {
 } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { WebSocketLink } from '@apollo/client/link/ws';
-// import { persistCache, LocalStorageWrapper } from 'apollo3-cache-persist';
+import { persistCache, LocalStorageWrapper } from 'apollo3-cache-persist';
 
 /** Schema constants */
 const API_HOST = '://localhost:4000/graphql';
@@ -60,12 +60,12 @@ export const getApolloClient = async () => {
 
   /** Persist cache to view list during PWA offline mode */
   /** Mutations will not work yet */
-  // await persistCache({
-  //   cache,
-  //   storage: new LocalStorageWrapper(window.localStorage),
-  //   maxSize: false,
-  //   debug: false
-  // });
+  await persistCache({
+    cache,
+    storage: new LocalStorageWrapper(window.localStorage),
+    maxSize: false,
+    debug: false
+  });
 
   const client = new ApolloClient({
     cache,
