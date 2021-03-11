@@ -13,29 +13,18 @@ export default function SignInButton({ type }: SignInButtonProps) {
   const buttonText = type.replace(/^\w/, (c) => c.toUpperCase());
 
   let IconComponent: ReactNode;
-  let color: string;
-  let hoverColor: string;
   if (type === 'google') {
-    color = 'red-600';
-    hoverColor = 'red-700';
     IconComponent = <GoogleIcon />;
   } else if (type === 'facebook') {
-    color = 'indigo-800';
-    hoverColor = 'indigo-900';
     IconComponent = <FacebookIcon />;
   } /*if (type === 'twitter')*/ else {
-    color = 'blue-500';
-    hoverColor = 'blue-600';
     IconComponent = <TwitterIcon />;
   }
 
   return (
-    <a
-      className={`z-10  p-3  sm:px-6  flex items-center rounded-full shadow-md bg-${color} text-gray-200 text-xxs font-bold hover:bg-${hoverColor}`}
-      href={authLink}
-    >
-      <div className="w-6 sm:mr-4">{IconComponent}</div>
-      <span className="hidden sm:block">
+    <a className={`sign-in-button ${type}`} href={authLink}>
+      <div>{IconComponent}</div>
+      <span>
         {buttonText}
         <br />
         Sign in

@@ -191,6 +191,27 @@
   #home section:not(:first-child) {
     @apply py-8 sm:py-12 md:py-16 lg:py-24 xl:py-36 px-2;
   }
+
+  /** Social media sign in buttons */
+  .sign-in-button {
+    @apply z-10 p-3 sm:px-6 flex items-center rounded-full shadow-md text-gray-200 text-xxs font-bold;
+  }
+  .sign-in-button.facebook {
+    @apply bg-indigo-800 hover:bg-indigo-900;
+  }
+  .sign-in-button.twitter {
+    @apply bg-blue-500 hover:bg-blue-600;
+  }
+  .sign-in-button.google {
+    @apply bg-red-600 hover:bg-red-700;
+  }
+  .sign-in-button div {
+    @apply w-6 sm:mr-4;
+  }
+  .sign-in-button span {
+    @apply hidden sm:block;
+  }
+
   .bg-alt {
     @apply bg-gray-400 dark:bg-gray-900;
   }
