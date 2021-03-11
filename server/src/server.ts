@@ -15,15 +15,15 @@ declare module 'express-session' {
 }
 
 const server = async () => {
-  // Create TypeORM connection
-  await createConnection({
+  const typeORMConnection = await createConnection({
     type: 'postgres',
     url: process.env.DATABASE_URL,
     // dropSchema: true,
     // synchronize: true,
-    migrations: ['dist/migration/*.js'],
+    migrations: ['dist/migrations/*.js'],
     entities: ['dist/entities/**/*.js']
   });
+  await typeORMConnection.runMigrations();
 
   // Create TypeGraphQL schema
   const schema = await createSchema();

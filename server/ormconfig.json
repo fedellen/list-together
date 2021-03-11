@@ -4,8 +4,7 @@
   "port": 5432,
   "username": "postgres",
   "password": "postgres",
-  "database": "grocery-db",
-  "synchronize": true,
-  "logging": false,
-  "entities": ["dist/entities/**/*.js"]
+  "database": "grocery-db-2",
+  "entities": ["dist/entities/**/*.js"],
+  "migrations": ["dist/migrations/*.js"]
 }

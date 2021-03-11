@@ -14,7 +14,7 @@ import { redis } from './redis';
 /** Express app */
 const app = express();
 
-// // Use 'trust proxy' when behind nginx etc.
+// Use 'trust proxy' when behind nginx etc.
 app.set('trust proxy', 1);
 
 // Add global rate limit in case malicious spam from IP
