@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "main": "server.ts",
   "scripts": {
-    "build": "tsc --build --clean",
+    "build": "tsc",
     "watch": "tsc -w",
     "start": "node dist/server.js",
     "dev": "nodemon dist/server.js",

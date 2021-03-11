@@ -41,8 +41,9 @@ This app also features some limited offline functionality. Users can install the
 ## **👨🏿‍💻 Todo before release**
 
 - On-mount cooldown for all keyboard usage in modals
+- Smoother loading transitions
+- Take 3x ~10sec video clips to display on landing page
 - Determine `if (!online)` for PWA offline list query viewing (Possibly with subscription)
-- Manually test the offline functionality of the production React build
 - Setup Docker for the backend, learn Dokku for deployment
 - Clear out remaining bugs 🐛
 
@@ -71,9 +72,7 @@ This app also features some limited offline functionality. Users can install the
 
 As a work in progress, the server has not yet been hosted anywhere. Before production I do intend to add Docker into the workflow with Dokku in particular.
 
-For now, to install and test the app locally you will first need to setup Postgres and Redis on your system. You will also need to provide a .env file with the appropriate fields filled in. Afterwards, install and run the the server in development mode with:
-
-In the .env file you will need to provide at least one method for logging in via Passport
+For now, to install and test the app locally you will first need to setup Postgres and Redis on your system. You will also need to provide a .env file with the appropriate fields filled in, including one method of logging in via a Passport API (Google / Twitter / Facebook). Afterwards, install and run the the server in development mode with:
 
 ```
 cd ./server && yarn install && yarn dev
