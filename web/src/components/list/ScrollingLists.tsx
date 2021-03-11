@@ -108,7 +108,7 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
             )}
             <button
               onClick={() => setNewList(dispatch, userList)}
-              className={`list-button${
+              className={` list-button ${
                 currentListId === userList.listId ? ' active' : ''
               }`}
             >

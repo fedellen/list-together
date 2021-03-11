@@ -27,7 +27,7 @@ const Note = memo(function Note({
       {userCanDeleteNotes ? (
         <>
           <button
-            className={`note-button${isStriked}${
+            className={` note-button ${isStriked}${
               activeNote && activeNote.note === note ? ' text-indigo-700' : ''
             }`}
             onClick={() =>
@@ -43,7 +43,7 @@ const Note = memo(function Note({
         </>
       ) : (
         /** Note without togglable delete button */
-        <span className={`note-button${isStriked}`}>{note}</span>
+        <span className={` note-button ${isStriked}`}>{note}</span>
       )}
     </li>
   );

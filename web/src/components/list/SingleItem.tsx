@@ -31,7 +31,7 @@ const SingleItem = memo(function SingleItem({
             payload: { name: item.name, id: item.id }
           })
         }
-        className={`item-button${isStriked}${isItemActive}`}
+        className={` item-button ${isStriked}${isItemActive}`}
       >
         {item.name}
       </button>
