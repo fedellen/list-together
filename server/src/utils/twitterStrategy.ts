@@ -1,12 +1,11 @@
 import { Strategy } from 'passport-twitter';
-import { BACKEND_URL } from '../constants';
 import { getOrCreateUserByEmail } from '../services/user/getOrCreateUserByEmail';
 
 export const twitterStrategy = new Strategy(
   {
     consumerKey: process.env.TWITTER_API_KEY,
     consumerSecret: process.env.TWITTER_API_SECRET,
-    callbackURL: `${BACKEND_URL}/auth/twitter/callback`,
+    callbackURL: `${process.env.BACKEND_URL}/auth/twitter/callback`,
     includeEmail: true
   },
   async (_, __, profile, cb) => {

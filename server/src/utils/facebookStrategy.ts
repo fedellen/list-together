@@ -1,12 +1,11 @@
 import { Strategy } from 'passport-facebook';
 import { getOrCreateUserByEmail } from '../services/user/getOrCreateUserByEmail';
-import { BACKEND_URL } from '../constants';
 
 export const facebookStrategy = new Strategy(
   {
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: `${BACKEND_URL}/auth/facebook/callback`,
+    callbackURL: `${process.env.BACKEND_URL}/auth/facebook/callback`,
     profileFields: ['emails']
   },
   async (_, __, profile, cb) => {

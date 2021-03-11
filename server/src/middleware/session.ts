@@ -1,6 +1,5 @@
 import connectRedis from 'connect-redis';
 import session from 'express-session';
-import { __prod__ } from '../constants';
 import { redis } from '../redis';
 
 const RedisStore = connectRedis(session);

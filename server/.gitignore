@@ -6,4 +6,5 @@ tmp/
 temp/
 dist/
 .env
+.env.production
 yarn-error.log
