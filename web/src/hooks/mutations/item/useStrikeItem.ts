@@ -3,6 +3,7 @@ import { useStrikeItemMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { errorNotification } from 'src/utils/errorNotification';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
+import { sendNotification } from 'src/utils/dispatchActions';
 
 export default function useStrikeItem() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
@@ -39,7 +40,10 @@ export default function useStrikeItem() {
       }
       dispatch({ type: 'CLEAR_STATE' });
     } catch (err) {
-      console.error(`Error on strikeItem mutation: ${err}`);
+      sendNotification(dispatch, [
+        'Connection to the server could not be established. Interacting with the list will not function offline.'
+      ]);
+      dispatch({ type: 'CLEAR_STATE' });
     }
   }, []);
 

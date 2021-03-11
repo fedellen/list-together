@@ -74,7 +74,10 @@ export default function useAddNote() {
           dispatch({ type: 'CLEAR_STATE' });
         }
       } catch (err) {
-        console.error('Error on Add Note mutation: ', err);
+        sendNotification(dispatch, [
+          'Connection to the server could not be established. Interacting with the list will not function offline.'
+        ]);
+        dispatch({ type: 'CLEAR_STATE' });
       }
     }
   }, []);

@@ -62,7 +62,10 @@ export default function useAddItem() {
           dispatch({ type: 'CLEAR_STATE' });
         }
       } catch (err) {
-        console.error('Error on Add Item mutation: ', err);
+        sendNotification(dispatch, [
+          'Connection to the server could not be established. Interacting with the list will not function offline.'
+        ]);
+        dispatch({ type: 'CLEAR_STATE' });
       }
     }
   }, []);

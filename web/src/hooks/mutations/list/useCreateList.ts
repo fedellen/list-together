@@ -50,7 +50,10 @@ export default function useCreateList() {
           dispatch({ type: 'SET_LIST', payload: newListId ? newListId : '' });
         }
       } catch (err) {
-        console.error(`Error on Create list mutation: ${err}`);
+        sendNotification(dispatch, [
+          'Connection to the server could not be established. Interacting with the list will not function offline.'
+        ]);
+        dispatch({ type: 'CLEAR_STATE' });
       }
     }
   }, []);

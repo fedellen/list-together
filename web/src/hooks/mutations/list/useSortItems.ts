@@ -108,7 +108,10 @@ export default function useSortItems() {
           mutationCooldown(50);
         }
       } catch (err) {
-        console.error(`Error on sortItem mutation: ${err}`);
+        sendNotification(dispatch, [
+          'Connection to the server could not be established. Interacting with the list will not function offline.'
+        ]);
+        dispatch({ type: 'CLEAR_STATE' });
       }
     },
     [mutationSubmiting, currentSortedItems, currentSmartSortedItems]
