@@ -10,6 +10,7 @@
     "start": "node dist/server.js",
     "dev": "nodemon dist/server.js",
     "test": "jest --runInBand --detectOpenHandles --forceExit",
+    "deploy": "./deploy.sh",
     "gen-env": "gen-env-types .env -o src/env.d.ts -e ."
   },
   "devDependencies": {
