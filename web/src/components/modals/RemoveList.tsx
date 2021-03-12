@@ -11,9 +11,7 @@ import CurrentListTitle from '../shared/CurrentListTitle';
 export default function RemoveList() {
   const [{ currentListId }, dispatch] = useStateValue();
   const { refetch: refetchLists } = useGetUsersListsQuery({ skip: true });
-  const { data: userData, refetch: refetchUser } = useGetUserQuery({
-    skip: true
-  });
+  const { refetch: refetchUser } = useGetUserQuery({ skip: true });
 
   const [removeList, { loading }] = useDeleteListMutation({
     variables: { listId: currentListId }
@@ -28,9 +26,14 @@ export default function RemoveList() {
         } else {
           await refetchUser();
           await refetchLists();
-          const sortedListsArray = userData?.getUser?.sortedListsArray;
-          const newListId = sortedListsArray ? sortedListsArray[0] : '';
-          dispatch({ type: 'SET_LIST', payload: newListId });
+          const sortedListsArray = data?.deleteList.user?.sortedListsArray;
+          dispatch({
+            type: 'SET_LIST',
+            payload:
+              sortedListsArray && sortedListsArray.length > 0
+                ? sortedListsArray[0]
+                : ''
+          });
         }
       } catch (err) {
         console.error('Error in Remove List mutation : ', err);
