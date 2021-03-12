@@ -89,16 +89,16 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
           />
           {listExist && (
             <>
-              <div className="hidden sm:block">
-                {isOwner && (
+              {isOwner && (
+                <div className="hidden sm:block">
                   <IconButton
                     icon={<ShareIcon />}
                     text="Share"
                     onClick={() => openModal(dispatch, 'shareList')}
                     style={iconButtonStyle}
                   />
-                )}
-              </div>
+                </div>
+              )}
               <div className="hidden md:block">
                 <IconButton
                   onClick={() => smartSort()}
