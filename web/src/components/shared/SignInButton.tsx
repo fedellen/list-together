@@ -8,7 +8,12 @@ type SignInButtonProps = {
 };
 
 export default function SignInButton({ type }: SignInButtonProps) {
-  const authLink = `http://localhost:4000/auth/${type}`;
+  const authLink = `${
+    process.env.NODE_ENV === 'production'
+      ? 'https://api.listtogether.app' // prod
+      : 'http://localhost:4000' // dev
+  }/auth/${type}`;
+
   // Capitalized first letter function
   const buttonText = type.replace(/^\w/, (c) => c.toUpperCase());
 
