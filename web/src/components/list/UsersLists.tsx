@@ -90,7 +90,7 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
           />
         </>
       ) : (
-        <div onClick={() => openModal(dispatch, 'createList')}>
+        <div id="empty-list" onClick={() => openModal(dispatch, 'createList')}>
           Add your first list!
         </div>
       )}
