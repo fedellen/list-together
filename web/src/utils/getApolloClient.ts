@@ -10,11 +10,12 @@ import { WebSocketLink } from '@apollo/client/link/ws';
 import { persistCache, LocalStorageWrapper } from 'apollo3-cache-persist';
 
 /** Schema constants */
-const API_HOST = '://localhost:4000/graphql';
+const prod = process.env.NODE_ENV === 'production';
+const API_HOST = prod ? '://api.listtogether.app' : '://localhost:4000/graphql';
 
 export const getApolloClient = async () => {
   const http = new HttpLink({
-    uri: `http${API_HOST}`,
+    uri: `http${prod ? 's' : ''}${API_HOST}`,
     credentials: 'include'
   });
 
