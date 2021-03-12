@@ -13,6 +13,8 @@ import useCurrentSortedItems from 'src/hooks/fragments/useCurrentSortedItems';
 import useLogout from 'src/hooks/mutations/user/useLogout';
 import useSubmitPreferredOrder from 'src/hooks/mutations/list/useSubmitPreferredOrder';
 import ShareIcon from '../svg/headerMenu/ShareIcon';
+import useSortItems from 'src/hooks/mutations/list/useSortItems';
+import SmartSortIcon from '../svg/headerMenu/SmartSortIcon';
 
 /** Modal for displaying user's list options when header menu is clicked */
 export const HeaderOptions = () => {
@@ -28,8 +30,9 @@ export const HeaderOptions = () => {
 
   const [logout] = useLogout();
   const [saveOrder, saveOrderSubmitting] = useSubmitPreferredOrder();
+  const [smartSort, smartSortSubmitting] = useSortItems();
 
-  const mutationSubmitting = saveOrderSubmitting;
+  const mutationSubmitting = saveOrderSubmitting || smartSortSubmitting;
 
   return (
     <div id="header-options">
@@ -78,6 +81,14 @@ export const HeaderOptions = () => {
           icon={<EditRightsIcon />}
         />
       )}
+
+      <IconButton
+        onClick={() => smartSort('', 'smartSort')}
+        text="Smart Sort"
+        style="header-option-button"
+        icon={<SmartSortIcon />}
+        moreStyles=" lg:hidden"
+      />
       {currentListPrivileges === 'owner' && (
         <IconButton
           icon={<ShareIcon />}

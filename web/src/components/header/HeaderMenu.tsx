@@ -89,25 +89,28 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
           />
           {listExist && (
             <>
-              {isOwner && (
+              <div className="hidden sm:block">
+                {isOwner && (
+                  <IconButton
+                    icon={<ShareIcon />}
+                    text="Share"
+                    onClick={() => openModal(dispatch, 'shareList')}
+                    style={iconButtonStyle}
+                  />
+                )}
+              </div>
+              <div className="hidden md:block">
                 <IconButton
-                  icon={<ShareIcon />}
-                  text="Share"
-                  onClick={() => openModal(dispatch, 'shareList')}
+                  onClick={() => smartSort()}
+                  text="Smart Sort"
                   style={iconButtonStyle}
-                  moreStyles=" hidden sm:flex"
+                  icon={<SmartSortIcon />}
                 />
-              )}
+              </div>
               <IconButton
-                onClick={() => smartSort()}
-                text="Smart Sort"
-                style={iconButtonStyle}
-                icon={<SmartSortIcon />}
-              />
-              <IconButton
-                icon={isDark ? <DarkModeIcon /> : <LightModeIcon />}
-                text={isDark ? 'Dark' : 'Light'}
-                onClick={() => toggleDarkMode(isDark ? 'light' : 'dark')}
+                icon={!isDark ? <DarkModeIcon /> : <LightModeIcon />}
+                text={!isDark ? 'Dark' : 'Light'}
+                onClick={() => toggleDarkMode(!isDark ? 'light' : 'dark')}
                 style={iconButtonStyle}
               />
               <IconButton

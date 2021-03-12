@@ -124,11 +124,19 @@
   #header {
     @apply bg-gray-200 dark:bg-gray-900 border-indigo-700 border-t-4 shadow-md sticky top-0 z-40;
   }
-  #header h2 {
-    @apply text-left;
-  }
+
   #header-container {
-    @apply container py-3 flex justify-between items-center;
+    @apply container py-2 flex justify-between items-center;
+  }
+
+  #list-together-icon {
+    @apply flex gap-2 sm:gap-4 xl:gap-6 justify-center items-center;
+  }
+  #list-together-icon div {
+    @apply w-12 md:w-14 xl:w-16;
+  }
+  #list-together-icon h2 {
+    @apply text-left font-extrabold;
   }
 
   /** Header Menu */
