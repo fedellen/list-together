@@ -23,7 +23,8 @@ const server = async () => {
     migrations: ['dist/migrations/*.js'],
     entities: ['dist/entities/**/*.js']
   });
-  await typeORMConnection.runMigrations();
+  if (process.env.NODE_ENV === 'production')
+    await typeORMConnection.runMigrations();
 
   // Create TypeGraphQL schema
   const schema = await createSchema();

@@ -43,8 +43,6 @@ This app also features some limited offline functionality. Users can install the
 - On-mount cooldown for all keyboard usage in modals
 - Smoother loading transitions
 - Take 3x ~10sec video clips to display on landing page
-- Determine `if (!online)` for PWA offline list query viewing (Possibly with subscription)
-- Setup Docker for the backend, learn Dokku for deployment
 - Clear out remaining bugs 🐛
 
 ## **🤔 Possibly todo after release**
