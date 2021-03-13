@@ -40,14 +40,15 @@ This app also features some limited offline functionality. Users can install the
 
 ## **👨🏿‍💻 Todo before release**
 
-- On-mount cooldown for all keyboard usage in modals
 - Smoother loading transitions
 - Take 3x ~10sec video clips to display on landing page
+- Aria labels / accessibility for screen readers
 - Clear out remaining bugs 🐛
 
 ## **🤔 Possibly todo after release**
 
 - Implement offline mutation capabilities for Apollo Client
+- More back-end resolver tests, there remains uncovered logic
 - Add test user creation from front-to-back without Passport APIs for a better dev environment
 - Implement testing on front-end / research end to end testing
 - Convert server callbacks to Redis to prevent them from being cancelled
