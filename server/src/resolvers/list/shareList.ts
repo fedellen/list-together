@@ -88,6 +88,15 @@ export class ShareListResolver {
         ]
       };
     }
+
+    // Add to shared user's sortedLists
+    if (userToShare.sortedListsArray) {
+      userToShare.sortedListsArray = [...userToShare.sortedListsArray, listId];
+    } else {
+      userToShare.sortedListsArray = [listId];
+    }
+    await userToShare.save();
+
     publish({
       updatedListId: listId,
       userIdToShare: userToShare.id,
