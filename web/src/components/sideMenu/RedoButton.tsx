@@ -20,7 +20,7 @@ import RedoButtonIcon from '../svg/sideMenu/RedoButtonIcon';
 export default function RedoButton() {
   const [{ redoState }, dispatch] = useStateValue();
 
-  /** Keyboard access for redo, .5 sec cooldown on key presses */
+  /** Keyboard access for redo */
   const redoKey = useKeyPress('y');
   const keyCooldown = useDelayedFunction(() => {
     setKeyboardCooldown(false);

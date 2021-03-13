@@ -7,6 +7,9 @@ import { useStateValue } from 'src/state/state';
 import { errorNotification } from 'src/utils/errorNotification';
 import ModalButtons from './ModalButtons';
 import CurrentListTitle from '../shared/CurrentListTitle';
+import { useState } from 'react';
+import useDelayedFunction from 'src/hooks/useDelayedFunction';
+import useKeyPress from 'src/hooks/useKeyPress';
 
 export default function RemoveList() {
   const [{ currentListId }, dispatch] = useStateValue();
@@ -17,12 +20,16 @@ export default function RemoveList() {
     variables: { listId: currentListId }
   });
 
+  const [submit, setSubmit] = useState(false);
+  const delayMutation = useDelayedFunction(() => setSubmit(false));
   const handleRemoveList = async () => {
-    if (!loading) {
+    if (!loading && !submit) {
+      setSubmit(true);
       try {
         const { data } = await removeList();
         if (data?.deleteList.errors) {
           errorNotification(data.deleteList.errors, dispatch);
+          delayMutation(1000); // 1 second
         } else {
           await refetchUser();
           await refetchLists();
@@ -41,6 +48,10 @@ export default function RemoveList() {
     }
   };
 
+  /** Keyboard submit */
+  const submitKeyPress = useKeyPress('Enter');
+  if (submitKeyPress && !submit) handleRemoveList();
+
   return (
     <div className="modal-component">
       <CurrentListTitle />
@@ -48,7 +59,7 @@ export default function RemoveList() {
 
       <ModalButtons
         primaryClick={() => handleRemoveList()}
-        secondaryClick={() => dispatch({ type: 'CLEAR_LIST' })}
+        secondaryClick={() => dispatch({ type: 'CLEAR_STATE' })}
         buttonText="Remove"
       />
     </div>

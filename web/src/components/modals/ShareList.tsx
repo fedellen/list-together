@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useShareListMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
-import { closeModal, sendNotification } from 'src/utils/dispatchActions';
+import { sendNotification } from 'src/utils/dispatchActions';
 import { errorNotification } from 'src/utils/errorNotification';
 import PrivilegeButton from '../shared/PrivilegeButton';
 import { UserPrivileges } from 'src/types';
@@ -11,13 +11,15 @@ import CurrentListTitle from '../shared/CurrentListTitle';
 
 export default function ShareList() {
   const [{ currentListId }, dispatch] = useStateValue();
-  const [email, setEmail] = useState(''); // Email input field
-  const [shareList] = useShareListMutation({});
+
   /** State for handling the `PrivilegeButton` */
   const [privilege, setPrivilege] = useState<UserPrivileges>('delete');
+  /** Email input field */
+  const [email, setEmail] = useState('');
 
+  const [shareList] = useShareListMutation({});
   const [submit, setSubmit] = useState(false);
-  /** shareList Mutation */
+  /** send shareList Mutation */
   const handleShareList = async () => {
     if (!submit) {
       setSubmit(true);
@@ -36,7 +38,7 @@ export default function ShareList() {
           errorNotification(data.shareList.errors, dispatch);
           setTimeout(() => setSubmit(false), 2000);
         } else {
-          closeModal(dispatch);
+          dispatch({ type: 'CLEAR_STATE' });
         }
       } catch (err) {
         console.error('Error in Share List mutation : ', err);

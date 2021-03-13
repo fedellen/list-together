@@ -13,6 +13,7 @@ import useCurrentSharedUsers from 'src/hooks/fragments/useCurrentSharedUsers';
 import LeftArrowIcon from '../svg/list/LeftArrowIcon';
 import RightArrowIcon from '../svg/list/RightArrowIcon';
 import CurrentListTitle from '../shared/CurrentListTitle';
+import ModalButtons from './ModalButtons';
 
 export default function EditRights() {
   const [{ currentListId }, dispatch] = useStateValue();
@@ -108,10 +109,11 @@ export default function EditRights() {
             <LeftArrowIcon />
           </button>
         )}
-        <span className="shared-email text-xs sm:text-sm p-2  lg:text-base font-bold overflow-x-auto ">
+        <span className="shared-email text-xs sm:text-sm p-2 lg:text-base font-bold overflow-x-auto">
           {sharedUser?.email}
         </span>
         {moreThanOneSharedUser && (
+          //
           <button
             className="move-list-button "
             onClick={() => handleArrowClick('right')}
@@ -120,24 +122,12 @@ export default function EditRights() {
           </button>
         )}
       </div>
-
       <PrivilegeButton privilege={privilege} setPrivilege={setPrivilege} />
-      <div className="grid grid-cols-2 w-full gap-6 items-center justify-items-center px-4">
-        <button
-          className="button-secondary"
-          onClick={() => closeModal(dispatch)}
-        >
-          Cancel
-        </button>
-        <button className="button" onClick={() => handleUpdatePrivileges()}>
-          Update
-        </button>
-        {/* <ModalButtons
-          primaryClick={() => handleUpdatePrivileges(true)}
-          secondaryClick={() => dispatch({ type: 'CLEAR_STATE' })}
-          buttonText="Add"
-        /> */}
-      </div>
+      <ModalButtons
+        primaryClick={() => handleUpdatePrivileges(true)}
+        secondaryClick={() => dispatch({ type: 'CLEAR_STATE' })}
+        buttonText="Add"
+      />
     </div>
   );
 }

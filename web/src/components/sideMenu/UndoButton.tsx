@@ -20,7 +20,7 @@ import UndoButtonIcon from '../svg/sideMenu/UndoButtonIcon';
 export default function UndoButton() {
   const [{ undoState }, dispatch] = useStateValue();
 
-  /** Keyboard access for undo, .5 sec cooldown on key presses */
+  /** Keyboard access for undo */
   const undoKey = useKeyPress('u', 'z');
   const keyCooldown = useDelayedFunction(() => {
     setKeyboardCooldown(false);
