@@ -21,14 +21,14 @@
   input {
     @apply py-4 px-6 text-lg placeholder-gray-500 bg-gray-200 dark:bg-gray-700 shadow-md rounded-full w-full outline-none;
   }
+  /** Landing header */
   h1 {
     @apply mt-4 max-w-xl text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-extrabold font-heading;
   }
-
+  /** Modal title / landing section header  */
   h2 {
     @apply text-lg sm:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-extrabold font-heading;
   }
-
   p {
     @apply mt-4 lg:mt-8 xl:mt-12 text-xs sm:text-sm md:text-base xl:text-lg 2xl:text-xl opacity-80;
   }
@@ -40,8 +40,8 @@
   .button-alert {
     @apply rounded-full font-bold px-6 py-2 text-xs  bg-red-500  hover:bg-red-600 dark:bg-red-900 dark:hover:bg-red-800;
   }
-
   .button {
+    /** Primary */
     @apply button-shared bg-indigo-300 dark:bg-indigo-900 dark:hover:bg-indigo-800  hover:bg-indigo-400 shadow-md;
   }
   .button-secondary {
@@ -49,7 +49,6 @@
   }
 
   /* Shared `hover-grow` effects */
-
   .hover-grow {
     @apply hover:scale-125 transform transition-all duration-500;
   }
@@ -60,8 +59,7 @@
     @apply hover-grow hover:text-ppjsOrange;
   }
 
-  /** Scrollbar */
-
+  /** Scrollbar (Firefox: see .scroller) */
   ::-webkit-scrollbar {
     @apply w-3 h-3;
   }
@@ -85,12 +83,6 @@
   /** Notification pop-ups / Error messages */
   #notification {
     @apply fixed bottom-6 left-6 p-6 font-semibold w-60 lg:w-72 bg-indigo-300 dark:bg-indigo-900 rounded-lg shadow-md z-50;
-  }
-
-  /** CurrentListTitle  */
-
-  .current-list-title {
-    @apply flex flex-wrap mb-4 sm:mb-6 gap-2 items-center;
   }
 
   .list-title {
@@ -220,13 +212,11 @@
     @apply hidden sm:block;
   }
 
+  /** Alternate backgrounds for landing page */
   .bg-alt {
     @apply bg-gray-400 dark:bg-gray-900;
   }
   .home-content {
-    @apply xl:flex xl:items-center xl:gap-40 content;
-  }
-  .home-content-xl {
     @apply xl:flex xl:items-center xl:gap-40 content;
   }
   .landing-illustration {
@@ -359,8 +349,14 @@
   .modal-component input {
     @apply mb-4 sm:mb-6 mx-auto;
   }
+  /** Shared button component with a .primary and a .secondary button */
   .modal-buttons {
     @apply flex w-full justify-between md:px-4;
+  }
+
+  /** CurrentListTitle shared between Modals  */
+  .current-list-title {
+    @apply flex flex-wrap mb-4 sm:mb-6 gap-2 items-center;
   }
 
   /** Auto-complete from `AddItem` modal  */

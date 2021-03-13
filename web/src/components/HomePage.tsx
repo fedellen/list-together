@@ -86,7 +86,7 @@ export default function HomePage() {
       </section>
 
       <section>
-        <div className="home-content-xl">
+        <div className="home-content">
           <div>
             <h2>Easy Login / Sign-up</h2>
             <p>
@@ -105,7 +105,7 @@ export default function HomePage() {
       </section>
 
       <section className="bg-alt">
-        <div className="home-content-xl">
+        <div className="home-content">
           <div>
             <h2>Open Source</h2>
             <p>
@@ -145,7 +145,7 @@ export default function HomePage() {
       </section>
 
       <section>
-        <div className="home-content-xl">
+        <div className="home-content">
           <div>
             <h2>About Pixel Pajama Studios</h2>
             <p>
