@@ -56,7 +56,7 @@ export class UserToList extends BaseEntity {
     );
     // Remove items already on list
     const itemsNotOnList = sortedHistory.filter(
-      (history) => !parent.sortedItems?.includes(history.item)
+      (history) => !parent.list.items?.map((i) => i.name).includes(history.item)
     );
     return itemsNotOnList.map((history) => history.item);
   }
