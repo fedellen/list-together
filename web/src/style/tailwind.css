@@ -377,7 +377,7 @@
 
   /** Special multi-button to choose which privilege to share with users */
   .privilege-button {
-    @apply mb-2 sm:mb-4 text-xxs grid grid-cols-4 items-center justify-center rounded-full font-semibold shadow-md w-full;
+    @apply mb-4 sm:mb-6 text-xxs grid grid-cols-4 items-center justify-center rounded-full font-semibold shadow-md w-full;
   }
   .privilege-button button {
     @apply flex justify-center font-semibold text-gray-600  bg-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700  border-gray-500 dark:border-gray-900 hover:bg-gray-500 transition-all duration-200;
