@@ -54,12 +54,13 @@ export class DeleteListResolver {
     // Remove the User to List connection
     await userToListTable.remove();
 
+    // Handle list in database
     const listInDatabase = await List.findOne(listId, {
       relations: ['userConnection']
     });
     if (listInDatabase) {
       if (listInDatabase.userConnection.length === 0) {
-        // Remove list from the database if no User Connections exist
+        // Delete list from the database if no User Connections exist
         await listInDatabase.remove();
       } else {
         const remainingUsersArray = listInDatabase.userConnection;

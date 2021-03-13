@@ -29,7 +29,7 @@ export class SubscribeToListUpdatesResolver {
       const userId: string = context.connection.context.req.session.userId;
       const { userIdToShare, userIdToExclude, updatedListId } = payload;
       if (userIdToShare) {
-        // userIdToShare exists when list is newly shared
+        // userIdToShare exists when list is newly shared or user becomes list owner
         // Filter returns true only if the shared user is the subscribed user
         return userIdToShare === userId;
       } else if (userIdToExclude && userIdToExclude === userId) {
