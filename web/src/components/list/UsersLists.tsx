@@ -15,13 +15,24 @@ type UsersListsProps = {
   sortedListsArray: string[];
 };
 
+/**
+ * UsersLists retrieves all of the user's lists and subscribes
+ * the user to notifications and shared list updates
+ *
+ * - Runs `useGetUsersListsQuery` (List data entry point)
+ * - Runs `useUpdateListSubscription` (App's only subscription)
+ *
+ *
+ * - Passes the current list to => `ItemList`
+ * - Passes all available lists to => `ScrollingLists`
+ */
 export default function UsersLists({ sortedListsArray }: UsersListsProps) {
   const [{ currentListId }, dispatch] = useStateValue();
 
   const { data, loading, error, refetch } = useGetUsersListsQuery({});
   const usersLists = data?.getUsersLists?.userToList?.map((list) => list);
 
-  /** Get lists on mount */
+  /** Get new lists on initial mount when persisting cache */
   useEffect(() => {
     refetch();
   }, []);
@@ -35,7 +46,7 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
     }
   }, [sortedListsArray, currentListId]);
 
-  /** Sort the list data based on User's preference */
+  /** Sorted list data based on User's preference */
   const sortedLists = useMemo(
     () =>
       usersLists?.sort(
@@ -46,14 +57,14 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
     [sortedListsArray, usersLists]
   );
 
-  /** Only subscribe to list IDs that have shared users, can be empty [] */
+  /** Only subscribe to list IDs that have shared users, can be an empty array */
   const listIdsToShare = sortedLists
     ? sortedLists
         .filter((userList) => userList.sharedUsers[0].shared === true)
         .map((userList) => userList.listId)
     : [];
 
-  /** Connect for notifications and updates to subscribed lists */
+  /** Connect for notifications and updates to shared lists */
   useUpdateListSubscription({
     variables: { listIdArray: listIdsToShare },
     onSubscriptionData: ({ subscriptionData }) => {
@@ -61,20 +72,27 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
         subscriptionData.data?.subscribeToListUpdates.notifications;
       if (notifications) {
         if (notifications[0].includes('You have a newly shared list')) {
+          /** Refetch all lists when new list is shared */
           refetch();
         }
         sendNotification(dispatch, notifications);
       }
     }
   });
+
   if (loading && !sortedLists) {
     return <LoadingSplash />;
   } else if (!sortedLists && error) {
-    const errorString = `There has been an unhandled error while loading your list data: ${error.message}`;
+    const errorString = `Unhandled error while loading list data in "UsersLists" component: ${error.message}`;
     console.error(errorString);
-    return <div>There has been an unhandled error: {errorString}</div>;
+    return (
+      <div>
+        Major error has occurred, please report this as a bug: {errorString}
+      </div>
+    );
   }
 
+  /** Currently displayed list */
   const currentList = sortedLists?.find(
     (list) => list.listId === currentListId
   );
