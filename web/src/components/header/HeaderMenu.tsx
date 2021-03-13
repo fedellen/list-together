@@ -110,7 +110,7 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
               <IconButton
                 icon={!isDark ? <DarkModeIcon /> : <LightModeIcon />}
                 text={!isDark ? 'Dark' : 'Light'}
-                onClick={() => toggleDarkMode(!isDark ? 'light' : 'dark')}
+                onClick={() => toggleDarkMode(isDark ? 'light' : 'dark')}
                 style={iconButtonStyle}
               />
               <IconButton
