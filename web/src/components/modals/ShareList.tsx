@@ -8,6 +8,7 @@ import { UserPrivileges } from 'src/types';
 import useKeyPress from 'src/hooks/useKeyPress';
 import ModalButtons from './ModalButtons';
 import CurrentListTitle from '../shared/CurrentListTitle';
+import { useField } from 'src/hooks/useField';
 
 export default function ShareList() {
   const [{ currentListId }, dispatch] = useStateValue();
@@ -15,7 +16,7 @@ export default function ShareList() {
   /** State for handling the `PrivilegeButton` */
   const [privilege, setPrivilege] = useState<UserPrivileges>('delete');
   /** Email input field */
-  const [email, setEmail] = useState('');
+  const emailInput = useField();
 
   const [shareList] = useShareListMutation({});
   const [submit, setSubmit] = useState(false);
@@ -23,7 +24,7 @@ export default function ShareList() {
   const handleShareList = async () => {
     if (!submit) {
       setSubmit(true);
-      if (!email.includes('@') || !email.includes('.')) {
+      if (!emailInput.value.includes('@') || !emailInput.value.includes('.')) {
         sendNotification(dispatch, ['That is not a valid email address..']);
         setTimeout(() => setSubmit(false), 2000);
         return;
@@ -31,7 +32,11 @@ export default function ShareList() {
       try {
         const { data } = await shareList({
           variables: {
-            data: { listId: currentListId, email: email, privileges: privilege }
+            data: {
+              listId: currentListId,
+              email: emailInput.value,
+              privileges: privilege
+            }
           }
         });
         if (data?.shareList.errors) {
@@ -54,13 +59,7 @@ export default function ShareList() {
       <CurrentListTitle />
 
       <span className="text-label">User&lsquo;s Email Address:</span>
-      <input
-        name="email"
-        type="email"
-        placeholder="email address"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+      <input {...emailInput} type="email" placeholder="email address" />
       <PrivilegeButton privilege={privilege} setPrivilege={setPrivilege} />
       <ModalButtons
         primaryClick={() => handleShareList()}
