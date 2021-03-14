@@ -4,9 +4,7 @@ import { graphqlCall } from '../../test-helpers/graphqlCall';
 const getUserQuery = `
 query GetUser {
   getUser {
-
     id
-    email
     sortedListsArray
   }
 }
@@ -29,7 +27,7 @@ describe('Get user query:', () => {
       }
     });
 
-    expect(response?.data?.getUser.email).toBeDefined();
+    expect(response?.data?.getUser.id).toBeDefined();
     expect(response?.data?.getUser.sortedListsArray).toHaveLength(1);
   });
 });
