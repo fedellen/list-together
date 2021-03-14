@@ -6,7 +6,7 @@ import { getSharedListTables } from '../list/getSharedListTables';
 /** Add item to all shared UserToList's sortedItem arrays */
 export const addToSharedLists = async (
   userToList: UserToList,
-  itemName: string,
+  itemNameArray: string[],
   publish: (payload: SubscriptionPayload) => Promise<void>
 ) => {
   const sharedUserToListTables = await getSharedListTables(userToList);
@@ -15,7 +15,9 @@ export const addToSharedLists = async (
     // List has shared users, add to their lists
     await Promise.all(
       sharedUserToListTables.map(async (table) => {
-        table.sortedItems = sortIntoList(table, itemName);
+        for (const itemName of itemNameArray) {
+          table.sortedItems = sortIntoList(table, itemName);
+        }
         await table.save();
       })
     );
@@ -24,7 +26,9 @@ export const addToSharedLists = async (
       updatedListId: userToList.listId,
       // Don't notify user who added the item
       userIdToExclude: userToList.userId,
-      notification: `${itemName} was added to ${userToList.list.title}`
+      notification: `${
+        itemNameArray.length > 1 ? 'Items' : `"${itemNameArray[0]}"`
+      } added to list: ${userToList.list.title}`
     });
   }
 };

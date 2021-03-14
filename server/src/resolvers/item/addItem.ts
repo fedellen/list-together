@@ -123,9 +123,7 @@ export class AddItemResolver {
 
     // Save table to DB, cascades list updates
     await userToListTable.save();
-    for (const itemName of nameInputArray) {
-      addToSharedLists(userToListTable, itemName, publish);
-    }
+    addToSharedLists(userToListTable, nameInputArray, publish);
 
     return { userToList: [userToListTable] };
   }
