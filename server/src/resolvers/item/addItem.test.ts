@@ -92,8 +92,8 @@ describe('Add item mutation:', () => {
       itemName
     ]);
 
-    // Wait 5.5 seconds for `recentlyAddedCallback` to resolve
-    await sleep(5500);
+    // Wait 300ms for `recentlyAddedCallback` to resolve
+    await sleep(300);
     const listConnectionInDatabaseAfterSleep = await UserToList.findOne({
       where: { userId: user.id },
       relations: ['list', 'list.items', 'itemHistory']

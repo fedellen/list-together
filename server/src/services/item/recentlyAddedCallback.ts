@@ -20,8 +20,9 @@ export const recentlyAddedCallback = (
   userToList: UserToList,
   itemName: string
 ) => {
-  let callbackDelay = 1000 * 5; // 5 seconds during dev || test
+  let callbackDelay = 1000 * 5; // 5 seconds during dev
   if (process.env.NODE_ENV === 'production') callbackDelay = 1000 * 60 * 10; // 10 minutes in prod
+  if (process.env.NODE_ENV === 'test') callbackDelay = 100; // 100ms in test
 
   setTimeout(async () => {
     // Get current UserToList, with itemHistory
