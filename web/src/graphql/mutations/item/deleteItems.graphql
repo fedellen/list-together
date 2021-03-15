@@ -3,6 +3,7 @@ mutation DeleteItems($data: DeleteItemsInput!) {
     userToList {
       listId
       sortedItems
+      smartSortedItems
       list {
         id
         items {
