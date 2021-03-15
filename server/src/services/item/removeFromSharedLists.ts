@@ -20,6 +20,7 @@ export const removeFromSharedLists = async (
             (item) => !itemNameArray.includes(item)
           );
         }
+        await table.save();
       })
     );
 
