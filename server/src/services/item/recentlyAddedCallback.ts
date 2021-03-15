@@ -1,7 +1,7 @@
 import { UserToList } from '../../entities';
 
 /**
- * Todo: Convert callbacks to Redis to prevent callbacks
+ * Todo: Convert callbacks to Redis (or cron job?) to prevent callbacks
  * from being cancelled on server restart / server down.
  *
  * This could cause some inconsistencies with User's
@@ -20,9 +20,8 @@ export const recentlyAddedCallback = (
   userToList: UserToList,
   itemName: string
 ) => {
-  let callbackDelay = 1000 * 5; // 5 seconds during dev
-  if (process.env.NODE_ENV === 'production') callbackDelay = 1000 * 60 * 10; // 30 minutes in prod
-  if (process.env.NODE_ENV === 'test') return; // Don't run callbacks in test yet
+  let callbackDelay = 1000 * 5; // 5 seconds during dev || test
+  if (process.env.NODE_ENV === 'production') callbackDelay = 1000 * 60 * 10; // 10 minutes in prod
 
   setTimeout(async () => {
     // Get current UserToList, with itemHistory
@@ -30,12 +29,12 @@ export const recentlyAddedCallback = (
       where: { listId: userToList.listId, userId: userToList.userId }
     });
 
-    // Dont run if:
+    // Don't run if:
     if (!currentList) {
       // UserToList table has been deleted
       return;
     } else if (!currentList.recentlyAddedItems) {
-      // recentlyAddedItems has already been cleared?
+      // recentlyAddedItems has already been cleared
       return;
     } else if (!currentList.recentlyAddedItems.includes(itemName)) {
       // Item already removed (has been undone)
