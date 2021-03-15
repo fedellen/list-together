@@ -5,6 +5,7 @@ build/
 tmp/
 temp/
 dist/
+.priv
 .env
 .env.production
 yarn-error.log

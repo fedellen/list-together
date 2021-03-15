@@ -20,21 +20,21 @@ List Together is a simple, modern list app built with family sharing capabilitie
 
 User's create an account by signing in with Google, Twitter, or Facebook. The database's User entity will only store the user's email. This is to be used in sharing lists with other users. No passwords stored, no account information to remember.
 
-Each user can create up to 25 lists. Lists can be renamed, removed, or shared to other users. Every list contains a history of items added and removed to be used in that list's Auto Complete and Smart Sort features.
+Each user can create up to 15 lists. Lists can be renamed, removed, or shared to other users. Every list contains a history of items added and removed to be used in that list's Auto Complete and Smart Sort features.
 
-Lists can store up to 300 items each. Users with access to a list can add items, strike items, and/or delete items. Each user can also sort the order the items for their own unique display.
+Lists can store up to 150 items each. Users with access to a list can add items, strike items, and/or delete items. Every item can also display up to 10 unique notes.
 
 Most list actions are stored locally to be used in the `Undo` feature. Users can conveniently undo or redo these actions to revert the list back to their preferred state.
 
-Striking items will immediately sort to the bottom on the list. Un-striking will attempt to sort the item back into the list. While a list has striked items, users can enter `Review` mode to view only their striked items. `Review` mode can be used to immediately delete all striked items.
+Striking items will immediately sort that item to the bottom on the list. Un-striking will sort the item back into the list. While a list has striked items, users can enter `Review` mode to view only their striked items. While in `Review` mode, users can quickly delete all currently striked items on the list.
 
-Items on the lists can be sorted manually, or by using the `SmartSort` feature. As the history of your lists grow, `SmartSort` will remember the order in which your items have previously been removed.
+Users can easily share their lists with friends or family via email address. The shared user must have an account already created for server to accept it as a sharable email address. While online, the shared user will receive a notification and the list immediately upon sharing.
 
-By default, this option will try to sort your list into the route you take through the store. Alternatively you can save your own order for each item by sorting your list manually then using the `SaveOrder` option.
+Owners of a list can choose to limit the privileges they want that shared user to have. Available Privilege levels include `read`, `add`, `strike`, and `full`. This feature is intended to protect your list from being cleared out accidentally by younger family members or friends but still allowing them access to add items or read the list.
 
-Users can easily share their lists with friends via email address. The shared user must first create an account for the server to accept it as a sharable email address.
+Each user can sort the order the items for their own unique display, without disrupting the order of shared users' sorted items. Items on the list can be sorted manually, or by using the `SmartSort` feature. As the history of your lists grow, `SmartSort` will remember the order in which your items have previously been removed.
 
-In addition, owners of a list can choose to limit the privileges they want that shared user to have. Available Privilege levels include `read`, `add`, `strike`, and `full`. This feature is intended to protect your list from being cleared out accidentally by younger family members or friends but still allowing them access to add items or read the list.
+By default, the `SmartSort` option will try to sort your list into the route you take through the store. Alternatively you can save your own order for each item by sorting your list manually then using the `SaveOrder` option located in the `HeaderOptions`.
 
 This app also features some limited offline functionality. Users can install the app locally as a PWA. When in offline mode, they can view their last available list queries from the cache. Interacting with the lists does not work offline.
 
@@ -47,6 +47,7 @@ This app also features some limited offline functionality. Users can install the
 
 ## **🤔 Possibly todo after release**
 
+- Optimistic responses on item mutations for quicker user interaction, especially for users located further from the server (Toronto)
 - Implement offline mutation capabilities for Apollo Client
 - More back-end resolver tests, there remains uncovered logic
 - Add test user creation from front-to-back without Passport APIs for a better dev environment
@@ -66,7 +67,7 @@ This app also features some limited offline functionality. Users can install the
 - [Express](https://github.com/expressjs/session)
 - [Passport](https://github.com/jaredhanson/passport)
 - [Apollo Server](https://github.com/apollographql/apollo-server)
-- Redis with [ioRedis](https://github.com/luin/ioredis)
+- [ioRedis](https://github.com/luin/ioredis)
 - [Type-GraphQL](https://github.com/MichalLytek/type-graphql)
 
 As a work in progress, the server has not yet been hosted anywhere. Before production I do intend to add Docker into the workflow with Dokku in particular.
@@ -127,4 +128,4 @@ TypeScript was the hardest part of my recent web-dev learning journey. Whenever 
 
 Now I can absolutely say that TypeScript is no longer difficult for me. As expected, I now prefer it over plain JavaScript as it provides much more information. After about a week of using TypeScript regularly it became an extremely useful tool. There was a certain moment where I stopped struggling against the compiler and started working **with** the compiler.
 
-After attempting several different offline-first with Apollo Client methods, I struggled to get offline mutations to work consistently enough to include this feature. Rather than starting over with a stack that includes more robust offline functionality, I decided to finish this app with Apollo and skip offline mutations for now.
+After attempting several different offline-first with Apollo Client methods, I struggled to get offline mutations to work consistently enough to include this feature. Rather than starting over with a stack that includes more robust offline functionality, I decided to finish this app with Apollo and skip the offline mutations for now.
