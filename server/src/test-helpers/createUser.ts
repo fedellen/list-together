@@ -36,6 +36,7 @@ export const userWithList = async (lists: number = 1): Promise<User> => {
   return user.save();
 };
 
+/** Creates user with list and X items (default: 5) */
 export const userWithListAndItems = async (
   items: number = 5
 ): Promise<User> => {
@@ -77,11 +78,15 @@ export const createUserWithSharedPriv = async (
   listId: string,
   privileges: UserPrivileges
 ): Promise<User> => {
+  const list = await UserToList.findOne({ where: { listId } })!;
+  const { sortedItems } = list!;
+
   const user = await createUser();
   await UserToList.create({
     listId: listId,
     userId: user.id,
-    privileges: privileges
+    privileges: privileges,
+    sortedItems: sortedItems
   }).save();
 
   return user;

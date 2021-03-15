@@ -1,3 +1,4 @@
+import { sleep } from '../../test-helpers/sleep';
 import { UserToList } from '../../entities';
 import {
   userWithListAndItems,
@@ -185,14 +186,17 @@ describe('Delete items mutation:', () => {
       userId: sharedUser.id
     });
 
-    // Check response format, has item name
+    // Check response format
     expect(response).toMatchObject({
       data: {
         deleteItems: {
           errors: null,
           userToList: [
             {
+              // sortedItems removed
+              sortedItems: [itemNameArray[1], itemNameArray[0]],
               list: {
+                // Items removed
                 items: [
                   {
                     name: itemNameArray[0]
@@ -208,19 +212,15 @@ describe('Delete items mutation:', () => {
       }
     });
 
-    const listConnectionInDatabase = await UserToList.findOne({
+    // Wait 1 second for `removeFromSharedLists` to resolve
+    await sleep(1000);
+    const ownerListConnectionInDatabase = await UserToList.findOne({
       where: { userId: listOwner.id },
       relations: ['list', 'list.items']
     });
-
-    // List array without [0] and [1]
-    expect(listConnectionInDatabase!.list.items![0].name).toBe(
-      itemNameArray[0]
-    );
-    expect(listConnectionInDatabase!.list.items![1].name).toBe(
-      itemNameArray[1]
-    );
+    expect(ownerListConnectionInDatabase!.sortedItems!.length).toBe(2);
   });
+
   it('User without shared `delete` privileges cannot delete items from list', async () => {
     const listOwner = await userWithListAndItems();
     const listOwnerUserConnection = await UserToList.findOne({
