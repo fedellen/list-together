@@ -125,10 +125,10 @@
     @apply flex gap-2 sm:gap-4 xl:gap-6 justify-center items-center;
   }
   #list-together-icon div {
-    @apply w-12 md:w-14 xl:w-16;
+    @apply w-12 md:w-14 xl:w-16 2xl:w-20;
   }
   #list-together-icon h2 {
-    @apply text-left font-extrabold;
+    @apply text-left font-extrabold font-body lg:text-2xl xl:text-3xl 2xl:text-4xl text-indigo-900 dark:text-indigo-400 tracking-wider;
   }
 
   /** Header Menu */
@@ -364,7 +364,7 @@
     @apply h-40 mt-8 sm:mt-10 flex justify-center items-center text-xs md:text-sm;
   }
   .auto-complete-items {
-    @apply flex flex-wrap gap-2 max-h-40  overflow-y-scroll;
+    @apply flex flex-wrap gap-2 max-h-40 overflow-y-auto;
   }
 
   .auto-complete-items button {
