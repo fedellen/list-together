@@ -27,7 +27,7 @@ export const addToSharedLists = async (
       // Don't notify user who added the item
       userIdToExclude: userToList.userId,
       notification: `${
-        itemNameArray.length > 1 ? 'Items' : `"${itemNameArray[0]}"`
+        itemNameArray.length > 1 ? 'Items' : `Item : '${itemNameArray[0]}'`
       } added to list: ${userToList.list.title}`
     });
   }
