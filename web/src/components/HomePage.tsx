@@ -25,7 +25,7 @@ export default function HomePage() {
               open source.
             </a>
           </p>
-          <span className="text-label mb-2 ml-2 mt-8  lg:mt-12 xl:mt-16">
+          <span className="text-label mb-2 ml-2 mt-8 lg:mt-12 xl:mt-16">
             Easy Login / Sign up :
           </span>
           <div className="flex flex-wrap gap-4 items-center">
@@ -38,9 +38,15 @@ export default function HomePage() {
 
       <section className="bg-alt">
         <div className="home-content">
-          <div className="w-64 h-64 lg:flex-shrink-0 bg-gray-300">
-            Gif/Mp4 in action
-          </div>
+          {/* <div className="w-64 h-64 lg:flex-shrink-0 bg-gray-300"> */}
+          <video
+            // width="400px"
+            src="/media/list-3.mp4"
+            autoPlay={true}
+            loop={true}
+            className="rounded-lg shadow-md mb-8 w-80 mx-auto sm:mb-16"
+          />
+          {/* </div> */}
           <div>
             <h2>Simple, modern, functional.</h2>
             <p>
@@ -53,10 +59,14 @@ export default function HomePage() {
         </div>
       </section>
       <section>
-        <div className="home-content">
-          <div className="w-64 h-64 lg:flex-shrink-0 bg-gray-400">
-            Gif/Mp4 in action
-          </div>
+        <div className="home-content xl:gap-24">
+          <video
+            width="640px"
+            src="/media/list-4.mp4"
+            autoPlay={true}
+            loop={true}
+            className="rounded-lg shadow-md mb-8 mx-auto sm:mb-16 flex-shrink-0"
+          />
           <div className="lg:order-first">
             <h2>Share and Collaborate</h2>
             <p>
@@ -70,10 +80,14 @@ export default function HomePage() {
         </div>
       </section>
       <section className="bg-alt">
-        <div className="home-content">
-          <div className="w-64 h-64 lg:flex-shrink-0 bg-gray-300">
-            Gif/Mp4 in action
-          </div>
+        <div className="home-content xl:gap-24">
+          <video
+            width="640px"
+            src="/media/list-4.mp4"
+            autoPlay={true}
+            loop={true}
+            className="rounded-lg shadow-md mb-8 mx-auto sm:mb-16 flex-shrink-0"
+          />
           <div>
             <h2>Convenient Smart Features</h2>
             <p>
