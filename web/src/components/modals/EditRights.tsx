@@ -124,7 +124,7 @@ export default function EditRights() {
       </div>
       <PrivilegeButton privilege={privilege} setPrivilege={setPrivilege} />
       <ModalButtons
-        primaryClick={() => handleUpdatePrivileges(true)}
+        primaryClick={() => handleUpdatePrivileges()}
         secondaryClick={() => dispatch({ type: 'CLEAR_STATE' })}
         buttonText="Add"
       />
