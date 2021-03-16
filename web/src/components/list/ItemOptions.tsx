@@ -93,25 +93,26 @@ export const ItemOptions = () => {
   ]);
 
   const style = 'item-option';
+  const largeScreen = window.innerWidth > 1024;
   return (
     <div id="item-options-container">
       {/** Display buttons when user has privileges to access them */}
       <IconButton
-        text="Up"
+        text={`Up${largeScreen ? ' (⬆)' : ''}`}
         style={style}
         onClick={() => handleOptionAction('sortItemUp')}
         icon={<UpArrowIcon />}
         autoFocus={true}
       />
       <IconButton
-        text="Down"
+        text={`Down${largeScreen ? ' (⬇)' : ''}`}
         style={style}
         onClick={() => handleOptionAction('sortItemDown')}
         icon={<DownArrowIcon />}
       />
       {userCanAdd && (
         <IconButton
-          text="Note"
+          text={`Note${largeScreen ? ' (N)' : ''}`}
           style={style}
           onClick={() => handleOptionAction('addNote')}
           icon={<NoteIcon />}
@@ -119,7 +120,7 @@ export const ItemOptions = () => {
       )}
       {userCanStrike && (
         <IconButton
-          text="Strike"
+          text={`Strike${largeScreen ? ' (S)' : ''}`}
           style={style}
           onClick={() => handleOptionAction('strikeItem')}
           icon={<StrikeIcon />}
@@ -127,7 +128,7 @@ export const ItemOptions = () => {
       )}
       {userCanDelete && (
         <IconButton
-          text="Delete"
+          text={`Delete${largeScreen ? ' (D)' : ''}`}
           style={style}
           onClick={() => handleOptionAction('deleteItem')}
           icon={<DeleteIcon />}
