@@ -86,7 +86,7 @@
 
   /** Notification pop-ups / Error messages */
   #notification {
-    @apply fixed bottom-6 left-6 p-6 font-semibold w-60 lg:w-72 bg-indigo-300 dark:bg-indigo-900 rounded-lg shadow-md z-50;
+    @apply fixed bottom-6 left-6 p-6 font-semibold w-60 lg:w-72 bg-indigo-300 dark:bg-indigo-900 rounded-lg shadow-md z-30;
   }
 
   .list-title {
@@ -314,7 +314,7 @@
   /** Side Menu */
 
   #side-menu {
-    @apply sticky h-32 xl:h-36  ml-auto xl:mx-auto bottom-2 flex gap-3 p-4 justify-center z-10;
+    @apply sticky h-32 xl:h-36  ml-auto xl:mx-auto bottom-2 flex gap-3 p-4 justify-center z-40;
   }
   .side-menu-button {
     @apply icon-button rounded-full shadow-md bg-indigo-300 hover:bg-indigo-400 dark:hover:bg-indigo-800  dark:bg-indigo-900 gap-1 px-3 py-4 hover-grow;
@@ -328,7 +328,7 @@
   \====================================================*/
 
   .modal-container {
-    @apply fixed inset-0 items-center justify-center flex z-20 top-20;
+    @apply fixed inset-0 items-center justify-center flex z-40 top-20;
   }
   .modal {
     @apply bg-gray-300 dark:bg-gray-900 w-full sm:w-3/4 md:w-1/2 lg:w-2/5 xl:w-2/6 2xl:w-3/12  rounded-lg flex flex-col py-6 md:py-8 px-6 md:px-8 gap-4 md:gap-6 lg:gap-8 shadow-md mx-6 z-50 justify-center items-center;
