@@ -36,7 +36,9 @@ export const strikeOnSharedLists = async (
       updatedListId: userToList.listId,
       /** Don't notify user who striked the item */
       userIdToExclude: userToList.userId,
-      notification: `${itemName} has been ${strike ? 'striked' : 'un-striked'}.`
+      notification: `'${itemName}' has been ${
+        strike ? 'striked' : 'un-striked'
+      } on list '${userToList.list.title}'.`
     });
   }
 };

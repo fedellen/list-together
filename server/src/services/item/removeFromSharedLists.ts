@@ -30,9 +30,9 @@ export const removeFromSharedLists = async (
       userIdToExclude: userToList.userId,
       notification: `${
         itemNameArray.length === 1
-          ? `${itemNameArray[0]} has been`
+          ? `'${itemNameArray[0]}' has been`
           : 'Items have been'
-      } removed from list: ${userToList.list.title}`
+      } removed from list '${userToList.list.title}'`
     });
   }
 };
