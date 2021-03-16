@@ -38,7 +38,7 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
   useEffect(() => {
     refetch();
     setTimeout(() => {
-      /** Always show LoadingSplash for first half second */
+      /** Always show LoadingSplash for first 0.75 seconds in UsersLists as well */
       setInitialLoad(false);
     }, 500);
   }, []);

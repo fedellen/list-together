@@ -40,7 +40,6 @@ This app also features some limited offline functionality. Users can install the
 
 ## **👨🏿‍💻 Todo before release**
 
-- Smoother loading transitions
 - Take 3x ~10sec video clips to display on landing page
 - Aria labels / accessibility for screen readers
 - Clear out remaining bugs 🐛

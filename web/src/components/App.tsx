@@ -19,9 +19,9 @@ export default function App() {
   useEffect(() => {
     refetch();
     setTimeout(() => {
-      /** Always show LoadingSplash for first second */
+      /** Always show LoadingSplash for first 0.75 seconds */
       setInitialLoad(false);
-    }, 1000);
+    }, 750);
   }, []);
 
   /** Send to list if user is logged in  */
