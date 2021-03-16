@@ -27,15 +27,17 @@ export class SubscribeToListUpdatesResolver {
       MyContext
     >) => {
       const userId: string = context.connection.context.req.session.userId;
-      const { userIdToShare, userIdToExclude, updatedListId } = payload;
+      const { userIdToShare, /* userIdToExclude,*/ updatedListId } = payload;
       if (userIdToShare) {
         // userIdToShare exists when list is newly shared or user becomes list owner
         // Filter returns true only if the shared user is the subscribed user
         return userIdToShare === userId;
-      } else if (userIdToExclude && userIdToExclude === userId) {
-        // To avoid self-notifications, the userID who pushed the updated is excluded
-        return false;
-      } else {
+      }
+      // else if (userIdToExclude && userIdToExclude === userId) {
+      //   // To avoid self-notifications, the userID who pushed the updated is excluded
+      //   return false;
+      // }
+      else {
         // Return true if user is subscribed to that list
         return args.listIdArray.includes(updatedListId);
       }
@@ -43,7 +45,7 @@ export class SubscribeToListUpdatesResolver {
   })
   async subscribeToListUpdates(
     @Root()
-    { updatedListId, notification }: SubscriptionPayload,
+    { updatedListId, notification, userIdToExclude }: SubscriptionPayload,
     // Frontend sends array of their ListIds to subscribe to
     @Args() {}: SubscriptionArgs,
     @Ctx() { connection }: MyContext
@@ -72,7 +74,8 @@ export class SubscribeToListUpdatesResolver {
 
     return {
       userToList: [usersList],
-      notifications: notification ? [notification] : []
+      notifications:
+        notification && userIdToExclude !== userId ? [notification] : []
     };
   }
 }
