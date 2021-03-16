@@ -365,10 +365,10 @@
 
   /** Auto-complete from `AddItem` modal  */
   .auto-complete {
-    @apply h-40 mt-8 sm:mt-10 flex justify-center items-center text-xs md:text-sm;
+    @apply h-28 mt-8 sm:mt-10 flex justify-center items-center text-xs md:text-sm;
   }
   .auto-complete-items {
-    @apply flex flex-wrap gap-2 max-h-40 overflow-y-auto;
+    @apply flex flex-wrap gap-2 max-h-28 overflow-y-auto;
   }
 
   .auto-complete-items button {
