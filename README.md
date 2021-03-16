@@ -70,9 +70,7 @@ This app also features some limited offline functionality. Users can install the
 - [ioRedis](https://github.com/luin/ioredis)
 - [Type-GraphQL](https://github.com/MichalLytek/type-graphql)
 
-As a work in progress, the server has not yet been hosted anywhere. Before production I do intend to add Docker into the workflow with Dokku in particular.
-
-For now, to install and test the app locally you will first need to setup Postgres and Redis on your system. You will also need to provide a .env file with the appropriate fields filled in, including one method of logging in via a Passport API (Google / Twitter / Facebook). Afterwards, install and run the the server in development mode with:
+To install and test the app locally you will first need to setup Postgres and Redis on your system. You will also need to provide a .env file with the appropriate fields filled in, including at least one method of logging in via a Passport API with a dummy app (Google / Twitter / Facebook). Afterwards, install and run the the server in development mode with:
 
 ```
 cd ./server && yarn install && yarn dev
@@ -120,7 +118,7 @@ Frontend was bootstrapped with:
 npx create-react-app my-app --template cra-template-pwa-typescript
 ```
 
-## **📖 About the project:**
+## **📖 About the project**
 
 List Together is a project I've created to upgrade our personal grocery list routine. I used this opportunity to expand my knowledge of React with TypeScript.
 
@@ -129,3 +127,9 @@ TypeScript was the hardest part of my recent web-dev learning journey. Whenever 
 Now I can absolutely say that TypeScript is no longer difficult for me. As expected, I now prefer it over plain JavaScript as it provides much more information. After about a week of using TypeScript regularly it became an extremely useful tool. There was a certain moment where I stopped struggling against the compiler and started working **with** the compiler.
 
 After attempting several different offline-first with Apollo Client methods, I struggled to get offline mutations to work consistently enough to include this feature. Rather than starting over with a stack that includes more robust offline functionality, I decided to finish this app with Apollo and skip the offline mutations for now.
+
+## **💖 Support us**
+
+List Together is free to use and it&rsquo;s code is open source on
+GitHub under the MIT license. Contributions to the project and
+forks are more than welcome. You can support the project or help us pay server costs by tipping us a [Ko-fi](https://ko-fi.com/pixelpajamastudios)
