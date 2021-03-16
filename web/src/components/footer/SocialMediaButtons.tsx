@@ -13,13 +13,13 @@ export default function SocialMediaButtons() {
       <a href="https://www.facebook.com/PixelPajamaStudios/">
         <FacebookIcon />
       </a>
-      <a href="https://www.facebook.com/PixelPajamaStudios/">
+      <a href="https://discord.com/invite/ScBxGuw">
         <DiscordIcon />
       </a>
-      <a href="https://www.facebook.com/PixelPajamaStudios/">
+      <a href="https://www.instagram.com/pixel_pajama_studios/">
         <InstagramIcon />
       </a>
-      <a href="https://www.facebook.com/PixelPajamaStudios/">
+      <a href="https://www.youtube.com/channel/UCFPFhdMC3wsR0oUbQwPssMQ?">
         <YoutubeIcon />
       </a>
     </div>
