@@ -6,7 +6,7 @@ import ItemList from './ItemList';
 import { useStateValue } from 'src/state/state';
 import ScrollingLists from './ScrollingLists';
 import { openModal, sendNotification } from 'src/utils/dispatchActions';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import LoadingSplash from '../shared/LoadingSplash';
 import { useMemo } from 'react';
 
@@ -32,9 +32,15 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
   const { data, loading, error, refetch } = useGetUsersListsQuery({});
   const usersLists = data?.getUsersLists?.userToList?.map((list) => list);
 
+  const [initialLoad, setInitialLoad] = useState(true);
+
   /** Get new lists on initial mount when persisting cache */
   useEffect(() => {
     refetch();
+    setTimeout(() => {
+      /** Always show LoadingSplash for first half second */
+      setInitialLoad(false);
+    }, 500);
   }, []);
 
   /** Initialize current list when data is initialized or list id is cleared */
@@ -80,7 +86,7 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
     }
   });
 
-  if (loading && !sortedLists) {
+  if ((loading && !sortedLists) || initialLoad) {
     return <LoadingSplash />;
   } else if (!sortedLists && error) {
     const errorString = `Unhandled error while loading list data in "UsersLists" component: ${error.message}`;
