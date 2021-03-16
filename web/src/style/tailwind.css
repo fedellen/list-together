@@ -11,6 +11,10 @@
   scrollbar-color: #9ca3af #6b7280;
 }
 
+.strike {
+  text-decoration-thickness: 4px;
+}
+
 /** Get ready for some tailwind styles 👍 */
 
 @layer base {
