@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { UserToList, useSortListsMutation } from 'src/generated/graphql';
+import { useKeyHandler } from 'src/hooks/useKeyHandler';
 import { useStateValue } from 'src/state/state';
 import { ArrowIconDirection } from 'src/types';
 import { arrayMove } from 'src/utils/arrayMove';
@@ -79,9 +80,14 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
         scrollContainerToChildList(moveToIndex);
       }
     } catch (err) {
-      console.error(`Error on sortItem mutation: ${err}`);
+      console.error(`Error on sortLists mutation: ${err}`);
     }
   };
+
+  useKeyHandler([
+    { keyValues: ['ArrowLeft'], callback: () => handleArrowClick('left') },
+    { keyValues: ['ArrowRight'], callback: () => handleArrowClick('right') }
+  ]);
 
   const moreThanOneList = lists.length > 1;
   return (
