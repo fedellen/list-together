@@ -60,11 +60,11 @@ export default function HomePage() {
           <div className="lg:order-first">
             <h2>Share and Collaborate</h2>
             <p>
-              Users can easily share their lists with friends via email address.
-              The shared user must first create an account for the server to
-              accept it as a sharable email address. List owners may also choose
-              to limit the privileges of any user to provide only the access
-              that user needs.
+              Users can easily share their lists with friends or family via
+              email address. The shared user must have an account already
+              created for server to accept it as a sharable email address.
+              Owners of a list can choose to limit the privileges they want that
+              shared user to have.
             </p>
           </div>
         </div>
@@ -75,11 +75,14 @@ export default function HomePage() {
             Gif/Mp4 in action
           </div>
           <div>
-            <h2>Simple, modern, functional.</h2>
+            <h2>Convenient Smart Features</h2>
             <p>
-              List Together provides an easy to use interface to create and
-              manage your lists. Clicking or tapping on items will allow users
-              to add, strike, and delete item&rsquo;s from their list.
+              Every list contains a history of items added and removed to be
+              used in that list&rsquo;s Auto Complete and Smart Sort features.
+              By default, the Smart Sort option will try to sort your list into
+              the route you take through the store. Alternatively you can save
+              your own order for each item by sorting your list manually then
+              using the Save Order option located in the header menu.
             </p>
           </div>
         </div>
@@ -124,7 +127,7 @@ export default function HomePage() {
                 className="home-link"
                 href="https://ko-fi.com/pixelpajamastudios"
               >
-                tipping us a Kofi
+                tipping us a Ko-fi
               </a>
               .
             </p>
