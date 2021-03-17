@@ -86,7 +86,7 @@
 
   /** Notification pop-ups / Error messages */
   #notification {
-    @apply fixed bottom-6 left-6 p-6 font-semibold w-60 lg:w-72 bg-indigo-300 dark:bg-indigo-900 rounded-lg shadow-md z-30;
+    @apply fixed bottom-6 left-6 p-6 font-semibold w-60 lg:w-72 bg-indigo-300 dark:bg-indigo-900 rounded-lg shadow-md z-40;
   }
 
   .list-title {
@@ -216,6 +216,10 @@
     @apply hidden sm:block;
   }
 
+  .landing-video {
+    @apply rounded-lg shadow-md mb-8 mx-auto sm:mb-16 flex-shrink-0;
+  }
+
   /** Alternate backgrounds for landing page */
   .bg-alt {
     @apply bg-gray-400 dark:bg-gray-900;
@@ -314,7 +318,7 @@
   /** Side Menu */
 
   #side-menu {
-    @apply sticky h-32 xl:h-36  ml-auto xl:mx-auto bottom-2 flex gap-3 p-4 justify-center z-40;
+    @apply sticky h-32 xl:h-36  ml-auto xl:mx-auto bottom-2 flex gap-3 p-4 justify-center z-30;
   }
   .side-menu-button {
     @apply icon-button rounded-full shadow-md bg-indigo-300 hover:bg-indigo-400 dark:hover:bg-indigo-800  dark:bg-indigo-900 gap-1 px-3 py-4 hover-grow;

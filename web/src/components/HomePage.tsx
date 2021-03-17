@@ -40,11 +40,11 @@ export default function HomePage() {
         <div className="home-content">
           {/* <div className="w-64 h-64 lg:flex-shrink-0 bg-gray-300"> */}
           <video
-            // width="400px"
-            src="/media/list-3.mp4"
+            width="400px"
+            src="/media/list-together-landing-1.mp4"
             autoPlay={true}
             loop={true}
-            className="rounded-lg shadow-md mb-8 w-80 mx-auto sm:mb-16"
+            className="landing-video"
           />
           {/* </div> */}
           <div>
@@ -62,10 +62,10 @@ export default function HomePage() {
         <div className="home-content xl:gap-24">
           <video
             width="640px"
-            src="/media/list-4.mp4"
+            src="/media/list-together-landing-2.mp4"
             autoPlay={true}
             loop={true}
-            className="rounded-lg shadow-md mb-8 mx-auto sm:mb-16 flex-shrink-0"
+            className="landing-video"
           />
           <div className="lg:order-first">
             <h2>Share and Collaborate</h2>
@@ -82,11 +82,11 @@ export default function HomePage() {
       <section className="bg-alt">
         <div className="home-content xl:gap-24">
           <video
-            width="640px"
-            src="/media/list-4.mp4"
+            width="400px"
+            src="/media/list-together-landing-3.mp4"
             autoPlay={true}
             loop={true}
-            className="rounded-lg shadow-md mb-8 mx-auto sm:mb-16 flex-shrink-0"
+            className="landing-video"
           />
           <div>
             <h2>Convenient Smart Features</h2>
