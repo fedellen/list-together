@@ -15,7 +15,12 @@ export default function AddNote() {
 
   return (
     <div className="modal-component">
-      <input {...noteInput} placeholder="Enter item name" autoFocus />
+      <input
+        {...noteInput}
+        placeholder="Enter note"
+        autoFocus
+        aria-label="Text for Note"
+      />
       <ModalButtons
         primaryClick={() => handleAdd(noteInput.value)}
         secondaryClick={() => dispatch({ type: 'CLEAR_STATE' })}

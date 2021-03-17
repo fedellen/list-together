@@ -15,7 +15,12 @@ export default function CreateList() {
 
   return (
     <div className="modal-component">
-      <input {...listInput} placeholder="Enter list title" autoFocus />
+      <input
+        {...listInput}
+        placeholder="Enter list title"
+        autoFocus
+        aria-label="Title for New List"
+      />
       <ModalButtons
         primaryClick={() => handleAdd(listInput.value)}
         secondaryClick={() => dispatch({ type: 'CLEAR_STATE' })}

@@ -30,6 +30,7 @@ const Note = memo(function Note({
             className={` note-button ${isStriked}${
               activeNote && activeNote.note === note ? ' text-indigo-700' : ''
             }`}
+            aria-label="Display Delete Note Button"
             onClick={() =>
               dispatch({
                 type: 'SET_ACTIVE_NOTE',

@@ -59,7 +59,12 @@ export default function ShareList() {
       <CurrentListTitle />
 
       <span className="text-label">User&lsquo;s Email Address:</span>
-      <input {...emailInput} type="email" placeholder="email address" />
+      <input
+        {...emailInput}
+        type="email"
+        placeholder="email address"
+        aria-label="Email address to share list to"
+      />
       <PrivilegeButton privilege={privilege} setPrivilege={setPrivilege} />
       <ModalButtons
         primaryClick={() => handleShareList()}

@@ -100,6 +100,7 @@ export const ItemOptions = () => {
       <IconButton
         text={`Up${largeScreen ? ' (⬆)' : ''}`}
         style={style}
+        ariaLabel="Sort Item Up"
         onClick={() => handleOptionAction('sortItemUp')}
         icon={<UpArrowIcon />}
         autoFocus={true}
@@ -107,12 +108,14 @@ export const ItemOptions = () => {
       <IconButton
         text={`Down${largeScreen ? ' (⬇)' : ''}`}
         style={style}
+        ariaLabel="Sort Item Down"
         onClick={() => handleOptionAction('sortItemDown')}
         icon={<DownArrowIcon />}
       />
       {userCanAdd && (
         <IconButton
           text={`Note${largeScreen ? ' (N)' : ''}`}
+          ariaLabel="Add Note to Item"
           style={style}
           onClick={() => handleOptionAction('addNote')}
           icon={<NoteIcon />}
@@ -121,6 +124,7 @@ export const ItemOptions = () => {
       {userCanStrike && (
         <IconButton
           text={`Strike${largeScreen ? ' (S)' : ''}`}
+          ariaLabel="Strike Item"
           style={style}
           onClick={() => handleOptionAction('strikeItem')}
           icon={<StrikeIcon />}
@@ -129,6 +133,7 @@ export const ItemOptions = () => {
       {userCanDelete && (
         <IconButton
           text={`Delete${largeScreen ? ' (D)' : ''}`}
+          ariaLabel="Delete Item"
           style={style}
           onClick={() => handleOptionAction('deleteItem')}
           icon={<DeleteIcon />}

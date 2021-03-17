@@ -90,6 +90,7 @@ export default function EditRights() {
         <CurrentListTitle />
         <button
           onClick={() => handleUpdatePrivileges(true)}
+          aria-label="Remove All List Access from User"
           className="button-alert"
         >
           Remove <br />
@@ -103,6 +104,7 @@ export default function EditRights() {
       <div className="flex gap-2 items-center mb-4">
         {moreThanOneSharedUser && (
           <button
+            aria-label="Toggle Previous Shared User"
             className="move-list-button"
             onClick={() => handleArrowClick('left')}
           >
@@ -116,6 +118,7 @@ export default function EditRights() {
           //
           <button
             className="move-list-button "
+            aria-label="Toggle Next Shared User"
             onClick={() => handleArrowClick('right')}
           >
             <RightArrowIcon />

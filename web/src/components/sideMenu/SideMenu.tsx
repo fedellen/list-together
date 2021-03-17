@@ -96,12 +96,14 @@ export default function SideMenu({ strikedItems }: SideMenuProps) {
           {/** Review strikes mode */}
           <IconButton
             icon={<DeleteIcon />}
+            ariaLabel="Delate All Striked Items"
             onClick={handleDeleteAllClick}
             text={`Delete All${largeScreen ? ' (D)' : ''}`}
             style={style}
           />
           <IconButton
             icon={<ReviewListIcon />}
+            ariaLabel="Return to List"
             onClick={handleReturnClick}
             text={`Return${largeScreen ? ' (R)' : ''}`}
             style={style}
@@ -113,6 +115,7 @@ export default function SideMenu({ strikedItems }: SideMenuProps) {
           {hasStrikedItems && userCanDelete && (
             <IconButton
               icon={<ReviewListIcon />}
+              ariaLabel="Review Striked Items"
               onClick={handleReviewClick}
               text={`Review${largeScreen ? ' (R)' : ''}`}
               style={style}
@@ -120,6 +123,7 @@ export default function SideMenu({ strikedItems }: SideMenuProps) {
           )}
           {userCanAdd && (
             <IconButton
+              ariaLabel="Add New Item"
               icon={<AddItemIcon />}
               onClick={handleAddItemClick}
               text={`Add${largeScreen ? ' (A)' : ''}`}

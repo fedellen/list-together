@@ -114,9 +114,13 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
           />
         </>
       ) : (
-        <div id="empty-list" onClick={() => openModal(dispatch, 'createList')}>
+        <button
+          id="empty-list"
+          onClick={() => openModal(dispatch, 'createList')}
+          aria-label="Add New List"
+        >
           Add your first list!
-        </div>
+        </button>
       )}
     </section>
   );

@@ -24,6 +24,7 @@ export default function PrivilegeButton({
             privilege === 'read' ? ' active' : ''
           }`}
           type="button"
+          aria-label="Set Privilege Level to Read Only"
           onClick={() => setPrivilege('read')}
         >
           <div>
@@ -34,6 +35,7 @@ export default function PrivilegeButton({
         <button
           type="button"
           onClick={() => setPrivilege('add')}
+          aria-label="Set Privilege Level to Add"
           className={`border-r-2${privilege === 'add' ? ' active' : ''}`}
         >
           <div>
@@ -43,6 +45,7 @@ export default function PrivilegeButton({
         </button>
         <button
           type="button"
+          aria-label="Set Privilege Level to Strike"
           onClick={() => setPrivilege('strike')}
           className={`border-r-2${privilege === 'strike' ? ' active' : ''}`}
         >
@@ -53,6 +56,7 @@ export default function PrivilegeButton({
         </button>
         <button
           type="button"
+          aria-label="Set Privilege Level to Full Access"
           onClick={() => setPrivilege('delete')}
           className={`rounded-r-full pr-2${
             privilege === 'delete' ? ' active' : ''

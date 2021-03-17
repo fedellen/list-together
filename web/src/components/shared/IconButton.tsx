@@ -4,6 +4,7 @@ type IconButtonProps = {
   icon: ReactNode;
   onClick: () => void;
   text: string;
+  ariaLabel: string;
   style:
     | 'header-button'
     | 'side-menu-button'
@@ -21,6 +22,7 @@ export default function IconButton({
   style,
   moreStyles,
   active,
+  ariaLabel,
   autoFocus = false
 }: IconButtonProps) {
   return (
@@ -30,6 +32,7 @@ export default function IconButton({
         moreStyles ? moreStyles : ''
       }`}
       onClick={onClick}
+      aria-label={ariaLabel}
     >
       {icon}
       <span>{text}</span>

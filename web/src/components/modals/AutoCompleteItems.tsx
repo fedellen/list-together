@@ -10,7 +10,11 @@ export default function AutoCompleteItems({
   return (
     <div className="auto-complete-items">
       {filteredWords.map((word) => (
-        <button key={word} onClick={() => handleAdd(word)}>
+        <button
+          key={word}
+          onClick={() => handleAdd(word)}
+          aria-label={`Add Item: "${word}"`}
+        >
           {word}
         </button>
       ))}

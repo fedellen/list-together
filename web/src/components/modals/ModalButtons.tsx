@@ -22,10 +22,18 @@ export default function ModalButtons({
 }: ModalButtonsProps) {
   return (
     <div className="modal-buttons">
-      <button onClick={() => secondaryClick()} className="button-secondary">
+      <button
+        onClick={() => secondaryClick()}
+        className="button-secondary"
+        aria-label="Close Modal"
+      >
         Cancel
       </button>
-      <button onClick={() => primaryClick()} className="button">
+      <button
+        onClick={() => primaryClick()}
+        className="button"
+        aria-label="Send Action"
+      >
         {buttonText}
       </button>
     </div>

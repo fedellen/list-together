@@ -17,7 +17,12 @@ export default function RenameList() {
   return (
     <div className="modal-component">
       <CurrentListTitle />
-      <input {...listInput} placeholder="Enter new list title" autoFocus />
+      <input
+        {...listInput}
+        placeholder="Enter new list title"
+        autoFocus
+        aria-label="New List Title"
+      />
       <ModalButtons
         buttonText="Rename"
         primaryClick={() => handleAdd(listInput.value)}

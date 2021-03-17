@@ -6,6 +6,7 @@ export default function DeleteNoteButton() {
   return (
     <button
       className="delete-note"
+      aria-label="Delete Note"
       onClick={submit ? undefined : () => deleteNote()}
     >
       <DeleteIcon />

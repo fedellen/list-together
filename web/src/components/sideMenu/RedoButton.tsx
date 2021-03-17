@@ -462,6 +462,7 @@ function RedoButtonInner({ useMutationHook }: RedoButtonInnerProps) {
   return (
     <IconButton
       icon={<RedoButtonIcon />}
+      ariaLabel="Redo List Action"
       onClick={useMutationHook}
       text={`Redo${largeScreen ? ' (Y)' : ''}`}
       style="side-menu-button"

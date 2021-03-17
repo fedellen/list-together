@@ -36,7 +36,12 @@ export default function AddItem({}) {
 
   return (
     <div className="modal-component">
-      <input {...itemInput} placeholder="Enter item name" autoFocus />
+      <input
+        {...itemInput}
+        placeholder="Enter item name"
+        autoFocus
+        aria-label="Item Text"
+      />
       <ModalButtons
         primaryClick={() => handleAdd(itemInput.value)}
         secondaryClick={() => dispatch({ type: 'CLEAR_STATE' })}

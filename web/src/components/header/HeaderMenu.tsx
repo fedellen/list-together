@@ -84,6 +84,7 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
           <IconButton
             icon={<NewListIcon />}
             text="New List"
+            ariaLabel="Create New List"
             onClick={() => openModal(dispatch, 'createList')}
             style={iconButtonStyle}
           />
@@ -94,6 +95,7 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
                   <IconButton
                     icon={<ShareIcon />}
                     text="Share"
+                    ariaLabel="Share List"
                     onClick={() => openModal(dispatch, 'shareList')}
                     style={iconButtonStyle}
                   />
@@ -102,6 +104,7 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
               <div className="hidden md:block">
                 <IconButton
                   onClick={() => smartSort()}
+                  ariaLabel="Smart Sort Items on List"
                   text="Smart Sort"
                   style={iconButtonStyle}
                   icon={<SmartSortIcon />}
@@ -110,12 +113,14 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
               <IconButton
                 icon={!isDark ? <DarkModeIcon /> : <LightModeIcon />}
                 text={!isDark ? 'Dark' : 'Light'}
+                ariaLabel={`Toggle ${!isDark ? 'Dark' : 'Light'} Mode`}
                 onClick={() => toggleDarkMode(isDark ? 'light' : 'dark')}
                 style={iconButtonStyle}
               />
               <IconButton
                 icon={<OptionsIcon />}
                 text="Options"
+                ariaLabel="Open Header Options"
                 onClick={() =>
                   dispatch({
                     type: optionsOpen ? 'CLEAR_STATE' : 'TOGGLE_OPTIONS'
@@ -131,6 +136,7 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
         <>
           <IconButton
             icon={!isDark ? <DarkModeIcon /> : <LightModeIcon />}
+            ariaLabel={`Toggle ${!isDark ? 'Dark' : 'Light'} Mode`}
             text={!isDark ? 'Dark' : 'Light'}
             onClick={() => toggleDarkMode(isDark ? 'light' : 'dark')}
             style={iconButtonStyle}

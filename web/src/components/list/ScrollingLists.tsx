@@ -95,6 +95,7 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
       {moreThanOneList && (
         <button
           className="list-arrow-button"
+          aria-label="Display Previous List"
           onClick={() => handleArrowClick('left')}
         >
           <LeftArrowIcon />
@@ -107,6 +108,7 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
             {moveList && currentListId === userList.listId && (
               <button
                 className="move-list-button"
+                aria-label="Sort List to the Left"
                 onClick={() => handleSortList('left')}
               >
                 <LeftArrowIcon />
@@ -114,6 +116,7 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
             )}
             <button
               onClick={() => setNewList(dispatch, userList)}
+              aria-label={`Display List: ${userList.list.title}`}
               className={` list-button ${
                 currentListId === userList.listId ? ' active' : ''
               }`}
@@ -123,6 +126,7 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
             {moveList && currentListId === userList.listId && (
               <button
                 className="move-list-button"
+                aria-label="Sort List to the Right"
                 onClick={() => handleSortList('right')}
               >
                 <RightArrowIcon />
@@ -134,6 +138,7 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
       {moreThanOneList && (
         <button
           className="list-arrow-button"
+          aria-label="Display Next List"
           onClick={() => handleArrowClick('right')}
         >
           <RightArrowIcon />

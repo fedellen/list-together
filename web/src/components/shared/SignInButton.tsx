@@ -27,7 +27,11 @@ export default function SignInButton({ type }: SignInButtonProps) {
   }
 
   return (
-    <a className={`sign-in-button ${type}`} href={authLink}>
+    <a
+      className={`sign-in-button ${type}`}
+      href={authLink}
+      aria-label={`Sign in with ${buttonText}`}
+    >
       <div>{IconComponent}</div>
       <span>
         {buttonText}

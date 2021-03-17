@@ -8,7 +8,7 @@ const Header = memo(function Header({}) {
       <div id="header-container">
         <button
           id="list-together-icon"
-          aria-label="List Together Logo. Click to scroll to top"
+          aria-label="Scroll to top"
           onClick={() =>
             window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
           }

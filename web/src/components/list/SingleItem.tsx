@@ -32,6 +32,7 @@ const SingleItem = memo(function SingleItem({
           })
         }
         className={` item-button ${isStriked}${isItemActive}`}
+        aria-label={`Display Options for Item: ${item.name}`}
       >
         {item.name}
       </button>

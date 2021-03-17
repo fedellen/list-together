@@ -461,6 +461,7 @@ function UndoButtonInner({ useMutationHook }: UndoButtonInnerProps) {
 
   return (
     <IconButton
+      ariaLabel="Undo List Action"
       icon={<UndoButtonIcon />}
       onClick={useMutationHook}
       text={`Undo${largeScreen ? ' (Z)' : ''}`}
