@@ -42,7 +42,7 @@
     @apply flex z-10 py-2 px-6 rounded-full font-semibold md:text-lg;
   }
   .button-alert {
-    @apply rounded-full font-bold px-6 py-2 text-xs  bg-red-500  hover:bg-red-600 dark:bg-red-900 dark:hover:bg-red-800;
+    @apply rounded-full font-bold px-4 py-1 text-xxs md:text-xs  bg-red-500  hover:bg-red-600 dark:bg-red-900 dark:hover:bg-red-800;
   }
   .button {
     /** Primary */
@@ -357,7 +357,7 @@
 
   /** CurrentListTitle shared between Modals  */
   .current-list-title {
-    @apply flex flex-wrap mb-4 sm:mb-6 items-center;
+    @apply flex flex-wrap items-center;
   }
 
   /** Auto-complete from `AddItem` modal  */
