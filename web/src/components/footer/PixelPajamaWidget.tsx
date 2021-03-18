@@ -18,7 +18,7 @@ export default function PixelPajamaWidget() {
           </li>
         </ul>
         <a className="text-link" href="https://pixelpajamastudios.com">
-          © 2021 Pixel Pajama Studios LLC
+          © {new Date().getFullYear()} Pixel Pajama Studios LLC
         </a>
       </div>
       <a id="ppjs-mug" href="https://pixelpajamastudios.com">
