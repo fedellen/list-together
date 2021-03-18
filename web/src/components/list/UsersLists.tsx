@@ -76,7 +76,7 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
     onSubscriptionData: ({ subscriptionData }) => {
       const notifications =
         subscriptionData.data?.subscribeToListUpdates.notifications;
-      if (notifications) {
+      if (notifications && notifications.length > 0) {
         if (notifications[0].includes('You have a newly shared list')) {
           /** Refetch all lists when new list is shared */
           refetch();
