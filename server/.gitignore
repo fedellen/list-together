@@ -8,4 +8,4 @@ dist/
 .priv
 .env
 .env.production
-yarn-error.log
+*.log
