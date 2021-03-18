@@ -7,7 +7,7 @@ type NoteProps = {
   item: string;
   note: string;
   isStriked: string;
-  /** Some minor prop drilling to avoid re-rending lots of potential notes 😎 */
+  /** Some minor prop drilling to avoid re-rendering lots of potential notes 😎 */
   activeNote: NoteState | null;
   dispatch: React.Dispatch<Action>;
   userCanDeleteNotes: boolean;

@@ -2,15 +2,15 @@
 
 ### **List Together**
 
-List Together is a simple, modern list app built with family sharing capabilities.
+List Together is a simple, modern list app built with sharing capabilities. Completely free to use and open source.
 
 https://www.listtogether.app
 
 ## **🚀 Features**
 
 - Create and Manage Lists
-- Add, Strike, and Delete, Items
-- Easily Share Lists
+- Add, Strike, and Delete Items
+- Share Lists
 - Auto Complete
 - Undo Capabilities
 - Smart Sort
@@ -38,24 +38,15 @@ By default, the `SmartSort` option will try to sort your list into the route you
 
 This app also features some limited offline functionality. Users can install the app locally as a PWA. When in offline mode, they can view their last available list queries from the cache. Interacting with the lists does not work offline.
 
-## **👨🏿‍💻 Todo before release**
-
-- Clear out remaining bugs 🐛
-
 ## **🤔 Possibly todo after release**
 
 - Optimistic responses on item mutations for quicker user interaction, especially for users located further from the server (Toronto)
-- Implement offline mutation capabilities for Apollo Client
-- More back-end resolver tests, there remains uncovered logic
-- Add test user creation from front-to-back without Passport APIs for a better dev environment
-- Implement testing on front-end / research end to end testing
-- Convert server callbacks to Redis to prevent them from being cancelled
+- More back-end resolver tests, there remains some uncovered logic
+- Add test user creation from front-to-back without Passport APIs for a better dev environment (for collaborators)
+- Implement testing on front-end / end to end testing
+- Convert server callbacks to Redis (or cron jobs?) to prevent them from being cancelled (Only related to Smart Features)
 - Add an `./app` directory with a React Native version of List Together
-
-## **🐞 Known Bugs**
-
-- sortedLists and sortedItems data inconsistencies [Might be fixed, but need to do more testing]
-- ...someBugsProbably
+- Implement offline mutation capabilities for Apollo Client
 
 ## **💽 Backend made with:**
 
@@ -132,7 +123,7 @@ forks are more than welcome. You can support the project or help us pay server c
 ```
 MIT License
 
-Copyright (c) 2021 Derek Sonnenberg, Pixel Pajama Studios LLC
+Copyright (c) 2021 Derek R Sonnenberg, Pixel Pajama Studios LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
