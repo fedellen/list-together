@@ -55,7 +55,7 @@ export default function ShareList() {
   if (submitKeyPress && !submit) handleShareList();
 
   return (
-    <div className="modal-component mt-3 gap-1 sm:mt-4">
+    <div className="modal-component">
       <CurrentListTitle />
 
       <span className="text-label">User&lsquo;s Email Address:</span>
