@@ -1,4 +1,3 @@
-// import { useStateValue } from 'src/state/state';
 import SignInButton from './shared/SignInButton';
 import HomePageIllustration from './svg/list/HomePageIllustration';
 import TeamIllustration from './svg/list/TeamIllustration';
@@ -11,7 +10,6 @@ export default function HomePage() {
   return (
     <div id="home">
       <section id="landing">
-        {/** Hero image splash background */}
         <HomePageIllustration />
         <div className="flex flex-col justify-center">
           <h1 className="">Sharable Grocery List App For Families</h1>
@@ -38,15 +36,14 @@ export default function HomePage() {
 
       <section className="bg-alt">
         <div className="home-content">
-          {/* <div className="w-64 h-64 lg:flex-shrink-0 bg-gray-300"> */}
           <video
             width="400px"
             src="/media/list-together-landing-1.mp4"
             autoPlay={true}
             loop={true}
             className="landing-video"
+            aria-label="List management features"
           />
-          {/* </div> */}
           <div>
             <h2>Simple, modern, functional.</h2>
             <p>
@@ -66,6 +63,7 @@ export default function HomePage() {
             autoPlay={true}
             loop={true}
             className="landing-video"
+            aria-label="List sharing features"
           />
           <div className="lg:order-first">
             <h2>Share and Collaborate</h2>
@@ -87,6 +85,7 @@ export default function HomePage() {
             autoPlay={true}
             loop={true}
             className="landing-video"
+            aria-label="Smart list features"
           />
           <div>
             <h2>Convenient Smart Features</h2>

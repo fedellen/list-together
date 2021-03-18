@@ -1,12 +1,12 @@
-##### 🚧👷🚧 **This project is currently under construction { ...workInProgress }**
-
 # Fullstack TypeScript React Grocery List App
 
 ### **List Together**
 
 List Together is a simple, modern list app built with family sharing capabilities.
 
-### **🚀 Features**
+https://www.listtogether.app
+
+## **🚀 Features**
 
 - Create and Manage Lists
 - Add, Strike, and Delete, Items
@@ -40,8 +40,6 @@ This app also features some limited offline functionality. Users can install the
 
 ## **👨🏿‍💻 Todo before release**
 
-- Take 3x ~10sec video clips to display on landing page
-- Aria labels / accessibility for screen readers
 - Clear out remaining bugs 🐛
 
 ## **🤔 Possibly todo after release**
@@ -56,7 +54,7 @@ This app also features some limited offline functionality. Users can install the
 
 ## **🐞 Known Bugs**
 
-- sortedLists and sortedItems data inconsistencies
+- sortedLists and sortedItems data inconsistencies [Might be fixed, but need to do more testing]
 - ...someBugsProbably
 
 ## **💽 Backend made with:**
@@ -72,7 +70,7 @@ This app also features some limited offline functionality. Users can install the
 To install and test the app locally you will first need to setup Postgres and Redis on your system. You will also need to provide a .env file with the appropriate fields filled in, including at least one method of logging in via a Passport API with a dummy app (Google / Twitter / Facebook). Afterwards, install and run the the server in development mode with:
 
 ```
-cd ./server && yarn install && yarn dev
+cd ./server && yarn && yarn dev
 ```
 
 When making changes to the code in development mode you'll need to open another terminal to the `/server` directory and run:
@@ -98,17 +96,15 @@ typeorm init --name list-together --database postgres
 - [React](https://github.com/facebook/react)
 - [Apollo Client](https://github.com/apollographql/apollo-client)
 - [GraphQL Codegen](https://github.com/dotansimha/graphql-code-generator)
-- [Workbox](https://github.com/googlechrome/workbox)
 - [Tailwind](https://github.com/tailwindlabs/tailwindcss)
+- [Workbox](https://github.com/googlechrome/workbox)
 
 Also a huge thanks for all of the work put into the [React+TypeScript Cheatsheets](https://github.com/typescript-cheatsheets/react)
-
-The project will eventually be hosted via Netlify under an undecided domain name. Current plan is to host the api on a subdomain of that undecided domain name. It could also be renamed at some point before then.
 
 To install and run the front end locally you will need to run:
 
 ```
-cd ./web && yarn install && yarn start
+cd ./web && yarn && yarn start
 ```
 
 Frontend was bootstrapped with:
@@ -123,12 +119,37 @@ List Together is a project I've created to upgrade our personal grocery list rou
 
 TypeScript was the hardest part of my recent web-dev learning journey. Whenever I encounter something frustrating and difficult, I've always attempted to meet that problem head on. Therefore, I decided to create a full stack application using as much TypeScript as I possibly could.
 
-Now I can absolutely say that TypeScript is no longer difficult for me. As expected, I now prefer it over plain JavaScript as it provides much more information. After about a week of using TypeScript regularly it became an extremely useful tool. There was a certain moment where I stopped struggling against the compiler and started working **with** the compiler.
+Now I can absolutely write that TypeScript is no longer difficult or frustrating for me. As expected, I now prefer it over plain JavaScript as it provides much more information and an awesome developer experience. After about a week of using TypeScript regularly it became an very useful tool. There was a certain moment where I stopped struggling against the TypeChecker and started working **with** the TypeChecker.
 
 After attempting several different offline-first with Apollo Client methods, I struggled to get offline mutations to work consistently enough to include this feature. Rather than starting over with a stack that includes more robust offline functionality, I decided to finish this app with Apollo and skip the offline mutations for now.
 
 ## **💖 Support us**
 
 List Together is free to use and it&rsquo;s code is open source on
-GitHub under the MIT license. Contributions to the project and
+GitHub. Contributions to the project and
 forks are more than welcome. You can support the project or help us pay server costs by tipping us a [Ko-fi](https://ko-fi.com/pixelpajamastudios)
+
+```
+MIT License
+
+Copyright (c) 2021 Derek Sonnenberg, Pixel Pajama Studios LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+```
