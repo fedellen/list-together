@@ -40,6 +40,8 @@ This app also features some limited offline functionality. Users can install the
 
 ## **🤔 Possibly todo after release**
 
+- Edit item feature (Mutation that renames both `item.name` and `itemHistory.item`)
+- Share list via link or email. Shared user would still need to create account upon clicking share link.
 - Optimistic responses on item mutations for quicker user interaction, especially for users located further from the server (Toronto)
 - More back-end resolver tests, there remains some uncovered logic
 - Add test user creation from front-to-back without Passport APIs for a better dev environment (for collaborators)
@@ -58,7 +60,9 @@ This app also features some limited offline functionality. Users can install the
 - [ioRedis](https://github.com/luin/ioredis)
 - [Type-GraphQL](https://github.com/MichalLytek/type-graphql)
 
-To install and test the app locally you will first need to setup Postgres and Redis on your system. You will also need to provide a .env file with the appropriate fields filled in, including at least one method of logging in via a Passport API with a dummy app (Google / Twitter / Facebook). Afterwards, install and run the the server in development mode with:
+The backend is currently deployed on Digital Ocean droplet with [Dokku](https://github.com/dokku/dokku).
+
+To install and test List Together locally you will first need to setup Postgres and Redis on your system. You will also need to provide a .env file with the appropriate fields filled in, see [.env.example](https://github.com/fedellen/list-together/blob/master/server/.env.example). The current dev environment requires at least one method of logging in via a Passport API (Google / Twitter / Facebook), in which you'll need to create a dummy app for testing. Afterwards, install and run the server in development mode with:
 
 ```
 cd ./server && yarn && yarn dev
@@ -91,6 +95,10 @@ typeorm init --name list-together --database postgres
 - [Workbox](https://github.com/googlechrome/workbox)
 
 Also a huge thanks for all of the work put into the [React+TypeScript Cheatsheets](https://github.com/typescript-cheatsheets/react)
+
+The front-end is hosted on Netlify and available at: https://www.listtogether.app
+
+Updates to the master branch will trigger a Netlify deployment.
 
 To install and run the front end locally you will need to run:
 
