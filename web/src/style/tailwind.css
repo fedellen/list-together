@@ -225,7 +225,7 @@
 
   /** Scrolling lists component */
   .scrolling-lists {
-    @apply flex space-x-3 items-center;
+    @apply flex space-x-1 items-center;
   }
   /** Arrow button to handle switching lists */
   .list-arrow-button {
@@ -240,7 +240,7 @@
   }
 
   .list-button {
-    @apply text-2xl py-2 border-t-4 text-gray-500 dark:border-gray-900 hover:text-indigo-700 dark:hover:text-indigo-600 opacity-90 font-bold justify-center items-center flex;
+    @apply text-lg sm:text-xl md:text-2xl py-2 border-t-4 text-gray-500 dark:border-gray-900 hover:text-indigo-700 dark:hover:text-indigo-600 opacity-90 font-bold justify-center items-center flex;
   }
   .list-button.active {
     @apply text-indigo-700 dark:text-indigo-600 border-indigo-600 font-extrabold opacity-100;
