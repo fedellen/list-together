@@ -278,8 +278,12 @@
     @apply italic text-xl sm:text-2xl lg:text-3xl text-center pt-4 lg:mb-16;
   }
 
+  #users-lists {
+    @apply flex flex-col;
+  }
+
   #empty-list {
-    @apply cursor-pointer hover:text-indigo-700 italic text-xl sm:text-2xl lg:text-3xl text-center pt-4 lg:mb-16;
+    @apply cursor-pointer hover:text-indigo-700 italic text-xl sm:text-2xl lg:text-3xl text-center justify-self-center pt-4 lg:mb-16;
   }
 
   /** Single Item */
