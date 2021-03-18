@@ -37,7 +37,7 @@ const SingleItem = memo(function SingleItem({
         {item.name}
       </button>
       {isItemActive && <ItemOptions />}
-      {item.notes && (
+      {item.notes && item.notes.length > 0 && (
         <ul>
           {item.notes.map((note) => (
             <Note
