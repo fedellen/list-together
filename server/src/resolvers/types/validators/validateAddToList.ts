@@ -5,11 +5,11 @@ export const validateAddToList = (
   list: List,
   itemName: string
 ): FieldError[] | null => {
-  if (list.items!.length >= 300) {
+  if (list.items!.length >= 150) {
     return [
       {
         field: 'listId',
-        message: 'Lists cannot have more than 300 items..'
+        message: 'Lists cannot have more than 150 items..'
       }
     ];
   }

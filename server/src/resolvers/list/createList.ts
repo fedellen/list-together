@@ -34,7 +34,7 @@ export class CreateListResolver {
       };
     }
 
-    // Check to see if user already owns 25 lists
+    // Check to see if user already owns 15 lists
     const userToListTableArray = await UserToList.find({
       where: { userId: user.id }
     });
@@ -42,12 +42,12 @@ export class CreateListResolver {
       (listConnection) => listConnection.privileges.includes('owner')
     );
 
-    if (userToListTablesAsOwner.length >= 25) {
+    if (userToListTablesAsOwner.length >= 15) {
       return {
         errors: [
           {
             field: 'lists',
-            message: 'User cannot create more than 25 lists..'
+            message: 'User cannot create more than 15 lists..'
           }
         ]
       };
