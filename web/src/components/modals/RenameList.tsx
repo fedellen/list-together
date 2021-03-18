@@ -22,6 +22,7 @@ export default function RenameList() {
         placeholder="Enter new list title"
         autoFocus
         aria-label="New List Title"
+        className="mt-2 md:mt-4"
       />
       <ModalButtons
         buttonText="Rename"

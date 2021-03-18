@@ -42,7 +42,7 @@
     @apply flex z-10 py-2 px-6 rounded-full font-semibold md:text-lg;
   }
   .button-alert {
-    @apply rounded-full font-bold px-6 py-2 text-xs  bg-red-500  hover:bg-red-600 dark:bg-red-900 dark:hover:bg-red-800;
+    @apply rounded-full font-bold px-4 py-1 text-xxs md:text-xs  bg-red-500  hover:bg-red-600 dark:bg-red-900 dark:hover:bg-red-800;
   }
   .button {
     /** Primary */
@@ -81,7 +81,7 @@
 
   /** Shared icon-button styles for SideMenu / HeaderMenu / HeaderOptions */
   .icon-button {
-    @apply flex flex-col gap-0 items-center justify-center text-xxs font-bold z-20;
+    @apply flex flex-col items-center justify-center text-xxs font-bold z-20;
   }
 
   /** Notification pop-ups / Error messages */
@@ -94,23 +94,12 @@
   }
 
   .text-label {
-    @apply text-xs font-bold;
+    @apply text-xxs md:text-xs font-bold m-1 md:m-2;
   }
 
   /** Link on home-page */
   .home-link {
     @apply text-indigo-700 dark:text-indigo-600 hover:text-indigo-500 font-extrabold;
-  }
-
-  /** Shared form styles for Login / CreateUser / ChangePassword */
-  .form-container {
-    @apply gap-8 justify-center items-center flex flex-col py-4;
-  }
-  .form {
-    @apply flex flex-col justify-center items-center gap-4 w-full max-w-xs px-2;
-  }
-  .form button {
-    @apply mt-4;
   }
 
   /*===================================================\
@@ -126,7 +115,7 @@
   }
 
   #list-together-icon {
-    @apply flex gap-2 sm:gap-4 xl:gap-6 justify-center items-center;
+    @apply flex space-x-2 sm:space-x-4 xl:space-x-6 justify-center items-center;
   }
   #list-together-icon div {
     @apply w-12 md:w-14 xl:w-16 2xl:w-20;
@@ -138,11 +127,11 @@
   /** Header Menu */
 
   #header-menu {
-    @apply flex flex-row-reverse gap-2 sm:gap-4 md:gap-8 lg:gap-10 pl-2 w-full;
+    @apply flex flex-row-reverse  pl-2 w-full;
   }
 
   .header-button {
-    @apply icon-button  hover:text-indigo-700;
+    @apply icon-button  hover:text-indigo-700 mx-2;
   }
   .header-button.active {
     @apply text-indigo-700 dark:text-indigo-600;
@@ -190,7 +179,7 @@
   /** HomePage */
 
   #landing {
-    @apply py-4 sm:py-6 md:py-12 lg:py-24 xl:py-32 container grid grid-cols-1 lg:grid-cols-2 lg:gap-24 items-center justify-center justify-items-center;
+    @apply py-4 sm:py-6 md:py-12 lg:py-24 xl:py-32 container grid grid-cols-1 lg:grid-cols-2 lg:space-x-24 items-center justify-center justify-items-center;
   }
   #home section:not(:first-child) {
     @apply py-8 sm:py-12 md:py-16 lg:py-24 xl:py-36 px-2;
@@ -225,7 +214,7 @@
     @apply bg-gray-400 dark:bg-gray-900;
   }
   .home-content {
-    @apply xl:flex xl:items-center xl:gap-40 content;
+    @apply xl:flex xl:items-center xl:space-x-40 content;
   }
   .landing-illustration {
     @apply w-64 sm:w-80 md:w-96;
@@ -236,7 +225,7 @@
 
   /** Scrolling lists component */
   .scrolling-lists {
-    @apply flex gap-3 items-center;
+    @apply flex space-x-1 items-center;
   }
   /** Arrow button to handle switching lists */
   .list-arrow-button {
@@ -251,7 +240,7 @@
   }
 
   .list-button {
-    @apply text-2xl py-2 border-t-4 text-gray-500 dark:border-gray-900 hover:text-indigo-700 dark:hover:text-indigo-600 opacity-90 font-bold justify-center items-center flex;
+    @apply text-lg sm:text-xl md:text-2xl py-2 border-t-4 text-gray-500 dark:border-gray-900 hover:text-indigo-700 dark:hover:text-indigo-600 opacity-90 font-bold justify-center items-center flex;
   }
   .list-button.active {
     @apply text-indigo-700 dark:text-indigo-600 border-indigo-600 font-extrabold opacity-100;
@@ -271,7 +260,7 @@
   }
   /** The list with items  */
   #list-container > ul {
-    @apply px-8 gap-1 flex flex-col;
+    @apply px-6 sm:px-8 lg:px-12 space-y-1 flex flex-col;
   }
   /** Empty list  */
   #list-container > span {
@@ -289,10 +278,10 @@
   /** Single Item */
 
   .item-container {
-    @apply flex flex-col items-start gap-1;
+    @apply flex flex-col items-start space-y-1;
   }
   .item-button {
-    @apply text-2xl font-semibold  px-2 break-all text-left z-10 hover:text-indigo-700 dark:hover:text-indigo-600;
+    @apply text-lg sm:text-xl md:text-2xl font-semibold break-all text-left z-10 hover:text-indigo-700 dark:hover:text-indigo-600;
   }
   .item-button.active {
     @apply underline text-indigo-700 dark:text-indigo-600 font-extrabold;
@@ -322,10 +311,10 @@
   /** Side Menu */
 
   #side-menu {
-    @apply sticky h-32 xl:h-36  ml-auto xl:mx-auto bottom-2 flex gap-3 p-4 justify-center z-30;
+    @apply sticky h-32 xl:h-36  ml-auto xl:mx-auto bottom-2 flex space-x-3 p-4 justify-center z-30;
   }
   .side-menu-button {
-    @apply icon-button rounded-full shadow-md bg-indigo-300 hover:bg-indigo-400 dark:hover:bg-indigo-800  dark:bg-indigo-900 gap-1 px-3 py-4 hover-grow;
+    @apply icon-button rounded-full shadow-md bg-indigo-300 hover:bg-indigo-400 dark:hover:bg-indigo-800  dark:bg-indigo-900 space-y-1 px-3 py-4 hover-grow;
   }
   .side-menu-button svg {
     @apply w-8  h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14;
@@ -336,20 +325,20 @@
   \====================================================*/
 
   .modal-container {
-    @apply fixed inset-0 items-center justify-center flex z-40 top-20;
+    @apply fixed inset-0 items-center justify-center flex z-50;
   }
   .modal {
-    @apply bg-gray-300 dark:bg-gray-900 w-full sm:w-3/4 md:w-1/2 lg:w-2/5 xl:w-2/6 2xl:w-3/12  rounded-lg flex flex-col py-6 md:py-8 px-6 md:px-8 gap-4 md:gap-6 lg:gap-8 shadow-md mx-6 z-50 justify-center items-center;
+    @apply bg-gray-300 dark:bg-gray-900 w-full sm:w-3/4 md:w-1/2 lg:w-2/5 xl:w-2/6 2xl:w-3/12  rounded-lg flex flex-col py-3 sm:py-5 md:py-8 px-3 sm:px-5 md:px-8 space-y-2 sm:space-y-4 md:space-y-6 lg:space-y-8 shadow-md mx-3 sm:mx-6 z-50 justify-center items-center;
   }
   .modal-overlay {
     @apply bg-black opacity-60 absolute inset-0;
   }
 
   .modal-header {
-    @apply flex justify-between gap-12 items-start w-full;
+    @apply flex justify-between space-x-12 items-start w-full;
   }
   .modal-header h2 {
-    @apply text-2xl sm:text-3xl;
+    @apply text-xl sm:text-2xl lg:text-3xl;
   }
   .modal-header button {
     @apply text-2xl sm:text-3xl font-heading font-bold hover:text-indigo-700 dark:text-indigo-600 dark:hover:text-indigo-500 outline-none;
@@ -368,19 +357,19 @@
 
   /** CurrentListTitle shared between Modals  */
   .current-list-title {
-    @apply flex flex-wrap mb-4 sm:mb-6 gap-2 items-center;
+    @apply flex flex-wrap items-center;
   }
 
   /** Auto-complete from `AddItem` modal  */
   .auto-complete {
-    @apply h-28 mt-8 overflow-y-auto  sm:mt-10 flex justify-center items-center text-xs md:text-sm;
+    @apply h-28 overflow-y-auto flex justify-center items-start text-xs md:text-sm py-2 mt-2 sm:mt-4 md:mt-8;
   }
   .auto-complete-items {
-    @apply flex flex-wrap gap-2 max-h-28;
+    @apply flex flex-wrap max-h-28;
   }
 
   .auto-complete-items button {
-    @apply bg-gray-200 dark:bg-gray-800 dark:hover:bg-indigo-900 font-bold p-2 px-4 rounded-full shadow-md hover:bg-indigo-300;
+    @apply bg-gray-200 dark:bg-gray-800 dark:hover:bg-indigo-900 font-bold p-2 px-4 m-1 md:m-2 rounded-full shadow-md hover:bg-indigo-300;
   }
 
   /** Special multi-button to choose which privilege to share with users */
@@ -394,7 +383,7 @@
     @apply bg-indigo-600 dark:bg-indigo-900 text-indigo-300;
   }
   .privilege-button div {
-    @apply w-14 h-14 sm:w-16 sm:h-16 md:w-20 flex flex-col m-1 p-1 gap-1 md:gap-2;
+    @apply w-14 h-14 sm:w-16 sm:h-16 md:w-20 flex flex-col m-1 p-1 space-y-1 md:space-y-2;
   }
 
   /*===================================================\
@@ -402,14 +391,14 @@
   \====================================================*/
 
   #footer {
-    @apply container flex flex-wrap justify-around gap-9 justify-items-center items-center
+    @apply container flex flex-wrap justify-around justify-items-center items-center
     pb-6 text-gray-500  text-sm sm:text-base font-semibold;
   }
 
   /* Kofi Widget */
 
   #kofi-widget {
-    @apply grid items-center grid-flow-col gap-2 hover-grow-orange;
+    @apply grid items-center grid-flow-col gap-2 hover-grow-orange m-4;
   }
   #kofi-widget span {
     @apply leading-6 text-right hidden sm:block;
@@ -421,7 +410,7 @@
   /* Social Media Icon Linkset */
 
   #social-icons {
-    @apply flex gap-2;
+    @apply flex space-x-2 m-4;
   }
   #social-icons a {
     @apply w-9 sm:w-10 hover-grow-orange;
@@ -430,13 +419,13 @@
   /* PPJS Widget - links and logo */
 
   #ppjs-widget {
-    @apply flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6;
+    @apply flex flex-col lg:flex-row justify-center items-center space-y-4 lg:space-y-6 m-4;
   }
   #ppjs-widget div {
-    @apply flex flex-col gap-2 justify-center items-center underline;
+    @apply flex flex-col space-y-2 justify-center items-center underline;
   }
   #ppjs-widget ul {
-    @apply flex gap-6;
+    @apply flex space-x-6;
   }
   .text-link {
     @apply hover-grow-orange;

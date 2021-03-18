@@ -85,8 +85,8 @@ export default function EditRights() {
   };
 
   return (
-    <div className="modal-component gap-1 mt-3 sm:mt-4">
-      <div className="flex flex-wrap justify-between items-center gap-x-4">
+    <div className="modal-component">
+      <div className="flex flex-wrap justify-between items-center space-x-4">
         <CurrentListTitle />
         <button
           onClick={() => handleUpdatePrivileges(true)}
