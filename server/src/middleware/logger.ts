@@ -27,9 +27,9 @@ export const logger: MiddlewareFn<MyContext> = async (
   /** Don't log resolver info in test */
   if (process.env.NODE_ENV !== 'test') {
     winstonLogger.info([
-      `ResolverType: ${info.fieldName}`,
-      ` UserId: ${context.req.session.userId}`,
-      ` Arguments: ${JSON.stringify(args, null, 4)}`
+      `ResolverType: >>> ${info.fieldName} <<<`,
+      ` UserId: >> ${context.req.session.userId} <<`,
+      ` Arguments: ${JSON.stringify(args)}`
     ]);
   }
 
