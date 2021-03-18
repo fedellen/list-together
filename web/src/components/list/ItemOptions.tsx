@@ -11,7 +11,7 @@ import useCurrentPrivileges from 'src/hooks/fragments/useCurrentPrivileges';
 import useDeleteItems from 'src/hooks/mutations/item/useDeleteItems';
 import useStrikeItem from 'src/hooks/mutations/item/useStrikeItem';
 import useSortItems from 'src/hooks/mutations/list/useSortItems';
-import { useKeyHandler } from 'src/hooks/useKeyHandler';
+import { KeyPair, useKeyHandler } from 'src/hooks/useKeyHandler';
 
 /** Modal for displaying user's item options when an item is clicked */
 export const ItemOptions = () => {
@@ -65,7 +65,7 @@ export const ItemOptions = () => {
 
   /** Keyboard access for mutations */
 
-  useKeyHandler([
+  let keysToHandle: KeyPair[] = [
     {
       keyValues: ['ArrowUp'],
       callback: () => handleOptionAction('sortItemUp')
@@ -75,22 +75,42 @@ export const ItemOptions = () => {
       callback: () => handleOptionAction('sortItemDown')
     },
     {
-      keyValues: ['s'],
-      callback: () => handleOptionAction('strikeItem')
-    },
-    {
-      keyValues: ['d'],
-      callback: () => handleOptionAction('deleteItem')
-    },
-    {
-      keyValues: ['n'],
-      callback: () => handleOptionAction('addNote')
-    },
-    {
       keyValues: ['Escape'],
       callback: () => dispatch({ type: 'CLEAR_STATE' })
     }
-  ]);
+  ];
+
+  if (userCanAdd) {
+    keysToHandle = [
+      ...keysToHandle,
+      {
+        keyValues: ['n'],
+        callback: () => handleOptionAction('addNote')
+      }
+    ];
+  }
+
+  if (userCanStrike) {
+    keysToHandle = [
+      ...keysToHandle,
+      {
+        keyValues: ['s'],
+        callback: () => handleOptionAction('strikeItem')
+      }
+    ];
+  }
+
+  if (userCanDelete) {
+    keysToHandle = [
+      ...keysToHandle,
+      {
+        keyValues: ['d'],
+        callback: () => handleOptionAction('deleteItem')
+      }
+    ];
+  }
+
+  useKeyHandler(keysToHandle);
 
   const style = 'item-option';
   const largeScreen = window.innerWidth > 1024;

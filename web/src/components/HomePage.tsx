@@ -12,7 +12,7 @@ export default function HomePage() {
       <section id="landing">
         <HomePageIllustration />
         <div className="flex flex-col justify-center">
-          <h1 className="">Sharable Grocery List App For Families</h1>
+          <h1>Sharable Grocery List App For Families</h1>
           <p>
             List Together is a simple, modern list app built with sharing
             capabilities. Completely free to use and{' '}
