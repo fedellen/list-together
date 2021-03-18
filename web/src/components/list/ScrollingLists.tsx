@@ -15,7 +15,7 @@ type ScrollingListsProps = {
 };
 
 export default function ScrollingLists({ lists }: ScrollingListsProps) {
-  const [{ currentListId, moveList }, dispatch] = useStateValue();
+  const [{ currentListId, moveList, listState }, dispatch] = useStateValue();
   const scrollingList = useRef<HTMLUListElement>(null);
   const listIdArray = lists.map((list) => list.listId);
 
@@ -28,6 +28,9 @@ export default function ScrollingLists({ lists }: ScrollingListsProps) {
   };
 
   const handleArrowClick = (direction: ArrowIconDirection) => {
+    /** Don't run if in modal (Keyboard usage) */
+    if (listState[0] === 'modal') return;
+
     const currentIdIndex = listIdArray.indexOf(currentListId);
 
     let nextListIndex: number;
