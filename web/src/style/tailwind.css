@@ -81,7 +81,7 @@
 
   /** Shared icon-button styles for SideMenu / HeaderMenu / HeaderOptions */
   .icon-button {
-    @apply flex flex-col gap-0 items-center justify-center text-xxs font-bold z-20;
+    @apply flex flex-col items-center justify-center text-xxs font-bold z-20;
   }
 
   /** Notification pop-ups / Error messages */
@@ -100,17 +100,6 @@
   /** Link on home-page */
   .home-link {
     @apply text-indigo-700 dark:text-indigo-600 hover:text-indigo-500 font-extrabold;
-  }
-
-  /** Shared form styles for Login / CreateUser / ChangePassword */
-  .form-container {
-    @apply gap-8 justify-center items-center flex flex-col py-4;
-  }
-  .form {
-    @apply flex flex-col justify-center items-center gap-4 w-full max-w-xs px-2;
-  }
-  .form button {
-    @apply mt-4;
   }
 
   /*===================================================\
