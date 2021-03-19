@@ -121,7 +121,7 @@
     @apply w-12 md:w-14 xl:w-16 2xl:w-20;
   }
   #list-together-icon h2 {
-    @apply text-left font-extrabold font-body lg:text-2xl xl:text-3xl 2xl:text-4xl text-indigo-900 dark:text-indigo-400 tracking-wider;
+    @apply text-left font-extrabold font-body lg:text-2xl xl:text-3xl 2xl:text-4xl text-indigo-900 dark:text-indigo-400 tracking-wider leading-tight;
   }
 
   /** Header Menu */
