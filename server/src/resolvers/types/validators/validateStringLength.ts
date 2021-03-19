@@ -4,7 +4,7 @@ import { FieldError } from '../response/FieldError';
 export const validateStringLength = (
   string: string,
   min: number = 2,
-  max: number = 30
+  max: number = 55
 ): FieldError[] | null => {
   if (string.length < min) {
     return [
