@@ -302,7 +302,7 @@
     @apply flex;
   }
   .note-button {
-    @apply ml-8 rounded-full text-lg font-bold italic opacity-70 hover:text-indigo-700 dark:hover:text-indigo-600;
+    @apply ml-8 text-left rounded-full text-sm sm:text-base md:text-lg font-bold italic opacity-70 hover:text-indigo-700 dark:hover:text-indigo-600;
   }
   .delete-note {
     @apply ml-4 w-8 h-8 hover:text-red-700 z-10;
