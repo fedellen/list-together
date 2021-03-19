@@ -19,7 +19,7 @@ https://www.listtogether.app
 - Responsive Mobile Design
 - Keyboard Accessibility
 
-User's create an account by signing in with Google, Twitter, or Facebook. The database's User entity will only store the user's email. This is to be used in sharing lists with other users. No passwords stored, no account information to remember.
+Users can easily create an account by signing in with Google, Twitter, or Facebook. The database's User entity will only store the user's email. This is to be used in sharing lists with other users. No passwords stored, no account information to remember.
 
 Each user can create up to 15 lists. Lists can be renamed, removed, or shared to other users. Every list contains a history of items added and removed to be used in that list's Auto Complete and Smart Sort features.
 
