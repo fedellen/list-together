@@ -26,7 +26,7 @@ export default function HomePage() {
           <span className="text-label mb-2 ml-2 mt-8 lg:mt-12 xl:mt-16">
             Easy Login / Sign up :
           </span>
-          <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex flex-wrap space-x-4 items-center">
             <SignInButton type="google" />
             <SignInButton type="twitter" />
             <SignInButton type="facebook" />
@@ -112,7 +112,7 @@ export default function HomePage() {
               out of.{' '}
             </p>
           </div>
-          <div className="flex flex-wrap flex-shrink-0 gap-4 items-center justify-items-center mt-16">
+          <div className="flex flex-wrap flex-shrink-0 space-x-4 items-center justify-items-center mt-16">
             <SignInButton type="google" />
             <SignInButton type="twitter" />
             <SignInButton type="facebook" />
