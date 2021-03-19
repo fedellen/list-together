@@ -419,7 +419,7 @@
   /* PPJS Widget - links and logo */
 
   #ppjs-widget {
-    @apply flex flex-col lg:flex-row justify-center items-center space-y-4 lg:space-y-6 m-4;
+    @apply flex flex-col lg:flex-row justify-center items-center space-y-4 lg:space-y-0 lg:space-x-6 m-4;
   }
   #ppjs-widget div {
     @apply flex flex-col space-y-2 justify-center items-center underline;
