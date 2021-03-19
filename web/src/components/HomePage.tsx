@@ -37,7 +37,7 @@ export default function HomePage() {
       <section className="bg-alt">
         <div className="home-content">
           <video
-            width="400px"
+            width="320px"
             src="/media/list-together-landing-1.mp4"
             autoPlay={true}
             loop={true}
@@ -56,7 +56,7 @@ export default function HomePage() {
         </div>
       </section>
       <section>
-        <div className="home-content xl:gap-24">
+        <div className="home-content space-x-0">
           <video
             width="640px"
             src="/media/list-together-landing-2.mp4"
@@ -65,7 +65,7 @@ export default function HomePage() {
             className="landing-video"
             aria-label="List sharing features"
           />
-          <div className="lg:order-first">
+          <div className="xl:order-first xl:pr-24">
             <h2>Share and Collaborate</h2>
             <p>
               Users can easily share their lists with friends or family via
@@ -121,7 +121,7 @@ export default function HomePage() {
       </section>
 
       <section className="bg-alt">
-        <div className="home-content">
+        <div className="home-content xl:space-x-0">
           <div>
             <h2>Open Source</h2>
             <p>
@@ -145,8 +145,8 @@ export default function HomePage() {
               .
             </p>
           </div>
-          <div className="flex justify-around xl:gap-24 flex-shrink-0 mt-12 sm:mt-16 md:mt-24 xl:order-first ">
-            <div className="w-20 sm:w-24 hover-grow">
+          <div className="flex justify-around flex-shrink-0 mt-12 sm:mt-16 md:mt-24 xl:order-first xl:mt-0 ">
+            <div className="w-20 sm:w-24 hover-grow xl:mx-24">
               <a href="https://ko-fi.com/pixelpajamastudios">
                 <KofiIcon />
               </a>

@@ -206,7 +206,7 @@
   }
 
   .landing-video {
-    @apply rounded-lg shadow-md mb-8 mx-auto sm:mb-16 flex-shrink-0;
+    @apply rounded-lg shadow-md mb-8 xl:mb-0 mx-auto sm:mb-16 flex-shrink-0;
   }
 
   /** Alternate backgrounds for landing page */
