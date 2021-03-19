@@ -121,7 +121,7 @@
     @apply w-12 md:w-14 xl:w-16 2xl:w-20;
   }
   #list-together-icon h2 {
-    @apply text-left font-extrabold font-body lg:text-2xl xl:text-3xl 2xl:text-4xl text-indigo-900 dark:text-indigo-400 tracking-wider;
+    @apply text-left font-extrabold font-body lg:text-2xl xl:text-3xl 2xl:text-4xl text-indigo-900 dark:text-indigo-400 tracking-wider leading-tight;
   }
 
   /** Header Menu */
@@ -206,7 +206,7 @@
   }
 
   .landing-video {
-    @apply rounded-lg shadow-md mb-8 mx-auto sm:mb-16 flex-shrink-0;
+    @apply rounded-lg shadow-md mb-8 xl:mb-0 mx-auto sm:mb-16 flex-shrink-0;
   }
 
   /** Alternate backgrounds for landing page */
@@ -302,7 +302,7 @@
     @apply flex;
   }
   .note-button {
-    @apply ml-8 rounded-full text-lg font-bold italic opacity-70 hover:text-indigo-700 dark:hover:text-indigo-600;
+    @apply ml-8 text-left rounded-full text-sm sm:text-base md:text-lg font-bold italic opacity-70 hover:text-indigo-700 dark:hover:text-indigo-600;
   }
   .delete-note {
     @apply ml-4 w-8 h-8 hover:text-red-700 z-10;

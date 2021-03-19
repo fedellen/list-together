@@ -10,6 +10,7 @@ https://www.listtogether.app
 
 - Create and Manage Lists
 - Add, Strike, and Delete Items
+- Add Notes to Items
 - Share Lists
 - Auto Complete
 - Undo Capabilities
