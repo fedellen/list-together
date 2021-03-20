@@ -187,7 +187,7 @@
 
   /** Social media sign in buttons */
   .sign-in-button {
-    @apply z-10 p-3 sm:px-6 flex items-center rounded-full shadow-md text-gray-200 text-xxs font-bold;
+    @apply z-10 p-3 sm:px-6 mr-4 mb-4 flex items-center rounded-full shadow-md text-gray-200 text-xxs font-bold;
   }
   .sign-in-button.facebook {
     @apply bg-indigo-800 hover:bg-indigo-900;
@@ -314,7 +314,7 @@
     @apply sticky h-32 xl:h-36  ml-auto xl:mx-auto bottom-2 flex space-x-3 p-4 justify-center z-30;
   }
   .side-menu-button {
-    @apply icon-button rounded-full shadow-md bg-indigo-300 hover:bg-indigo-400 dark:hover:bg-indigo-800  dark:bg-indigo-900 space-y-1 px-3 py-4 hover-grow;
+    @apply icon-button rounded-full shadow-md bg-indigo-300 hover:bg-indigo-400 dark:hover:bg-indigo-800  dark:bg-indigo-900 space-y-1 px-2 py-4 hover-grow;
   }
   .side-menu-button svg {
     @apply w-8  h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14;
@@ -419,7 +419,7 @@
   /* PPJS Widget - links and logo */
 
   #ppjs-widget {
-    @apply flex flex-col lg:flex-row justify-center items-center space-y-4 lg:space-y-6 m-4;
+    @apply flex flex-col lg:flex-row justify-center items-center space-y-4 lg:space-y-0 lg:space-x-6 m-4;
   }
   #ppjs-widget div {
     @apply flex flex-col space-y-2 justify-center items-center underline;
