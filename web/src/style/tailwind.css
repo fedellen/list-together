@@ -187,7 +187,7 @@
 
   /** Social media sign in buttons */
   .sign-in-button {
-    @apply z-10 p-3 sm:px-6 flex items-center rounded-full shadow-md text-gray-200 text-xxs font-bold;
+    @apply z-10 p-3 sm:px-6 mr-4 mb-4 flex items-center rounded-full shadow-md text-gray-200 text-xxs font-bold;
   }
   .sign-in-button.facebook {
     @apply bg-indigo-800 hover:bg-indigo-900;
