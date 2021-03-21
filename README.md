@@ -61,9 +61,9 @@ This app also features some limited offline functionality. Users can install the
 - [ioRedis](https://github.com/luin/ioredis)
 - [Type-GraphQL](https://github.com/MichalLytek/type-graphql)
 
-The backend is currently deployed on Digital Ocean droplet with [Dokku](https://github.com/dokku/dokku).
+The backend is currently deployed on a Digital Ocean droplet with [Dokku](https://github.com/dokku/dokku).
 
-To install and test List Together locally you will first need to setup Postgres and Redis on your system. You will also need to provide a .env file with the appropriate fields filled in, see [.env.example](https://github.com/fedellen/list-together/blob/master/server/.env.example). The current dev environment requires at least one method of logging in via a Passport API (Google / Twitter / Facebook), in which you'll need to create a dummy app for testing. Afterwards, install and run the server in development mode with:
+To install and test List Together locally, you will first need to setup Postgres and Redis on your system. You will also need to provide a .env file with the appropriate fields filled in, see [.env.example](https://github.com/fedellen/list-together/blob/master/server/.env.example). The current dev environment requires at least one method of logging in via a Passport API (Google / Twitter / Facebook), in which you'll need to create a dummy app for testing. Afterwards, install and run the server in development mode with:
 
 ```
 cd ./server && yarn && yarn dev
