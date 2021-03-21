@@ -74,7 +74,7 @@ export default function HomePage() {
         </div>
       </section>
       <section className="bg-alt">
-        <div className="home-content xl:gap-24">
+        <div className="home-content">
           <LandingVideo
             width="400"
             src="/media/list-together-landing-3.mp4"
