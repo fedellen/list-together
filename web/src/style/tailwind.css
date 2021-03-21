@@ -86,7 +86,7 @@
 
   /** Notification pop-ups / Error messages */
   #notification {
-    @apply fixed bottom-6 left-6 p-6 font-semibold w-60 lg:w-72 bg-indigo-300 dark:bg-indigo-900 rounded-lg shadow-md z-40;
+    @apply text-xs sm:text-sm lg:text-base fixed bottom-6 left-6 p-6 font-semibold w-60 lg:w-72 bg-indigo-300 dark:bg-indigo-900 rounded-lg shadow-md z-40;
   }
 
   .list-title {
