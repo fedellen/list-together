@@ -36,8 +36,9 @@ export class DeleteAccountResolver {
 
     // Delete all userListTables and delete List tables / resolve their ownership
     for (const userList of usersListTables) {
+      const { listId } = userList;
       await userList.remove();
-      await resolveListOwnership(userList.listId, publish);
+      await resolveListOwnership(listId, publish);
     }
 
     // Delete the user 👍
