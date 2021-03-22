@@ -1,3 +1,4 @@
+import LandingVideo from './shared/LandingVideo';
 import SignInButton from './shared/SignInButton';
 import HomePageIllustration from './svg/list/HomePageIllustration';
 import TeamIllustration from './svg/list/TeamIllustration';
@@ -36,14 +37,12 @@ export default function HomePage() {
 
       <section className="bg-alt">
         <div className="home-content">
-          <video
-            width="320px"
+          <LandingVideo
+            width="320"
             src="/media/list-together-landing-1.mp4"
-            autoPlay={true}
-            loop={true}
-            className="landing-video"
-            aria-label="List management features"
+            ariaLabel="List management features"
           />
+
           <div>
             <h2>Simple, modern, functional.</h2>
             <p>
@@ -57,13 +56,10 @@ export default function HomePage() {
       </section>
       <section>
         <div className="home-content space-x-0">
-          <video
-            width="640px"
+          <LandingVideo
+            width="640"
             src="/media/list-together-landing-2.mp4"
-            autoPlay={true}
-            loop={true}
-            className="landing-video"
-            aria-label="List sharing features"
+            ariaLabel="List sharing features"
           />
           <div className="xl:order-first xl:pr-24">
             <h2>Share and Collaborate</h2>
@@ -78,14 +74,11 @@ export default function HomePage() {
         </div>
       </section>
       <section className="bg-alt">
-        <div className="home-content xl:gap-24">
-          <video
-            width="400px"
+        <div className="home-content">
+          <LandingVideo
+            width="400"
             src="/media/list-together-landing-3.mp4"
-            autoPlay={true}
-            loop={true}
-            className="landing-video"
-            aria-label="Smart list features"
+            ariaLabel="Smart list features"
           />
           <div>
             <h2>Convenient Smart Features</h2>
@@ -203,6 +196,10 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      {/* <a className="text-gray-500 font-semibold text-link cursor-pointer underline text-sm mb-8 sm:mb-12 md:mb-16 lg:mb-24 flex justify-center text-center ">
+        List Together
+        <br /> Press Kit
+      </a> */}
     </div>
   );
 }

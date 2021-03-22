@@ -13,6 +13,7 @@ import NewListIcon from '../svg/headerMenu/NewListIcon';
 import OptionsIcon from '../svg/headerMenu/OptionsIcon';
 import ShareIcon from '../svg/headerMenu/ShareIcon';
 import SmartSortIcon from '../svg/headerMenu/SmartSortIcon';
+import NoteIcon from '../svg/itemOptions/NoteIcon';
 import { HeaderOptions } from './HeaderOptions';
 
 export default function HeaderMenu() {
@@ -141,6 +142,15 @@ const HeaderMenuWithContext = memo(function HeaderMenuWithContext({
             onClick={() => toggleDarkMode(isDark ? 'light' : 'dark')}
             style={iconButtonStyle}
           />
+          <a
+            className={`${iconButtonStyle} mr-6 sm:mr-8`}
+            href="https://pixelpajamastudios.com/list-together-press-kit.html"
+          >
+            <div className="w-8 flex">
+              <NoteIcon />
+            </div>
+            <span>Press Kit</span>
+          </a>
         </>
       )}
     </div>
