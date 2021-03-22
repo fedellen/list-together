@@ -47,7 +47,8 @@ export type ModalTypes =
   | 'addNote'
   | 'shareList'
   | 'removeList'
-  | 'updatePrivileges';
+  | 'updatePrivileges'
+  | 'manageAccount';
 
 /** State for which page to show */
 export type AppState = 'home' | 'login' | 'createUser' | 'demo' | 'list';
