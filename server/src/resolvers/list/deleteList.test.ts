@@ -6,6 +6,7 @@ import {
   createUserWithSharedPriv
 } from '../../test-helpers/createUser';
 import { graphqlCall } from '../../test-helpers/graphqlCall';
+import { sleep } from '../../test-helpers/sleep';
 
 const deleteListMutation = `
   mutation DeleteList($listId: String!) {
@@ -85,6 +86,7 @@ describe('Delete list mutation:', () => {
       )
     ).toBe(false);
 
+    await sleep(100); // Wait 100ms for server to `resolveListOwnership`
     const sharedUserToListTableAfter = await UserToList.findOne({
       where: { userId: sharedUser.id }
     });
