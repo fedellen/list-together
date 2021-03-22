@@ -47,7 +47,7 @@ This app also features some limited offline functionality. Users can install the
 - More back-end resolver tests, there remains some uncovered logic
 - Add test user creation from front-to-back without Passport APIs for a better dev environment (for collaborators)
 - Implement testing on front-end / end to end testing
-- Convert server callbacks to Redis (or cron jobs?) to prevent them from being cancelled (Only related to Smart Features)
+- Convert server callbacks to Redis (or cron jobs) to prevent them from being cancelled (Only related to Smart Features)
 - Add an `./app` directory with a React Native version of List Together
 - Implement offline mutation capabilities for Apollo Client
 
@@ -99,7 +99,7 @@ Also a huge thanks for all of the work put into the [React+TypeScript Cheatsheet
 
 The front-end is hosted on Netlify and available at: https://www.listtogether.app
 
-Updates to the master branch will trigger a Netlify deployment.
+Updates to the `/web` directory on the master branch will trigger Netlify deployment.
 
 To install and run the front end locally you will need to run:
 
