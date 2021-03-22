@@ -77,6 +77,7 @@ export type Item = {
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
+  email: Scalars['String'];
   sortedListsArray?: Maybe<Array<Scalars['String']>>;
 };
 
@@ -96,6 +97,7 @@ export type Mutation = {
   updatePrivileges: UserToListResponse;
   logout: Scalars['Boolean'];
   sortLists: UserResponse;
+  deleteAccount?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -279,7 +281,7 @@ export type ListPartialFragment = (
 
 export type UserFragmentFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'sortedListsArray'>
+  & Pick<User, 'id' | 'email' | 'sortedListsArray'>
 );
 
 export type UserListFragmentFragment = (
@@ -354,7 +356,7 @@ export type DeleteItemsMutation = (
     { __typename?: 'UserToListResponse' }
     & { userToList?: Maybe<Array<(
       { __typename?: 'UserToList' }
-      & Pick<UserToList, 'listId' | 'sortedItems'>
+      & Pick<UserToList, 'listId' | 'sortedItems' | 'smartSortedItems'>
       & { list: (
         { __typename?: 'List' }
         & Pick<List, 'id'>
@@ -788,6 +790,7 @@ ${FieldErrorFragmentDoc}`;
 export const UserFragmentFragmentDoc = gql`
     fragment userFragment on User {
   id
+  email
   sortedListsArray
 }
     `;
@@ -893,6 +896,7 @@ export const DeleteItemsDocument = gql`
     userToList {
       listId
       sortedItems
+      smartSortedItems
       list {
         id
         items {
