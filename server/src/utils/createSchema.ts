@@ -16,6 +16,7 @@ import { UpdatePrivilegesResolver } from '../resolvers/list/updatePrivileges';
 import { GetUserResolver } from '../resolvers/user/getUser';
 import { LogoutResolver } from '../resolvers/user/logout';
 import { SortListsResolver } from '../resolvers/user/sortLists';
+import { DeleteAccountResolver } from '../resolvers/user/deleteAccount';
 
 // Redis PubSub
 import { pubSub } from './pubSub';
@@ -43,7 +44,8 @@ export const createSchema = () =>
       DeleteItemsResolver,
       StrikeItemResolver,
       AddNoteResolver,
-      DeleteNoteResolver
+      DeleteNoteResolver,
+      DeleteAccountResolver
     ],
     validate: false,
     pubSub

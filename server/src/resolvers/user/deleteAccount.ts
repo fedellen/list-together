@@ -3,13 +3,13 @@ import { logger } from '../../middleware/logger';
 import { MyContext } from '../../MyContext';
 import {
   Ctx,
-  Query,
   Resolver,
   UseMiddleware,
   PubSub,
-  Publisher
+  Publisher,
+  Mutation
 } from 'type-graphql';
-import { resolveListOwnership } from 'src/services/list/resolveListOwnership';
+import { resolveListOwnership } from '../../services/list/resolveListOwnership';
 import { SubscriptionPayload } from '../types/subscription/SubscriptionPayload';
 import { Topic } from '../types/subscription/SubscriptionTopics';
 
@@ -17,7 +17,7 @@ import { Topic } from '../types/subscription/SubscriptionTopics';
 /** Deletes account from database */
 export class DeleteAccountResolver {
   @UseMiddleware(logger)
-  @Query(() => User, { nullable: true })
+  @Mutation(() => Boolean, { nullable: true })
   async deleteAccount(
     @Ctx() { req }: MyContext,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
