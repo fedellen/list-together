@@ -36,9 +36,9 @@ export default function useAddNote() {
         'Item length must contain 2 or more characters..'
       ]);
       return;
-    } else if (note.length > 30) {
+    } else if (note.length > 55) {
       sendNotification(dispatch, [
-        'Item length must contain 30 characters or less..'
+        'Item length must contain 55 characters or less..'
       ]);
       return;
     }
