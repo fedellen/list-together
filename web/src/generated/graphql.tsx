@@ -77,6 +77,7 @@ export type Item = {
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
+  email: Scalars['String'];
   sortedListsArray?: Maybe<Array<Scalars['String']>>;
 };
 
@@ -96,6 +97,7 @@ export type Mutation = {
   updatePrivileges: UserToListResponse;
   logout: Scalars['Boolean'];
   sortLists: UserResponse;
+  deleteAccount?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -279,7 +281,7 @@ export type ListPartialFragment = (
 
 export type UserFragmentFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'sortedListsArray'>
+  & Pick<User, 'id' | 'email' | 'sortedListsArray'>
 );
 
 export type UserListFragmentFragment = (
@@ -354,7 +356,7 @@ export type DeleteItemsMutation = (
     { __typename?: 'UserToListResponse' }
     & { userToList?: Maybe<Array<(
       { __typename?: 'UserToList' }
-      & Pick<UserToList, 'listId' | 'sortedItems'>
+      & Pick<UserToList, 'listId' | 'sortedItems' | 'smartSortedItems'>
       & { list: (
         { __typename?: 'List' }
         & Pick<List, 'id'>
@@ -568,6 +570,14 @@ export type UpdatePrivilegesMutation = (
       & FieldErrorFragment
     )>> }
   ) }
+);
+
+export type DeleteAccountMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DeleteAccountMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteAccount'>
 );
 
 export type LogoutUserMutationVariables = Exact<{ [key: string]: never; }>;
@@ -788,6 +798,7 @@ ${FieldErrorFragmentDoc}`;
 export const UserFragmentFragmentDoc = gql`
     fragment userFragment on User {
   id
+  email
   sortedListsArray
 }
     `;
@@ -893,6 +904,7 @@ export const DeleteItemsDocument = gql`
     userToList {
       listId
       sortedItems
+      smartSortedItems
       list {
         id
         items {
@@ -1321,6 +1333,35 @@ export function useUpdatePrivilegesMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdatePrivilegesMutationHookResult = ReturnType<typeof useUpdatePrivilegesMutation>;
 export type UpdatePrivilegesMutationResult = Apollo.MutationResult<UpdatePrivilegesMutation>;
 export type UpdatePrivilegesMutationOptions = Apollo.BaseMutationOptions<UpdatePrivilegesMutation, UpdatePrivilegesMutationVariables>;
+export const DeleteAccountDocument = gql`
+    mutation DeleteAccount {
+  deleteAccount
+}
+    `;
+export type DeleteAccountMutationFn = Apollo.MutationFunction<DeleteAccountMutation, DeleteAccountMutationVariables>;
+
+/**
+ * __useDeleteAccountMutation__
+ *
+ * To run a mutation, you first call `useDeleteAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAccountMutation, { data, loading, error }] = useDeleteAccountMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDeleteAccountMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAccountMutation, DeleteAccountMutationVariables>) {
+        return Apollo.useMutation<DeleteAccountMutation, DeleteAccountMutationVariables>(DeleteAccountDocument, baseOptions);
+      }
+export type DeleteAccountMutationHookResult = ReturnType<typeof useDeleteAccountMutation>;
+export type DeleteAccountMutationResult = Apollo.MutationResult<DeleteAccountMutation>;
+export type DeleteAccountMutationOptions = Apollo.BaseMutationOptions<DeleteAccountMutation, DeleteAccountMutationVariables>;
 export const LogoutUserDocument = gql`
     mutation LogoutUser {
   logout

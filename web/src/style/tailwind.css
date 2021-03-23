@@ -39,7 +39,7 @@
 
   /** Button styles */
   .button-shared {
-    @apply flex z-10 py-2 px-6 rounded-full font-semibold md:text-lg;
+    @apply flex z-10 py-2 px-6 rounded-full font-semibold text-xs sm:text-sm  md:text-base xl:text-lg;
   }
   .button-alert {
     @apply rounded-full font-bold px-4 py-1 text-xxs md:text-xs  bg-red-500  hover:bg-red-600 dark:bg-red-900 dark:hover:bg-red-800;
@@ -50,6 +50,9 @@
   }
   .button-secondary {
     @apply button-shared hover:bg-indigo-300 dark:hover:bg-indigo-900 hover:shadow-md;
+  }
+  .button-delete {
+    @apply button-shared bg-red-600 hover:bg-red-500 dark:bg-red-900 dark:hover:bg-red-800;
   }
 
   /* Shared `hover-grow` effects */
@@ -86,7 +89,7 @@
 
   /** Notification pop-ups / Error messages */
   #notification {
-    @apply text-xs sm:text-sm lg:text-base fixed bottom-6 left-6 p-6 font-semibold w-60 lg:w-72 bg-indigo-300 dark:bg-indigo-900 rounded-lg shadow-md z-40;
+    @apply text-xs sm:text-sm lg:text-base fixed bottom-6 left-6 p-6 font-semibold w-60 lg:w-72 bg-indigo-300 dark:bg-indigo-900 rounded-lg shadow-md z-50;
   }
 
   .list-title {

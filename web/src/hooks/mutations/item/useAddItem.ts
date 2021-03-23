@@ -33,9 +33,9 @@ export default function useAddItem() {
         'Item length must contain 2 or more characters..'
       ]);
       return;
-    } else if (itemName.length > 30) {
+    } else if (itemName.length > 55) {
       sendNotification(dispatch, [
-        'Item length must contain 30 characters or less..'
+        'Item length must contain 55 characters or less..'
       ]);
       return;
     } else {

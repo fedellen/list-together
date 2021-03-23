@@ -17,6 +17,7 @@ export class User extends BaseEntity {
   @PrimaryColumn('uuid')
   id: string;
 
+  @Field()
   @Column({ type: 'text', unique: true })
   email: string;
 

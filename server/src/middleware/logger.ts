@@ -2,11 +2,11 @@ import { MiddlewareFn } from 'type-graphql';
 import { MyContext } from '../MyContext';
 import { createLogger, format, transports } from 'winston';
 
-const { combine, timestamp, json } = format;
+const { combine, timestamp, prettyPrint } = format;
 
 const winstonLogger = createLogger({
   level: 'info',
-  format: combine(timestamp(), json()),
+  format: combine(timestamp(), prettyPrint()),
   transports: [
     new transports.File({ filename: 'logs/error.log', level: 'error' }),
     new transports.File({
@@ -27,9 +27,9 @@ export const logger: MiddlewareFn<MyContext> = async (
   /** Don't log resolver info in test */
   if (process.env.NODE_ENV !== 'test') {
     winstonLogger.info([
-      `ResolverType: >>> ${info.fieldName} <<<`,
-      ` UserId: >> ${context.req.session.userId} <<`,
-      ` Arguments: ${JSON.stringify(args)}`
+      `ResolverType: ${info.fieldName}`,
+      `UserId: ${context.req.session.userId}`,
+      `Arguments: ${JSON.stringify(args)}`
     ]);
   }
 

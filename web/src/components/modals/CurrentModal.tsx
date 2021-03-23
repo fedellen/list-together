@@ -8,6 +8,7 @@ import AddNote from './AddNote';
 import CreateList from './CreateList';
 import RenameList from './RenameList';
 import { ReactNode } from 'react';
+import ManageAccount from './ManageAccount';
 
 /** Handles logic for displaying current modal */
 
@@ -56,6 +57,11 @@ export default function CurrentModal() {
     case 'updatePrivileges':
       modalTitle = 'Edit Rights';
       component = <EditRights />;
+      break;
+
+    case 'manageAccount':
+      modalTitle = 'Manage Account';
+      component = <ManageAccount />;
       break;
 
     default:

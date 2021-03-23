@@ -28,9 +28,9 @@ export default function useCreateList() {
         'List title length must contain 2 or more characters..'
       ]);
       return;
-    } else if (title.length > 30) {
+    } else if (title.length > 55) {
       sendNotification(dispatch, [
-        'List title must contain 30 characters or less..'
+        'List title must contain 55 characters or less..'
       ]);
       return;
     } else {
