@@ -15,6 +15,7 @@ import useSubmitPreferredOrder from 'src/hooks/mutations/list/useSubmitPreferred
 import ShareIcon from '../svg/headerMenu/ShareIcon';
 import useSortItems from 'src/hooks/mutations/list/useSortItems';
 import SmartSortIcon from '../svg/headerMenu/SmartSortIcon';
+import ManageAccountIcon from '../svg/headerOptions/ManageAccountIcon';
 
 /** Modal for displaying user's list options when header menu is clicked */
 export const HeaderOptions = () => {
@@ -94,6 +95,13 @@ export const HeaderOptions = () => {
         style="header-option-button"
         icon={<SmartSortIcon />}
         moreStyles=" lg:hidden"
+      />
+      <IconButton
+        onClick={() => openModal(dispatch, 'manageAccount')}
+        text="Account"
+        ariaLabel="Manage user account"
+        style="header-option-button"
+        icon={<ManageAccountIcon />}
       />
       {currentListPrivileges === 'owner' && (
         <IconButton
