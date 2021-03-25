@@ -62,14 +62,25 @@ export const userWithListAndItems = async (
   return user;
 };
 
-export const userWithListAndOneItemWithNote = async (): Promise<User> => {
+export const userWithListAndOneItemWithNote = async (
+  notes = 1
+): Promise<User> => {
   const user = await userWithListAndItems(1);
   const userToListTable = await UserToList.findOne({
     where: { userId: user.id },
     relations: ['list', 'list.items']
   });
-  const newNote = faker.name.firstName();
-  userToListTable!.list.items![0].notes = [newNote];
+  for (let i = 0; i < notes; i++) {
+    const newNote = faker.name.firstName();
+    if (userToListTable!.list.items![0].notes) {
+      userToListTable!.list.items![0].notes = [
+        ...userToListTable!.list.items![0].notes,
+        newNote
+      ];
+    } else {
+      userToListTable!.list.items![0].notes = [newNote];
+    }
+  }
   await userToListTable!.save();
   return user;
 };
