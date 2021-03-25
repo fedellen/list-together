@@ -37,7 +37,6 @@ describe('Edit item name mutation:', () => {
       userId: user.id
     });
 
-    console.log(JSON.stringify(response, null, 4));
     const userToList: UserToList = response.data!.editItemName.userToList[0];
 
     // Check on response format, has new item name

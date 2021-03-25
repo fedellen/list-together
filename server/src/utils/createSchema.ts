@@ -18,6 +18,7 @@ import { LogoutResolver } from '../resolvers/user/logout';
 import { SortListsResolver } from '../resolvers/user/sortLists';
 import { DeleteAccountResolver } from '../resolvers/user/deleteAccount';
 import { EditItemNameResolver } from '../resolvers/item/editItemName';
+import { EditNoteResolver } from '../resolvers/item/editNote';
 
 // Redis PubSub
 import { pubSub } from './pubSub';
@@ -47,7 +48,8 @@ export const createSchema = () =>
       AddNoteResolver,
       DeleteNoteResolver,
       DeleteAccountResolver,
-      EditItemNameResolver
+      EditItemNameResolver,
+      EditNoteResolver
     ],
     validate: false,
     pubSub
