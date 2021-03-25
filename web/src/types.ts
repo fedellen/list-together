@@ -19,7 +19,15 @@ export type UndoState =
   | ['deleteNote', { note: string; itemName: string; listId: string }]
   | ['strikeItem', { itemName: string; listId: string }]
   | ['sortItems', { listId: string; previousItemArray: string[] }]
-  | ['sortLists', { previousListArray: string[] }];
+  | ['sortLists', { previousListArray: string[] }]
+  | [
+      'editItemName',
+      { newItemName: string; oldItemName: string; listId: string }
+    ]
+  | [
+      'editNote',
+      { newNote: string; oldNote: string; itemName: string; listId: string }
+    ];
 
 export type ListState =
   | ['item', ItemState]
