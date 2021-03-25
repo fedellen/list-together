@@ -1,0 +1,5 @@
+mutation EditItemName($data: EditItemNameInput!) {
+  editItemName(data: $data) {
+    ...userListResponse
+  }
+}
