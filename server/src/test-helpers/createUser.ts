@@ -127,6 +127,13 @@ export const userWithItemHistory = async (
       userToListTable.list.items = [Item.create({ name: newItem })];
     }
 
+    // Add to sortedItems
+    if (userToListTable.sortedItems) {
+      userToListTable.sortedItems = [...userToListTable.sortedItems, newItem];
+    } else {
+      userToListTable.sortedItems = [newItem];
+    }
+
     if (userToListTable.itemHistory) {
       const existingItemInHistory = userToListTable.itemHistory.find(
         ({ item }) => item === newItem

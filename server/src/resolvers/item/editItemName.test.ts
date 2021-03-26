@@ -49,6 +49,8 @@ describe('Edit item name mutation:', () => {
         ?.map((history) => history.item)
         .includes(newItemName)
     ).toBe(true);
+    // sortedItems has new item name
+    expect(userToList.sortedItems?.includes(newItemName)).toBe(true);
 
     const listConnectionInDatabase = await UserToList.findOne({
       where: { userId: user.id },
