@@ -14,6 +14,7 @@ import { UserToListResponse } from '../types/response/UserToListResponse';
 import { SubscriptionPayload } from '../types/subscription/SubscriptionPayload';
 import { Topic } from '../types/subscription/SubscriptionTopics';
 import { getUserListTable } from '../../services/list/getUserListTable';
+import { replaceInArray } from '../../utils/replaceInArray';
 
 @Resolver()
 /** Edit name of item and history of item */
@@ -47,6 +48,19 @@ export class EditItemNameResolver {
           }
         ]
       };
+    }
+
+    // Edit item on sortedItems
+    if (userToListTable.sortedItems) {
+      const newSortedItems = replaceInArray({
+        array: userToListTable.sortedItems,
+        oldItem: item.name,
+        newItem: newItemName
+      });
+
+      if (newSortedItems) {
+        userToListTable.sortedItems = newSortedItems;
+      }
     }
 
     // Change the item name
