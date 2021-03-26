@@ -43,10 +43,10 @@ export type NoteState = { item: string; note: string };
 export type OptionAction =
   | 'addNote'
   | 'strikeItem'
-  | 'boldItem'
   | 'deleteItem'
   | 'sortItemUp'
-  | 'sortItemDown';
+  | 'sortItemDown'
+  | 'editItemName';
 
 export type ModalTypes =
   | 'addItem'
@@ -56,7 +56,9 @@ export type ModalTypes =
   | 'shareList'
   | 'removeList'
   | 'updatePrivileges'
-  | 'manageAccount';
+  | 'manageAccount'
+  | 'editItemName'
+  | 'editNote';
 
 /** State for which page to show */
 export type AppState = 'home' | 'login' | 'createUser' | 'demo' | 'list';
