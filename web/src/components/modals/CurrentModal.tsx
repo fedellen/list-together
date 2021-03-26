@@ -9,6 +9,7 @@ import CreateList from './CreateList';
 import RenameList from './RenameList';
 import { ReactNode } from 'react';
 import ManageAccount from './ManageAccount';
+import EditItemName from './EditItemName';
 
 /** Handles logic for displaying current modal */
 
@@ -62,6 +63,11 @@ export default function CurrentModal() {
     case 'manageAccount':
       modalTitle = 'Manage Account';
       component = <ManageAccount />;
+      break;
+
+    case 'editItemName':
+      modalTitle = 'Edit Item Name';
+      component = <EditItemName />;
       break;
 
     default:
