@@ -1,28 +1,23 @@
-import useEditItemName from 'src/hooks/mutations/item/useEditItemName';
+import useEditNote from 'src/hooks/mutations/item/useEditNote';
 import useKeyPress from 'src/hooks/useKeyPress';
 import ModalButtons from './ModalButtons';
 import { useStateValue } from 'src/state/state';
 import { useField } from 'src/hooks/useField';
 
-export default function EditItemName() {
-  const newItemNameInput = useField();
-  const [handleAdd, submit] = useEditItemName();
+export default function EditNote() {
+  const newNoteInput = useField();
+  const [handleAdd, submit] = useEditNote();
   const [, dispatch] = useStateValue();
 
   /** Keyboard submit */
   const submitKeyPress = useKeyPress('Enter');
-  if (submitKeyPress && !submit) handleAdd(newItemNameInput.value);
+  if (submitKeyPress && !submit) handleAdd(newNoteInput.value);
 
   return (
     <div className="modal-component">
-      <input
-        {...newItemNameInput}
-        placeholder="Enter new item name"
-        autoFocus
-        aria-label="New item name"
-      />
+      <input {...newNoteInput} placeholder="Enter new note" autoFocus />
       <ModalButtons
-        primaryClick={() => handleAdd(newItemNameInput.value)}
+        primaryClick={() => handleAdd(newNoteInput.value)}
         secondaryClick={() => dispatch({ type: 'CLEAR_STATE' })}
         buttonText="Edit"
       />

@@ -11,7 +11,8 @@ type ModalButtonsProps = {
     | 'Add'
     | 'Create'
     | 'Update'
-    | 'Rename';
+    | 'Rename'
+    | 'Edit';
 };
 
 /** Component with two buttons side by side, primary and secondary */

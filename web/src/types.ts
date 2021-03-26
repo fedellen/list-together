@@ -66,6 +66,7 @@ export type AppState = 'home' | 'login' | 'createUser' | 'demo' | 'list';
 /** Currently displayed modal */
 export type ModalState = {
   active: boolean;
-  itemName?: string;
   type?: ModalTypes;
+  itemName?: string;
+  note?: string;
 };

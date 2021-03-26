@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { Action } from 'src/state/reducer';
 import { NoteState } from 'src/types';
 import DeleteNoteButton from './DeleteNoteButton';
+import EditNoteButton from './EditNoteButton';
 
 type NoteProps = {
   item: string;
@@ -40,7 +41,12 @@ const Note = memo(function Note({
           >
             {note}
           </button>
-          {activeNote && activeNote.note === note && <DeleteNoteButton />}
+          {activeNote && activeNote.note === note && (
+            <>
+              <DeleteNoteButton />
+              <EditNoteButton />
+            </>
+          )}
         </>
       ) : (
         /** Note without togglable delete button */
