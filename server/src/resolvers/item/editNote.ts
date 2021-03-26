@@ -14,6 +14,7 @@ import { SubscriptionPayload } from '../types/subscription/SubscriptionPayload';
 import { Topic } from '../types/subscription/SubscriptionTopics';
 import { getUserListTable } from '../../services/list/getUserListTable';
 import { ItemResponse } from '../types/response/ItemResponse';
+import { replaceInArray } from '../../utils/replaceInArray';
 
 @Resolver()
 /** Edit note of item  */
@@ -59,9 +60,12 @@ export class EditNoteResolver {
       };
     }
 
-    const noteIndex = item.notes.indexOf(note);
-
-    if (noteIndex === -1) {
+    const newNotes = replaceInArray({
+      array: item.notes,
+      oldItem: note,
+      newItem: newNote
+    });
+    if (!newNotes) {
       return {
         errors: [
           {
@@ -72,15 +76,8 @@ export class EditNoteResolver {
       };
     }
 
-    const notesBefore = item.notes.filter(
-      (n) => item.notes!.indexOf(n) < noteIndex
-    );
-    const notesAfter = item.notes.filter(
-      (n) => item.notes!.indexOf(n) > noteIndex
-    );
-
     // Change the note, in its place
-    item.notes = [...notesBefore, newNote, ...notesAfter]; // 🔥
+    item.notes = newNotes;
 
     await userToListTable.save();
     publish({
