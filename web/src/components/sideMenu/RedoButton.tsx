@@ -502,10 +502,10 @@ function WithEditItemName({
       sendNotification(dispatch, [
         'Could not complete Redo action, that item no longer exists on the list..'
       ]);
-      dispatch({ type: 'REMOVE_UNDO' });
+      dispatch({ type: 'REMOVE_REDO' });
       mutationCooldown(500); // .5 sec delay
     } else {
-      dispatch({ type: 'UNDO_MUTATION' });
+      dispatch({ type: 'REDO_MUTATION' });
       mutationCooldown(500);
     }
   };
