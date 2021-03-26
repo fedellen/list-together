@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Action } from 'src/state/reducer';
-import { NoteState } from 'src/types';
+import { NoteState, UserPrivileges } from 'src/types';
 import DeleteNoteButton from './DeleteNoteButton';
 import EditNoteButton from './EditNoteButton';
 
@@ -11,7 +11,7 @@ type NoteProps = {
   /** Some minor prop drilling to avoid re-rendering lots of potential notes 😎 */
   activeNote: NoteState | null;
   dispatch: React.Dispatch<Action>;
-  userCanDeleteNotes: boolean;
+  listPrivileges: UserPrivileges;
 };
 
 const Note = memo(function Note({
@@ -20,18 +20,22 @@ const Note = memo(function Note({
   item,
   activeNote,
   dispatch,
-  userCanDeleteNotes
+  listPrivileges
 }: NoteProps) {
+  const userCanAdd = listPrivileges !== 'read';
+  const userCanDelete =
+    listPrivileges === 'owner' || listPrivileges === 'delete';
+
   return (
     <li className="note" key={note}>
       {/** Note with togglable delete button */}
-      {userCanDeleteNotes ? (
+      {userCanAdd ? (
         <>
           <button
             className={` note-button ${isStriked}${
               activeNote && activeNote.note === note ? ' text-indigo-700' : ''
             }`}
-            aria-label="Display Delete Note Button"
+            aria-label="Display Note Options"
             onClick={() =>
               dispatch({
                 type: 'SET_ACTIVE_NOTE',
@@ -43,7 +47,7 @@ const Note = memo(function Note({
           </button>
           {activeNote && activeNote.note === note && (
             <>
-              <DeleteNoteButton />
+              {userCanDelete && <DeleteNoteButton />}
               <EditNoteButton />
             </>
           )}

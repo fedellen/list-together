@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Item } from 'src/generated/graphql';
 import { Action } from 'src/state/reducer';
-import { NoteState } from 'src/types';
+import { NoteState, UserPrivileges } from 'src/types';
 import { ItemOptions } from './ItemOptions';
 import Note from './Note';
 
@@ -10,7 +10,7 @@ type SingleItemProps = {
   activeItem: string;
   activeNote: NoteState | null;
   dispatch: React.Dispatch<Action>;
-  userCanDeleteNotes: boolean;
+  listPrivileges: UserPrivileges;
 };
 
 const SingleItem = memo(function SingleItem({
@@ -18,7 +18,7 @@ const SingleItem = memo(function SingleItem({
   activeItem,
   activeNote,
   dispatch,
-  userCanDeleteNotes
+  listPrivileges
 }: SingleItemProps) {
   const isItemActive = activeItem === item.name ? ' active' : '';
   const isStriked = item.strike ? ' strike' : '';
@@ -45,7 +45,7 @@ const SingleItem = memo(function SingleItem({
               key={note}
               note={note}
               activeNote={activeNote}
-              userCanDeleteNotes={userCanDeleteNotes}
+              listPrivileges={listPrivileges}
               dispatch={dispatch}
               isStriked={isStriked}
             />
