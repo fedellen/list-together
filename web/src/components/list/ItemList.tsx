@@ -44,9 +44,7 @@ export default function ItemList({ list, sortedItems }: ItemListProps) {
               item={i}
               activeItem={listState[0] === 'item' ? listState[1].name : ''}
               activeNote={listState[0] === 'note' ? listState[1] : null}
-              userCanDeleteNotes={
-                currentPrivileges === 'owner' || currentPrivileges === 'delete'
-              }
+              listPrivileges={currentPrivileges}
               dispatch={dispatch}
               key={i.name}
             />

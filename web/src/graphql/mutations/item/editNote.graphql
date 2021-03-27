@@ -1,0 +1,11 @@
+mutation EditNote($data: EditNoteInput!) {
+  editNote(data: $data) {
+    item {
+      id
+      notes
+    }
+    errors {
+      ...fieldError
+    }
+  }
+}

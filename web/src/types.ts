@@ -19,7 +19,15 @@ export type UndoState =
   | ['deleteNote', { note: string; itemName: string; listId: string }]
   | ['strikeItem', { itemName: string; listId: string }]
   | ['sortItems', { listId: string; previousItemArray: string[] }]
-  | ['sortLists', { previousListArray: string[] }];
+  | ['sortLists', { previousListArray: string[] }]
+  | [
+      'editItemName',
+      { newItemName: string; oldItemName: string; listId: string }
+    ]
+  | [
+      'editNote',
+      { newNote: string; oldNote: string; itemName: string; listId: string }
+    ];
 
 export type ListState =
   | ['item', ItemState]
@@ -35,10 +43,10 @@ export type NoteState = { item: string; note: string };
 export type OptionAction =
   | 'addNote'
   | 'strikeItem'
-  | 'boldItem'
   | 'deleteItem'
   | 'sortItemUp'
-  | 'sortItemDown';
+  | 'sortItemDown'
+  | 'editItemName';
 
 export type ModalTypes =
   | 'addItem'
@@ -48,7 +56,9 @@ export type ModalTypes =
   | 'shareList'
   | 'removeList'
   | 'updatePrivileges'
-  | 'manageAccount';
+  | 'manageAccount'
+  | 'editItemName'
+  | 'editNote';
 
 /** State for which page to show */
 export type AppState = 'home' | 'login' | 'createUser' | 'demo' | 'list';
@@ -56,6 +66,7 @@ export type AppState = 'home' | 'login' | 'createUser' | 'demo' | 'list';
 /** Currently displayed modal */
 export type ModalState = {
   active: boolean;
-  itemName?: string;
   type?: ModalTypes;
+  itemName?: string;
+  note?: string;
 };

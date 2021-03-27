@@ -9,6 +9,8 @@ import CreateList from './CreateList';
 import RenameList from './RenameList';
 import { ReactNode } from 'react';
 import ManageAccount from './ManageAccount';
+import EditItemName from './EditItemName';
+import EditNote from './EditNote';
 
 /** Handles logic for displaying current modal */
 
@@ -18,7 +20,6 @@ export default function CurrentModal() {
   if (listState[0] !== 'modal') return null;
   const modalType = listState[1].type;
 
-  /** Uses `addItem` for default values */
   let modalTitle: string;
   let component: ReactNode;
 
@@ -40,7 +41,6 @@ export default function CurrentModal() {
 
     case 'renameList':
       modalTitle = 'Rename list';
-
       component = <RenameList />;
       break;
 
@@ -62,6 +62,16 @@ export default function CurrentModal() {
     case 'manageAccount':
       modalTitle = 'Manage Account';
       component = <ManageAccount />;
+      break;
+
+    case 'editItemName':
+      modalTitle = 'Edit Item Name';
+      component = <EditItemName />;
+      break;
+
+    case 'editNote':
+      modalTitle = 'Edit Note';
+      component = <EditNote />;
       break;
 
     default:

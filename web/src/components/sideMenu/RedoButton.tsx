@@ -4,6 +4,8 @@ import {
   useAddNoteMutation,
   useDeleteItemsMutation,
   useDeleteNoteMutation,
+  useEditItemNameMutation,
+  useEditNoteMutation,
   useSortItemsMutation,
   useSortListsMutation,
   useStrikeItemMutation
@@ -110,6 +112,28 @@ export default function RedoButton() {
     case 'strikeItem':
       redoWithMutation = (
         <WithStrikeItem
+          nextRedo={nextRedo}
+          dispatch={dispatch}
+          keyboardSubmit={redoKeyboardButton}
+          useKeyCooldown={useKeyCooldown}
+        />
+      );
+      break;
+
+    case 'editItemName':
+      redoWithMutation = (
+        <WithEditItemName
+          nextRedo={nextRedo}
+          dispatch={dispatch}
+          keyboardSubmit={redoKeyboardButton}
+          useKeyCooldown={useKeyCooldown}
+        />
+      );
+      break;
+
+    case 'editNote':
+      redoWithMutation = (
+        <WithEditNote
           nextRedo={nextRedo}
           dispatch={dispatch}
           keyboardSubmit={redoKeyboardButton}
@@ -429,6 +453,102 @@ function WithStrikeItem({
       console.log(errors);
       sendNotification(dispatch, [
         'Could not complete Redo action, that item no longer exists on this list..'
+      ]);
+      dispatch({ type: 'REMOVE_REDO' });
+      mutationCooldown(500); // .5 sec delay
+    } else {
+      dispatch({ type: 'REDO_MUTATION' });
+      mutationCooldown(500);
+    }
+  };
+  useEffect(() => {
+    if (keyboardSubmit && !mutationSubmitting) {
+      useKeyCooldown();
+      handleMutation();
+    }
+  }, [keyboardSubmit]);
+  return (
+    <RedoButtonInner
+      useMutationHook={handleMutation}
+      mutationSubmitting={mutationSubmitting}
+    />
+  );
+}
+
+function WithEditItemName({
+  nextRedo,
+  dispatch,
+  keyboardSubmit,
+  useKeyCooldown
+}: WithMutationProps) {
+  const [mutationSubmitting, setMutationSubmitting] = useState(false);
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmitting(false);
+  });
+  const [editItemName, { loading }] = useEditItemNameMutation();
+  if (nextRedo[0] !== 'editItemName') return null;
+  const { listId, oldItemName, newItemName } = nextRedo[1];
+  const handleMutation = async () => {
+    if (loading || mutationSubmitting) return;
+    setMutationSubmitting(true);
+    const { data } = await editItemName({
+      variables: {
+        data: { listId, newItemName: newItemName, itemName: oldItemName }
+      }
+    });
+    const errors = data?.editItemName.errors;
+    if (errors) {
+      console.log(errors);
+      sendNotification(dispatch, [
+        'Could not complete Redo action, that item no longer exists on the list..'
+      ]);
+      dispatch({ type: 'REMOVE_REDO' });
+      mutationCooldown(500); // .5 sec delay
+    } else {
+      dispatch({ type: 'REDO_MUTATION' });
+      mutationCooldown(500);
+    }
+  };
+  useEffect(() => {
+    if (keyboardSubmit && !mutationSubmitting) {
+      useKeyCooldown();
+      handleMutation();
+    }
+  }, [keyboardSubmit]);
+  return (
+    <RedoButtonInner
+      useMutationHook={handleMutation}
+      mutationSubmitting={mutationSubmitting}
+    />
+  );
+}
+
+function WithEditNote({
+  nextRedo,
+  dispatch,
+  keyboardSubmit,
+  useKeyCooldown
+}: WithMutationProps) {
+  const [mutationSubmitting, setMutationSubmitting] = useState(false);
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmitting(false);
+  });
+  const [editNote, { loading }] = useEditNoteMutation();
+  if (nextRedo[0] !== 'editNote') return null;
+  const { listId, oldNote, newNote, itemName } = nextRedo[1];
+  const handleMutation = async () => {
+    if (loading || mutationSubmitting) return;
+    setMutationSubmitting(true);
+    const { data } = await editNote({
+      variables: {
+        data: { listId, newNote: newNote, itemName: itemName, note: oldNote }
+      }
+    });
+    const errors = data?.editNote.errors;
+    if (errors) {
+      console.log(errors);
+      sendNotification(dispatch, [
+        'Could not complete Redo action, that item no longer exists on the list..'
       ]);
       dispatch({ type: 'REMOVE_REDO' });
       mutationCooldown(500); // .5 sec delay

@@ -4,6 +4,8 @@ import {
   useAddNoteMutation,
   useDeleteItemsMutation,
   useDeleteNoteMutation,
+  useEditItemNameMutation,
+  useEditNoteMutation,
   useSortItemsMutation,
   useSortListsMutation,
   useStrikeItemMutation
@@ -110,6 +112,28 @@ export default function UndoButton() {
     case 'strikeItem':
       undoWithMutation = (
         <WithStrikeItem
+          nextUndo={nextUndo}
+          dispatch={dispatch}
+          keyboardSubmit={undoKeyboardButton}
+          useKeyCooldown={useKeyCooldown}
+        />
+      );
+      break;
+
+    case 'editItemName':
+      undoWithMutation = (
+        <WithEditItemName
+          nextUndo={nextUndo}
+          dispatch={dispatch}
+          keyboardSubmit={undoKeyboardButton}
+          useKeyCooldown={useKeyCooldown}
+        />
+      );
+      break;
+
+    case 'editNote':
+      undoWithMutation = (
+        <WithEditNote
           nextUndo={nextUndo}
           dispatch={dispatch}
           keyboardSubmit={undoKeyboardButton}
@@ -425,6 +449,102 @@ function WithStrikeItem({
       variables: { data: { listId, itemName } }
     });
     const errors = data?.strikeItem.errors;
+    if (errors) {
+      console.log(errors);
+      sendNotification(dispatch, [
+        'Could not complete Undo action, that item no longer exists on the list..'
+      ]);
+      dispatch({ type: 'REMOVE_UNDO' });
+      mutationCooldown(500); // .5 sec delay
+    } else {
+      dispatch({ type: 'UNDO_MUTATION' });
+      mutationCooldown(500);
+    }
+  };
+  useEffect(() => {
+    if (keyboardSubmit && !mutationSubmitting) {
+      useKeyCooldown();
+      handleMutation();
+    }
+  }, [keyboardSubmit]);
+  return (
+    <UndoButtonInner
+      useMutationHook={handleMutation}
+      mutationSubmitting={mutationSubmitting}
+    />
+  );
+}
+
+function WithEditItemName({
+  nextUndo,
+  dispatch,
+  keyboardSubmit,
+  useKeyCooldown
+}: WithMutationProps) {
+  const [mutationSubmitting, setMutationSubmitting] = useState(false);
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmitting(false);
+  });
+  const [editItemName, { loading }] = useEditItemNameMutation();
+  if (nextUndo[0] !== 'editItemName') return null;
+  const { listId, oldItemName, newItemName } = nextUndo[1];
+  const handleMutation = async () => {
+    if (loading || mutationSubmitting) return;
+    setMutationSubmitting(true);
+    const { data } = await editItemName({
+      variables: {
+        data: { listId, newItemName: oldItemName, itemName: newItemName }
+      }
+    });
+    const errors = data?.editItemName.errors;
+    if (errors) {
+      console.log(errors);
+      sendNotification(dispatch, [
+        'Could not complete Undo action, that item no longer exists on the list..'
+      ]);
+      dispatch({ type: 'REMOVE_UNDO' });
+      mutationCooldown(500); // .5 sec delay
+    } else {
+      dispatch({ type: 'UNDO_MUTATION' });
+      mutationCooldown(500);
+    }
+  };
+  useEffect(() => {
+    if (keyboardSubmit && !mutationSubmitting) {
+      useKeyCooldown();
+      handleMutation();
+    }
+  }, [keyboardSubmit]);
+  return (
+    <UndoButtonInner
+      useMutationHook={handleMutation}
+      mutationSubmitting={mutationSubmitting}
+    />
+  );
+}
+
+function WithEditNote({
+  nextUndo,
+  dispatch,
+  keyboardSubmit,
+  useKeyCooldown
+}: WithMutationProps) {
+  const [mutationSubmitting, setMutationSubmitting] = useState(false);
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmitting(false);
+  });
+  const [editNote, { loading }] = useEditNoteMutation();
+  if (nextUndo[0] !== 'editNote') return null;
+  const { listId, oldNote, newNote, itemName } = nextUndo[1];
+  const handleMutation = async () => {
+    if (loading || mutationSubmitting) return;
+    setMutationSubmitting(true);
+    const { data } = await editNote({
+      variables: {
+        data: { listId, newNote: oldNote, itemName: itemName, note: newNote }
+      }
+    });
+    const errors = data?.editNote.errors;
     if (errors) {
       console.log(errors);
       sendNotification(dispatch, [

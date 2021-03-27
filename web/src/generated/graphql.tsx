@@ -98,6 +98,8 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   sortLists: UserResponse;
   deleteAccount?: Maybe<Scalars['Boolean']>;
+  editItemName: UserToListResponse;
+  editNote: ItemResponse;
 };
 
 
@@ -165,6 +167,16 @@ export type MutationUpdatePrivilegesArgs = {
 
 export type MutationSortListsArgs = {
   data: StringArrayInput;
+};
+
+
+export type MutationEditItemNameArgs = {
+  data: EditItemNameInput;
+};
+
+
+export type MutationEditNoteArgs = {
+  data: EditNoteInput;
 };
 
 export type AddItemInput = {
@@ -238,6 +250,19 @@ export type UpdatePrivilegesInput = {
   listId: Scalars['String'];
   email: Scalars['String'];
   privileges?: Maybe<Scalars['String']>;
+};
+
+export type EditItemNameInput = {
+  listId: Scalars['String'];
+  itemName: Scalars['String'];
+  newItemName: Scalars['String'];
+};
+
+export type EditNoteInput = {
+  listId: Scalars['String'];
+  itemName: Scalars['String'];
+  note: Scalars['String'];
+  newNote: Scalars['String'];
 };
 
 export type Subscription = {
@@ -380,6 +405,38 @@ export type DeleteNoteMutationVariables = Exact<{
 export type DeleteNoteMutation = (
   { __typename?: 'Mutation' }
   & { deleteNote: (
+    { __typename?: 'ItemResponse' }
+    & { item?: Maybe<(
+      { __typename?: 'Item' }
+      & Pick<Item, 'id' | 'notes'>
+    )>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & FieldErrorFragment
+    )>> }
+  ) }
+);
+
+export type EditItemNameMutationVariables = Exact<{
+  data: EditItemNameInput;
+}>;
+
+
+export type EditItemNameMutation = (
+  { __typename?: 'Mutation' }
+  & { editItemName: (
+    { __typename?: 'UserToListResponse' }
+    & UserListResponseFragment
+  ) }
+);
+
+export type EditNoteMutationVariables = Exact<{
+  data: EditNoteInput;
+}>;
+
+
+export type EditNoteMutation = (
+  { __typename?: 'Mutation' }
+  & { editNote: (
     { __typename?: 'ItemResponse' }
     & { item?: Maybe<(
       { __typename?: 'Item' }
@@ -981,6 +1038,76 @@ export function useDeleteNoteMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteNoteMutationHookResult = ReturnType<typeof useDeleteNoteMutation>;
 export type DeleteNoteMutationResult = Apollo.MutationResult<DeleteNoteMutation>;
 export type DeleteNoteMutationOptions = Apollo.BaseMutationOptions<DeleteNoteMutation, DeleteNoteMutationVariables>;
+export const EditItemNameDocument = gql`
+    mutation EditItemName($data: EditItemNameInput!) {
+  editItemName(data: $data) {
+    ...userListResponse
+  }
+}
+    ${UserListResponseFragmentDoc}`;
+export type EditItemNameMutationFn = Apollo.MutationFunction<EditItemNameMutation, EditItemNameMutationVariables>;
+
+/**
+ * __useEditItemNameMutation__
+ *
+ * To run a mutation, you first call `useEditItemNameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditItemNameMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editItemNameMutation, { data, loading, error }] = useEditItemNameMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useEditItemNameMutation(baseOptions?: Apollo.MutationHookOptions<EditItemNameMutation, EditItemNameMutationVariables>) {
+        return Apollo.useMutation<EditItemNameMutation, EditItemNameMutationVariables>(EditItemNameDocument, baseOptions);
+      }
+export type EditItemNameMutationHookResult = ReturnType<typeof useEditItemNameMutation>;
+export type EditItemNameMutationResult = Apollo.MutationResult<EditItemNameMutation>;
+export type EditItemNameMutationOptions = Apollo.BaseMutationOptions<EditItemNameMutation, EditItemNameMutationVariables>;
+export const EditNoteDocument = gql`
+    mutation EditNote($data: EditNoteInput!) {
+  editNote(data: $data) {
+    item {
+      id
+      notes
+    }
+    errors {
+      ...fieldError
+    }
+  }
+}
+    ${FieldErrorFragmentDoc}`;
+export type EditNoteMutationFn = Apollo.MutationFunction<EditNoteMutation, EditNoteMutationVariables>;
+
+/**
+ * __useEditNoteMutation__
+ *
+ * To run a mutation, you first call `useEditNoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditNoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editNoteMutation, { data, loading, error }] = useEditNoteMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useEditNoteMutation(baseOptions?: Apollo.MutationHookOptions<EditNoteMutation, EditNoteMutationVariables>) {
+        return Apollo.useMutation<EditNoteMutation, EditNoteMutationVariables>(EditNoteDocument, baseOptions);
+      }
+export type EditNoteMutationHookResult = ReturnType<typeof useEditNoteMutation>;
+export type EditNoteMutationResult = Apollo.MutationResult<EditNoteMutation>;
+export type EditNoteMutationOptions = Apollo.BaseMutationOptions<EditNoteMutation, EditNoteMutationVariables>;
 export const StrikeItemDocument = gql`
     mutation StrikeItem($data: StrikeItemInput!) {
   strikeItem(data: $data) {

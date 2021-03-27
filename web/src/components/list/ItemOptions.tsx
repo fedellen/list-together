@@ -12,6 +12,7 @@ import useDeleteItems from 'src/hooks/mutations/item/useDeleteItems';
 import useStrikeItem from 'src/hooks/mutations/item/useStrikeItem';
 import useSortItems from 'src/hooks/mutations/list/useSortItems';
 import { KeyPair, useKeyHandler } from 'src/hooks/useKeyHandler';
+import RenameListIcon from '../svg/headerOptions/RenameListIcon';
 
 /** Modal for displaying user's item options when an item is clicked */
 export const ItemOptions = () => {
@@ -47,6 +48,11 @@ export const ItemOptions = () => {
       deleteItems([itemName]);
     } else if (optionAction === 'strikeItem') {
       strikeItem(itemName);
+    } else if (optionAction === 'editItemName') {
+      dispatch({
+        type: 'TOGGLE_MODAL',
+        payload: { type: 'editItemName', itemName: itemName, active: true }
+      });
     } else if (
       optionAction === 'sortItemUp' ||
       optionAction === 'sortItemDown'
@@ -86,6 +92,10 @@ export const ItemOptions = () => {
       {
         keyValues: ['n'],
         callback: () => handleOptionAction('addNote')
+      },
+      {
+        keyValues: ['e'],
+        callback: () => handleOptionAction('editItemName')
       }
     ];
   }
@@ -133,13 +143,22 @@ export const ItemOptions = () => {
         icon={<DownArrowIcon />}
       />
       {userCanAdd && (
-        <IconButton
-          text={`Note${largeScreen ? ' (N)' : ''}`}
-          ariaLabel="Add Note to Item"
-          style={style}
-          onClick={() => handleOptionAction('addNote')}
-          icon={<NoteIcon />}
-        />
+        <>
+          <IconButton
+            text={`Note${largeScreen ? ' (N)' : ''}`}
+            ariaLabel="Add Note to Item"
+            style={style}
+            onClick={() => handleOptionAction('addNote')}
+            icon={<NoteIcon />}
+          />
+          <IconButton
+            text={`Edit${largeScreen ? ' (E)' : ''}`}
+            ariaLabel="Edit item name"
+            style={style}
+            onClick={() => handleOptionAction('editItemName')}
+            icon={<RenameListIcon />}
+          />
+        </>
       )}
       {userCanStrike && (
         <IconButton
