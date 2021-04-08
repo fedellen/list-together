@@ -81,7 +81,7 @@ Before committing any changes to the backend be sure to test the resolvers by ru
 yarn test
 ```
 
-This backend was bootstrapped with:
+I used [Ben Awad's awesome lireddit repository](https://github.com/benawad/lireddit/) as a starting point for the backend and bootstrapped with:
 
 ```
 typeorm init --name list-together --database postgres
