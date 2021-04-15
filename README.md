@@ -39,18 +39,6 @@ By default, the `SmartSort` option will try to sort your list into the route you
 
 This app also features some limited offline functionality. Users can install the app locally as a PWA. When in offline mode, they can view their last available list queries from the cache. Interacting with the lists does not work offline.
 
-## **🤔 Possibly todo after release**
-
-- Edit item feature (Mutation that renames both `item.name` and `itemHistory.item`)
-- Share list via link or email. Shared user would still need to create account upon clicking share link.
-- Optimistic responses on item mutations for quicker user interaction, especially for users located further from the server (Toronto)
-- More back-end resolver tests, there remains some uncovered logic
-- Add test user creation from front-to-back without Passport APIs for a better dev environment (for collaborators)
-- Implement testing on front-end / end to end testing
-- Convert server callbacks to Redis (or cron jobs) to prevent them from being cancelled (Only related to Smart Features)
-- Add an `./app` directory with a React Native version of List Together
-- Implement offline mutation capabilities for Apollo Client
-
 ## **💽 Backend made with:**
 
 - [TypeORM](https://github.com/typeorm/typeorm)
