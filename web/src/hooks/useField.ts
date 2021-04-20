@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
 
 /** Custom Hook for handling inputs */
-export const useField = () => {
-  const [value, setValue] = useState('');
+export const useField = (initial = '') => {
+  const [value, setValue] = useState(initial);
   const [initialDelay, setInitialDelay] = useState(true);
   const triggerDelay = useDelayedFunction(() => setInitialDelay(false));
 

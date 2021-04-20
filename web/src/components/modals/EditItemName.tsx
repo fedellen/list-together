@@ -5,9 +5,13 @@ import { useStateValue } from 'src/state/state';
 import { useField } from 'src/hooks/useField';
 
 export default function EditItemName() {
-  const newItemNameInput = useField();
+  const [{ listState }, dispatch] = useStateValue();
+  if (listState[0] !== 'modal') return null;
+
+  const newItemNameInput = useField(
+    listState[1].itemName ? listState[1].itemName : ''
+  );
   const [handleAdd, submit] = useEditItemName();
-  const [, dispatch] = useStateValue();
 
   /** Keyboard submit */
   const submitKeyPress = useKeyPress('Enter');
