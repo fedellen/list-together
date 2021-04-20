@@ -47,7 +47,7 @@ describe('Rename list mutation:', () => {
     expect(listInDatabaseAfter!.title).toBe(newListName);
   });
 
-  it('Non-owners cannot rename the list', async () => {
+  it('Users without delete privilege cannot rename the list', async () => {
     const listOwner = await userWithList();
     const ownersUserToListTable = await UserToList.findOne({
       where: { userId: listOwner.id }
@@ -69,7 +69,7 @@ describe('Rename list mutation:', () => {
           errors: [
             {
               field: 'privileges',
-              message: 'User does not have the correct "owner" privilege..'
+              message: 'User does not have the correct "delete" privilege..'
             }
           ]
         }

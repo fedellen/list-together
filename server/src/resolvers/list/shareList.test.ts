@@ -44,7 +44,7 @@ describe('Share list mutation:', () => {
       userId: user.id
     });
 
-    // Owner's response contain's info about sharedUsers
+    // Owner's response contains info about sharedUsers
     expect(response).toMatchObject({
       data: {
         shareList: {
@@ -99,7 +99,7 @@ describe('Share list mutation:', () => {
         shareList: {
           errors: [
             {
-              message: 'User does not have the correct "owner" privilege..'
+              message: 'User does not have the correct "delete" privilege..'
             }
           ]
         }

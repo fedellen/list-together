@@ -27,7 +27,7 @@ export const HeaderOptions = () => {
 
   const hasSharedLists = currentSharedLists[0]?.shared;
   const userHasLists = currentListId !== '';
-  const userCanRename = currentListPrivileges !== 'read';
+  const userCanRename = ['delete', 'owner'].includes(currentListPrivileges);
 
   const [logout] = useLogout();
   const [saveOrder, saveOrderSubmitting] = useSubmitPreferredOrder();
@@ -103,7 +103,7 @@ export const HeaderOptions = () => {
         style="header-option-button"
         icon={<ManageAccountIcon />}
       />
-      {currentListPrivileges === 'owner' && (
+      {userCanRename && (
         <IconButton
           icon={<ShareIcon />}
           text="Share"

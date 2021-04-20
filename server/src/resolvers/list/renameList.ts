@@ -29,7 +29,7 @@ export class RenameListResolver {
       context,
       listId,
       relations: ['list'],
-      validatePrivilege: 'owner'
+      validatePrivilege: 'delete'
     });
     if (getListPayload.errors) return { errors: getListPayload.errors };
     const userToListTable = getListPayload.userToList![0];
