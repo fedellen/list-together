@@ -32,7 +32,7 @@ export default function HeaderMenu() {
   const [theme, toggleDarkMode] = useDarkMode();
 
   const optionsOpen = listState[0] === 'options';
-  const isOwner = useCurrentPrivileges() === 'owner';
+  const canShare = ['owner', 'delete'].includes(useCurrentPrivileges());
   const userExist = currentUserId !== '';
   const listExist = currentListId !== '';
 
@@ -41,7 +41,7 @@ export default function HeaderMenu() {
       userExist={userExist}
       listExist={listExist}
       optionsOpen={optionsOpen}
-      isOwner={isOwner}
+      isOwner={canShare}
       dispatch={dispatch}
       smartSort={handleSmartSort}
       theme={theme}
