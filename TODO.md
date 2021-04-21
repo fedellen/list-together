@@ -4,7 +4,7 @@ I will be making edits and bug fixes based on our personal use and any user feed
 
 ## **🤔 Possibly Todo**
 
-- Full access privileges allow more actions; Rename, Share; Only "owner" can EditRights
+- Strike notes individually, rather than with item
 - Share list via link or email. Shared user would still need to create account upon clicking share link.
 - Optimistic responses on item mutations for quicker user interaction, especially for users located further from the server (Toronto)
 - More back-end resolver tests, there remains some uncovered logic
