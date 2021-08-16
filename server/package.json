@@ -1,8 +1,8 @@
 {
-  "name": "grocery-app-backend",
-  "author": "fedellen, Derek Sonnenberg",
+  "name": "list-together-graphql-gateway",
+  "version": "1.1.0",
+  "author": "Derek R. Sonnenberg <fedellen@pixelpajamastudios.com>",
   "license": "MIT",
-  "version": "1.0.0",
   "main": "server.ts",
   "scripts": {
     "build": "tsc",
