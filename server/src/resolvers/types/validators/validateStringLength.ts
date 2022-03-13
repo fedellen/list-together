@@ -1,10 +1,11 @@
+import { maxCharacterLimit, minCharacterLimit } from '../../../constants';
 import { FieldError } from '../response/FieldError';
 
-/** Validate string length is between `min` and `max` characters, default => `min:2`, `max:30` */
+/** Validate string length is between `min` and `max`, defaults to global constants */
 export const validateStringLength = (
   string: string,
-  min: number = 2,
-  max: number = 55
+  min: number = minCharacterLimit,
+  max: number = maxCharacterLimit
 ): FieldError[] | null => {
   if (string.length < min) {
     return [

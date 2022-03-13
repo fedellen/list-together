@@ -15,6 +15,7 @@ import { Topic } from '../types/subscription/SubscriptionTopics';
 import { getUserListTable } from '../../services/list/getUserListTable';
 import { ItemResponse } from '../types/response/ItemResponse';
 import { replaceInArray } from '../../utils/replaceInArray';
+import { validateStringLength } from '../types/validators/validateStringLength';
 
 @Resolver()
 /** Edit note of item  */
@@ -26,6 +27,9 @@ export class EditNoteResolver {
     @Ctx() context: MyContext,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<ItemResponse> {
+    const stringLengthErrors = validateStringLength(newNote);
+    if (stringLengthErrors) return { errors: stringLengthErrors };
+
     const getListPayload = await getUserListTable({
       context,
       listId,
