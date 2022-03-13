@@ -1,6 +1,8 @@
 {
-  "name": "grocery-app-pwa",
-  "version": "0.1.0",
+  "name": "list-together-pwa",
+  "version": "1.0.1",
+  "author": "Derek R. Sonnenberg <fedellen@pixelpajamastudios.com>",
+  "license": "MIT",
   "private": true,
   "devDependencies": {
     "@craco/craco": "^6.0.0",
