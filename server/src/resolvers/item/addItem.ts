@@ -39,8 +39,6 @@ export class AddItemResolver {
     if (getListPayload.errors) return { errors: getListPayload.errors };
     const userToListTable = getListPayload.userToList![0];
 
-    // Validate string length between 2-30
-
     const list = userToListTable.list;
     const striked = nameInputArray.length > 1;
     for (const itemName of nameInputArray) {

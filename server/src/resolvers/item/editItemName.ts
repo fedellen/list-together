@@ -15,6 +15,7 @@ import { SubscriptionPayload } from '../types/subscription/SubscriptionPayload';
 import { Topic } from '../types/subscription/SubscriptionTopics';
 import { getUserListTable } from '../../services/list/getUserListTable';
 import { replaceInArray } from '../../utils/replaceInArray';
+import { validateStringLength } from '../types/validators/validateStringLength';
 
 @Resolver()
 /** Edit name of item and history of item */
@@ -26,6 +27,9 @@ export class EditItemNameResolver {
     @Ctx() context: MyContext,
     @PubSub(Topic.updateList) publish: Publisher<SubscriptionPayload>
   ): Promise<UserToListResponse> {
+    const stringLengthErrors = validateStringLength(newItemName);
+    if (stringLengthErrors) return { errors: stringLengthErrors };
+
     const getListPayload = await getUserListTable({
       context,
       listId,
