@@ -181,21 +181,11 @@ export class AddItemHandler extends UserToListBase {
   }
 
   private addToUsersSortedItems(itemName: ItemName) {
-    if (this.striked) {
-      if (!this.userToListTable.sortedItems) {
-        this.userToListTable.sortedItems = [itemName];
-      } else {
-        this.userToListTable.sortedItems = [
-          ...this.userToListTable.sortedItems,
-          itemName
-        ];
-      }
-    } else {
       this.userToListTable.sortedItems = sortIntoList(
         this.userToListTable,
-        itemName
+      itemName,
+      this.striked
       );
-    }
   }
 
   private addToRecentlyAddedItems(itemName: ItemName) {
