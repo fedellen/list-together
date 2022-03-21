@@ -12,6 +12,17 @@ export abstract class UserToListBase extends UserBase {
   protected userToListTable: UserToList;
   protected listId: ListId;
 
+  protected get items() {
+    return this.userToListTable.list.items;
+  }
+
+  private get numItemsOnList(): number {
+    if (!this.items) {
+      return 0;
+    }
+    return this.items.length;
+  }
+
   protected constructor({ listId, ...args }: UserToListConstParams) {
     super(args);
 
@@ -19,24 +30,9 @@ export abstract class UserToListBase extends UserBase {
   }
 
   protected assertItemLimitOnList(numberOfItems = 1): void {
-    if (numberOfItems >= maxItemLimitOnList) {
-      throw {
-        field: 'listId',
-        message: `Lists cannot have more than ${maxItemLimitOnList} items..`
-      };
+    if (numberOfItems + this.numItemsOnList >= maxItemLimitOnList) {
+      throw fieldError.tooManyItemsOnList;
     }
-  }
-
-  protected get items() {
-    return this.userToListTable.list.items;
-  }
-
-  protected get privileges() {
-    return this.userToListTable.privileges;
-  }
-
-  private get isListOwner() {
-    return this.privileges === 'owner';
   }
 
   protected async getUserToListTable(
