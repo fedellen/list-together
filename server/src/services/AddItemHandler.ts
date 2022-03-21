@@ -7,6 +7,7 @@ import { recentlyAddedCallback } from './item/recentlyAddedCallback';
 import { sortIntoList } from './item/sortIntoList';
 import { UserToListBase, UserToListConstParams } from './UserToListHandler';
 import fieldError from './fieldError';
+import { parseStringInput } from '../utils/common';
 
 interface AddItemHandlerConstParams extends UserToListConstParams {
   nameInput: ItemName[];
@@ -81,7 +82,7 @@ export class AddItemHandler extends UserToListBase {
   }
 
   private parseNameInput(): void {
-    this.nameInput = this.nameInput.map((n) => this.parseStringInput(n));
+    this.nameInput = this.nameInput.map((n) => parseStringInput(n));
   }
 
   private assertUniqueItemsOnList(): void {

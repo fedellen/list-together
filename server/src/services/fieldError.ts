@@ -1,4 +1,4 @@
-import { UserPrivileges } from 'src/entities';
+import { UserPrivileges } from '../entities';
 import { maxCharacterLimit, minCharacterLimit } from '../constants';
 import {
   FieldError,
