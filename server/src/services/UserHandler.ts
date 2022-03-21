@@ -1,5 +1,4 @@
 import { MyContext } from '../MyContext';
-import { FieldError } from '../resolvers/types/response/FieldError';
 import { UserId } from '../types';
 import fieldError from './fieldError';
 
@@ -9,7 +8,6 @@ export interface UserHandlerParams {
 
 export abstract class UserBase {
   protected userId: UserId;
-  protected errors: FieldError[] = [];
 
   constructor({ context }: UserHandlerParams) {
     this.validateContext(context);
