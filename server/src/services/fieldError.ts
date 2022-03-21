@@ -1,5 +1,9 @@
 import { UserPrivileges } from '../entities';
-import { maxCharacterLimit, minCharacterLimit } from '../constants';
+import {
+  maxCharacterLimit,
+  maxItemLimitOnList,
+  minCharacterLimit
+} from '../constants';
 import {
   FieldError,
   isFieldError
@@ -37,6 +41,11 @@ const noItemsOnThatList: FieldError = {
   message: 'That list connection does not have any items..'
 };
 
+const tooManyItemsOnList: FieldError = {
+  field: 'listId',
+  message: `Lists cannot have more than ${maxItemLimitOnList} items..`
+};
+
 const insufficientPrivileges: (priv: UserPrivileges) => FieldError = (priv) => {
   return {
     field: 'privileges',
@@ -70,5 +79,6 @@ export default {
   nameIsTooShort,
   userToListTableDoesNotExist,
   noItemsOnThatList,
-  insufficientPrivileges
+  insufficientPrivileges,
+  tooManyItemsOnList
 };

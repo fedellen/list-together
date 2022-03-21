@@ -61,6 +61,14 @@ export abstract class UserToListBase extends UserBase {
     }
   }
 
+  private get isListOwner() {
+    return this.privileges === 'owner';
+  }
+
+  protected get privileges() {
+    return this.userToListTable.privileges;
+  }
+
   private assertPrivilegeLevel(privilegeLevel: UserPrivileges) {
     switch (privilegeLevel) {
       case 'add':
@@ -77,6 +85,9 @@ export abstract class UserToListBase extends UserBase {
 
       case 'owner':
         this.assertOwnerPrivilege();
+        break;
+
+      default:
         break;
     }
   }
