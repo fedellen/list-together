@@ -26,6 +26,7 @@ export class AddItemHandler extends UserToListBase {
     ...args
   }: AddItemHandlerConstParams): Promise<AddItemHandler> {
     const addItemHandler = new AddItemHandler({ nameInput, ...args });
+
     const userToListTable = await addItemHandler.getUserToListTable();
     if (!userToListTable) {
       throw fieldError.userToListTableDoesNotExist;
@@ -35,31 +36,6 @@ export class AddItemHandler extends UserToListBase {
     addItemHandler.validateAddItemToList();
 
     return addItemHandler;
-  }
-
-  // TODO: Fix limitation below by adding striked to item add API
-  // Front end only allows for bulk item names when using undo remove all
-  private get striked() {
-    return this.nameInput.length > 1;
-  }
-
-  public async addItems(
-    publish: Publisher<SubscriptionPayload>
-  ): Promise<UserToList> {
-    for (const name of this.nameInput) {
-      this.addItemToList(name);
-      this.addItemToHistory(name);
-      this.addToRecentlyAddedItems(name);
-      this.addToUsersSortedItems(name);
-    }
-
-    addToSharedLists(this.userToListTable, this.nameInput, publish);
-    await this.saveUserToTableCascadingAllListUpdates();
-    return this.userToListTable;
-  }
-
-  private async saveUserToTableCascadingAllListUpdates() {
-    await this.userToListTable.save();
   }
 
   protected async getUserToListTable() {
@@ -87,15 +63,23 @@ export class AddItemHandler extends UserToListBase {
 
   private assertUniqueItemsOnList(): void {
     for (const itemName of this.nameInput) {
-      super.validateUniqueItemOnList(itemName);
+      super.assertUniqueItemOnList(itemName);
     }
   }
 
-  private listHasItems(): boolean {
-    if (!this.items) {
-      return false;
+  public async addItems(
+    publish: Publisher<SubscriptionPayload>
+  ): Promise<UserToList> {
+    for (const name of this.nameInput) {
+      this.addItemToList(name);
+      this.addItemToHistory(name);
+      this.addToRecentlyAddedItems(name);
+      this.addToUsersSortedItems(name);
     }
-    return this.items.length > 0;
+
+    addToSharedLists(this.userToListTable, this.nameInput, publish);
+    await this.saveUserToTableCascadingAllListUpdates();
+    return this.userToListTable;
   }
 
   private addItemToList(itemName: ItemName): void {
@@ -104,6 +88,13 @@ export class AddItemHandler extends UserToListBase {
     } else {
       this.initializeListWithItem(itemName);
     }
+  }
+
+  private listHasItems(): boolean {
+    if (!this.items) {
+      return false;
+    }
+    return this.items.length > 0;
   }
 
   private initializeListWithItem(itemName: ItemName) {
@@ -119,22 +110,18 @@ export class AddItemHandler extends UserToListBase {
     ];
   }
 
-  private addItemToHistory(itemName: ItemName) {
-    if (this.isItemOnRecentlyRemovedItems(itemName)) {
-      this.forgetReAddedItem(itemName);
-    } else {
-      this.addItemToItemHistory(itemName);
-    }
+  // TODO: Fix limitation below by adding striked to item add API
+  // Front end only allows for bulk item names when using undo remove all
+  private get striked() {
+    return this.nameInput.length > 1;
   }
 
-  private isItemOnRecentlyRemovedItems(itemName: ItemName): boolean {
-    if (
-      this.userToListTable.removedItems &&
-      this.userToListTable.removedItems.includes(itemName)
-    ) {
-      return true;
+  private addItemToHistory(itemName: ItemName) {
+    if (this.recentlyRemovedItems.includes(itemName)) {
+      this.forgetReAddedItem(itemName);
+    } else {
+      this.insertIntoItemHistory(itemName);
     }
-    return false;
   }
 
   private forgetReAddedItem(itemName: ItemName) {
@@ -143,12 +130,16 @@ export class AddItemHandler extends UserToListBase {
     );
   }
 
-  private addItemToItemHistory(itemName: ItemName) {
+  private insertIntoItemHistory(itemName: ItemName) {
     if (!this.userToListTable.itemHistory) {
       this.initializeItemHistoryWithItem(itemName);
     } else {
       this.addItemToExistingHistory(itemName);
     }
+  }
+
+  private initializeItemHistoryWithItem(itemName: ItemName) {
+    this.userToListTable.itemHistory = [ItemHistory.create({ item: itemName })];
   }
 
   private addItemToExistingHistory(itemName: ItemName) {
@@ -159,10 +150,6 @@ export class AddItemHandler extends UserToListBase {
     } else {
       this.addNewItemToItemHistory(itemName);
     }
-  }
-
-  private initializeItemHistoryWithItem(itemName: ItemName) {
-    this.userToListTable.itemHistory = [ItemHistory.create({ item: itemName })];
   }
 
   private getExistingItemFromHistory(
@@ -181,15 +168,14 @@ export class AddItemHandler extends UserToListBase {
   }
 
   private addToUsersSortedItems(itemName: ItemName) {
-      this.userToListTable.sortedItems = sortIntoList(
-        this.userToListTable,
+    this.userToListTable.sortedItems = sortIntoList(
+      this.userToListTable,
       itemName,
       this.striked
-      );
+    );
   }
 
   private addToRecentlyAddedItems(itemName: ItemName) {
-    /** Also add the new item to the recentlyAddedItems field */
     if (!this.userToListTable.recentlyAddedItems) {
       this.userToListTable.recentlyAddedItems = [itemName];
     } else {
@@ -203,6 +189,6 @@ export class AddItemHandler extends UserToListBase {
   }
 
   private triggerRecentlyAddedCallback(itemName: ItemName): void {
-    recentlyAddedCallback(this.userToListTable!, itemName);
+    recentlyAddedCallback(this.userToListTable, itemName);
   }
 }

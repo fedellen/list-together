@@ -23,10 +23,18 @@ export abstract class UserToListBase extends UserBase {
     return this.items.length;
   }
 
+  protected get recentlyRemovedItems(): string[] {
+    return this.userToListTable.removedItems ?? [];
+  }
+
   protected constructor({ listId, ...args }: UserToListConstParams) {
     super(args);
 
     this.listId = listId;
+  }
+
+  protected async saveUserToTableCascadingAllListUpdates() {
+    await this.userToListTable.save();
   }
 
   protected assertItemLimitOnList(numberOfItems = 1): void {
@@ -116,7 +124,7 @@ export abstract class UserToListBase extends UserBase {
     }
   }
 
-  protected validateUniqueItemOnList(itemName: ItemName): void {
+  protected assertUniqueItemOnList(itemName: ItemName): void {
     const itemExists = this.items?.find(({ name }) => name === itemName);
     if (itemExists) {
       throw fieldError.itemAlreadyExists;
