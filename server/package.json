@@ -6,6 +6,7 @@
   "main": "server.ts",
   "scripts": {
     "build": "tsc",
+    "typecheck": "tsc --noEmit",
     "watch": "tsc -w",
     "start": "node dist/server.js",
     "dev": "nodemon dist/server.js",
@@ -36,7 +37,7 @@
     "prettier": "^2.2.1",
     "ts-jest": "^26.4.4",
     "ts-node": "^9.1.1",
-    "typescript": "^4.1.2"
+    "typescript": "^4.6.2"
   },
   "dependencies": {
     "apollo-server-express": "^2.19.0",

@@ -4,11 +4,14 @@ import { UserToList } from '../../entities';
 export const sortIntoList = (
   /** UserToList with `itemHistory` */
   userToList: UserToList,
-  itemName: string
+  itemName: string,
+  striked = false
 ): string[] => {
   if (!userToList.sortedItems || userToList.sortedItems.length < 1) {
     // UserToList has no sortedItems array, initialize
     userToList.sortedItems = [itemName];
+  } else if (striked) {
+    userToList.sortedItems = [...userToList.sortedItems, itemName];
   } else {
     // Find item in list
     const itemInHistory = userToList.itemHistory?.find(
