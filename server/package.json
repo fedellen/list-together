@@ -1,6 +1,6 @@
 {
   "name": "list-together-graphql-gateway",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "Derek R. Sonnenberg <fedellen@pixelpajamastudios.com>",
   "license": "MIT",
   "main": "server.ts",
