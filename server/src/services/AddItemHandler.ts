@@ -77,8 +77,8 @@ export class AddItemHandler extends UserToListBase {
       this.addToUsersSortedItems(name);
     }
 
-    addToSharedLists(this.userToListTable, this.nameInput, publish);
     await this.saveUserToTableCascadingAllListUpdates();
+    addToSharedLists(this.userToListTable, this.nameInput, publish);
     return this.userToListTable;
   }
 
