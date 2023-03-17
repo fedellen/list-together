@@ -5,6 +5,7 @@ import useDelayedFunction from 'src/hooks/useDelayedFunction';
 import { sendNotification } from 'src/utils/dispatchActions';
 import { errorNotification } from 'src/utils/errorNotification';
 import useCurrentSortedItems from '../../fragments/useCurrentSortedItems';
+import { maxCharacterLimit, minCharacterLimit } from '../../../constants';
 
 export default function useAddItem() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
@@ -28,14 +29,12 @@ export default function useAddItem() {
         `That list already includes "${itemName}"..`
       ]);
       return;
-    } else if (itemName.length < 2) {
-      sendNotification(dispatch, [
-        'Item length must contain 2 or more characters..'
-      ]);
+    } else if (itemName.length < minCharacterLimit) {
+      sendNotification(dispatch, ['Item length must contain 1 character..']);
       return;
-    } else if (itemName.length > 55) {
+    } else if (itemName.length > maxCharacterLimit) {
       sendNotification(dispatch, [
-        'Item length must contain 55 characters or less..'
+        'Item length must contain 255 characters or less..'
       ]);
       return;
     } else {
