@@ -6,6 +6,7 @@ const RedisStore = connectRedis(session);
 
 export const sessionMiddleware = session({
   store: new RedisStore({
+    // @ts-ignore
     client: redis
   }),
   name: process.env.COOKIE_NAME,
