@@ -1,4 +1,6 @@
-FROM node:14.16.0
+ARG  NODE_VERSION
+
+FROM node:${NODE_VERSION}
 
 WORKDIR /usr/src/app
 

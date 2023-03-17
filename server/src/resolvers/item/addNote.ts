@@ -15,6 +15,7 @@ import { SubscriptionPayload } from '../types/subscription/SubscriptionPayload';
 import { Topic } from '../types/subscription/SubscriptionTopics';
 import { validateStringLength } from '../types/validators/validateStringLength';
 import { getUserListTable } from '../../services/list/getUserListTable';
+import { maxNotesPerItem } from '../../constants';
 
 @Resolver()
 export class AddNoteResolver {
@@ -57,12 +58,12 @@ export class AddNoteResolver {
       // Initialize notes for item
       item.notes = [note];
     } else {
-      if (item.notes.length >= 10) {
+      if (item.notes.length >= maxNotesPerItem) {
         return {
           errors: [
             {
               field: 'name',
-              message: 'Items cannot have more than 10 notes..'
+              message: `Items cannot have more than ${maxNotesPerItem} notes...`
             }
           ]
         };

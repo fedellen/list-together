@@ -54,8 +54,8 @@ describe('Create list mutation:', () => {
     expect(listConnectionsInDatabase).toHaveLength(1);
   });
 
-  it('User cannot create more than 15 lists as owner', async () => {
-    const user = await userWithList(15); // creates user with 15 lists
+  it('User cannot create more than 100 lists as owner', async () => {
+    const user = await userWithList(100); // creates user with 100 lists
     const title = faker.name.firstName();
 
     const response = await graphqlCall({
@@ -70,7 +70,7 @@ describe('Create list mutation:', () => {
           errors: [
             {
               field: 'lists',
-              message: 'User cannot create more than 15 lists..'
+              message: 'User cannot create more than 100 lists...'
             }
           ]
         }
@@ -81,7 +81,7 @@ describe('Create list mutation:', () => {
       where: { userId: user.id }
     });
 
-    expect(listConnectionsInDatabase).toHaveLength(15);
+    expect(listConnectionsInDatabase).toHaveLength(100);
   });
 
   it('Unauthorized response with no userId in context', async () => {
