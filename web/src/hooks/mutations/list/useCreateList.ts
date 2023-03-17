@@ -7,6 +7,7 @@ import { useStateValue } from 'src/state/state';
 import { sendNotification } from 'src/utils/dispatchActions';
 import { errorNotification } from 'src/utils/errorNotification';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
+import { minCharacterLimit } from '../../../constants';
 
 export default function useCreateList() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
@@ -23,9 +24,9 @@ export default function useCreateList() {
      */
 
     // Front-end validation for `createList`
-    if (title.length < 2) {
+    if (title.length < minCharacterLimit) {
       sendNotification(dispatch, [
-        'List title length must contain 2 or more characters..'
+        'List title length must contain 1 or more character..'
       ]);
       return;
     } else if (title.length > 55) {

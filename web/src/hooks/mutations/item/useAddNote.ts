@@ -5,6 +5,7 @@ import useDelayedFunction from 'src/hooks/useDelayedFunction';
 import { sendNotification } from 'src/utils/dispatchActions';
 import { errorNotification } from 'src/utils/errorNotification';
 import useItemsNotes from '../../fragments/useItemsNotes';
+import { maxCharacterLimit, minCharacterLimit } from '../../../constants';
 
 export default function useAddNote() {
   const [mutationSubmiting, setMutationSubmiting] = useState(false);
@@ -31,14 +32,14 @@ export default function useAddNote() {
     if (activeItemsNotes.includes(note)) {
       sendNotification(dispatch, [`That item already includes "${note}"..`]);
       return;
-    } else if (note.length < 2) {
+    } else if (note.length < minCharacterLimit) {
       sendNotification(dispatch, [
-        'Item length must contain 2 or more characters..'
+        'Item length must contain 1 or more characters..'
       ]);
       return;
-    } else if (note.length > 55) {
+    } else if (note.length > maxCharacterLimit) {
       sendNotification(dispatch, [
-        'Item length must contain 55 characters or less..'
+        'Item length must contain 255 characters or less..'
       ]);
       return;
     }
