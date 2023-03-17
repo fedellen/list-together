@@ -5,6 +5,7 @@ import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 import { validateContext } from '../types/validators/validateContext';
 import { validateStringLength } from '../types/validators/validateStringLength';
 import { UserWithListResponse } from '../types/response/UserWithListResponse';
+import { maxListsPerUser } from '../../constants';
 
 @Resolver()
 export class CreateListResolver {
@@ -34,7 +35,7 @@ export class CreateListResolver {
       };
     }
 
-    // Check to see if user already owns 15 lists
+    // Check to see if user is at tha max lists limit
     const userToListTableArray = await UserToList.find({
       where: { userId: user.id }
     });
@@ -42,12 +43,12 @@ export class CreateListResolver {
       (listConnection) => listConnection.privileges.includes('owner')
     );
 
-    if (userToListTablesAsOwner.length >= 15) {
+    if (userToListTablesAsOwner.length >= maxListsPerUser) {
       return {
         errors: [
           {
             field: 'lists',
-            message: 'User cannot create more than 15 lists..'
+            message: `User cannot create more than ${maxListsPerUser} lists...`
           }
         ]
       };
