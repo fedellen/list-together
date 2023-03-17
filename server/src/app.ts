@@ -21,6 +21,7 @@ app.set('trust proxy', 1);
 app.use(
   RateLimit({
     store: new RedisStore({
+      // @ts-ignore
       client: redis
     }),
     windowMs: 15 * 60 * 1000, // 15 minutes

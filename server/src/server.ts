@@ -47,6 +47,7 @@ const server = async () => {
 
   // Add express to Apollo, include cors with credentials for session auth
   apolloServer.applyMiddleware({
+    // @ts-ignore
     app,
     cors: {
       origin: [process.env.FRONT_URL],

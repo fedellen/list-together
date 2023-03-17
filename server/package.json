@@ -15,7 +15,7 @@
     "gen-env": "gen-env-types .env -o src/env.d.ts -e ."
   },
   "devDependencies": {
-    "@types/connect-redis": "^0.0.15",
+    "@types/connect-redis": "^0.0.20",
     "@types/cors": "^2.8.8",
     "@types/express-rate-limit": "^5.1.1",
     "@types/express-session": "^1.17.3",
