@@ -24,7 +24,6 @@
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-prettier": "^3.3.0",
     "eslint-plugin-react": "^7.21.5",
-    "http-server": "^0.12.3",
     "postcss": "^8.4.21",
     "prettier": "^2.2.1",
     "react-scripts": "^5.0.1",
@@ -55,7 +54,6 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "local:prod": "http-server build -p 3000 --cors -a 'localhost'",
     "eject": "react-scripts eject",
     "watch:css": "postcss ./src/style/tailwind.css -o ./src/style/main.css",
     "codegen": "graphql-codegen --config codegen.yml"
