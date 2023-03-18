@@ -1,9 +1,11 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -13,57 +15,45 @@ export type Scalars = {
   Float: number;
 };
 
-export type Query = {
-  __typename?: 'Query';
-  getUsersLists: UserToListResponse;
-  getUser?: Maybe<User>;
+export type AddItemInput = {
+  listId: Scalars['String'];
+  nameInput: Array<Scalars['String']>;
 };
 
-export type UserToListResponse = {
-  __typename?: 'UserToListResponse';
-  errors?: Maybe<Array<FieldError>>;
-  userToList?: Maybe<Array<UserToList>>;
-  notifications?: Maybe<Array<Scalars['String']>>;
+export type AddNoteInput = {
+  itemName: Scalars['String'];
+  listId: Scalars['String'];
+  note: Scalars['String'];
+};
+
+export type DeleteItemsInput = {
+  itemNameArray: Array<Scalars['String']>;
+  listId: Scalars['String'];
+};
+
+export type DeleteNoteInput = {
+  itemName: Scalars['String'];
+  listId: Scalars['String'];
+  note: Scalars['String'];
+};
+
+export type EditItemNameInput = {
+  itemName: Scalars['String'];
+  listId: Scalars['String'];
+  newItemName: Scalars['String'];
+};
+
+export type EditNoteInput = {
+  itemName: Scalars['String'];
+  listId: Scalars['String'];
+  newNote: Scalars['String'];
+  note: Scalars['String'];
 };
 
 export type FieldError = {
   __typename?: 'FieldError';
   field: Scalars['String'];
   message: Scalars['String'];
-};
-
-export type UserToList = {
-  __typename?: 'UserToList';
-  userId: Scalars['ID'];
-  listId: Scalars['ID'];
-  privileges: Scalars['String'];
-  itemHistory?: Maybe<Array<ItemHistory>>;
-  mostCommonWords?: Maybe<Array<Scalars['String']>>;
-  sharedUsers: Array<SharedUsers>;
-  smartSortedItems: Array<Scalars['String']>;
-  sortedItems?: Maybe<Array<Scalars['String']>>;
-  list: List;
-};
-
-export type ItemHistory = {
-  __typename?: 'ItemHistory';
-  id: Scalars['ID'];
-  item: Scalars['String'];
-  removalRating?: Maybe<Scalars['Int']>;
-};
-
-export type SharedUsers = {
-  __typename?: 'SharedUsers';
-  shared: Scalars['Boolean'];
-  email?: Maybe<Scalars['String']>;
-  privileges?: Maybe<Scalars['String']>;
-};
-
-export type List = {
-  __typename?: 'List';
-  id: Scalars['ID'];
-  title: Scalars['String'];
-  items?: Maybe<Array<Item>>;
 };
 
 export type Item = {
@@ -74,32 +64,51 @@ export type Item = {
   strike: Scalars['Boolean'];
 };
 
-export type User = {
-  __typename?: 'User';
+export type ItemHistory = {
+  __typename?: 'ItemHistory';
   id: Scalars['ID'];
-  email: Scalars['String'];
-  sortedListsArray?: Maybe<Array<Scalars['String']>>;
+  item: Scalars['String'];
+  removalRating?: Maybe<Scalars['Int']>;
+};
+
+export type ItemResponse = {
+  __typename?: 'ItemResponse';
+  errors?: Maybe<Array<FieldError>>;
+  item?: Maybe<Item>;
+};
+
+export type List = {
+  __typename?: 'List';
+  id: Scalars['ID'];
+  items?: Maybe<Array<Item>>;
+  title: Scalars['String'];
+};
+
+export type ListResponse = {
+  __typename?: 'ListResponse';
+  errors?: Maybe<Array<FieldError>>;
+  list?: Maybe<List>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   addItem: UserToListResponse;
-  deleteItems: UserToListResponse;
-  strikeItem: UserToListResponse;
   addNote: ItemResponse;
-  deleteNote: ItemResponse;
   createList: UserWithListResponse;
+  deleteAccount?: Maybe<Scalars['Boolean']>;
+  deleteItems: UserToListResponse;
   deleteList: UserResponse;
+  deleteNote: ItemResponse;
+  editItemName: UserToListResponse;
+  editNote: ItemResponse;
+  logout: Scalars['Boolean'];
   renameList: ListResponse;
   shareList: UserToListResponse;
   sortItems: UserToListResponse;
+  sortLists: UserResponse;
+  strikeItem: UserToListResponse;
   submitPreferredOrder: UserToListResponse;
   updatePrivileges: UserToListResponse;
-  logout: Scalars['Boolean'];
-  sortLists: UserResponse;
-  deleteAccount?: Maybe<Scalars['Boolean']>;
-  editItemName: UserToListResponse;
-  editNote: ItemResponse;
 };
 
 
@@ -108,23 +117,8 @@ export type MutationAddItemArgs = {
 };
 
 
-export type MutationDeleteItemsArgs = {
-  data: DeleteItemsInput;
-};
-
-
-export type MutationStrikeItemArgs = {
-  data: StrikeItemInput;
-};
-
-
 export type MutationAddNoteArgs = {
   data: AddNoteInput;
-};
-
-
-export type MutationDeleteNoteArgs = {
-  data: DeleteNoteInput;
 };
 
 
@@ -133,8 +127,28 @@ export type MutationCreateListArgs = {
 };
 
 
+export type MutationDeleteItemsArgs = {
+  data: DeleteItemsInput;
+};
+
+
 export type MutationDeleteListArgs = {
   listId: Scalars['String'];
+};
+
+
+export type MutationDeleteNoteArgs = {
+  data: DeleteNoteInput;
+};
+
+
+export type MutationEditItemNameArgs = {
+  data: EditItemNameInput;
+};
+
+
+export type MutationEditNoteArgs = {
+  data: EditNoteInput;
 };
 
 
@@ -150,8 +164,18 @@ export type MutationShareListArgs = {
 
 
 export type MutationSortItemsArgs = {
-  listId: Scalars['String'];
   data: StringArrayInput;
+  listId: Scalars['String'];
+};
+
+
+export type MutationSortListsArgs = {
+  data: StringArrayInput;
+};
+
+
+export type MutationStrikeItemArgs = {
+  data: StrikeItemInput;
 };
 
 
@@ -164,105 +188,37 @@ export type MutationUpdatePrivilegesArgs = {
   data: UpdatePrivilegesInput;
 };
 
-
-export type MutationSortListsArgs = {
-  data: StringArrayInput;
-};
-
-
-export type MutationEditItemNameArgs = {
-  data: EditItemNameInput;
-};
-
-
-export type MutationEditNoteArgs = {
-  data: EditNoteInput;
-};
-
-export type AddItemInput = {
+export type PreferredOrderInput = {
   listId: Scalars['String'];
-  nameInput: Array<Scalars['String']>;
+  removedItemArray: Array<Scalars['String']>;
 };
 
-export type DeleteItemsInput = {
-  itemNameArray: Array<Scalars['String']>;
-  listId: Scalars['String'];
-};
-
-export type StrikeItemInput = {
-  listId: Scalars['String'];
-  itemName: Scalars['String'];
-};
-
-export type ItemResponse = {
-  __typename?: 'ItemResponse';
-  errors?: Maybe<Array<FieldError>>;
-  item?: Maybe<Item>;
-};
-
-export type AddNoteInput = {
-  listId: Scalars['String'];
-  itemName: Scalars['String'];
-  note: Scalars['String'];
-};
-
-export type DeleteNoteInput = {
-  note: Scalars['String'];
-  itemName: Scalars['String'];
-  listId: Scalars['String'];
-};
-
-export type UserWithListResponse = {
-  __typename?: 'UserWithListResponse';
-  errors?: Maybe<Array<FieldError>>;
-  user?: Maybe<User>;
-  userToList?: Maybe<UserToList>;
-};
-
-export type UserResponse = {
-  __typename?: 'UserResponse';
-  errors?: Maybe<Array<FieldError>>;
-  user?: Maybe<User>;
-};
-
-export type ListResponse = {
-  __typename?: 'ListResponse';
-  errors?: Maybe<Array<FieldError>>;
-  list?: Maybe<List>;
+export type Query = {
+  __typename?: 'Query';
+  getUser?: Maybe<User>;
+  getUsersLists: UserToListResponse;
 };
 
 export type ShareListInput = {
-  listId: Scalars['String'];
   email: Scalars['String'];
+  listId: Scalars['String'];
   privileges: Scalars['String'];
+};
+
+export type SharedUsers = {
+  __typename?: 'SharedUsers';
+  email?: Maybe<Scalars['String']>;
+  privileges?: Maybe<Scalars['String']>;
+  shared: Scalars['Boolean'];
+};
+
+export type StrikeItemInput = {
+  itemName: Scalars['String'];
+  listId: Scalars['String'];
 };
 
 export type StringArrayInput = {
   stringArray: Array<Scalars['String']>;
-};
-
-export type PreferredOrderInput = {
-  removedItemArray: Array<Scalars['String']>;
-  listId: Scalars['String'];
-};
-
-export type UpdatePrivilegesInput = {
-  listId: Scalars['String'];
-  email: Scalars['String'];
-  privileges?: Maybe<Scalars['String']>;
-};
-
-export type EditItemNameInput = {
-  listId: Scalars['String'];
-  itemName: Scalars['String'];
-  newItemName: Scalars['String'];
-};
-
-export type EditNoteInput = {
-  listId: Scalars['String'];
-  itemName: Scalars['String'];
-  note: Scalars['String'];
-  newNote: Scalars['String'];
 };
 
 export type Subscription = {
@@ -275,231 +231,132 @@ export type SubscriptionSubscribeToListUpdatesArgs = {
   listIdArray: Array<Scalars['ID']>;
 };
 
-export type FieldErrorFragment = (
-  { __typename?: 'FieldError' }
-  & Pick<FieldError, 'field' | 'message'>
-);
+export type UpdatePrivilegesInput = {
+  email: Scalars['String'];
+  listId: Scalars['String'];
+  privileges?: InputMaybe<Scalars['String']>;
+};
 
-export type ItemFragmentFragment = (
-  { __typename?: 'Item' }
-  & Pick<Item, 'id' | 'name' | 'notes' | 'strike'>
-);
+export type User = {
+  __typename?: 'User';
+  email: Scalars['String'];
+  id: Scalars['ID'];
+  sortedListsArray?: Maybe<Array<Scalars['String']>>;
+};
 
-export type ItemHistoryFragmentFragment = (
-  { __typename?: 'ItemHistory' }
-  & Pick<ItemHistory, 'id' | 'item' | 'removalRating'>
-);
+export type UserResponse = {
+  __typename?: 'UserResponse';
+  errors?: Maybe<Array<FieldError>>;
+  user?: Maybe<User>;
+};
 
-export type ListFragmentFragment = (
-  { __typename?: 'List' }
-  & Pick<List, 'id' | 'title'>
-  & { items?: Maybe<Array<(
-    { __typename?: 'Item' }
-    & ItemFragmentFragment
-  )>> }
-);
+export type UserToList = {
+  __typename?: 'UserToList';
+  itemHistory?: Maybe<Array<ItemHistory>>;
+  list: List;
+  listId: Scalars['ID'];
+  mostCommonWords?: Maybe<Array<Scalars['String']>>;
+  privileges: Scalars['String'];
+  sharedUsers: Array<SharedUsers>;
+  smartSortedItems: Array<Scalars['String']>;
+  sortedItems?: Maybe<Array<Scalars['String']>>;
+  userId: Scalars['ID'];
+};
 
-export type ListPartialFragment = (
-  { __typename?: 'List' }
-  & Pick<List, 'id' | 'title'>
-);
+export type UserToListResponse = {
+  __typename?: 'UserToListResponse';
+  errors?: Maybe<Array<FieldError>>;
+  notifications?: Maybe<Array<Scalars['String']>>;
+  userToList?: Maybe<Array<UserToList>>;
+};
 
-export type UserFragmentFragment = (
-  { __typename?: 'User' }
-  & Pick<User, 'id' | 'email' | 'sortedListsArray'>
-);
+export type UserWithListResponse = {
+  __typename?: 'UserWithListResponse';
+  errors?: Maybe<Array<FieldError>>;
+  user?: Maybe<User>;
+  userToList?: Maybe<UserToList>;
+};
 
-export type UserListFragmentFragment = (
-  { __typename?: 'UserToList' }
-  & Pick<UserToList, 'userId' | 'listId' | 'privileges' | 'mostCommonWords' | 'smartSortedItems' | 'sortedItems'>
-  & { sharedUsers: Array<(
-    { __typename?: 'SharedUsers' }
-    & Pick<SharedUsers, 'shared' | 'email' | 'privileges'>
-  )>, itemHistory?: Maybe<Array<(
-    { __typename?: 'ItemHistory' }
-    & ItemHistoryFragmentFragment
-  )>>, list: (
-    { __typename?: 'List' }
-    & ListFragmentFragment
-  ) }
-);
+export type FieldErrorFragment = { __typename?: 'FieldError', field: string, message: string };
 
-export type UserListPartialFragment = (
-  { __typename?: 'UserToList' }
-  & Pick<UserToList, 'userId' | 'listId' | 'privileges' | 'mostCommonWords' | 'sortedItems'>
-);
+export type ItemFragmentFragment = { __typename?: 'Item', id: string, name: string, notes?: Array<string> | null, strike: boolean };
 
-export type UserListWithHistoryFragment = (
-  { __typename?: 'UserToList' }
-  & Pick<UserToList, 'userId' | 'listId' | 'privileges' | 'mostCommonWords' | 'sortedItems'>
-  & { itemHistory?: Maybe<Array<(
-    { __typename?: 'ItemHistory' }
-    & ItemHistoryFragmentFragment
-  )>> }
-);
+export type ItemHistoryFragmentFragment = { __typename?: 'ItemHistory', id: string, item: string, removalRating?: number | null };
+
+export type ListFragmentFragment = { __typename?: 'List', id: string, title: string, items?: Array<{ __typename?: 'Item', id: string, name: string, notes?: Array<string> | null, strike: boolean }> | null };
+
+export type ListPartialFragment = { __typename?: 'List', id: string, title: string };
+
+export type UserFragmentFragment = { __typename?: 'User', id: string, email: string, sortedListsArray?: Array<string> | null };
+
+export type UserListFragmentFragment = { __typename?: 'UserToList', userId: string, listId: string, privileges: string, mostCommonWords?: Array<string> | null, smartSortedItems: Array<string>, sortedItems?: Array<string> | null, sharedUsers: Array<{ __typename?: 'SharedUsers', shared: boolean, email?: string | null, privileges?: string | null }>, itemHistory?: Array<{ __typename?: 'ItemHistory', id: string, item: string, removalRating?: number | null }> | null, list: { __typename?: 'List', id: string, title: string, items?: Array<{ __typename?: 'Item', id: string, name: string, notes?: Array<string> | null, strike: boolean }> | null } };
+
+export type UserListPartialFragment = { __typename?: 'UserToList', userId: string, listId: string, privileges: string, mostCommonWords?: Array<string> | null, sortedItems?: Array<string> | null };
+
+export type UserListWithHistoryFragment = { __typename?: 'UserToList', userId: string, listId: string, privileges: string, mostCommonWords?: Array<string> | null, sortedItems?: Array<string> | null, itemHistory?: Array<{ __typename?: 'ItemHistory', id: string, item: string, removalRating?: number | null }> | null };
 
 export type AddItemMutationVariables = Exact<{
   data: AddItemInput;
 }>;
 
 
-export type AddItemMutation = (
-  { __typename?: 'Mutation' }
-  & { addItem: (
-    { __typename?: 'UserToListResponse' }
-    & UserListResponseFragment
-  ) }
-);
+export type AddItemMutation = { __typename?: 'Mutation', addItem: { __typename?: 'UserToListResponse', notifications?: Array<string> | null, userToList?: Array<{ __typename?: 'UserToList', userId: string, listId: string, privileges: string, mostCommonWords?: Array<string> | null, smartSortedItems: Array<string>, sortedItems?: Array<string> | null, sharedUsers: Array<{ __typename?: 'SharedUsers', shared: boolean, email?: string | null, privileges?: string | null }>, itemHistory?: Array<{ __typename?: 'ItemHistory', id: string, item: string, removalRating?: number | null }> | null, list: { __typename?: 'List', id: string, title: string, items?: Array<{ __typename?: 'Item', id: string, name: string, notes?: Array<string> | null, strike: boolean }> | null } }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type AddNoteMutationVariables = Exact<{
   data: AddNoteInput;
 }>;
 
 
-export type AddNoteMutation = (
-  { __typename?: 'Mutation' }
-  & { addNote: (
-    { __typename?: 'ItemResponse' }
-    & { item?: Maybe<(
-      { __typename?: 'Item' }
-      & Pick<Item, 'id' | 'notes'>
-    )>, errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & FieldErrorFragment
-    )>> }
-  ) }
-);
+export type AddNoteMutation = { __typename?: 'Mutation', addNote: { __typename?: 'ItemResponse', item?: { __typename?: 'Item', id: string, notes?: Array<string> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type DeleteItemsMutationVariables = Exact<{
   data: DeleteItemsInput;
 }>;
 
 
-export type DeleteItemsMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteItems: (
-    { __typename?: 'UserToListResponse' }
-    & { userToList?: Maybe<Array<(
-      { __typename?: 'UserToList' }
-      & Pick<UserToList, 'listId' | 'sortedItems' | 'smartSortedItems'>
-      & { list: (
-        { __typename?: 'List' }
-        & Pick<List, 'id'>
-        & { items?: Maybe<Array<(
-          { __typename?: 'Item' }
-          & Pick<Item, 'id'>
-        )>> }
-      ) }
-    )>>, errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & FieldErrorFragment
-    )>> }
-  ) }
-);
+export type DeleteItemsMutation = { __typename?: 'Mutation', deleteItems: { __typename?: 'UserToListResponse', userToList?: Array<{ __typename?: 'UserToList', listId: string, sortedItems?: Array<string> | null, smartSortedItems: Array<string>, list: { __typename?: 'List', id: string, items?: Array<{ __typename?: 'Item', id: string }> | null } }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type DeleteNoteMutationVariables = Exact<{
   data: DeleteNoteInput;
 }>;
 
 
-export type DeleteNoteMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteNote: (
-    { __typename?: 'ItemResponse' }
-    & { item?: Maybe<(
-      { __typename?: 'Item' }
-      & Pick<Item, 'id' | 'notes'>
-    )>, errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & FieldErrorFragment
-    )>> }
-  ) }
-);
+export type DeleteNoteMutation = { __typename?: 'Mutation', deleteNote: { __typename?: 'ItemResponse', item?: { __typename?: 'Item', id: string, notes?: Array<string> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type EditItemNameMutationVariables = Exact<{
   data: EditItemNameInput;
 }>;
 
 
-export type EditItemNameMutation = (
-  { __typename?: 'Mutation' }
-  & { editItemName: (
-    { __typename?: 'UserToListResponse' }
-    & UserListResponseFragment
-  ) }
-);
+export type EditItemNameMutation = { __typename?: 'Mutation', editItemName: { __typename?: 'UserToListResponse', notifications?: Array<string> | null, userToList?: Array<{ __typename?: 'UserToList', userId: string, listId: string, privileges: string, mostCommonWords?: Array<string> | null, smartSortedItems: Array<string>, sortedItems?: Array<string> | null, sharedUsers: Array<{ __typename?: 'SharedUsers', shared: boolean, email?: string | null, privileges?: string | null }>, itemHistory?: Array<{ __typename?: 'ItemHistory', id: string, item: string, removalRating?: number | null }> | null, list: { __typename?: 'List', id: string, title: string, items?: Array<{ __typename?: 'Item', id: string, name: string, notes?: Array<string> | null, strike: boolean }> | null } }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type EditNoteMutationVariables = Exact<{
   data: EditNoteInput;
 }>;
 
 
-export type EditNoteMutation = (
-  { __typename?: 'Mutation' }
-  & { editNote: (
-    { __typename?: 'ItemResponse' }
-    & { item?: Maybe<(
-      { __typename?: 'Item' }
-      & Pick<Item, 'id' | 'notes'>
-    )>, errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & FieldErrorFragment
-    )>> }
-  ) }
-);
+export type EditNoteMutation = { __typename?: 'Mutation', editNote: { __typename?: 'ItemResponse', item?: { __typename?: 'Item', id: string, notes?: Array<string> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type StrikeItemMutationVariables = Exact<{
   data: StrikeItemInput;
 }>;
 
 
-export type StrikeItemMutation = (
-  { __typename?: 'Mutation' }
-  & { strikeItem: (
-    { __typename?: 'UserToListResponse' }
-    & { userToList?: Maybe<Array<(
-      { __typename?: 'UserToList' }
-      & Pick<UserToList, 'listId' | 'sortedItems' | 'smartSortedItems'>
-      & { list: (
-        { __typename?: 'List' }
-        & Pick<List, 'id'>
-        & { items?: Maybe<Array<(
-          { __typename?: 'Item' }
-          & Pick<Item, 'id' | 'strike'>
-        )>> }
-      ) }
-    )>>, errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & FieldErrorFragment
-    )>> }
-  ) }
-);
+export type StrikeItemMutation = { __typename?: 'Mutation', strikeItem: { __typename?: 'UserToListResponse', userToList?: Array<{ __typename?: 'UserToList', listId: string, sortedItems?: Array<string> | null, smartSortedItems: Array<string>, list: { __typename?: 'List', id: string, items?: Array<{ __typename?: 'Item', id: string, strike: boolean }> | null } }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type CreateListMutationVariables = Exact<{
   title: Scalars['String'];
 }>;
 
 
-export type CreateListMutation = (
-  { __typename?: 'Mutation' }
-  & { createList: (
-    { __typename?: 'UserWithListResponse' }
-    & UserWithListResponseFragment
-  ) }
-);
+export type CreateListMutation = { __typename?: 'Mutation', createList: { __typename?: 'UserWithListResponse', user?: { __typename?: 'User', id: string, email: string, sortedListsArray?: Array<string> | null } | null, userToList?: { __typename?: 'UserToList', userId: string, listId: string, privileges: string, mostCommonWords?: Array<string> | null, smartSortedItems: Array<string>, sortedItems?: Array<string> | null, sharedUsers: Array<{ __typename?: 'SharedUsers', shared: boolean, email?: string | null, privileges?: string | null }>, itemHistory?: Array<{ __typename?: 'ItemHistory', id: string, item: string, removalRating?: number | null }> | null, list: { __typename?: 'List', id: string, title: string, items?: Array<{ __typename?: 'Item', id: string, name: string, notes?: Array<string> | null, strike: boolean }> | null } } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type DeleteListMutationVariables = Exact<{
   listId: Scalars['String'];
 }>;
 
 
-export type DeleteListMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteList: (
-    { __typename?: 'UserResponse' }
-    & UserResponseFragment
-  ) }
-);
+export type DeleteListMutation = { __typename?: 'Mutation', deleteList: { __typename?: 'UserResponse', user?: { __typename?: 'User', id: string, email: string, sortedListsArray?: Array<string> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type RenameListMutationVariables = Exact<{
   name: Scalars['String'];
@@ -507,42 +364,14 @@ export type RenameListMutationVariables = Exact<{
 }>;
 
 
-export type RenameListMutation = (
-  { __typename?: 'Mutation' }
-  & { renameList: (
-    { __typename?: 'ListResponse' }
-    & { list?: Maybe<(
-      { __typename?: 'List' }
-      & Pick<List, 'id' | 'title'>
-    )>, errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & FieldErrorFragment
-    )>> }
-  ) }
-);
+export type RenameListMutation = { __typename?: 'Mutation', renameList: { __typename?: 'ListResponse', list?: { __typename?: 'List', id: string, title: string } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type ShareListMutationVariables = Exact<{
   data: ShareListInput;
 }>;
 
 
-export type ShareListMutation = (
-  { __typename?: 'Mutation' }
-  & { shareList: (
-    { __typename?: 'UserToListResponse' }
-    & { userToList?: Maybe<Array<(
-      { __typename?: 'UserToList' }
-      & Pick<UserToList, 'listId'>
-      & { sharedUsers: Array<(
-        { __typename?: 'SharedUsers' }
-        & Pick<SharedUsers, 'shared' | 'email' | 'privileges'>
-      )> }
-    )>>, errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & FieldErrorFragment
-    )>> }
-  ) }
-);
+export type ShareListMutation = { __typename?: 'Mutation', shareList: { __typename?: 'UserToListResponse', userToList?: Array<{ __typename?: 'UserToList', listId: string, sharedUsers: Array<{ __typename?: 'SharedUsers', shared: boolean, email?: string | null, privileges?: string | null }> }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type SortItemsMutationVariables = Exact<{
   data: StringArrayInput;
@@ -550,194 +379,65 @@ export type SortItemsMutationVariables = Exact<{
 }>;
 
 
-export type SortItemsMutation = (
-  { __typename?: 'Mutation' }
-  & { sortItems: (
-    { __typename?: 'UserToListResponse' }
-    & { userToList?: Maybe<Array<(
-      { __typename?: 'UserToList' }
-      & Pick<UserToList, 'listId' | 'sortedItems'>
-    )>>, errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & FieldErrorFragment
-    )>> }
-  ) }
-);
+export type SortItemsMutation = { __typename?: 'Mutation', sortItems: { __typename?: 'UserToListResponse', userToList?: Array<{ __typename?: 'UserToList', listId: string, sortedItems?: Array<string> | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type SortListsMutationVariables = Exact<{
   data: StringArrayInput;
 }>;
 
 
-export type SortListsMutation = (
-  { __typename?: 'Mutation' }
-  & { sortLists: (
-    { __typename?: 'UserResponse' }
-    & { user?: Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'sortedListsArray'>
-    )>, errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & FieldErrorFragment
-    )>> }
-  ) }
-);
+export type SortListsMutation = { __typename?: 'Mutation', sortLists: { __typename?: 'UserResponse', user?: { __typename?: 'User', id: string, sortedListsArray?: Array<string> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type SubmitPreferredOrderMutationVariables = Exact<{
   data: PreferredOrderInput;
 }>;
 
 
-export type SubmitPreferredOrderMutation = (
-  { __typename?: 'Mutation' }
-  & { submitPreferredOrder: (
-    { __typename?: 'UserToListResponse' }
-    & { userToList?: Maybe<Array<(
-      { __typename?: 'UserToList' }
-      & Pick<UserToList, 'listId' | 'smartSortedItems'>
-      & { itemHistory?: Maybe<Array<(
-        { __typename?: 'ItemHistory' }
-        & Pick<ItemHistory, 'id' | 'removalRating'>
-      )>> }
-    )>>, errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & FieldErrorFragment
-    )>> }
-  ) }
-);
+export type SubmitPreferredOrderMutation = { __typename?: 'Mutation', submitPreferredOrder: { __typename?: 'UserToListResponse', userToList?: Array<{ __typename?: 'UserToList', listId: string, smartSortedItems: Array<string>, itemHistory?: Array<{ __typename?: 'ItemHistory', id: string, removalRating?: number | null }> | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type UpdatePrivilegesMutationVariables = Exact<{
   data: UpdatePrivilegesInput;
 }>;
 
 
-export type UpdatePrivilegesMutation = (
-  { __typename?: 'Mutation' }
-  & { updatePrivileges: (
-    { __typename?: 'UserToListResponse' }
-    & { userToList?: Maybe<Array<(
-      { __typename?: 'UserToList' }
-      & Pick<UserToList, 'listId'>
-      & { sharedUsers: Array<(
-        { __typename?: 'SharedUsers' }
-        & Pick<SharedUsers, 'shared' | 'email' | 'privileges'>
-      )> }
-    )>>, errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & FieldErrorFragment
-    )>> }
-  ) }
-);
+export type UpdatePrivilegesMutation = { __typename?: 'Mutation', updatePrivileges: { __typename?: 'UserToListResponse', userToList?: Array<{ __typename?: 'UserToList', listId: string, sharedUsers: Array<{ __typename?: 'SharedUsers', shared: boolean, email?: string | null, privileges?: string | null }> }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type DeleteAccountMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type DeleteAccountMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'deleteAccount'>
-);
+export type DeleteAccountMutation = { __typename?: 'Mutation', deleteAccount?: boolean | null };
 
 export type LogoutUserMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LogoutUserMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'logout'>
-);
+export type LogoutUserMutation = { __typename?: 'Mutation', logout: boolean };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserQuery = (
-  { __typename?: 'Query' }
-  & { getUser?: Maybe<(
-    { __typename?: 'User' }
-    & UserFragmentFragment
-  )> }
-);
+export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'User', id: string, email: string, sortedListsArray?: Array<string> | null } | null };
 
 export type GetUsersListsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersListsQuery = (
-  { __typename?: 'Query' }
-  & { getUsersLists: (
-    { __typename?: 'UserToListResponse' }
-    & UserListResponseFragment
-  ) }
-);
+export type GetUsersListsQuery = { __typename?: 'Query', getUsersLists: { __typename?: 'UserToListResponse', notifications?: Array<string> | null, userToList?: Array<{ __typename?: 'UserToList', userId: string, listId: string, privileges: string, mostCommonWords?: Array<string> | null, smartSortedItems: Array<string>, sortedItems?: Array<string> | null, sharedUsers: Array<{ __typename?: 'SharedUsers', shared: boolean, email?: string | null, privileges?: string | null }>, itemHistory?: Array<{ __typename?: 'ItemHistory', id: string, item: string, removalRating?: number | null }> | null, list: { __typename?: 'List', id: string, title: string, items?: Array<{ __typename?: 'Item', id: string, name: string, notes?: Array<string> | null, strike: boolean }> | null } }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
-export type ItemResponseFragment = (
-  { __typename?: 'ItemResponse' }
-  & { item?: Maybe<(
-    { __typename?: 'Item' }
-    & ItemFragmentFragment
-  )>, errors?: Maybe<Array<(
-    { __typename?: 'FieldError' }
-    & FieldErrorFragment
-  )>> }
-);
+export type ItemResponseFragment = { __typename?: 'ItemResponse', item?: { __typename?: 'Item', id: string, name: string, notes?: Array<string> | null, strike: boolean } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
-export type ListResponseFragment = (
-  { __typename?: 'ListResponse' }
-  & { list?: Maybe<(
-    { __typename?: 'List' }
-    & ListFragmentFragment
-  )>, errors?: Maybe<Array<(
-    { __typename?: 'FieldError' }
-    & FieldErrorFragment
-  )>> }
-);
+export type ListResponseFragment = { __typename?: 'ListResponse', list?: { __typename?: 'List', id: string, title: string, items?: Array<{ __typename?: 'Item', id: string, name: string, notes?: Array<string> | null, strike: boolean }> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
-export type UserListResponseFragment = (
-  { __typename?: 'UserToListResponse' }
-  & Pick<UserToListResponse, 'notifications'>
-  & { userToList?: Maybe<Array<(
-    { __typename?: 'UserToList' }
-    & UserListFragmentFragment
-  )>>, errors?: Maybe<Array<(
-    { __typename?: 'FieldError' }
-    & FieldErrorFragment
-  )>> }
-);
+export type UserListResponseFragment = { __typename?: 'UserToListResponse', notifications?: Array<string> | null, userToList?: Array<{ __typename?: 'UserToList', userId: string, listId: string, privileges: string, mostCommonWords?: Array<string> | null, smartSortedItems: Array<string>, sortedItems?: Array<string> | null, sharedUsers: Array<{ __typename?: 'SharedUsers', shared: boolean, email?: string | null, privileges?: string | null }>, itemHistory?: Array<{ __typename?: 'ItemHistory', id: string, item: string, removalRating?: number | null }> | null, list: { __typename?: 'List', id: string, title: string, items?: Array<{ __typename?: 'Item', id: string, name: string, notes?: Array<string> | null, strike: boolean }> | null } }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
-export type UserResponseFragment = (
-  { __typename?: 'UserResponse' }
-  & { user?: Maybe<(
-    { __typename?: 'User' }
-    & UserFragmentFragment
-  )>, errors?: Maybe<Array<(
-    { __typename?: 'FieldError' }
-    & FieldErrorFragment
-  )>> }
-);
+export type UserResponseFragment = { __typename?: 'UserResponse', user?: { __typename?: 'User', id: string, email: string, sortedListsArray?: Array<string> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
-export type UserWithListResponseFragment = (
-  { __typename?: 'UserWithListResponse' }
-  & { user?: Maybe<(
-    { __typename?: 'User' }
-    & UserFragmentFragment
-  )>, userToList?: Maybe<(
-    { __typename?: 'UserToList' }
-    & UserListFragmentFragment
-  )>, errors?: Maybe<Array<(
-    { __typename?: 'FieldError' }
-    & FieldErrorFragment
-  )>> }
-);
+export type UserWithListResponseFragment = { __typename?: 'UserWithListResponse', user?: { __typename?: 'User', id: string, email: string, sortedListsArray?: Array<string> | null } | null, userToList?: { __typename?: 'UserToList', userId: string, listId: string, privileges: string, mostCommonWords?: Array<string> | null, smartSortedItems: Array<string>, sortedItems?: Array<string> | null, sharedUsers: Array<{ __typename?: 'SharedUsers', shared: boolean, email?: string | null, privileges?: string | null }>, itemHistory?: Array<{ __typename?: 'ItemHistory', id: string, item: string, removalRating?: number | null }> | null, list: { __typename?: 'List', id: string, title: string, items?: Array<{ __typename?: 'Item', id: string, name: string, notes?: Array<string> | null, strike: boolean }> | null } } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
 export type UpdateListSubscriptionVariables = Exact<{
   listIdArray: Array<Scalars['ID']> | Scalars['ID'];
 }>;
 
 
-export type UpdateListSubscription = (
-  { __typename?: 'Subscription' }
-  & { subscribeToListUpdates: (
-    { __typename?: 'UserToListResponse' }
-    & UserListResponseFragment
-  ) }
-);
+export type UpdateListSubscription = { __typename?: 'Subscription', subscribeToListUpdates: { __typename?: 'UserToListResponse', notifications?: Array<string> | null, userToList?: Array<{ __typename?: 'UserToList', userId: string, listId: string, privileges: string, mostCommonWords?: Array<string> | null, smartSortedItems: Array<string>, sortedItems?: Array<string> | null, sharedUsers: Array<{ __typename?: 'SharedUsers', shared: boolean, email?: string | null, privileges?: string | null }>, itemHistory?: Array<{ __typename?: 'ItemHistory', id: string, item: string, removalRating?: number | null }> | null, list: { __typename?: 'List', id: string, title: string, items?: Array<{ __typename?: 'Item', id: string, name: string, notes?: Array<string> | null, strike: boolean }> | null } }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export const ListPartialFragmentDoc = gql`
     fragment listPartial on List {
@@ -912,7 +612,8 @@ export type AddItemMutationFn = Apollo.MutationFunction<AddItemMutation, AddItem
  * });
  */
 export function useAddItemMutation(baseOptions?: Apollo.MutationHookOptions<AddItemMutation, AddItemMutationVariables>) {
-        return Apollo.useMutation<AddItemMutation, AddItemMutationVariables>(AddItemDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddItemMutation, AddItemMutationVariables>(AddItemDocument, options);
       }
 export type AddItemMutationHookResult = ReturnType<typeof useAddItemMutation>;
 export type AddItemMutationResult = Apollo.MutationResult<AddItemMutation>;
@@ -950,7 +651,8 @@ export type AddNoteMutationFn = Apollo.MutationFunction<AddNoteMutation, AddNote
  * });
  */
 export function useAddNoteMutation(baseOptions?: Apollo.MutationHookOptions<AddNoteMutation, AddNoteMutationVariables>) {
-        return Apollo.useMutation<AddNoteMutation, AddNoteMutationVariables>(AddNoteDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddNoteMutation, AddNoteMutationVariables>(AddNoteDocument, options);
       }
 export type AddNoteMutationHookResult = ReturnType<typeof useAddNoteMutation>;
 export type AddNoteMutationResult = Apollo.MutationResult<AddNoteMutation>;
@@ -995,7 +697,8 @@ export type DeleteItemsMutationFn = Apollo.MutationFunction<DeleteItemsMutation,
  * });
  */
 export function useDeleteItemsMutation(baseOptions?: Apollo.MutationHookOptions<DeleteItemsMutation, DeleteItemsMutationVariables>) {
-        return Apollo.useMutation<DeleteItemsMutation, DeleteItemsMutationVariables>(DeleteItemsDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteItemsMutation, DeleteItemsMutationVariables>(DeleteItemsDocument, options);
       }
 export type DeleteItemsMutationHookResult = ReturnType<typeof useDeleteItemsMutation>;
 export type DeleteItemsMutationResult = Apollo.MutationResult<DeleteItemsMutation>;
@@ -1033,7 +736,8 @@ export type DeleteNoteMutationFn = Apollo.MutationFunction<DeleteNoteMutation, D
  * });
  */
 export function useDeleteNoteMutation(baseOptions?: Apollo.MutationHookOptions<DeleteNoteMutation, DeleteNoteMutationVariables>) {
-        return Apollo.useMutation<DeleteNoteMutation, DeleteNoteMutationVariables>(DeleteNoteDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteNoteMutation, DeleteNoteMutationVariables>(DeleteNoteDocument, options);
       }
 export type DeleteNoteMutationHookResult = ReturnType<typeof useDeleteNoteMutation>;
 export type DeleteNoteMutationResult = Apollo.MutationResult<DeleteNoteMutation>;
@@ -1065,7 +769,8 @@ export type EditItemNameMutationFn = Apollo.MutationFunction<EditItemNameMutatio
  * });
  */
 export function useEditItemNameMutation(baseOptions?: Apollo.MutationHookOptions<EditItemNameMutation, EditItemNameMutationVariables>) {
-        return Apollo.useMutation<EditItemNameMutation, EditItemNameMutationVariables>(EditItemNameDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditItemNameMutation, EditItemNameMutationVariables>(EditItemNameDocument, options);
       }
 export type EditItemNameMutationHookResult = ReturnType<typeof useEditItemNameMutation>;
 export type EditItemNameMutationResult = Apollo.MutationResult<EditItemNameMutation>;
@@ -1103,7 +808,8 @@ export type EditNoteMutationFn = Apollo.MutationFunction<EditNoteMutation, EditN
  * });
  */
 export function useEditNoteMutation(baseOptions?: Apollo.MutationHookOptions<EditNoteMutation, EditNoteMutationVariables>) {
-        return Apollo.useMutation<EditNoteMutation, EditNoteMutationVariables>(EditNoteDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditNoteMutation, EditNoteMutationVariables>(EditNoteDocument, options);
       }
 export type EditNoteMutationHookResult = ReturnType<typeof useEditNoteMutation>;
 export type EditNoteMutationResult = Apollo.MutationResult<EditNoteMutation>;
@@ -1149,7 +855,8 @@ export type StrikeItemMutationFn = Apollo.MutationFunction<StrikeItemMutation, S
  * });
  */
 export function useStrikeItemMutation(baseOptions?: Apollo.MutationHookOptions<StrikeItemMutation, StrikeItemMutationVariables>) {
-        return Apollo.useMutation<StrikeItemMutation, StrikeItemMutationVariables>(StrikeItemDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<StrikeItemMutation, StrikeItemMutationVariables>(StrikeItemDocument, options);
       }
 export type StrikeItemMutationHookResult = ReturnType<typeof useStrikeItemMutation>;
 export type StrikeItemMutationResult = Apollo.MutationResult<StrikeItemMutation>;
@@ -1181,7 +888,8 @@ export type CreateListMutationFn = Apollo.MutationFunction<CreateListMutation, C
  * });
  */
 export function useCreateListMutation(baseOptions?: Apollo.MutationHookOptions<CreateListMutation, CreateListMutationVariables>) {
-        return Apollo.useMutation<CreateListMutation, CreateListMutationVariables>(CreateListDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateListMutation, CreateListMutationVariables>(CreateListDocument, options);
       }
 export type CreateListMutationHookResult = ReturnType<typeof useCreateListMutation>;
 export type CreateListMutationResult = Apollo.MutationResult<CreateListMutation>;
@@ -1213,7 +921,8 @@ export type DeleteListMutationFn = Apollo.MutationFunction<DeleteListMutation, D
  * });
  */
 export function useDeleteListMutation(baseOptions?: Apollo.MutationHookOptions<DeleteListMutation, DeleteListMutationVariables>) {
-        return Apollo.useMutation<DeleteListMutation, DeleteListMutationVariables>(DeleteListDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteListMutation, DeleteListMutationVariables>(DeleteListDocument, options);
       }
 export type DeleteListMutationHookResult = ReturnType<typeof useDeleteListMutation>;
 export type DeleteListMutationResult = Apollo.MutationResult<DeleteListMutation>;
@@ -1252,7 +961,8 @@ export type RenameListMutationFn = Apollo.MutationFunction<RenameListMutation, R
  * });
  */
 export function useRenameListMutation(baseOptions?: Apollo.MutationHookOptions<RenameListMutation, RenameListMutationVariables>) {
-        return Apollo.useMutation<RenameListMutation, RenameListMutationVariables>(RenameListDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RenameListMutation, RenameListMutationVariables>(RenameListDocument, options);
       }
 export type RenameListMutationHookResult = ReturnType<typeof useRenameListMutation>;
 export type RenameListMutationResult = Apollo.MutationResult<RenameListMutation>;
@@ -1294,7 +1004,8 @@ export type ShareListMutationFn = Apollo.MutationFunction<ShareListMutation, Sha
  * });
  */
 export function useShareListMutation(baseOptions?: Apollo.MutationHookOptions<ShareListMutation, ShareListMutationVariables>) {
-        return Apollo.useMutation<ShareListMutation, ShareListMutationVariables>(ShareListDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ShareListMutation, ShareListMutationVariables>(ShareListDocument, options);
       }
 export type ShareListMutationHookResult = ReturnType<typeof useShareListMutation>;
 export type ShareListMutationResult = Apollo.MutationResult<ShareListMutation>;
@@ -1333,7 +1044,8 @@ export type SortItemsMutationFn = Apollo.MutationFunction<SortItemsMutation, Sor
  * });
  */
 export function useSortItemsMutation(baseOptions?: Apollo.MutationHookOptions<SortItemsMutation, SortItemsMutationVariables>) {
-        return Apollo.useMutation<SortItemsMutation, SortItemsMutationVariables>(SortItemsDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SortItemsMutation, SortItemsMutationVariables>(SortItemsDocument, options);
       }
 export type SortItemsMutationHookResult = ReturnType<typeof useSortItemsMutation>;
 export type SortItemsMutationResult = Apollo.MutationResult<SortItemsMutation>;
@@ -1371,7 +1083,8 @@ export type SortListsMutationFn = Apollo.MutationFunction<SortListsMutation, Sor
  * });
  */
 export function useSortListsMutation(baseOptions?: Apollo.MutationHookOptions<SortListsMutation, SortListsMutationVariables>) {
-        return Apollo.useMutation<SortListsMutation, SortListsMutationVariables>(SortListsDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SortListsMutation, SortListsMutationVariables>(SortListsDocument, options);
       }
 export type SortListsMutationHookResult = ReturnType<typeof useSortListsMutation>;
 export type SortListsMutationResult = Apollo.MutationResult<SortListsMutation>;
@@ -1413,7 +1126,8 @@ export type SubmitPreferredOrderMutationFn = Apollo.MutationFunction<SubmitPrefe
  * });
  */
 export function useSubmitPreferredOrderMutation(baseOptions?: Apollo.MutationHookOptions<SubmitPreferredOrderMutation, SubmitPreferredOrderMutationVariables>) {
-        return Apollo.useMutation<SubmitPreferredOrderMutation, SubmitPreferredOrderMutationVariables>(SubmitPreferredOrderDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SubmitPreferredOrderMutation, SubmitPreferredOrderMutationVariables>(SubmitPreferredOrderDocument, options);
       }
 export type SubmitPreferredOrderMutationHookResult = ReturnType<typeof useSubmitPreferredOrderMutation>;
 export type SubmitPreferredOrderMutationResult = Apollo.MutationResult<SubmitPreferredOrderMutation>;
@@ -1455,7 +1169,8 @@ export type UpdatePrivilegesMutationFn = Apollo.MutationFunction<UpdatePrivilege
  * });
  */
 export function useUpdatePrivilegesMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePrivilegesMutation, UpdatePrivilegesMutationVariables>) {
-        return Apollo.useMutation<UpdatePrivilegesMutation, UpdatePrivilegesMutationVariables>(UpdatePrivilegesDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePrivilegesMutation, UpdatePrivilegesMutationVariables>(UpdatePrivilegesDocument, options);
       }
 export type UpdatePrivilegesMutationHookResult = ReturnType<typeof useUpdatePrivilegesMutation>;
 export type UpdatePrivilegesMutationResult = Apollo.MutationResult<UpdatePrivilegesMutation>;
@@ -1484,7 +1199,8 @@ export type DeleteAccountMutationFn = Apollo.MutationFunction<DeleteAccountMutat
  * });
  */
 export function useDeleteAccountMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAccountMutation, DeleteAccountMutationVariables>) {
-        return Apollo.useMutation<DeleteAccountMutation, DeleteAccountMutationVariables>(DeleteAccountDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteAccountMutation, DeleteAccountMutationVariables>(DeleteAccountDocument, options);
       }
 export type DeleteAccountMutationHookResult = ReturnType<typeof useDeleteAccountMutation>;
 export type DeleteAccountMutationResult = Apollo.MutationResult<DeleteAccountMutation>;
@@ -1513,7 +1229,8 @@ export type LogoutUserMutationFn = Apollo.MutationFunction<LogoutUserMutation, L
  * });
  */
 export function useLogoutUserMutation(baseOptions?: Apollo.MutationHookOptions<LogoutUserMutation, LogoutUserMutationVariables>) {
-        return Apollo.useMutation<LogoutUserMutation, LogoutUserMutationVariables>(LogoutUserDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LogoutUserMutation, LogoutUserMutationVariables>(LogoutUserDocument, options);
       }
 export type LogoutUserMutationHookResult = ReturnType<typeof useLogoutUserMutation>;
 export type LogoutUserMutationResult = Apollo.MutationResult<LogoutUserMutation>;
@@ -1542,10 +1259,12 @@ export const GetUserDocument = gql`
  * });
  */
 export function useGetUserQuery(baseOptions?: Apollo.QueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
-        return Apollo.useQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
       }
 export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
-          return Apollo.useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, baseOptions);
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
         }
 export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
@@ -1574,10 +1293,12 @@ export const GetUsersListsDocument = gql`
  * });
  */
 export function useGetUsersListsQuery(baseOptions?: Apollo.QueryHookOptions<GetUsersListsQuery, GetUsersListsQueryVariables>) {
-        return Apollo.useQuery<GetUsersListsQuery, GetUsersListsQueryVariables>(GetUsersListsDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUsersListsQuery, GetUsersListsQueryVariables>(GetUsersListsDocument, options);
       }
 export function useGetUsersListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersListsQuery, GetUsersListsQueryVariables>) {
-          return Apollo.useLazyQuery<GetUsersListsQuery, GetUsersListsQueryVariables>(GetUsersListsDocument, baseOptions);
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUsersListsQuery, GetUsersListsQueryVariables>(GetUsersListsDocument, options);
         }
 export type GetUsersListsQueryHookResult = ReturnType<typeof useGetUsersListsQuery>;
 export type GetUsersListsLazyQueryHookResult = ReturnType<typeof useGetUsersListsLazyQuery>;
@@ -1607,7 +1328,8 @@ export const UpdateListDocument = gql`
  * });
  */
 export function useUpdateListSubscription(baseOptions: Apollo.SubscriptionHookOptions<UpdateListSubscription, UpdateListSubscriptionVariables>) {
-        return Apollo.useSubscription<UpdateListSubscription, UpdateListSubscriptionVariables>(UpdateListDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<UpdateListSubscription, UpdateListSubscriptionVariables>(UpdateListDocument, options);
       }
 export type UpdateListSubscriptionHookResult = ReturnType<typeof useUpdateListSubscription>;
 export type UpdateListSubscriptionResult = Apollo.SubscriptionResult<UpdateListSubscription>;
