@@ -97,8 +97,8 @@ export default function useSortItems() {
             ]
           });
           if (newIndex !== -1) {
-            const ul = window.document.getElementById('list-container')
-              ?.children[0];
+            const ul =
+              window.document.getElementById('list-container')?.children[0];
             ul?.children[newIndex].scrollIntoView({
               behavior: 'smooth',
               block: 'center'

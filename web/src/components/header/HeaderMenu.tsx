@@ -17,10 +17,8 @@ import NoteIcon from '../svg/itemOptions/NoteIcon';
 import { HeaderOptions } from './HeaderOptions';
 
 export default function HeaderMenu() {
-  const [
-    { listState, currentUserId, currentListId },
-    dispatch
-  ] = useStateValue();
+  const [{ listState, currentUserId, currentListId }, dispatch] =
+    useStateValue();
 
   const [smartSort, smartSortSubmitting] = useSortItems();
 
