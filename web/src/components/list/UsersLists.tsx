@@ -9,6 +9,7 @@ import { openModal, sendNotification } from 'src/utils/dispatchActions';
 import { useEffect, useState } from 'react';
 import LoadingSplash from '../shared/LoadingSplash';
 import { useMemo } from 'react';
+import useWhenAppIsReFocused from '../../hooks/useWhenAppIsReFocused';
 
 type UsersListsProps = {
   /** contains sorted listId[] of all lists user has access to, if any */
@@ -30,6 +31,24 @@ export default function UsersLists({ sortedListsArray }: UsersListsProps) {
   const [{ currentListId }, dispatch] = useStateValue();
 
   const { data, loading, error, refetch } = useGetUsersListsQuery({});
+
+  let lastFetch = new Date();
+
+  const minimumSecondsBetweenReFetches = 10;
+  useWhenAppIsReFocused(() => {
+    if (!error && !loading) {
+      const now = new Date();
+
+      if (
+        (now.getTime() - lastFetch.getTime()) / 1000 >=
+        minimumSecondsBetweenReFetches
+      ) {
+        lastFetch = now;
+        refetch();
+      }
+    }
+  });
+
   const usersLists = data?.getUsersLists?.userToList?.map((list) => list);
 
   const [initialLoad, setInitialLoad] = useState(true);
