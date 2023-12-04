@@ -6,6 +6,8 @@ List Together is a simple, modern list app built with sharing capabilities. Comp
 
 https://www.listtogether.app
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/57d60c53-4c34-4cd9-9577-2fd5443a3ea1/deploy-status)](https://app.netlify.com/sites/stoic-benz-88b941/deploys)
+
 ## **🚀 Features**
 
 - Create and Manage Lists
