@@ -14,18 +14,17 @@ https://www.listtogether.app
 - Add, Strike, and Delete Items
 - Add Notes to Items
 - Share Lists
-- Auto Complete
+- Historical Auto Complete
 - Undo Capabilities
-- Smart Sort
 - Simple oAuth Sign-up / Login
 - Responsive Mobile Design
 - Keyboard Accessibility
 
 Users can easily create an account by signing in with Google, Twitter, or Facebook. The database's User entity will only store the user's email. This is to be used in sharing lists with other users. No passwords stored, no account information to remember.
 
-Each user can create up to 15 lists. Lists can be renamed, removed, or shared to other users. Every list contains a history of items added and removed to be used in that list's Auto Complete and Smart Sort features.
+Lists can be renamed, removed, or shared to other users. Every list contains a history of items added and removed to be used in that list's Auto Complete and Smart Sort features.
 
-Lists can store up to 150 items each. Users with access to a list can add items, strike items, and/or delete items. Every item can also display up to 10 unique notes.
+Users with access to a list can add items, strike items, and/or delete items. 
 
 Most list actions are stored locally to be used in the `Undo` feature. Users can conveniently undo or redo these actions to revert the list back to their preferred state.
 
@@ -107,7 +106,7 @@ npx create-react-app my-app --template cra-template-pwa-typescript
 
 List Together is a project I've created to upgrade our personal grocery list routine. I used this opportunity to expand my knowledge of React with TypeScript.
 
-TypeScript was the hardest part of my recent web-dev learning journey. Whenever I encounter something frustrating and difficult, I've always attempted to meet that problem head on. Therefore, I decided to create a full stack application using as much TypeScript as I possibly could.
+Understanding TypeScript was the hardest part of my recent web-dev learning journey. Whenever I encounter something frustrating and difficult, I've always attempted to meet that problem head on. Therefore, I decided to create a full stack application using as much TypeScript as I possibly could.
 
 Now I can absolutely write that TypeScript is no longer difficult or frustrating for me. As expected, I now prefer it over plain JavaScript as it provides much more information and an awesome developer experience. After about a week of using TypeScript regularly it became an very useful tool. There was a certain moment where I stopped struggling against the TypeChecker and started working **with** the TypeChecker.
 
