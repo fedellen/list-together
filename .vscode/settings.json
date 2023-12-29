@@ -1,0 +1,28 @@
+{
+  "cSpell.words": [
+    "asynciterable",
+    "cacheable",
+    "codegen",
+    "Dokku",
+    "listtogether",
+    "precaching",
+    "resave",
+    "Roboto",
+    "SERVERIP",
+    "striked",
+    "tailwindcss",
+    "typecheck"
+  ],
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "database": "grocery-db",
+      "username": "postgres",
+      "password": "postgres",
+      "name": "grocery"
+    }
+  ]
+}

@@ -16,6 +16,7 @@ export default function PixelPajamaWidget() {
               Report Bug
             </a>
           </li>
+          <li className="version">v{process.env.REACT_APP_VERSION}</li>
         </ul>
         <a className="text-link" href="https://pixelpajamastudios.com">
           © {new Date().getFullYear()} Pixel Pajama Studios LLC
