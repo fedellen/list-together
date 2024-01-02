@@ -1,0 +1,19 @@
+mutation StrikeItems($data: StrikeItemsInput!) {
+  strikeItems(data: $data) {
+    userToList {
+      listId
+      sortedItems
+      smartSortedItems
+      list {
+        id
+        items {
+          id
+          strike
+        }
+      }
+    }
+    errors {
+      ...fieldError
+    }
+  }
+}

@@ -9,6 +9,7 @@ import AddItemIcon from '../svg/sideMenu/AddItemIcon';
 import ReviewListIcon from '../svg/sideMenu/ReviewListIcon';
 import RedoButton from './RedoButton';
 import UndoButton from './UndoButton';
+import useStrikeItems from '../../hooks/mutations/item/useStrikeItems';
 
 type SideMenuProps = {
   strikedItems: string[];
@@ -25,10 +26,16 @@ export default function SideMenu({ strikedItems }: SideMenuProps) {
   };
 
   const [deleteItems, deleteItemsSubmitting] = useDeleteItems();
-  /** Use `deleteItems` mutation on all striked items */
   const handleDeleteAllClick = () => {
     if (deleteItemsSubmitting) return;
     deleteItems(strikedItems);
+  };
+
+  const [strikeItems, strikeItemsSubmitting] = useStrikeItems();
+  const handleUnStrikeAllClick = async () => {
+    if (strikeItemsSubmitting) return;
+    await strikeItems(strikedItems);
+    handleReturnClick();
   };
 
   const handleReviewClick = () => {
@@ -73,7 +80,12 @@ export default function SideMenu({ strikedItems }: SideMenuProps) {
       ...keysToHandle,
       { keyValues: ['d'], callback: () => handleDeleteAllClick() }
     ];
+    keysToHandle = [
+      ...keysToHandle,
+      { keyValues: ['u'], callback: () => handleUnStrikeAllClick() }
+    ];
   }
+
   if (hasStrikedItems && userCanDelete) {
     keysToHandle = [
       ...keysToHandle,
@@ -96,9 +108,16 @@ export default function SideMenu({ strikedItems }: SideMenuProps) {
           {/** Review strikes mode */}
           <IconButton
             icon={<DeleteIcon />}
-            ariaLabel="Delate All Striked Items"
+            ariaLabel="Delete All Striked Items"
             onClick={handleDeleteAllClick}
             text={`Delete All${largeScreen ? ' (D)' : ''}`}
+            style={style}
+          />
+          <IconButton
+            icon={<DeleteIcon />}
+            ariaLabel="Un-strike All Striked Items"
+            onClick={handleUnStrikeAllClick}
+            text={`Un-strike All${largeScreen ? ' (U)' : ''}`}
             style={style}
           />
           <IconButton

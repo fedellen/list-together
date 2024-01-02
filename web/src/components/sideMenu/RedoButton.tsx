@@ -8,7 +8,8 @@ import {
   useEditNoteMutation,
   useSortItemsMutation,
   useSortListsMutation,
-  useStrikeItemMutation
+  useStrikeItemMutation,
+  useStrikeItemsMutation
 } from 'src/generated/graphql';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
 import useKeyPress from 'src/hooks/useKeyPress';
@@ -112,6 +113,17 @@ export default function RedoButton() {
     case 'strikeItem':
       redoWithMutation = (
         <WithStrikeItem
+          nextRedo={nextRedo}
+          dispatch={dispatch}
+          keyboardSubmit={redoKeyboardButton}
+          useKeyCooldown={useKeyCooldown}
+        />
+      );
+      break;
+
+    case 'strikeItems':
+      redoWithMutation = (
+        <WithStrikeItems
           nextRedo={nextRedo}
           dispatch={dispatch}
           keyboardSubmit={redoKeyboardButton}
@@ -449,6 +461,52 @@ function WithStrikeItem({
       variables: { data: { listId, itemName } }
     });
     const errors = data?.strikeItem.errors;
+    if (errors) {
+      console.log(errors);
+      sendNotification(dispatch, [
+        'Could not complete Redo action, that item no longer exists on this list..'
+      ]);
+      dispatch({ type: 'REMOVE_REDO' });
+      mutationCooldown(500); // .5 sec delay
+    } else {
+      dispatch({ type: 'REDO_MUTATION' });
+      mutationCooldown(500);
+    }
+  };
+  useEffect(() => {
+    if (keyboardSubmit && !mutationSubmitting) {
+      useKeyCooldown();
+      handleMutation();
+    }
+  }, [keyboardSubmit]);
+  return (
+    <RedoButtonInner
+      useMutationHook={handleMutation}
+      mutationSubmitting={mutationSubmitting}
+    />
+  );
+}
+
+function WithStrikeItems({
+  nextRedo,
+  dispatch,
+  keyboardSubmit,
+  useKeyCooldown
+}: WithMutationProps) {
+  const [mutationSubmitting, setMutationSubmitting] = useState(false);
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmitting(false);
+  });
+  const [strikeItem, { loading }] = useStrikeItemsMutation();
+  if (nextRedo[0] !== 'strikeItems') return null;
+  const { listId, itemNameArray } = nextRedo[1];
+  const handleMutation = async () => {
+    if (loading || mutationSubmitting) return;
+    setMutationSubmitting(true);
+    const { data } = await strikeItem({
+      variables: { data: { listId, itemNameArray } }
+    });
+    const errors = data?.strikeItems.errors;
     if (errors) {
       console.log(errors);
       sendNotification(dispatch, [

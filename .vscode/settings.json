@@ -3,6 +3,7 @@
     "asynciterable",
     "cacheable",
     "codegen",
+    "Cooldown",
     "Dokku",
     "listtogether",
     "precaching",

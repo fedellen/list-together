@@ -8,7 +8,8 @@ import {
   useEditNoteMutation,
   useSortItemsMutation,
   useSortListsMutation,
-  useStrikeItemMutation
+  useStrikeItemMutation,
+  useStrikeItemsMutation
 } from 'src/generated/graphql';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
 import useKeyPress from 'src/hooks/useKeyPress';
@@ -23,7 +24,7 @@ export default function UndoButton() {
   const [{ undoState }, dispatch] = useStateValue();
 
   /** Keyboard access for undo */
-  const undoKey = useKeyPress('u', 'z');
+  const undoKey = useKeyPress('z');
   const keyCooldown = useDelayedFunction(() => {
     setKeyboardCooldown(false);
   });
@@ -112,6 +113,17 @@ export default function UndoButton() {
     case 'strikeItem':
       undoWithMutation = (
         <WithStrikeItem
+          nextUndo={nextUndo}
+          dispatch={dispatch}
+          keyboardSubmit={undoKeyboardButton}
+          useKeyCooldown={useKeyCooldown}
+        />
+      );
+      break;
+
+    case 'strikeItems':
+      undoWithMutation = (
+        <WithStrikeItems
           nextUndo={nextUndo}
           dispatch={dispatch}
           keyboardSubmit={undoKeyboardButton}
@@ -454,6 +466,50 @@ function WithStrikeItem({
       sendNotification(dispatch, [
         'Could not complete Undo action, that item no longer exists on the list..'
       ]);
+      dispatch({ type: 'REMOVE_UNDO' });
+      mutationCooldown(500); // .5 sec delay
+    } else {
+      dispatch({ type: 'UNDO_MUTATION' });
+      mutationCooldown(500);
+    }
+  };
+  useEffect(() => {
+    if (keyboardSubmit && !mutationSubmitting) {
+      useKeyCooldown();
+      handleMutation();
+    }
+  }, [keyboardSubmit]);
+  return (
+    <UndoButtonInner
+      useMutationHook={handleMutation}
+      mutationSubmitting={mutationSubmitting}
+    />
+  );
+}
+
+function WithStrikeItems({
+  nextUndo,
+  dispatch,
+  keyboardSubmit,
+  useKeyCooldown
+}: WithMutationProps) {
+  const [mutationSubmitting, setMutationSubmitting] = useState(false);
+  const mutationCooldown = useDelayedFunction(() => {
+    setMutationSubmitting(false);
+  });
+  const [strikeItems, { loading }] = useStrikeItemsMutation();
+  if (nextUndo[0] !== 'strikeItems') return null;
+  const { listId, itemNameArray } = nextUndo[1];
+  const handleMutation = async () => {
+    if (loading || mutationSubmitting) return;
+    setMutationSubmitting(true);
+    const { data } = await strikeItems({
+      variables: { data: { listId, itemNameArray } }
+    });
+    const errors = data?.strikeItems.errors;
+    if (errors) {
+      console.log(errors);
+      sendNotification(dispatch, ['Could not complete Undo action...']);
       dispatch({ type: 'REMOVE_UNDO' });
       mutationCooldown(500); // .5 sec delay
     } else {

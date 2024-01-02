@@ -1,12 +1,11 @@
 import { SubscriptionPayload } from '../../resolvers/types/subscription/SubscriptionPayload';
 import { UserToList } from '../../entities';
 import { getSharedListTables } from '../list/getSharedListTables';
-import { sortIntoList } from './sortIntoList';
 
 export const strikeOnSharedLists = async (
   userToList: UserToList,
-  itemName: string,
-  strike: boolean,
+  strikedItems: string[],
+  unStrikedItems: string[],
   publish: (payload: SubscriptionPayload) => Promise<void>
 ) => {
   const sharedUserToListTables = await getSharedListTables(userToList);
@@ -18,27 +17,31 @@ export const strikeOnSharedLists = async (
         if (!table.sortedItems) {
           console.error('Shared list has no sortedItems..');
         } else {
-          if (strike) {
-            table.sortedItems = [
-              ...table.sortedItems.filter((i) => i !== itemName),
-              itemName
-            ];
-          } else {
-            table.sortedItems = table.sortedItems.filter((i) => i !== itemName);
-            table.sortedItems = sortIntoList(table, itemName);
-          }
+          table.sortedItems = [
+            ...unStrikedItems,
+            ...(table.sortedItems?.filter(
+              (i) => ![...strikedItems, ...unStrikedItems].includes(i)
+            ) || []),
+            ...strikedItems
+          ];
           await table.save();
         }
       })
     );
 
+    const allItems = [...strikedItems, ...unStrikedItems];
     await publish({
       updatedListId: userToList.listId,
       /** Don't notify user who striked the item */
       userIdToExclude: userToList.userId,
-      notification: `'${itemName}' has been ${
-        strike ? 'striked' : 'un-striked'
-      } on list '${userToList.list.title}'.`
+      notification:
+        allItems.length === 1
+          ? `'${allItems[0]}' has been ${
+              userToList.list.items?.find((i) => i.name === allItems[0])!.strike
+                ? 'striked'
+                : 'un-striked'
+            } on list '${userToList.list.title}'.`
+          : `Items have been striked on list '${userToList.list.title}'.`
     });
   }
 };

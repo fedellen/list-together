@@ -22,6 +22,7 @@ import { EditNoteResolver } from '../resolvers/item/editNote';
 
 // Redis PubSub
 import { pubSub } from './pubSub';
+import { StrikeItemsResolver } from '../resolvers/item/strikeItems';
 
 // // ApolloServer PubSub
 // import { PubSub } from 'apollo-server-express';
@@ -45,6 +46,7 @@ export const createSchema = () =>
       AddItemResolver,
       DeleteItemsResolver,
       StrikeItemResolver,
+      StrikeItemsResolver,
       AddNoteResolver,
       DeleteNoteResolver,
       DeleteAccountResolver,

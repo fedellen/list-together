@@ -107,6 +107,7 @@ export type Mutation = {
   sortItems: UserToListResponse;
   sortLists: UserResponse;
   strikeItem: UserToListResponse;
+  strikeItems: UserToListResponse;
   submitPreferredOrder: UserToListResponse;
   updatePrivileges: UserToListResponse;
 };
@@ -179,6 +180,11 @@ export type MutationStrikeItemArgs = {
 };
 
 
+export type MutationStrikeItemsArgs = {
+  data: StrikeItemsInput;
+};
+
+
 export type MutationSubmitPreferredOrderArgs = {
   data: PreferredOrderInput;
 };
@@ -214,6 +220,11 @@ export type SharedUsers = {
 
 export type StrikeItemInput = {
   itemName: Scalars['String'];
+  listId: Scalars['String'];
+};
+
+export type StrikeItemsInput = {
+  itemNameArray: Array<Scalars['String']>;
   listId: Scalars['String'];
 };
 
@@ -343,6 +354,13 @@ export type StrikeItemMutationVariables = Exact<{
 
 
 export type StrikeItemMutation = { __typename?: 'Mutation', strikeItem: { __typename?: 'UserToListResponse', userToList?: Array<{ __typename?: 'UserToList', listId: string, sortedItems?: Array<string> | null, smartSortedItems: Array<string>, list: { __typename?: 'List', id: string, items?: Array<{ __typename?: 'Item', id: string, strike: boolean }> | null } }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type StrikeItemsMutationVariables = Exact<{
+  data: StrikeItemsInput;
+}>;
+
+
+export type StrikeItemsMutation = { __typename?: 'Mutation', strikeItems: { __typename?: 'UserToListResponse', userToList?: Array<{ __typename?: 'UserToList', listId: string, sortedItems?: Array<string> | null, smartSortedItems: Array<string>, list: { __typename?: 'List', id: string, items?: Array<{ __typename?: 'Item', id: string, strike: boolean }> | null } }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type CreateListMutationVariables = Exact<{
   title: Scalars['String'];
@@ -861,6 +879,53 @@ export function useStrikeItemMutation(baseOptions?: Apollo.MutationHookOptions<S
 export type StrikeItemMutationHookResult = ReturnType<typeof useStrikeItemMutation>;
 export type StrikeItemMutationResult = Apollo.MutationResult<StrikeItemMutation>;
 export type StrikeItemMutationOptions = Apollo.BaseMutationOptions<StrikeItemMutation, StrikeItemMutationVariables>;
+export const StrikeItemsDocument = gql`
+    mutation StrikeItems($data: StrikeItemsInput!) {
+  strikeItems(data: $data) {
+    userToList {
+      listId
+      sortedItems
+      smartSortedItems
+      list {
+        id
+        items {
+          id
+          strike
+        }
+      }
+    }
+    errors {
+      ...fieldError
+    }
+  }
+}
+    ${FieldErrorFragmentDoc}`;
+export type StrikeItemsMutationFn = Apollo.MutationFunction<StrikeItemsMutation, StrikeItemsMutationVariables>;
+
+/**
+ * __useStrikeItemsMutation__
+ *
+ * To run a mutation, you first call `useStrikeItemsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useStrikeItemsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [strikeItemsMutation, { data, loading, error }] = useStrikeItemsMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useStrikeItemsMutation(baseOptions?: Apollo.MutationHookOptions<StrikeItemsMutation, StrikeItemsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<StrikeItemsMutation, StrikeItemsMutationVariables>(StrikeItemsDocument, options);
+      }
+export type StrikeItemsMutationHookResult = ReturnType<typeof useStrikeItemsMutation>;
+export type StrikeItemsMutationResult = Apollo.MutationResult<StrikeItemsMutation>;
+export type StrikeItemsMutationOptions = Apollo.BaseMutationOptions<StrikeItemsMutation, StrikeItemsMutationVariables>;
 export const CreateListDocument = gql`
     mutation CreateList($title: String!) {
   createList(title: $title) {

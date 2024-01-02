@@ -1,8 +1,8 @@
-List Together is live at https://listtogether.app
+# TODO
 
-I will be making edits and bug fixes based on our personal use and any user feedback we receive. Below is a list of features/fixes I would like implemented if I spend more time on the project.
+List Together is live at <https://listtogether.app>
 
-## **🤔 Possibly Todo**
+Below is a list of features/fixes we would like implemented if we spend more time on this project
 
 - Strike notes individually, rather than with item
 - Share list via link or email. Shared user would still need to create account upon clicking share link.
