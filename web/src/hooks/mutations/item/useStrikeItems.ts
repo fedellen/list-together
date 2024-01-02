@@ -1,41 +1,37 @@
 import { useState, useCallback } from 'react';
-import { useStrikeItemMutation } from 'src/generated/graphql';
+import { useStrikeItemsMutation } from 'src/generated/graphql';
 import { useStateValue } from 'src/state/state';
 import { errorNotification } from 'src/utils/errorNotification';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
 import { sendNotification } from 'src/utils/dispatchActions';
 
-export default function useStrikeItem() {
+export default function useStrikeItems() {
   const [mutationSubmitting, setMutationSubmitting] = useState(false);
-  const [{ currentListId }, dispatch] = useStateValue();
-  const [strikeItem] = useStrikeItemMutation();
+  const [{ currentListId: listId }, dispatch] = useStateValue();
+  const [strikeItems] = useStrikeItemsMutation();
   const mutationCooldown = useDelayedFunction(() =>
     setMutationSubmitting(false)
   );
-  const sendMutation = useCallback(async (item: string) => {
+  const sendMutation = useCallback(async (itemNameArray: string[]) => {
     if (mutationSubmitting) return;
     setMutationSubmitting(true);
-    /**
-     *  Strike Item Mutation
-     */
 
     try {
-      /** Use `strikeItem` mutation */
-      const { data } = await strikeItem({
+      const { data } = await strikeItems({
         variables: {
           data: {
-            itemName: item,
-            listId: currentListId
+            itemNameArray,
+            listId
           }
         }
       });
-      if (data?.strikeItem.errors) {
-        errorNotification(data.strikeItem.errors, dispatch);
+      if (data?.strikeItems.errors) {
+        errorNotification(data.strikeItems.errors, dispatch);
         mutationCooldown();
       } else {
         dispatch({
           type: 'ADD_TO_UNDO',
-          payload: ['strikeItem', { itemName: item, listId: currentListId }]
+          payload: ['strikeItems', { itemNameArray, listId }]
         });
       }
       dispatch({ type: 'CLEAR_STATE' });

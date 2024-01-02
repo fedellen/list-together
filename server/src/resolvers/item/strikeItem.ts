@@ -74,16 +74,15 @@ export class StrikeItemResolver {
       }
       itemRemovalCallback(userToListTable, item.name);
     } else {
-      // Sort unstriked items back into the list
+      // Sort un-striked items back into the list
       if (userToListTable.sortedItems) {
-        const sortedListWithoutUnstrikedItem = userToListTable.sortedItems.filter(
-          (i) => i !== item.name
-        );
-        userToListTable.sortedItems = sortedListWithoutUnstrikedItem;
+        const sortedListWithoutUnStrikedItem =
+          userToListTable.sortedItems.filter((i) => i !== item.name);
+        userToListTable.sortedItems = sortedListWithoutUnStrikedItem;
 
         userToListTable.sortedItems = sortIntoList(userToListTable, item.name);
       }
-      // Item was unstriked -- remove it from removalArray if found
+      // Item was un-striked -- remove it from removalArray if found
       if (userToListTable.removedItems?.includes(item.name)) {
         userToListTable.removedItems = userToListTable.removedItems.filter(
           (i) => i !== item.name
@@ -92,7 +91,11 @@ export class StrikeItemResolver {
     }
 
     await userToListTable.save();
-    strikeOnSharedLists(userToListTable, item.name, item.strike, publish);
+    if (item.strike) {
+      strikeOnSharedLists(userToListTable, [item.name], [], publish);
+    } else {
+      strikeOnSharedLists(userToListTable, [], [item.name], publish);
+    }
     return { userToList: [userToListTable] };
   }
 }
