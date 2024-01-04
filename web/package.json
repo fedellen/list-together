@@ -1,6 +1,6 @@
 {
   "name": "list-together-pwa",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Derek R. Sonnenberg <fedellen@pixelpajamastudios.com>",
   "license": "MIT",
   "devDependencies": {
