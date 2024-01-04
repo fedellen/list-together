@@ -16,7 +16,7 @@ type SideMenuProps = {
 };
 
 export default function SideMenu({ strikedItems }: SideMenuProps) {
-  const [{ sideMenuState }, dispatch] = useStateValue();
+  const [{ sideMenuState, currentListId }, dispatch] = useStateValue();
 
   const handleAddItemClick = () => {
     dispatch({
@@ -34,7 +34,7 @@ export default function SideMenu({ strikedItems }: SideMenuProps) {
   const [strikeItems, strikeItemsSubmitting] = useStrikeItems();
   const handleUnStrikeAllClick = async () => {
     if (strikeItemsSubmitting) return;
-    await strikeItems(strikedItems);
+    await strikeItems(strikedItems, currentListId);
     handleReturnClick();
   };
 
