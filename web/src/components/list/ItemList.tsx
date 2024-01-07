@@ -35,13 +35,10 @@ export default function ItemList({ list, sortedItems }: ItemListProps) {
   const currentPrivileges = useCurrentPrivileges();
 
   // TODO: Can we memoize `useSensors` to prevent rerendering. Getting useEffect console warnings when using `useSensors` with `useMemo`.
-  const pointerSensor = useSensor(PointerSensor, {
-    activationConstraint: {
-      distance: 0.01
-    }
-  });
-  const mouseSensor = useSensor(MouseSensor);
-  const touchSensor = useSensor(TouchSensor);
+  const options = { activationConstraint: { distance: 0.01 } };
+  const pointerSensor = useSensor(PointerSensor, options);
+  const mouseSensor = useSensor(MouseSensor, options);
+  const touchSensor = useSensor(TouchSensor, options);
   const keyboardSensor = useSensor(KeyboardSensor, {
     coordinateGetter: sortableKeyboardCoordinates
   });
