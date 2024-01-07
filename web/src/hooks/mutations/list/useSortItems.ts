@@ -9,20 +9,20 @@ import { errorNotification } from 'src/utils/errorNotification';
 import useDelayedFunction from 'src/hooks/useDelayedFunction';
 
 export default function useSortItems() {
-  const [mutationSubmiting, setMutationSubmiting] = useState(false);
+  const [mutationSubmitting, setMutationSubmitting] = useState(false);
   const [{ currentListId }, dispatch] = useStateValue();
   const currentSortedItems = useCurrentSortedItems();
   const currentSmartSortedItems = useCurrentSmartSortedItems();
   const [sortItems] = useSortItemsMutation();
   const mutationCooldown = useDelayedFunction(() => {
-    setMutationSubmiting(false);
+    setMutationSubmitting(false);
   });
   const sendMutation = useCallback(
     async (
       itemName: string,
       direction: 'sortItemUp' | 'sortItemDown' | 'smartSort'
     ) => {
-      if (mutationSubmiting) return;
+      if (mutationSubmitting) return;
       /**
        *  Sort Items Mutation
        */
@@ -75,7 +75,7 @@ export default function useSortItems() {
       }
 
       try {
-        setMutationSubmiting(true);
+        setMutationSubmitting(true);
         /** Use `sortItems` mutation */
         const { data } = await sortItems({
           variables: {
@@ -114,8 +114,8 @@ export default function useSortItems() {
         dispatch({ type: 'CLEAR_STATE' });
       }
     },
-    [mutationSubmiting, currentSortedItems, currentSmartSortedItems]
+    [mutationSubmitting, currentSortedItems, currentSmartSortedItems]
   );
 
-  return [sendMutation, mutationSubmiting] as const;
+  return [sendMutation, mutationSubmitting] as const;
 }

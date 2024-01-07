@@ -4,6 +4,7 @@ import { Action } from 'src/state/reducer';
 import { NoteState, UserPrivileges } from 'src/types';
 import { ItemOptions } from './ItemOptions';
 import Note from './Note';
+import { useSortable } from '@dnd-kit/sortable';
 
 type SingleItemProps = {
   item: Item;
@@ -20,6 +21,16 @@ const SingleItem = memo(function SingleItem({
   dispatch,
   listPrivileges
 }: SingleItemProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: item.id });
+
+  const style = {
+    transform: transform
+      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+      : undefined,
+    transition
+  };
+
   const isItemActive = activeItem === item.name ? ' active' : '';
   const isStriked = item.strike ? ' strike' : '';
   return (
@@ -31,6 +42,10 @@ const SingleItem = memo(function SingleItem({
             payload: { name: item.name, id: item.id }
           })
         }
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
         className={` item-button ${isStriked}${isItemActive}`}
         aria-label={`Display Options for Item: ${item.name}`}
       >
