@@ -28,7 +28,8 @@ const SingleItem = memo(function SingleItem({
     transform: transform
       ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
       : undefined,
-    transition
+    transition,
+    touchAction: 'none'
   };
 
   const isItemActive = activeItem === item.name ? ' active' : '';
