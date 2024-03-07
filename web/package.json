@@ -23,7 +23,7 @@
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-prettier": "^3.3.0",
     "eslint-plugin-react": "^7.21.5",
-    "postcss": "^8.4.31",
+    "postcss": "^8.4.32",
     "prettier": "^2.2.1",
     "react-scripts": "^5.0.1",
     "tailwindcss": "^3.2.7",
