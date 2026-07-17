@@ -35,6 +35,7 @@ export default function useDeleteItems() {
       setMutationSubmiting(true);
       try {
         const { data } = await deleteItems({
+          fetchPolicy: 'no-cache',
           variables: {
             data: {
               itemNameArray: itemNames,
