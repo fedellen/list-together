@@ -24,7 +24,7 @@ Users can easily create an account by signing in with Google, Twitter, or Facebo
 
 Lists can be renamed, removed, or shared to other users. Every list contains a history of items added and removed to be used in that list's Auto Complete and Smart Sort features.
 
-Users with access to a list can add items, strike items, and/or delete items. 
+Users with access to a list can add items, strike items, and/or delete items.
 
 Most list actions are stored locally to be used in the `Undo` feature. Users can conveniently undo or redo these actions to revert the list back to their preferred state.
 
@@ -93,7 +93,7 @@ Updates to the `/web` directory on the master branch will trigger Netlify deploy
 To install and run the front end locally you will need to run:
 
 ```
-cd ./web && yarn && yarn start
+cd ./web && yarn && yarn build && yarn start
 ```
 
 Frontend was bootstrapped with:
