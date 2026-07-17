@@ -19,6 +19,7 @@ import { SortListsResolver } from '../resolvers/user/sortLists';
 import { DeleteAccountResolver } from '../resolvers/user/deleteAccount';
 import { EditItemNameResolver } from '../resolvers/item/editItemName';
 import { EditNoteResolver } from '../resolvers/item/editNote';
+import { SnapshotListResolver } from '../resolvers/list/snapshotList';
 
 // Redis PubSub
 import { pubSub } from './pubSub';
@@ -41,6 +42,7 @@ export const createSchema = () =>
       ShareListResolver,
       SortItemsResolver,
       SubmitPreferredOrderResolver,
+      SnapshotListResolver,
       SubscribeToListUpdatesResolver,
       UpdatePrivilegesResolver,
       AddItemResolver,
