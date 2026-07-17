@@ -59,9 +59,12 @@ export default function useAddItem() {
           itemName,
           currentSortedItems
         );
+        // Close modal immediately so add feels instant while request continues.
+        dispatch({ type: 'CLEAR_STATE' });
 
         try {
           const { data } = await addItem({
+            fetchPolicy: 'no-cache',
             variables: {
               data: {
                 nameInput: [itemName],
@@ -70,6 +73,7 @@ export default function useAddItem() {
             }
           });
           if (data?.addItem.errors) {
+            rollbackListCache(apolloClient, cacheSnapshot);
             errorNotification(data.addItem.errors, dispatch);
             mutationCooldown();
           } else {
@@ -77,8 +81,6 @@ export default function useAddItem() {
               type: 'ADD_TO_UNDO',
               payload: ['addItem', { itemName, listId }]
             });
-
-            dispatch({ type: 'CLEAR_STATE' });
           }
         } catch (err) {
           rollbackListCache(apolloClient, cacheSnapshot);
