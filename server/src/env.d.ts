@@ -7,6 +7,7 @@ declare namespace NodeJS {
     COOKIE_NAME: string;
     BACKEND_URL: string;
     FRONT_URL: string;
+    WILDCARD_DEPLOY_URL: string;
     GOOGLE_CLIENT_ID: string;
     GOOGLE_CLIENT_SECRET: string;
     TWITTER_API_KEY: string;
