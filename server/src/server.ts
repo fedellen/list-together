@@ -59,9 +59,7 @@ const server = async () => {
     // @ts-ignore
     app,
     cors: {
-      origin: wildcardOrigin
-        ? [process.env.FRONT_URL, wildcardOrigin]
-        : [process.env.FRONT_URL],
+      origin: [process.env.FRONT_URL, wildcardOrigin],
       credentials: true
     }
   });
