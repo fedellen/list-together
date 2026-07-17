@@ -23,12 +23,20 @@ export class SnapshotListResolver {
     if (getListPayload.errors) return { errors: getListPayload.errors };
     const userToListTable = getListPayload.userToList![0];
 
-    // TODO: Apply full snapshot item rules and history updates.
-    // This first iteration wires the full payload shape end-to-end.
+    // Save the sorted items array for the list -- this is the MVP for now, we will handle all other logic later
     userToListTable.sortedItems = snapshotedList.items.map((item) => item.name);
 
     // TODO: HANDLE ALL LIST LOGIC HERE -- SNAPSHOT EVERYTHING
     // FOR NOW JUST UPDATE SORTED ITEMS FOR MVP AND TESTING
+
+    // Full snapshot save -- but doesnt handle individual updates to item history
+    // userToListTable.list.items = snapshotedList.items.map((item) =>
+    //   Item.create({
+    //     name: item.name,
+    //     notes: item.notes ?? null,
+    //     strike: item.strike
+    //   })
+    // );
 
     await userToListTable.save();
     return { userToList: [userToListTable] };

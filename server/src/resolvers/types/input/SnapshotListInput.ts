@@ -6,9 +6,9 @@ export class SnapshotItemInput {
   name: string;
 
   @Field(() => [String], { nullable: true })
-  notes?: string[];
+  notes: string[] | null;
 
-  @Field()
+  @Field({ defaultValue: false })
   strike: boolean;
 }
 
