@@ -45,12 +45,21 @@ const server = async () => {
     }
   });
 
+  const wildcardOrigin = new RegExp(
+    `^${
+      process.env.WILDCARD_DEPLOY_URL ??
+      '*-stoic-benz-88b941.netlify.app'
+        .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
+        .replace(/\\\*/g, '.*')
+    }$`
+  );
+
   // Add express to Apollo, include cors with credentials for session auth
   apolloServer.applyMiddleware({
     // @ts-ignore
     app,
     cors: {
-      origin: [process.env.FRONT_URL],
+      origin: [process.env.FRONT_URL, wildcardOrigin],
       credentials: true
     }
   });
